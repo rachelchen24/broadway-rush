@@ -262,8 +262,17 @@ Also include: a **feature-importance / ablation table** (what happens to accurac
 - Watch interval coverage on the accuracy page; if it drifts, retrain sooner.
 
 ### 5.5 LLM extraction budget (Claude Haiku)
-- **Model:** Claude Haiku for extracting structured rows from Reddit and forum comments (§4) and casting news (§3.12).
+- **Model:** Claude Haiku 5.5 (`claude-haiku-5-5`) for extracting structured rows from Reddit and forum comments (§4) and casting news (§3.12).
 - **Total budget: $5 for the whole project.**
+- **Pricing (as of Oct 2026):** $0.10 per 1M input tokens, $0.50 per 1M output tokens. The Batches API is 50% off; cached prompt reads are ~10% of the input price. Thinking tokens bill as output, so run at `effort: low`.
+- **Rough cost estimate** (one request per thread, ~20 comments each, sharing one ~1.5K-token instruction prompt):
+  | Scope | Comments | Est. cost (batch) |
+  |---|---|---|
+  | Daily reporting threads only | ~8.5K | **~$0.50** |
+  | + other subreddits, BroadwayWorld forums, casting news | ~20–25K | **~$1–1.50** |
+  | Re-runs after fixing the prompt (×2) | | **~$1–3 total** |
+
+  So **$5 covers everything with room for 2–3 full re-runs**. Money isn't the limit here; the amount of Reddit data is. Confirm with the 100-comment pilot before the full run.
 - **Staying under it:**
   - Pilot on ~100 comments first. Measure tokens per comment and accuracy vs. hand labels, then project the full cost before running everything.
   - Use the **Message Batches API** (discounted vs. real-time) and **prompt caching** for the shared instructions.
