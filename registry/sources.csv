@@ -1,0 +1,3 @@
+site,data_type,official_api,robots_allows,tos_automated_access,decision,notes,date_checked
+reddit.com,rush testimony (posts/comments),yes (OAuth required),n/a,API terms require registered app,skip direct,Unauthenticated API returns 403; we do not log in,2026-10-19
+arctic-shift.photon-reddit.com,Reddit archive (posts/comments),yes (public JSON API),n/a (API),public research archive; rate-limited,API,~1 req/s with exponential backoff; 'Timeout' error also fires on slow queries so big subreddits are searched in split date windows,2026-10-19

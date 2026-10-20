@@ -1,2 +1,11 @@
 # private notes
 interview-notes.md
+
+# python / secrets
+.venv/
+.env
+__pycache__/
+*.egg-info/
+
+# regenerable raw data (Reddit text belongs to its authors)
+data/raw/

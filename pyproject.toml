@@ -1,0 +1,17 @@
+[project]
+name = "broadway-rush"
+version = "0.1.0"
+description = "Predicts in-person Broadway rush ticket availability."
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.32",
+    "pandas>=2.2",
+    "tzdata",  # zoneinfo needs it on Windows
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
