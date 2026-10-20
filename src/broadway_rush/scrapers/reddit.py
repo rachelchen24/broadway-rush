@@ -27,7 +27,8 @@ SAVE_EVERY = 10                 # pages between posts.csv / cursor checkpoints
 # Title search on the archive is unreliable (keeps returning "Timeout"), so we scan each
 # subreddit by date and match keywords locally in title + body.
 DAILY_AUTHOR = "BroadwayRushReport"
-DAILY_TITLE = "reporting thread"
+BOT_NON_DAILY = re.compile(r"availability list", re.IGNORECASE)  # bot posts that are not daily reports
+MAX_TITLE_DATE_DRIFT = 3  # days between title date and post date before we distrust the title
 SUBREDDITS = ["Broadway", "musicals", "AskNYC", "nyc"]
 KEYWORDS = ["rush", "lottery", "standing room", "SRO", "digital rush", "TodayTix", "box office", "line"]
 # In these general NYC subs most keyword hits aren't theater ("rush hour", "the 7 line"); only
@@ -67,21 +68,28 @@ def to_et(ts: int) -> str:
 
 
 def thread_date(title: str, created_utc: int) -> str:
-    """Performance date named in the daily thread title ('6/15/24', or '9/23' with the year taken
-    from the post date); falls back to the post date."""
+    """Performance date named in the daily thread title ('6/15/24', or '9/23' with the nearest year).
+    Falls back to the post date when there's no date or it's >3 days off (bot typos like '1/1/24'
+    posted on 11/1/24)."""
     posted = datetime.fromtimestamp(int(created_utc), ET).date()
     m = TITLE_DATE_RE.search(title)
     if m:
         mo, d = int(m[1]), int(m[2])
-        y = int(m[3]) if m[3] else posted.year
-        y = y + 2000 if y < 100 else y
-        try:
-            parsed = date(y, mo, d)
-            if not m[3] and (parsed - posted).days > 180:  # "12/31" posted on Jan 1
-                parsed = date(y - 1, mo, d)
-            return parsed.isoformat()
-        except ValueError:
-            pass
+        if m[3]:
+            y = int(m[3])
+            years = [y + 2000 if y < 100 else y]
+        else:
+            years = [posted.year - 1, posted.year, posted.year + 1]
+        candidates = []
+        for y in years:
+            try:
+                candidates.append(date(y, mo, d))
+            except ValueError:
+                pass
+        if candidates:
+            best = min(candidates, key=lambda c: abs((c - posted).days))
+            if abs((best - posted).days) <= MAX_TITLE_DATE_DRIFT:
+                return best.isoformat()
     return posted.isoformat()
 
 
@@ -164,9 +172,9 @@ def scrape_posts(client: PoliteClient):
     bot = _fetch_all(client, "posts/search", {"subreddit": "Broadway", "author": DAILY_AUTHOR,
                                               "fields": POST_FIELDS}, START_UTC)
     for p in bot:
-        source = "daily_thread" if DAILY_TITLE in p["title"].lower() else "bot_post"
+        source = "bot_post" if BOT_NON_DAILY.search(p["title"]) else "daily_thread"
         posts[p["id"]] = post_row(p, source)
-    others = sorted(p["title"] for p in bot if DAILY_TITLE not in p["title"].lower())
+    others = sorted(p["title"] for p in bot if BOT_NON_DAILY.search(p["title"]))
     log.info("bot posts: %d (%d daily threads, %d other)", len(bot), len(bot) - len(others), len(others))
     for t in others[:20]:
         log.info("  other bot post: %s", t)
@@ -263,7 +271,7 @@ def summary():
     print(f"other bot posts: {(posts.source == 'bot_post').sum()}")
     kw = posts[posts.source == "keyword_match"]
     print(f"keyword posts: {len(kw)}  (comments will be fetched for {(kw.fetch_comments == 'True').sum()})")
-    exploded = kw.assign(kw=kw.matched_keywords.str.split(";")).explode("kw")
+    exploded = kw.assign(kw=kw.matched_keywords.str.split(";")).explode("kw").reset_index(drop=True)
     print("\nposts per keyword (a post can match several):")
     print(pd.crosstab(exploded.kw, exploded.subreddit, margins=True).to_string())
     print("\nposts by where the keyword matched:")
