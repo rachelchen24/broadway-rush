@@ -217,9 +217,22 @@ def scrape_comments(client: PoliteClient):
         with COMMENTS_CSV.open(encoding="utf-8", newline="") as f:
             have = {r["comment_id"] for r in csv.DictReader(f)}
 
+    now = time.time()
+
+    def empty(p):  # old posts the archive says have no comments; recent counts may be stale
+        return p["num_comments"] in ("0", "") and now - int(p["created_utc"]) > RECENT_SECONDS
+
+    def priority(p):  # bot threads first, then keyword-in-title posts, then body-only matches
+        if p["source"] in ("daily_thread", "bot_post"):
+            return 0
+        return 1 if "title" in p["matched_in"] else 2
+
     todo = [p for p in posts if p["fetch_comments"] == "True" and p["post_id"] not in done]
-    todo.sort(key=lambda p: (p["source"] != "daily_thread", int(p["created_utc"])))
-    log.info("%d posts to fetch (%d already done, %d comments on disk)", len(todo), len(done), len(have))
+    skipped = sum(map(empty, todo))
+    todo = [p for p in todo if not empty(p)]
+    todo.sort(key=lambda p: (priority(p), int(p["created_utc"])))
+    log.info("%d posts to fetch (%d already done, %d skipped with 0 comments, %d comments on disk)",
+             len(todo), len(done), skipped, len(have))
 
     new_comments_file = not COMMENTS_CSV.exists()
     new_done_file = not DONE_CSV.exists()
