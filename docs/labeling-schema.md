@@ -15,6 +15,16 @@ A comment yields **0 to n rows**. Most comments are questions or chat (0 rows, l
 
 A single sentence can produce several rows. Example: "Was #6 at Gypsy 9:25. 8 people by the time BO opened. Other lines: Gatsby 6/7, DBH 12" → 1 `attempt` (Gypsy) + 1 `line_count` (Gypsy, 10:00, 8) + 2 `line_count` rows (Gatsby, DBH at 9:18–9:25).
 
+## Rules for common cases (added while pre-labeling; the Haiku prompt has the same list)
+
+- **Own arrival = one `attempt`.** "Got there at 8:40 and was 10th" doesn't also get a `line_count` that repeats the same fact.
+- **Someone else's arrival = `line_count`**, with the count set to that person's place: "first at 7:30" → count 1 at 07:30; "the two ahead of me got there at 7:30" → count 2 at 07:30.
+- **"N in line when the box office opened"** → `line_count` with a blank `time`.
+- **"now", or no time given** → the comment's posting time.
+- **"Evening sold out at the 17th person (arrived 9am)"** → a secondhand `attempt`: arrival 09:00, position 17, `sold_out_before_me`.
+- **A reply only gets what it says itself.** Data that's only in the parent belongs to the parent comment. A reply that just asks a question or says thanks is `none`.
+- **The comment may be about a different day than the thread** (posted after midnight, "yesterday", "I'm here on 3/19") → `perf_date` = the day it describes.
+
 ## Fields
 
 **All kinds**
@@ -57,7 +67,7 @@ A single sentence can produce several rows. Example: "Was #6 at Gypsy 9:25. 8 pe
 |---|---|
 | `time` | When the statement applied (e.g. 18:00 for "2 left" at 6pm). |
 | `stated_count` | Number of rush tickets stated ("26 rush seats", "2 left"). |
-| `stated_qual` | `total` (whole day's rush allotment) / `remaining` (left at that time) |
+| `stated_qual` | `total` (whole day's rush allotment) / `remaining` (left at that time). **`remaining` with a blank `stated_count` = "still available, count unknown"** ("they had tickets for both shows at 11:30"). That still tells the model supply hadn't run out by then. |
 | `sold_out_time` | HH:MM when rush ran out, if given. |
 | `sro_offered` | `yes` / `no` / `unknown` |
 | `late_release` | `true` if "come back later" / tickets released later in the day (SPEC §3.7). |

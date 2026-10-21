@@ -21,6 +21,20 @@ line, outcome. "4th in line, got there at 5am... they only sold one student tick
 A sentence can yield several observations: "Was #6 at Gypsy 9:25. 8 people by the time BO \
 opened." -> an attempt (Gypsy, arrival 09:25, position 6) and a line_count (Gypsy, 10:00, 8).
 
+## Rules for common cases
+- The writer's own arrival ("got there at 8:40 and was 10th") is one attempt. Don't add a \
+line_count that just restates their own position at their own arrival time.
+- Someone else's arrival ("first at 7:30", "the two ahead of me got there at 7:30") is a \
+line_count whose count is that person's place in line (1 and 2 here).
+- "N in line when the box office opened" is a line_count with time null.
+- "now", or a count with no time, means the comment's posting time.
+- "Evening sold out at the 17th person (arrived 9am)" is a secondhand attempt: arrival 09:00, \
+line_position 17, outcome sold_out_before_me.
+- A reply only gets observations for what IT says. Data that appears only in the parent comment \
+belongs to the parent, not to this comment; a reply that just asks a question or says thanks has none.
+- The comment may be about a different day than the thread (posted after midnight, "yesterday", \
+"I'm here on 3/19"); set perf_date to the day it describes.
+
 ## Fields (use null when the comment doesn't say; never guess)
 - show_text: the show as written ("DBH", "the Imperial", "r+j").
 - show: the full show title. Expand nicknames/abbreviations and theater names when you are \
@@ -48,7 +62,10 @@ parties, unless the text explicitly counts parties or groups.
 - seat (attempt): seat description as written ("balcony", "orch J 9&11").
 - window_time (attempt): HH:MM when they reached the box office window.
 - stated_count (supply): number of rush tickets stated.
-- stated_qual (supply): total (the day's whole rush allotment) / remaining (left at that time).
+- stated_qual (supply): total (the day's whole rush allotment) / remaining (left at that time). \
+If rush tickets were still available at a time but no number is given ("they had tickets for \
+the matinee and evening"), record a supply observation with stated_qual remaining and \
+stated_count null.
 - sold_out_time (supply): HH:MM when rush ran out.
 - sro_offered: yes / no / unknown.
 - late_release: true if tickets were released or offered later in the day ("come back later").
