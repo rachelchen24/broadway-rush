@@ -8,6 +8,8 @@ dependencies = [
     "pandas>=2.2",
     "tzdata",  # zoneinfo needs it on Windows
     "openpyxl>=3.1",  # hand-labeling sheet
+    "anthropic>=1.17",
+    "python-dotenv>=1.0",
 ]
 
 [build-system]
