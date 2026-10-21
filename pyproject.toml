@@ -7,6 +7,7 @@ dependencies = [
     "requests>=2.32",
     "pandas>=2.2",
     "tzdata",  # zoneinfo needs it on Windows
+    "openpyxl>=3.1",  # hand-labeling sheet
 ]
 
 [build-system]

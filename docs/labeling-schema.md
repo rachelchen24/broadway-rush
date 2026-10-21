@@ -45,7 +45,7 @@ A single sentence can produce several rows. Example: "Was #6 at Gypsy 9:25. 8 pe
 | Field | Rules |
 |---|---|
 | `arrival_time` | When they joined the line (HH:MM). |
-| `line_position` | Their place, as written ("4th" → 4, "#6" → 6). Counts **people**, not parties, unless the text says parties. |
+| `line_position` | Their place, as written ("4th" → 4, "#6" → 6). Counts **people**, not parties, unless the text says parties. *Why:* if a party of 2 is counted as 2 people, the line looks longer, so the app errs toward "arrive earlier". Better to miss a ticket we'd have said was likely gone than to send someone to a line that's already too long. |
 | `outcome` | `got_rush` / `sro_only` / `full_price_only` / `sold_out_before_me` / `left` / `unknown` |
 | `tickets` | Number bought. |
 | `seat` | Free text: "balcony", "stage seats", "orch J 9&11". |
