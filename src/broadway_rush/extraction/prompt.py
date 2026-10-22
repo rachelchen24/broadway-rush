@@ -37,6 +37,8 @@ question has no observations, even if the parent is full of data. Questions ("on
 the outsiders?"), opinions, and vague impressions ("the bulk of people got there at 7:30") are \
 not observations either.
 - When you use the parent to fill a field (usually the show), set needs_context true.
+- Each comment stands alone: never use another comment in the batch to fill in a show, time or \
+anything else. If neither the comment nor its own parent names the show, show is "".
 - The comment may be about a different day than the thread (posted after midnight, "yesterday", \
 "I'm here on 3/19"); set perf_date to the day it describes.
 

@@ -5,6 +5,8 @@ lg1z0ni,field: needs_context,attempt,"Oh, Mary!",true,false
 lmyy6fj,field: outcome,attempt,The Outsiders,full_price_only,got_rush
 lmyy6fj,field: seat,attempt,The Outsiders,orchestra,59 orchestra
 m0r615k,field: confidence,line_count,The Outsiders,high,medium
+m0vmska,field: needs_context,attempt,Gypsy,true,false
+m0vmska,field: needs_context,attempt,Gypsy,true,false
 m0vmska,field: confidence,attempt,Gypsy,medium,high
 m0vmska,field: needs_context,attempt,Gypsy,true,false
 m0vmska,field: time,attempt,Gypsy,09:20:00,
@@ -12,8 +14,6 @@ m0vmska,field: count,attempt,Gypsy,17,
 m0vmska,field: count_qual,attempt,Gypsy,exact,
 m0vmska,field: line_position,attempt,Gypsy,30,
 m0vmska,field: outcome,attempt,Gypsy,sold_out_before_me,got_rush
-m0vmska,field: needs_context,attempt,Gypsy,true,false
-m0vmska,field: needs_context,attempt,Gypsy,true,false
 m0vmska,field: perf,supply,Gypsy,unknown,matinee
 m0vmska,field: secondhand,supply,Gypsy,false,true
 m0vmska,field: confidence,supply,Gypsy,high,medium

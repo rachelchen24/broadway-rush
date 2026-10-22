@@ -1,0 +1,85 @@
+comment_id,issue,kind,show,gold,pred
+lgbbka4,field: seat,attempt,Hell's Kitchen,,standing
+lgbbka4,extra observation,supply,Hell's Kitchen,,"{'comment_id': 'lgbbka4', 'kind': 'supply', 'show_text': ""Hell's Kitchen"", 'show': ""Hell's Kitchen"", 'perf_date': '2024-08-03', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'false', 'stated_qual': 'total', 'sro_offered': 'yes'}"
+lr3udg7,field: line_position,attempt,Sunset Blvd.,14,10
+lr3udg7,field: seat,attempt,Sunset Blvd.,orchestra right row j partially obstructed,"orchestra right row j, partially obstructed"
+lr3udg7,extra observation,line_count,Sunset Boulevard,,"{'comment_id': 'lr3udg7', 'kind': 'line_count', 'show_text': 'Sunset Blvd', 'show': 'Sunset Boulevard', 'perf_date': '2024-10-09', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'false', 'time': '09:00', 'count': '9', 'count_qual': 'approx'}"
+m7wzimg,field: seat,attempt,"Oh, Mary!",orchestra row o seat 7 ($150),"row o, seat 7"
+m957a5q,field: needs_context,attempt,"Oh, Mary!",true,false
+m957a5q,field: needs_context,line_count,"Oh, Mary!",true,false
+m957a5q,field: needs_context,line_count,"Oh, Mary!",true,false
+m957a5q,missed observation,line_count,"Oh, Mary!","{'comment_id': 'm957a5q', 'kind': 'line_count', 'show': 'Oh, Mary!', 'perf_date': '2025-01-23', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '08:35', 'count': '2', 'count_qual': 'approx', 'notes': 'by myself until 8:35ish'}",
+mkd06de,field: needs_context,attempt,,true,false
+ms9np13,field: confidence,line_count,Sunset Blvd.,high,medium
+mwbnndf,extra observation,attempt,Death Becomes Her,,"{'comment_id': 'mwbnndf', 'kind': 'attempt', 'show_text': 'Death becomes her', 'show': 'Death Becomes Her', 'perf_date': '2025-06-06', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'line_position': '7', 'outcome': 'sold_out_before_me'}"
+mwbnndf,extra observation,supply,Death Becomes Her,,"{'comment_id': 'mwbnndf', 'kind': 'supply', 'show_text': 'Death becomes her', 'show': 'Death Becomes Her', 'perf_date': '2025-06-06', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'stated_count': '0', 'stated_qual': 'total', 'sold_out_time': '10:00'}"
+mxe2rv9,field: perf,attempt,,unknown,matinee
+mxe2rv9,field: needs_context,attempt,,true,false
+myhsmfz,field: seat,attempt,Death Becomes Her,"4th row rear balcony, center",4th row rear balcony
+myxp6ey,field: perf_date,attempt,Sunset Blvd.,2025-06-19,2025-06-20
+mz5zvsm,field: needs_context,line_count,The Outsiders,true,false
+mz5zvsm,field: needs_context,line_count,The Outsiders,true,false
+mzpu857,missed observation,attempt,,"{'comment_id': 'mzpu857', 'thread_date': '2025-06-25', 'comment_time': '11:56', 'parent_body': 'update probably more like 80 total by box office open, they ran out of evening rush like 1-2 people before me but I was able to get $59 orchestra', 'body': 'What seats did you get for $59? I got the rush for the evening for row L.', 'kind': 'attempt', 'perf_date': '2025-06-25', 'perf': 'evening', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'outcome': 'got_rush', 'seat': 'row L', 'notes': 'CHECK: show not named'}",
+mzpu857,extra observation,supply,,,"{'comment_id': 'mzpu857', 'kind': 'supply', 'perf_date': '2025-06-25', 'perf': 'evening', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'medium', 'needs_context': 'true', 'stated_qual': 'remaining', 'sold_out_time': '11:56'}"
+n2qky5y,field: seat,attempt,Sunset Blvd.,left orchestra f 21 partial view,"orchestra f 21, partial view"
+n2qky5y,field: perf,supply,Sunset Blvd.,evening,matinee
+n2qky5y,field: stated_count,supply,Sunset Blvd.,0,
+n2qky5y,field: sro_offered,supply,Sunset Blvd.,,no
+n2xk7nn,field: show,supply,Boop! The Musical,boop! the musical,
+n2xk7nn,field: confidence,supply,Boop! The Musical,medium,high
+n2xk7nn,field: needs_context,supply,Boop! The Musical,true,false
+n2xk7nn,field: time,supply,Boop! The Musical,12:51,
+n2xk7nn,missed observation,attempt,Boop! The Musical,"{'comment_id': 'n2xk7nn', 'thread_date': '2025-07-13', 'comment_time': '13:36', 'parent_body': 'Boop - 1st and 2nd in line at 3:40am (I was 2nd) - 3rd and 4th around 5:30am\n\nThere’s 22 people in line - 10am\xa0', 'body': 'FYI there was still SRO available about 45 minutes ago! I walked up and got the last rush seat (rear orch)', 'kind': 'attempt', 'show_text': 'Boop (parent)', 'show': 'Boop! The Musical', 'perf_date': '2025-07-13', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'true', 'outcome': 'got_rush', 'seat': 'rear orch', 'notes': ""CHECK: show from parent; 'got the last rush seat'""}",
+n3nchb6,field: rush_type,attempt,Maybe Happy Ending,sro,general
+n3nchb6,field: needs_context,attempt,Maybe Happy Ending,true,false
+n3nchb6,field: seat,attempt,Maybe Happy Ending,,standing room
+n3nchb6,missed observation,line_count,Maybe Happy Ending,"{'comment_id': 'n3nchb6', 'kind': 'line_count', 'show': 'Maybe Happy Ending', 'perf_date': '2025-07-17', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '05:40', 'count': '1', 'count_qual': 'exact', 'notes': 'first got there at about 5:40'}",
+n3nchb6,extra observation,attempt,Maybe Happy Ending,,"{'comment_id': 'n3nchb6', 'kind': 'attempt', 'show_text': 'MHE', 'show': 'Maybe Happy Ending', 'perf_date': '2025-07-17', 'perf': 'unknown', 'rush_type': 'sro', 'secondhand': 'true', 'confidence': 'medium', 'needs_context': 'false', 'arrival_time': '05:40', 'line_position': '1', 'outcome': 'unknown'}"
+nirqn7s,missed observation,attempt,Death Becomes Her,"{'comment_id': 'nirqn7s', 'thread_date': '2025-10-10', 'comment_time': '09:33', 'body': 'Never saw a post for yesterday (Thursday the 9th), so I’ll put this here: Death Becomes Her 1st 7:45, 2nd 7:55, 4 by 8:15. 1st got Orch U', 'kind': 'attempt', 'show_text': 'Death Becomes Her', 'show': 'Death Becomes Her', 'perf_date': '2025-10-09', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'high', 'needs_context': 'false', 'arrival_time': '07:45', 'line_position': '1', 'outcome': 'got_rush', 'seat': 'Orch U', 'notes': 'about Thursday 10/9'}",
+nirqn7s,extra observation,line_count,Death Becomes Her,,"{'comment_id': 'nirqn7s', 'kind': 'line_count', 'show_text': 'Death Becomes Her', 'show': 'Death Becomes Her', 'perf_date': '2025-10-09', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'time': '07:45', 'count': '1', 'count_qual': 'exact'}"
+nirqn7s,extra observation,supply,Death Becomes Her,,"{'comment_id': 'nirqn7s', 'kind': 'supply', 'show_text': 'Death Becomes Her', 'show': 'Death Becomes Her', 'perf_date': '2025-10-09', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'medium', 'needs_context': 'false', 'stated_qual': 'remaining'}"
+nnfiygm,missed observation,attempt,Maybe Happy Ending,"{'comment_id': 'nnfiygm', 'kind': 'attempt', 'show': 'Maybe Happy Ending', 'perf_date': '2025-11-06', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'line_position': '15', 'outcome': 'unknown', 'notes': 'party of 2: 15 and 16'}",
+no1u5yp,field: needs_context,attempt,Chess,true,false
+no1u5yp,field: outcome,attempt,Chess,full_price_only,sold_out_before_me
+no1u5yp,field: seat,attempt,Chess,farthest back house left box ($79 buy-up rush),farthest back house left box
+no1u5yp,field: needs_context,line_count,Chess,true,false
+no1u5yp,extra observation,supply,Chess,,"{'comment_id': 'no1u5yp', 'kind': 'supply', 'show_text': 'Chess', 'show': 'Chess', 'perf_date': '2025-11-08', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'stated_qual': 'remaining'}"
+nxd7sql,field: needs_context,supply,Death Becomes Her,true,false
+nxd7sql,field: perf,attempt,Death Becomes Her,matinee,unknown
+nxd7sql,field: confidence,attempt,Death Becomes Her,medium,high
+nxd7sql,field: needs_context,attempt,Death Becomes Her,true,false
+nxd7sql,field: line_position,attempt,Death Becomes Her,,17
+nxd7sql,field: outcome,attempt,Death Becomes Her,got_rush,sold_out_before_me
+nxd7sql,field: seat,attempt,Death Becomes Her,box seat ($40),
+nxd7sql,field: late_release,attempt,Death Becomes Her,true,
+nxd7sql,extra observation,line_count,Death Becomes Her,,"{'comment_id': 'nxd7sql', 'kind': 'line_count', 'show_text': 'Death Becomes Her', 'show': 'Death Becomes Her', 'perf_date': '2026-01-02', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'true', 'time': '10:00', 'count': '60', 'count_qual': 'at_least'}"
+odlssqf,extra observation,line_count,Fear of 13,,"{'comment_id': 'odlssqf', 'kind': 'line_count', 'show_text': 'Fear of 13', 'show': 'Fear of 13', 'perf_date': '2026-03-19', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'time': '05:30', 'count': '1', 'count_qual': 'exact'}"
+odlssqf,extra observation,line_count,Fear of 13,,"{'comment_id': 'odlssqf', 'kind': 'line_count', 'show_text': 'Fear of 13', 'show': 'Fear of 13', 'perf_date': '2026-03-19', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'high', 'needs_context': 'false', 'time': '08:55', 'count': '7', 'count_qual': 'exact'}"
+olsltvt,field: show,attempt,Every Brilliant Thing,every brilliant thing,
+olsltvt,field: line_position,attempt,Every Brilliant Thing,,0
+olsltvt,field: show,line_count,Every Brilliant Thing,every brilliant thing,
+olsltvt,field: rush_type,line_count,Every Brilliant Thing,general,digital
+olsltvt,field: confidence,line_count,Every Brilliant Thing,high,low
+olsltvt,field: time,line_count,Every Brilliant Thing,22:00,03:15
+olsltvt,field: count,line_count,Every Brilliant Thing,1,8
+olsltvt,field: count_qual,line_count,Every Brilliant Thing,exact,approx
+olsltvt,field: show,supply,Every Brilliant Thing,every brilliant thing,
+olsltvt,field: confidence,supply,Every Brilliant Thing,high,medium
+olsltvt,field: time,supply,Every Brilliant Thing,,03:00
+olsltvt,field: stated_qual,supply,Every Brilliant Thing,total,remaining
+oodjt27,field: secondhand,attempt,The Rocky Horror Show,true,false
+oodjt27,field: arrival_time,attempt,The Rocky Horror Show,06:00,
+oodjt27,field: secondhand,attempt,The Rocky Horror Show,true,false
+oodjt27,field: arrival_time,attempt,The Rocky Horror Show,06:40,
+ooiec6b,field: perf_date,line_count,"Oh, Mary!",2026-05-27,2026-05-28
+ooiec6b,field: perf_date,line_count,The Lost Boys,2026-05-27,2026-05-28
+ooiec6b,field: perf_date,line_count,"Oh, Mary!",2026-05-27,2026-05-28
+ooiec6b,field: perf_date,supply,Chess,2026-05-27,2026-05-28
+ooiec6b,field: time,supply,Chess,,10:10
+ooiec6b,missed observation,attempt,Chess,"{'comment_id': 'ooiec6b', 'kind': 'attempt', 'show_text': 'Chess', 'show': 'Chess', 'perf_date': '2026-05-27', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'arrival_time': '10:10', 'line_position': '16', 'outcome': 'unknown', 'notes': 'about 15 ahead'}",
+ooiec6b,extra observation,line_count,Chess,,"{'comment_id': 'ooiec6b', 'kind': 'line_count', 'show_text': 'Chess', 'show': 'Chess', 'perf_date': '2026-05-28', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'time': '10:10', 'count': '16', 'count_qual': 'approx'}"
+oorvjyv,extra observation,line_count,,,"{'comment_id': 'oorvjyv', 'kind': 'line_count', 'perf_date': '2026-05-30', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'low', 'needs_context': 'true', 'time': '10:00', 'count': '6', 'count_qual': 'approx'}"
+owyd3qr,field: show,line_count,,,schmigadoon!
+owyd3qr,field: confidence,line_count,,high,medium
+ph3o1ul,field: confidence,attempt,The Rocky Horror Show,high,medium
+ph3o1ul,field: confidence,line_count,The Rocky Horror Show,high,medium

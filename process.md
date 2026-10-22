@@ -78,4 +78,14 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 
 **Caveat:** v2 was tuned on the same 100 comments it's scored on, so its numbers are optimistic. Report final accuracy on a fresh held-out sample.
 
-**Next:** Rachel reviews the labels → re-score (free). Score v2 on a fresh held-out set → full run via the Batches API (step 3).
+**Held-out test (2026-10-22):** Rachel reviewed the 14 flagged rows (7 comments changed, kept as-is). Built `data/labels/holdout.xlsx`: 50 new comments (35 report-like + 15 random, seed 7, excluding the first 100), pre-labeled by Claude **before** running the model (`claude_prelabels_holdout.py`). v2 on held-out ($0.006):
+| Set | Report vs none | Obs. precision / recall | show / time / count / arrival / position / outcome |
+|---|---|---|---|
+| Tuning (100, reviewed) | 90% | 80% / 84% | 93 / 89 / 93 / 90 / 79 / 74% |
+| **Held-out (50)** | **94%** | **77% / 87%** | 89 / 83 / 95 / 88 / 85 / 90% |
+- Held-out ≈ tuning set, so the prompt wasn't overfit.
+- Scorer fixes found along the way: "Sunset Blvd." = "Sunset Boulevard"; the row matcher now also uses `perf`, so it doesn't pair the "last evening ticket" row with the matinee row.
+- New failure mode: **leakage between comments in a batch**. Haiku named "Schmigadoon!" for a comment that never mentions it, because another comment in the same 10-comment request did. Added a prompt rule ("each comment stands alone").
+- Remaining real errors: unexpanded abbreviations ("EBT"), "thought I was 10th… ended up 14th" → 10, using the parent for the show inconsistently.
+
+**Next:** the full run via the Batches API (step 3) once the scraper finishes, then a structured `reports` table.

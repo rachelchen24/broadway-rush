@@ -30,6 +30,7 @@ def norm(v) -> str:
 
 def norm_show(v) -> str:
     s = re.sub(r"[^a-z0-9 ]", "", norm(v))
+    s = re.sub(r"\bblvd\b", "boulevard", s)  # "Sunset Blvd." == "Sunset Boulevard"
     return re.sub(r"^the ", "", s).strip()
 
 
@@ -71,8 +72,8 @@ def match(gold: list[dict], pred: list[dict]) -> list[tuple[dict | None, dict | 
         if norm(g["kind"]) != norm(p["kind"]):
             return -1
         s = 2 * same("show", g.get("show"), p.get("show")) + same("show", g.get("show_text"), p.get("show_text"))
-        for f in ("time", "arrival_time"):
-            if norm(g.get(f)) and same(f, g.get(f), p.get(f)):
+        for f in ("time", "arrival_time", "perf"):  # perf separates "last evening ticket" from "last matinee ticket"
+            if norm(g.get(f)) not in ("", "unknown") and same(f, g.get(f), p.get(f)):
                 s += 1
         return s
     pairs = sorted(((sim(g, p), i, j) for i, g in enumerate(gold) for j, p in enumerate(pred)), reverse=True)
