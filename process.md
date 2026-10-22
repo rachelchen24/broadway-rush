@@ -107,17 +107,36 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 - Show names aren't canonical yet: 346 distinct ("Outsiders" / "The Outsiders", "Oh Mary" / "Oh, Mary!", "Mincemeat"). → the show catalog in step 4.
 - `perf_date` isn't validated (one "2025-00-…"). Validate dates when building model tables.
 
-**Next:** re-run `full` after the scraper finishes (new comments + 2 failed chunks). Then step 4 (weekly grosses + rush policies + show catalog), after checking the sources' robots.txt/ToS.
+**Next:** re-run `full` after the scraper finishes (new comments + 2 failed chunks; done, see the wrap-up below). Then step 4 (weekly grosses + rush policies + show catalog), after checking the sources' robots.txt/ToS.
 
 ---
 
-## ▶ Open items (as of 2026-10-22 ~12:45)
-1. **Reddit comments scraper still running** as a detached Windows process (started 11:35; ~1,300 keyword posts were left, ~3 h). Check progress: last lines of `data/raw/_state/scrape.log`. If it stopped, resume with `.venv\Scripts\python -m broadway_rush.scrapers.reddit comments` (run only one copy at a time; skipped/failed posts are retried automatically).
-2. **When it finishes:**
-   - `.venv\Scripts\python -m broadway_rush.extraction.batch full --dry-run`, then `full` (new comments + 2 failed chunks; ~$0.15), then `collect`, then `reports`.
-   - Run `.venv\Scripts\python -m broadway_rush.scrapers.reddit summary` and write the final step-1 numbers here and in interview-notes.md.
-3. **Step 4 is waiting on Rachel's go-ahead.** First task: check robots.txt + ToS for Playbill, BroadwayWorld, IBDB, and log them in `registry/sources.csv` (free, nothing scraped). Then backfill weekly grosses + rush policies + build the show catalog (it also canonicalizes the 346 show-name variants in `reports.csv`).
-4. **Notes for future sessions:**
-   - LLM spend ledger: `data/interim/llm_spend.csv`; hard stop $8, $1.34 spent.
+## Step 1 + 3 wrap-up: scrape finished, top-up extraction (2026-10-22)
+
+**Did:**
+- The comments scraper finished at 13:53, before a computer restart, so nothing was lost: the last run added +28,909 comments (1,484 requests, 0 posts skipped).
+- Ran `batch full` on everything not yet extracted: 7,393 comments (7,391 new keyword-post comments + the 2 daily-thread comments from last run's failed chunks) in 740 requests. Then `collect` and `reports`.
+
+**Why:** the first full batch was sent while the scraper was still running, so the comments it fetched afterwards still needed extracting.
+
+**Result:**
+- **Reddit raw data, final:** 12,123 posts (790 daily threads 2024-06-14 → 2026-10-20, 11,332 keyword posts, 1 other bot post) → **139,584 comments**, no duplicate IDs.
+- Batch: 739/740 requests ok, finished in under an hour. **Cost $0.13** (estimate $0.47). Validation: 1 JSON repair, 2 unknown fields, 2 bad values dropped. **Project LLM total: $1.47.**
+- **`reports.csv`: 18,262 observations from 10,301 comments** (43,835 extracted comments had no report): 8,845 line_count · 6,643 attempt · 2,774 supply (1,119 with a stated count). By source: daily_thread 13,021 · keyword_match 5,235 · bot_post 6. 70% have a show name; 358 distinct show strings.
+- Keyword posts added few observations (+336) compared with their comment count. Almost all the useful data is in the daily threads, as expected.
+- Attempt outcomes: got_rush 3,382 · unknown 2,577 · sro_only 340 · sold_out_before_me 160 · left 83 · full_price_only 34.
+
+**Didn't work / left as-is:** 1 request (10 keyword-post comments) failed. Not worth retrying for now; the next `batch full` will pick it up automatically.
+
+**Next:** step 4, waiting on Rachel's go-ahead.
+
+---
+
+## ▶ Open items (as of 2026-10-22, after the top-up extraction)
+1. **Steps 1–3 are done.** The Reddit scrape is complete and all comments are extracted except 10 (1 failed request; `batch full` retries it).
+2. **Step 4 is waiting on Rachel's go-ahead.** First task: check robots.txt + ToS for Playbill, BroadwayWorld, IBDB, and log them in `registry/sources.csv` (free, nothing scraped). Then backfill weekly grosses + rush policies + build the show catalog (it also canonicalizes the 358 show-name variants in `reports.csv`).
+3. **Notes for future sessions:**
+   - LLM spend ledger: `data/interim/llm_spend.csv`; hard stop $8, $1.47 spent.
+   - To refresh Reddit later: `.venv\Scripts\python -m broadway_rush.scrapers.reddit posts`, then `comments` (resumable; run one copy at a time), then `batch full` → `collect` → `reports`.
    - API key lives in `.env` (git-ignored); the variable name must be `ANTHROPIC_API_KEY` (underscores).
    - Never run `data/labels/claude_prelabels*.py` again: they overwrite the reviewed label sheets (the holdout one refuses; the first one does not).

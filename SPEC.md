@@ -92,7 +92,7 @@ A dataset of **every show playing and every performance** for the next 7 days, p
   - Comments: `GET /comments/search?link_id=<post id>`, paged.
   - Rate limit: about 10 requests/min. Its "Timeout. Maybe slow down a bit" error comes back as **HTTP 422**; wait for `x-ratelimit-reset`. Survives Wi-Fi drops, laptop sleep and server outages. Resumable.
 - **Widen the net (June 2024+):** keywords `rush, lottery, standing room, SRO, digital rush, TodayTix, box office, line` across r/Broadway, r/musicals, r/AskNYC, r/nyc (~251k posts scanned → 11.3k keyword posts). Comments are fetched only for title matches or non-"line" body matches; in r/nyc and r/AskNYC the post must also look theater-related.
-- **Output:** `data/raw/posts.csv`, `data/raw/comments.csv` (git-ignored; ~124k comments when complete).
+- **Output:** `data/raw/posts.csv`, `data/raw/comments.csv` (git-ignored). **Complete as of 2026-10-22:** 12,123 posts → 139,584 comments.
 - **Then:** LLM extraction into structured rows (§4).
 - **Ongoing:** re-scrape daily.
 
@@ -265,7 +265,7 @@ Also include: a **feature-importance / ablation table** (what happens to accurac
 ### 5.5 LLM extraction budget (Claude Haiku)
 - **Model:** Claude Haiku 5.5 (`claude-haiku-5-5`) for extracting structured rows from Reddit and forum comments (§4) and casting news (§3.12).
 - **Total budget: $8 for the whole project** (raised from $5 on 2026-10-22; $10 of credits loaded). The code enforces a hard stop at $8 across every run (`data/interim/llm_spend.csv`).
-- **Actual so far:** $1.34 (pilot + held-out $0.04; full extraction of 46.8k comments $1.30 via Batches + caching). See `process.md` step 3.
+- **Actual so far:** $1.47 (pilot + held-out $0.04; full extraction of 46.8k comments $1.30 via Batches + caching; top-up of 7.4k comments $0.13). Result: 18,262 observations from 10,301 comments in `data/processed/reports.csv`. See `process.md` step 3 and its wrap-up.
 - **Built:** `broadway_rush/extraction/` (prompt, sync pilot, Batches runner, scorer). Structured outputs were rejected because the 25-field schema is too complex for them, so the JSON is described in the prompt and validated plus auto-repaired in code. Effort low, thinking on (thinking off cost more and was less accurate).
 - **Accuracy (held-out 50 comments):** report vs none 94%, observation precision 77% / recall 87%, key fields 83–95%. Labeling rules: `docs/labeling-schema.md`.
 - **Pricing (as of Oct 2026):** $0.10 per 1M input tokens, $0.50 per 1M output tokens. The Batches API is 50% off; cached prompt reads are ~10% of the input price. Thinking tokens bill as output, so run at `effort: low`.
@@ -276,7 +276,7 @@ Also include: a **feature-importance / ablation table** (what happens to accurac
   | + other subreddits, BroadwayWorld forums, casting news | ~20–25K | **~$1–1.50** |
   | Re-runs after fixing the prompt (×2) | | **~$1–3 total** |
 
-  (Original estimate; the real full run was ~46.8k comments for $1.30.) Confirm with a pilot before any full run.
+  (Original estimate; the real runs were ~54k comments for $1.43 in total.) Confirm with a pilot before any full run.
 - **Staying under it:**
   - Pilot on ~100 comments first. Measure tokens per comment and accuracy vs. hand labels, then project the full cost before running everything.
   - Use the **Message Batches API** (discounted vs. real-time) and **prompt caching** for the shared instructions.
