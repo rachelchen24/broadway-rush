@@ -89,3 +89,22 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 - Remaining real errors: unexpanded abbreviations ("EBT"), "thought I was 10th… ended up 14th" → 10, using the parent for the show inconsistently.
 
 **Next:** the full run via the Batches API (step 3) once the scraper finishes, then a structured `reports` table.
+
+## 2026-10-22: Step 3: full extraction → reports table
+**Did:**
+- `broadway_rush/extraction/batch.py`: `full [--dry-run] [--limit N]` (submit every not-yet-extracted, keyword-filtered comment as one Message Batch, 10 comments per request, shuffled so a request's comments come from different threads; refuses if spent + estimate × 1.5 > $8), `collect` (poll, validate, append to `data/interim/extractions.jsonl`, log real cost), `reports` (→ `data/processed/reports.csv`, one row per observation joined with comment metadata). Resumable and incremental: an extracted comment is never sent again.
+- Test batch of 20 comments first: the path worked, but 1 of 2 chunks failed on an unquoted enum (`"count_qual": approx`). Added a JSON repair step (quote bare words, re-parse).
+- Submitted the full batch while the scraper was still finishing (the new comments go in a follow-up run).
+
+**Result:**
+- 46,771 comments / 4,678 requests, finished in ~10 min. **Cost $1.30** (estimate was $3.00; batch requests got more cache hits than the sync pilot). Project LLM total: **$1.34**.
+- 4,676 requests ok, 2 failed (retried next run); **228 responses needed the JSON repair**. Without it about 5% of requests would have been lost.
+- **17,926 observations from 10,018 comments**: 8,806 line_count (8,567 with count + time), 6,441 attempt, 2,679 supply (1,088 with a stated count). 70% have a show name.
+- Every month from June 2024 → Oct 2026; peak May–Jul 2025 (~1,100/month).
+- Attempt outcomes: got_rush 3,251 · unknown 2,528 · sro_only 335 · sold_out_before_me 155 · left 77 · full_price_only 33. That's the selection bias the SPEC predicted: people post their wins.
+
+**Issues for later:**
+- Show names aren't canonical yet: 346 distinct ("Outsiders" / "The Outsiders", "Oh Mary" / "Oh, Mary!", "Mincemeat"). → the show catalog in step 4.
+- `perf_date` isn't validated (one "2025-00-…"). Validate dates when building model tables.
+
+**Next:** re-run `full` after the scraper finishes (new comments + 2 failed chunks). Then step 4 (weekly grosses + rush policies + show catalog), after checking the sources' robots.txt/ToS.
