@@ -1,0 +1,213 @@
+comment_id,issue,kind,show,gold,pred
+lajs75s,field: outcome,attempt,,got_rush,unknown
+lg1z0ni,field: perf,attempt,"Oh, Mary!",unknown,evening
+lg1z0ni,field: needs_context,attempt,"Oh, Mary!",true,false
+lg1z0ni,field: arrival_time,attempt,"Oh, Mary!",06:13,06:45
+lg1z0ni,field: line_position,attempt,"Oh, Mary!",4,10
+lg1z0ni,field: outcome,attempt,"Oh, Mary!",unknown,got_rush
+lg1z0ni,field: tickets,attempt,"Oh, Mary!",,1
+lg1z0ni,field: seat,attempt,"Oh, Mary!",,pv orch
+lg1z0ni,field: window_time,attempt,"Oh, Mary!",,08:00
+lg1z0ni,extra observation,line_count,"Oh, Mary!",,"{'comment_id': 'lg1z0ni', 'kind': 'line_count', 'show_text': 'Oh Mary', 'show': 'Oh, Mary!', 'perf_date': '2024-08-01', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'time': '08:00', 'count': '30', 'count_qual': 'at_least'}"
+lmmcwki,extra observation,line_count,Outsiders,,"{'comment_id': 'lmmcwki', 'kind': 'line_count', 'show_text': 'outsiders', 'show': 'Outsiders', 'perf_date': '2024-09-11', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'low', 'needs_context': 'false', 'time': '11:49', 'count': '5', 'count_qual': 'exact'}"
+lmyy6fj,field: outcome,attempt,The Outsiders,full_price_only,got_rush
+lmyy6fj,field: tickets,attempt,The Outsiders,,1
+lmyy6fj,extra observation,line_count,The Great Gatsby,,"{'comment_id': 'lmyy6fj', 'kind': 'line_count', 'show_text': 'Gatsby', 'show': 'The Great Gatsby', 'perf_date': '2024-09-12', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'high', 'needs_context': 'true', 'time': '09:15', 'count': '13', 'count_qual': 'exact'}"
+lt0a3gz,field: rush_type,line_count,The Great Gatsby,general,unknown
+lykv13g,extra observation,supply,Cult of Love,,"{'comment_id': 'lykv13g', 'kind': 'supply', 'show_text': 'Cult of Love', 'show': 'Cult of Love', 'perf_date': '2024-11-22', 'perf': 'unknown', 'rush_type': 'digital', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'seat': 'mezzanine center rows B and C', 'stated_qual': 'remaining'}"
+lzlsfnn,extra observation,line_count,Romeo + Juliet,,"{'comment_id': 'lzlsfnn', 'kind': 'line_count', 'show_text': 'Romeo + Juliet', 'show': 'Romeo + Juliet', 'perf_date': '2024-11-29', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'low', 'needs_context': 'false', 'time': '09:50', 'count': '0', 'count_qual': 'approx'}"
+m0vmska,field: perf,attempt,Gypsy,matinee,unknown
+m0vmska,field: confidence,attempt,Gypsy,medium,high
+m0vmska,field: needs_context,attempt,Gypsy,true,false
+m0vmska,field: perf,supply,Gypsy,unknown,matinee
+m0vmska,field: secondhand,supply,Gypsy,false,true
+m0vmska,field: confidence,supply,Gypsy,high,medium
+m0vmska,field: needs_context,supply,Gypsy,true,false
+m0vmska,field: stated_qual,supply,Gypsy,,total
+m0vmska,field: sold_out_time,supply,Gypsy,,10:00
+m0vmska,field: sro_offered,supply,Gypsy,unknown,
+m0vmska,field: needs_context,attempt,Gypsy,true,false
+m0vmska,field: arrival_time,attempt,Gypsy,09:55,
+m0vmska,extra observation,supply,Gypsy,,"{'comment_id': 'm0vmska', 'kind': 'supply', 'show_text': 'Gypsy', 'show': 'Gypsy', 'perf_date': '2024-12-07', 'perf': 'evening', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'stated_qual': 'total', 'sold_out_time': '09:00'}"
+m61tw49,field: needs_context,line_count,Death Becomes Her,true,false
+m63p7gf,extra observation,supply,Death Becomes Her,,"{'comment_id': 'm63p7gf', 'kind': 'supply', 'show_text': 'DBH', 'show': 'Death Becomes Her', 'perf_date': '2025-01-08', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'false', 'stated_qual': 'remaining', 'sro_offered': 'unknown'}"
+m7cwsk6,field: confidence,attempt,Gypsy,medium,high
+m7cwsk6,field: tickets,attempt,Gypsy,,1
+m7cwsk6,field: seat,attempt,Gypsy,first row orchestra left,orchestra first row left
+m8r4n4j,field: needs_context,line_count,Maybe Happy Ending,true,false
+m8r4n4j,extra observation,attempt,Maybe Happy Ending,,"{'comment_id': 'm8r4n4j', 'kind': 'attempt', 'show_text': 'Maybe Happy Ending', 'show': 'Maybe Happy Ending', 'perf_date': '2025-01-23', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'high', 'needs_context': 'true', 'arrival_time': '08:15', 'line_position': '7', 'outcome': 'unknown', 'seat': 'Center Balcony single ticket'}"
+m8xeix0,extra observation,line_count,,,"{'comment_id': 'm8xeix0', 'kind': 'line_count', 'perf_date': '2025-01-24', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'true', 'count': '20', 'count_qual': 'approx'}"
+m8xeix0,extra observation,supply,,,"{'comment_id': 'm8xeix0', 'kind': 'supply', 'perf_date': '2025-01-24', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'high', 'needs_context': 'true', 'stated_qual': 'remaining', 'late_release': 'true'}"
+mgp13gu,field: perf,attempt,Death Becomes Her,matinee,unknown
+mgp13gu,field: needs_context,attempt,Death Becomes Her,true,false
+mgp13gu,field: seat,attempt,Death Becomes Her,single orchestra seat,orchestra
+mgp13gu,extra observation,line_count,Death Becomes Her,,"{'comment_id': 'mgp13gu', 'kind': 'line_count', 'show_text': 'Death Becomes Her', 'show': 'Death Becomes Her', 'perf_date': '2025-03-08', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'time': '09:40', 'count': '39', 'count_qual': 'exact'}"
+mhgid6v,extra observation,supply,Six,,"{'comment_id': 'mhgid6v', 'kind': 'supply', 'show_text': 'Six', 'show': 'Six', 'perf_date': '2025-03-12', 'perf': 'unknown', 'rush_type': 'student', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'stated_qual': 'remaining', 'sro_offered': 'unknown', 'late_release': 'false'}"
+mjo7n7a,field: rush_type,line_count,"Oh, Mary!",general,unknown
+mjo7n7a,field: secondhand,line_count,"Oh, Mary!",true,false
+mjo7n7a,field: confidence,line_count,"Oh, Mary!",low,high
+mjo7n7a,field: time,line_count,"Oh, Mary!",05:30,09:40
+mjo7n7a,field: count,line_count,"Oh, Mary!",2,25
+mjo7n7a,field: count_qual,line_count,"Oh, Mary!",approx,exact
+mjo7n7a,extra observation,attempt,,,"{'comment_id': 'mjo7n7a', 'kind': 'attempt', 'perf_date': '2025-03-25', 'perf': 'unknown', 'rush_type': 'unknown', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'arrival_time': '06:30', 'line_position': '4', 'outcome': 'unknown'}"
+mjo7n7a,extra observation,attempt,,,"{'comment_id': 'mjo7n7a', 'kind': 'attempt', 'perf_date': '2025-03-25', 'perf': 'unknown', 'rush_type': 'unknown', 'secondhand': 'true', 'confidence': 'medium', 'needs_context': 'false', 'arrival_time': '05:30', 'line_position': '1', 'outcome': 'unknown'}"
+mjo7n7a,extra observation,attempt,,,"{'comment_id': 'mjo7n7a', 'kind': 'attempt', 'perf_date': '2025-03-25', 'perf': 'unknown', 'rush_type': 'unknown', 'secondhand': 'true', 'confidence': 'medium', 'needs_context': 'false', 'arrival_time': '06:30', 'line_position': '2', 'outcome': 'unknown'}"
+mk0q2d1,field: tickets,attempt,The Last Five Years,,1
+mk0q2d1,field: seat,attempt,The Last Five Years,"front row balcony far left, partial view",front row balcony far left
+mk0q2d1,extra observation,line_count,The Last Five Years,,"{'comment_id': 'mk0q2d1', 'kind': 'line_count', 'show_text': 'The last Five Years', 'show': 'The Last Five Years', 'perf_date': '2025-03-26', 'perf': 'evening', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'false', 'time': '10:48', 'count': '7', 'count_qual': 'exact'}"
+mk0q2d1,extra observation,supply,The Last Five Years,,"{'comment_id': 'mk0q2d1', 'kind': 'supply', 'show_text': 'The last Five Years', 'show': 'The Last Five Years', 'perf_date': '2025-03-26', 'perf': 'evening', 'rush_type': 'other', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'false', 'time': '19:00', 'stated_qual': 'remaining', 'sro_offered': 'unknown'}"
+mk2xgcg,field: perf,attempt,Glengarry Glen Ross,evening,unknown
+mk2xgcg,field: line_position,attempt,Glengarry Glen Ross,7,
+mk2xgcg,field: outcome,attempt,Glengarry Glen Ross,left,unknown
+mk2xgcg,field: perf,attempt,John Proctor Is the Villain,evening,unknown
+mk2xgcg,field: seat,attempt,John Proctor Is the Villain,,standing room
+mk2xgcg,field: perf,supply,John Proctor Is the Villain,evening,unknown
+mk2xgcg,extra observation,line_count,Glengarry Glen Ross,,"{'comment_id': 'mk2xgcg', 'kind': 'line_count', 'show_text': 'Glengarry Glen Ross', 'show': 'Glengarry Glen Ross', 'perf_date': '2025-03-27', 'perf': 'unknown', 'rush_type': 'sro', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'time': '17:10', 'count': '6', 'count_qual': 'exact'}"
+mk2xgcg,extra observation,supply,Glengarry Glen Ross,,"{'comment_id': 'mk2xgcg', 'kind': 'supply', 'show_text': 'Glengarry Glen Ross', 'show': 'Glengarry Glen Ross', 'perf_date': '2025-03-27', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'false', 'stated_count': '1', 'stated_qual': 'remaining', 'sro_offered': 'unknown'}"
+mneqsmx,extra observation,line_count,,,"{'comment_id': 'mneqsmx', 'kind': 'line_count', 'perf_date': '2025-04-16', 'perf': 'unknown', 'rush_type': 'unknown', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '09:24', 'count': '39', 'count_qual': 'exact'}"
+mnrbuq0,field: needs_context,attempt,Maybe Happy Ending,true,false
+mnrbuq0,field: needs_context,line_count,Maybe Happy Ending,true,false
+mqjxh7s,extra observation,line_count,Stranger Things,,"{'comment_id': 'mqjxh7s', 'kind': 'line_count', 'show_text': 'Stranger Things', 'show': 'Stranger Things', 'perf_date': '2025-05-04', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '10:08', 'count': '2', 'count_qual': 'exact'}"
+mqjxh7s,extra observation,supply,Stranger Things,,"{'comment_id': 'mqjxh7s', 'kind': 'supply', 'show_text': 'Stranger Things', 'show': 'Stranger Things', 'perf_date': '2025-05-04', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'stated_qual': 'remaining', 'sro_offered': 'unknown', 'late_release': 'false'}"
+mrri5bo,field: secondhand,line_count,Gypsy,false,true
+mrri5bo,field: needs_context,line_count,Gypsy,false,true
+mrri5bo,field: show,line_count,Sunset Blvd.,sunset blvd.,sunset boulevard
+mrri5bo,field: secondhand,line_count,Sunset Blvd.,false,true
+mrri5bo,field: needs_context,line_count,Sunset Blvd.,false,true
+mrri5bo,extra observation,line_count,Hell's Kitchen,,"{'comment_id': 'mrri5bo', 'kind': 'line_count', 'show_text': ""Hell's Kitchen"", 'show': ""Hell's Kitchen"", 'perf_date': '2025-05-11', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '10:50', 'count': '3', 'count_qual': 'exact'}"
+mrri5bo,extra observation,line_count,Sunset Boulevard,,"{'comment_id': 'mrri5bo', 'kind': 'line_count', 'show_text': 'Sunset Blvd', 'show': 'Sunset Boulevard', 'perf_date': '2025-05-11', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '11:05', 'count': '21', 'count_qual': 'exact'}"
+mrri5bo,extra observation,line_count,Gypsy,,"{'comment_id': 'mrri5bo', 'kind': 'line_count', 'show_text': 'Gypsy', 'show': 'Gypsy', 'perf_date': '2025-05-11', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '11:05', 'count': '9', 'count_qual': 'exact'}"
+mrri5bo,extra observation,line_count,Boop!,,"{'comment_id': 'mrri5bo', 'kind': 'line_count', 'show_text': 'Boop', 'show': 'Boop!', 'perf_date': '2025-05-11', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '11:05', 'count': '13', 'count_qual': 'exact'}"
+mrri5bo,extra observation,line_count,Purpose,,"{'comment_id': 'mrri5bo', 'kind': 'line_count', 'show_text': 'Purpose', 'show': 'Purpose', 'perf_date': '2025-05-11', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '11:05', 'count': '6', 'count_qual': 'exact'}"
+mshpqh2,extra observation,line_count,The Outsiders,,"{'comment_id': 'mshpqh2', 'kind': 'line_count', 'show_text': 'The Outsiders', 'show': 'The Outsiders', 'perf_date': '2025-05-15', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'time': '17:30', 'count': '5', 'count_qual': 'exact'}"
+mtbaa9z,missed observation,attempt,Gypsy,"{'comment_id': 'mtbaa9z', 'thread_date': '2025-05-20', 'comment_time': '11:45', 'body': 'Gypsy: I came 7:40 and there was 1 person\n\n3rd came by 8, 4th at 8:17 then too much wind lol\n\nThere were 11 by the time the BO opened', 'kind': 'attempt', 'show_text': 'Gypsy', 'show': 'Gypsy', 'perf_date': '2025-05-20', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'arrival_time': '07:40', 'line_position': '2', 'outcome': 'unknown'}",
+mtbaa9z,extra observation,line_count,Gypsy,,"{'comment_id': 'mtbaa9z', 'kind': 'line_count', 'show_text': 'Gypsy', 'show': 'Gypsy', 'perf_date': '2025-05-20', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'time': '07:40', 'count': '1', 'count_qual': 'exact'}"
+mtuelsn,field: rush_type,attempt,,general,unknown
+mtuelsn,field: needs_context,attempt,,true,false
+muscuvv,field: show,attempt,Sunset Blvd.,sunset blvd.,
+muscuvv,field: confidence,attempt,Sunset Blvd.,low,medium
+muscuvv,field: seat,attempt,Sunset Blvd.,"orchestra right, row h seat 22","orchestra, row h seat 22"
+muscuvv,extra observation,line_count,Gypsy,,"{'comment_id': 'muscuvv', 'kind': 'line_count', 'show_text': 'Gypsy', 'show': 'Gypsy', 'perf_date': '2025-05-28', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '09:00', 'count': '8', 'count_qual': 'approx'}"
+muscuvv,extra observation,line_count,Boop!,,"{'comment_id': 'muscuvv', 'kind': 'line_count', 'show_text': 'Boop', 'show': 'Boop!', 'perf_date': '2025-05-28', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '09:00', 'count': '2', 'count_qual': 'exact'}"
+muscuvv,extra observation,line_count,Sunset Boulevard,,"{'comment_id': 'muscuvv', 'kind': 'line_count', 'show_text': 'Sunset', 'show': 'Sunset Boulevard', 'perf_date': '2025-05-28', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'true', 'time': '19:05', 'count': '14', 'count_qual': 'approx'}"
+mwb66el,field: show,line_count,The Picture of Dorian Gray,the picture of dorian gray,
+mwb66el,field: rush_type,line_count,The Picture of Dorian Gray,general,unknown
+mwb66el,field: show,line_count,The Picture of Dorian Gray,the picture of dorian gray,
+mwb66el,field: rush_type,line_count,The Picture of Dorian Gray,general,unknown
+mx0qpnj,field: confidence,attempt,,medium,high
+mx0qpnj,field: tickets,attempt,,,1
+mx0qpnj,field: seat,attempt,,standing room spot 107,standing room 107
+mx9nn4o,extra observation,line_count,Sexual Misconduct of the Middle Classes,,"{'comment_id': 'mx9nn4o', 'kind': 'line_count', 'show_text': 'Sexual Misconduct of the Middle Classes', 'show': 'Sexual Misconduct of the Middle Classes', 'perf_date': '2025-06-03', 'perf': 'matinee', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'medium', 'needs_context': 'true', 'time': '10:17', 'count': '9', 'count_qual': 'exact'}"
+mx9nn4o,extra observation,line_count,Creditors,,"{'comment_id': 'mx9nn4o', 'kind': 'line_count', 'show_text': 'Creditors', 'show': 'Creditors', 'perf_date': '2025-06-03', 'perf': 'evening', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'medium', 'needs_context': 'true', 'time': '10:17', 'count': '9', 'count_qual': 'exact'}"
+myg02lg,extra observation,line_count,Just in Time,,"{'comment_id': 'myg02lg', 'kind': 'line_count', 'show_text': 'Just In Time', 'show': 'Just in Time', 'perf_date': '2025-06-18', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'high', 'needs_context': 'true', 'time': '06:00', 'count': '1', 'count_qual': 'exact'}"
+myg02lg,extra observation,line_count,Just in Time,,"{'comment_id': 'myg02lg', 'kind': 'line_count', 'show_text': 'Just In Time', 'show': 'Just in Time', 'perf_date': '2025-06-18', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'high', 'needs_context': 'true', 'time': '08:00', 'count': '16', 'count_qual': 'exact'}"
+myg02lg,extra observation,line_count,Just in Time,,"{'comment_id': 'myg02lg', 'kind': 'line_count', 'show_text': 'Just In Time', 'show': 'Just in Time', 'perf_date': '2025-06-18', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'high', 'needs_context': 'true', 'time': '09:00', 'count': '30', 'count_qual': 'exact'}"
+myt5t0j,field: confidence,attempt,Just in Time,medium,high
+myt5t0j,field: confidence,line_count,Just in Time,high,medium
+myt5t0j,extra observation,line_count,Just in Time,,"{'comment_id': 'myt5t0j', 'kind': 'line_count', 'show_text': 'Just in Time', 'show': 'Just in Time', 'perf_date': '2025-06-20', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'false', 'time': '06:45', 'count': '6', 'count_qual': 'approx'}"
+mytg2bb,field: perf_date,supply,Just in Time,,2025-06-20
+mytg2bb,field: needs_context,supply,Just in Time,true,false
+mytg2bb,missed observation,attempt,Just in Time,"{'comment_id': 'mytg2bb', 'kind': 'attempt', 'show': 'Just in Time', 'perf_date': '2025-06-20', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'outcome': 'sold_out_before_me', 'notes': ""'did not get rush tickets this time'""}",
+myz3opu,extra observation,attempt,Sunset Boulevard,,"{'comment_id': 'myz3opu', 'kind': 'attempt', 'show_text': 'Sunset', 'show': 'Sunset Boulevard', 'perf_date': '2025-06-20', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'arrival_time': '06:15', 'line_position': '10', 'outcome': 'unknown'}"
+myz3opu,extra observation,line_count,Sunset Boulevard,,"{'comment_id': 'myz3opu', 'kind': 'line_count', 'show_text': 'Sunset', 'show': 'Sunset Boulevard', 'perf_date': '2025-06-20', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'medium', 'needs_context': 'false', 'time': '04:30', 'count': '1', 'count_qual': 'exact'}"
+mz6hsm3,field: needs_context,supply,,true,false
+mz6hsm3,field: sro_offered,supply,,,unknown
+mz6hsm3,field: late_release,supply,,,false
+mz6hsm3,field: confidence,line_count,,high,medium
+mz6hsm3,field: needs_context,line_count,,true,false
+mzpo3qm,field: sro_offered,supply,Real Women Have Curves,,unknown
+mzpo3qm,field: late_release,supply,Real Women Have Curves,,false
+mzpo3qm,field: stated_qual,supply,Real Women Have Curves,,remaining
+mzpo3qm,field: sro_offered,supply,Real Women Have Curves,,unknown
+mzpo3qm,field: late_release,supply,Real Women Have Curves,,false
+mzwdhqr,field: outcome,attempt,Dead Outlaw,got_rush,unknown
+n02bc5b,extra observation,line_count,The Great Gatsby,,"{'comment_id': 'n02bc5b', 'kind': 'line_count', 'show_text': 'great Gatsby', 'show': 'The Great Gatsby', 'perf_date': '2025-06-27', 'perf': 'unknown', 'rush_type': 'student', 'secondhand': 'false', 'confidence': 'low', 'needs_context': 'false', 'time': '09:44'}"
+n0kzthl,extra observation,attempt,,,"{'comment_id': 'n0kzthl', 'kind': 'attempt', 'perf_date': '2025-06-30', 'perf': 'unknown', 'rush_type': 'unknown', 'secondhand': 'true', 'confidence': 'high', 'needs_context': 'true', 'arrival_time': '05:00', 'line_position': '1', 'outcome': 'unknown'}"
+n0kzthl,extra observation,attempt,,,"{'comment_id': 'n0kzthl', 'kind': 'attempt', 'perf_date': '2025-06-30', 'perf': 'unknown', 'rush_type': 'unknown', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'arrival_time': '08:15', 'line_position': '3', 'outcome': 'unknown'}"
+n0kzthl,extra observation,line_count,,,"{'comment_id': 'n0kzthl', 'kind': 'line_count', 'perf_date': '2025-06-30', 'perf': 'unknown', 'rush_type': 'unknown', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '08:57', 'count': '16', 'count_qual': 'exact'}"
+n0xmhmr,field: perf,attempt,Sunset Blvd.,unknown,evening
+n0xmhmr,field: needs_context,line_count,Sunset Blvd.,true,false
+n2q0l1p,field: needs_context,line_count,John Proctor Is the Villain,true,false
+n6j1r7v,field: sro_offered,supply,Mamma Mia!,,unknown
+n6j1r7v,field: late_release,supply,Mamma Mia!,,false
+n6j1r7v,missed observation,line_count,Mamma Mia!,"{'comment_id': 'n6j1r7v', 'kind': 'line_count', 'show': 'Mamma Mia!', 'perf_date': '2025-08-02', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'time': '04:45', 'count': '2', 'count_qual': 'exact', 'notes': 'second person arrived 4:45'}",
+n6j1r7v,extra observation,attempt,Mamma Mia!,,"{'comment_id': 'n6j1r7v', 'kind': 'attempt', 'show_text': 'Mamma Mia', 'show': 'Mamma Mia!', 'perf_date': '2025-08-02', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'arrival_time': '04:45', 'line_position': '2', 'outcome': 'unknown'}"
+n7mgmrw,field: rush_type,attempt,Gypsy,general,unknown
+n7mgmrw,field: confidence,attempt,Gypsy,medium,high
+n7mgmrw,field: outcome,attempt,Gypsy,unknown,got_rush
+n7mgmrw,field: tickets,attempt,Gypsy,,1
+n7mgmrw,field: rush_type,attempt,Heathers,general,unknown
+n7mgmrw,field: outcome,attempt,Heathers,sold_out_before_me,unknown
+n7mqd51,field: seat,attempt,,"partial view, left orchestra row c","partial view, orchestra row c"
+n9ptobe,extra observation,supply,,,"{'comment_id': 'n9ptobe', 'kind': 'supply', 'perf_date': '2025-08-20', 'perf': 'matinee', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'stated_count': '0', 'stated_qual': 'total', 'sro_offered': 'unknown'}"
+n9ptobe,extra observation,supply,,,"{'comment_id': 'n9ptobe', 'kind': 'supply', 'perf_date': '2025-08-20', 'perf': 'evening', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'stated_qual': 'total', 'sro_offered': 'unknown', 'late_release': 'false'}"
+n9ptobe,extra observation,attempt,,,"{'comment_id': 'n9ptobe', 'kind': 'attempt', 'perf_date': '2025-08-20', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'false', 'outcome': 'got_rush', 'tickets': '1', 'seat': 'partial view ($79)'}"
+nay45gh,field: line_position,attempt,Maybe Happy Ending,31,
+nay45gh,field: outcome,attempt,Maybe Happy Ending,unknown,
+nay45gh,extra observation,line_count,Maybe Happy Ending,,"{'comment_id': 'nay45gh', 'kind': 'line_count', 'show_text': 'MHE', 'show': 'Maybe Happy Ending', 'perf_date': '2025-08-27', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'time': '09:46', 'count': '30', 'count_qual': 'exact'}"
+ndmiwkm,field: line_position,attempt,Maybe Happy Ending,5,6
+ndmiwkm,extra observation,attempt,Maybe Happy Ending,,"{'comment_id': 'ndmiwkm', 'kind': 'attempt', 'show_text': 'Maybe Happy Ending', 'show': 'Maybe Happy Ending', 'perf_date': '2025-09-11', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'arrival_time': '08:15', 'line_position': '5', 'outcome': 'unknown'}"
+niykrsj,field: confidence,supply,Beetlejuice,high,medium
+niykrsj,field: sro_offered,supply,Beetlejuice,,unknown
+niykrsj,field: late_release,supply,Beetlejuice,,false
+niykrsj,missed observation,attempt,Beetlejuice,"{'comment_id': 'niykrsj', 'thread_date': '2025-10-11', 'comment_time': '12:16', 'parent_body': 'Anyone rushing Beetlejuice and could tell me what seats they give? Thanks.', 'body': 'i got there at 11:30 today, no line, they had tickets for the matinee and evening performance. not partial view either which is great, i think it was $49 matinee and $59 evening? i might be wrong there on price but something like that. the screen inside said lydia was being performed by understudy not elizabeth as well.', 'kind': 'attempt', 'show_text': 'Beetlejuice', 'show': 'Beetlejuice', 'perf_date': '2025-10-11', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'arrival_time': '11:30', 'line_position': '1', 'outcome': 'unknown', 'cast_note': 'Lydia played by understudy', 'notes': ""show name only in parent -> needs_context. Didn't say if they bought. Prices $49 mat / $59 eve (unsure)""}",
+niykrsj,extra observation,line_count,Beetlejuice,,"{'comment_id': 'niykrsj', 'kind': 'line_count', 'show_text': 'Beetlejuice', 'show': 'Beetlejuice', 'perf_date': '2025-10-11', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '11:30', 'count': '0', 'count_qual': 'exact'}"
+nlho4sj,extra observation,line_count,Outsiders,,"{'comment_id': 'nlho4sj', 'kind': 'line_count', 'show_text': 'Outsiders', 'show': 'Outsiders', 'perf_date': '2025-10-26', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '08:09', 'count': '9', 'count_qual': 'exact'}"
+nlho4sj,extra observation,line_count,Operation Mincemeat,,"{'comment_id': 'nlho4sj', 'kind': 'line_count', 'show_text': 'Operation Mincemeat', 'show': 'Operation Mincemeat', 'perf_date': '2025-10-26', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '08:09', 'count': '1', 'count_qual': 'exact'}"
+nlho4sj,extra observation,line_count,Art,,"{'comment_id': 'nlho4sj', 'kind': 'line_count', 'show_text': 'Art', 'show': 'Art', 'perf_date': '2025-10-26', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '08:09', 'count': '1', 'count_qual': 'exact'}"
+nlho4sj,extra observation,line_count,Buena Vista Social Club,,"{'comment_id': 'nlho4sj', 'kind': 'line_count', 'show_text': 'Buena Vista', 'show': 'Buena Vista Social Club', 'perf_date': '2025-10-26', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '08:09', 'count': '0', 'count_qual': 'exact'}"
+nlho4sj,extra observation,line_count,Operation Mincemeat,,"{'comment_id': 'nlho4sj', 'kind': 'line_count', 'show_text': 'Mincemeat', 'show': 'Operation Mincemeat', 'perf_date': '2025-10-26', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '09:33', 'count': '3', 'count_qual': 'exact'}"
+nlho4sj,extra observation,line_count,Buena Vista Social Club,,"{'comment_id': 'nlho4sj', 'kind': 'line_count', 'show_text': 'Buena Vista', 'show': 'Buena Vista Social Club', 'perf_date': '2025-10-26', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '09:33', 'count': '2', 'count_qual': 'exact'}"
+nlho4sj,extra observation,line_count,Outsiders,,"{'comment_id': 'nlho4sj', 'kind': 'line_count', 'show_text': 'Outsiders', 'show': 'Outsiders', 'perf_date': '2025-10-26', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '09:33', 'count': '15', 'count_qual': 'exact'}"
+nlho4sj,extra observation,line_count,Art,,"{'comment_id': 'nlho4sj', 'kind': 'line_count', 'show_text': 'Art', 'show': 'Art', 'perf_date': '2025-10-26', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '09:33', 'count': '1', 'count_qual': 'exact'}"
+nlho4sj,extra observation,line_count,Operation Mincemeat,,"{'comment_id': 'nlho4sj', 'kind': 'line_count', 'show_text': 'Mincemeat', 'show': 'Operation Mincemeat', 'perf_date': '2025-10-26', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '10:20', 'count': '4', 'count_qual': 'exact'}"
+nlho4sj,extra observation,line_count,Buena Vista Social Club,,"{'comment_id': 'nlho4sj', 'kind': 'line_count', 'show_text': 'Buena Vista', 'show': 'Buena Vista Social Club', 'perf_date': '2025-10-26', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '10:20', 'count': '5', 'count_qual': 'exact'}"
+nlho4sj,extra observation,line_count,Outsiders,,"{'comment_id': 'nlho4sj', 'kind': 'line_count', 'show_text': 'Outsiders', 'show': 'Outsiders', 'perf_date': '2025-10-26', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'true', 'time': '10:20', 'count': '16', 'count_qual': 'approx'}"
+nlho4sj,extra observation,line_count,Art,,"{'comment_id': 'nlho4sj', 'kind': 'line_count', 'show_text': 'Art', 'show': 'Art', 'perf_date': '2025-10-26', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '10:20', 'count': '4', 'count_qual': 'exact'}"
+nn6udxg,field: rush_type,supply,,general,unknown
+nn6udxg,field: stated_count,supply,,,4
+nn6udxg,field: stated_qual,supply,,,total
+nn6udxg,field: sro_offered,supply,,,unknown
+nny8pu8,missed observation,attempt,Maybe Happy Ending,"{'comment_id': 'nny8pu8', 'thread_date': '2025-11-09', 'comment_time': '11:21', 'body': '12th in line for maybe happy ending at 11:20AM', 'kind': 'attempt', 'show_text': 'maybe happy ending', 'show': 'Maybe Happy Ending', 'perf_date': '2025-11-09', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'arrival_time': '11:20', 'line_position': '12', 'outcome': 'unknown'}",
+nny8pu8,extra observation,line_count,Maybe Happy Ending,,"{'comment_id': 'nny8pu8', 'kind': 'line_count', 'show_text': 'maybe happy ending', 'show': 'Maybe Happy Ending', 'perf_date': '2025-11-09', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'time': '11:20', 'count': '11', 'count_qual': 'exact'}"
+nq2srh2,missed observation,attempt,,"{'comment_id': 'nq2srh2', 'thread_date': '2025-11-13', 'comment_time': '14:58', 'parent_body': 'What sears you get?', 'body': 'Regular, got orchestra center, front row!', 'kind': 'attempt', 'perf_date': '2025-11-13', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'true', 'outcome': 'got_rush', 'seat': 'orchestra center, front row', 'notes': ""CHECK: show not in comment or parent; 'Regular' = regular rush (not SRO)?""}",
+nxdy2ht,field: rush_type,attempt,Just in Time,general,sro
+nxdy2ht,field: confidence,attempt,Just in Time,medium,high
+nxdy2ht,field: arrival_time,attempt,Just in Time,08:05,20:05
+nxdy2ht,field: outcome,attempt,Just in Time,sro_only,got_rush
+nxdy2ht,field: tickets,attempt,Just in Time,,1
+nxdy2ht,field: seat,attempt,Just in Time,"sro #18, usher moved them to row 3","standing room 18, 3rd row"
+nxm9x65,field: needs_context,attempt,"Oh, Mary!",true,false
+nxm9x65,field: arrival_time,attempt,"Oh, Mary!",07:54,
+nxm9x65,field: outcome,attempt,"Oh, Mary!",unknown,
+nxm9x65,extra observation,line_count,Death Becomes Her,,"{'comment_id': 'nxm9x65', 'kind': 'line_count', 'show_text': 'Death Becomes Her', 'show': 'Death Becomes Her', 'perf_date': '2026-01-03', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '07:54', 'count': '4', 'count_qual': 'exact'}"
+o9i47kk,field: rush_type,line_count,The Great Gatsby,general,unknown
+obahbnu,field: needs_context,attempt,Cats: The Jellicle Ball,true,false
+obupdbv,field: confidence,attempt,Stranger Things: The First Shadow,high,medium
+oi0r428,extra observation,line_count,The Lost Boys,,"{'comment_id': 'oi0r428', 'kind': 'line_count', 'show_text': 'Lost Boys', 'show': 'The Lost Boys', 'perf_date': '2026-04-24', 'perf': 'unknown', 'rush_type': 'unknown', 'secondhand': 'false', 'confidence': 'low', 'needs_context': 'false', 'time': '10:33', 'count_qual': 'exact'}"
+olkcssa,field: rush_type,line_count,Death of a Salesman,general,unknown
+omwmer2,field: window_time,attempt,Death Becomes Her,,10:15
+on5c153,field: perf_date,attempt,,2026-05-16,2026-05-19
+on5c153,field: perf,attempt,,matinee,unknown
+on5c153,field: confidence,attempt,,medium,high
+on5c153,field: needs_context,attempt,,false,true
+on5c153,field: arrival_time,attempt,,13:15,15:00
+on5c153,field: tickets,attempt,,,1
+on5c153,field: window_time,attempt,,,15:00
+onb7hzv,extra observation,attempt,,,"{'comment_id': 'onb7hzv', 'kind': 'attempt', 'perf_date': '2026-05-22', 'perf': 'unknown', 'rush_type': 'unknown', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'outcome': 'left'}"
+oo62hxl,field: show,line_count,The Lost Boys,the lost boys,
+oo62hxl,field: confidence,line_count,The Lost Boys,high,medium
+oo62hxl,extra observation,line_count,The Lost Boys,,"{'comment_id': 'oo62hxl', 'kind': 'line_count', 'show_text': 'The Lost Boys', 'show': 'The Lost Boys', 'perf_date': '2026-05-27', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '09:00', 'count': '30', 'count_qual': 'approx'}"
+ooknw8o,extra observation,line_count,The Lost Boys,,"{'comment_id': 'ooknw8o', 'kind': 'line_count', 'show_text': 'The Lost Boys', 'show': 'The Lost Boys', 'perf_date': '2026-05-29', 'perf': 'unknown', 'rush_type': 'unknown', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'time': '09:27', 'count': '12', 'count_qual': 'exact'}"
+or1q2jo,extra observation,line_count,"Oh, Mary!",,"{'comment_id': 'or1q2jo', 'kind': 'line_count', 'show_text': 'Oh Mary', 'show': 'Oh, Mary!', 'perf_date': '2026-06-11', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'true', 'time': '08:30', 'count': '17', 'count_qual': 'exact'}"
+or1q2jo,extra observation,line_count,"Oh, Mary!",,"{'comment_id': 'or1q2jo', 'kind': 'line_count', 'show_text': 'Oh Mary', 'show': 'Oh, Mary!', 'perf_date': '2026-06-11', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'low', 'needs_context': 'true', 'time': '09:41', 'count': '31', 'count_qual': 'exact'}"
+owvwmgf,field: show,line_count,Cats: The Jellicle Ball,cats: the jellicle ball,cat on a hot tin roof
+owvwmgf,field: confidence,line_count,Cats: The Jellicle Ball,high,medium
+ox3fzqj,field: rush_type,line_count,,general,unknown
+ox3fzqj,field: count,line_count,,6,4
+ox3fzqj,field: count_qual,line_count,,approx,exact
+p6n60wa,missed observation,attempt,Buena Vista Social Club,"{'comment_id': 'p6n60wa', 'thread_date': '2026-08-29', 'comment_time': '13:21', 'parent_body': 'Anyone know where Buena Vista Rush tickets are located? ', 'body': 'I got partial view in the orchestra when I rushed last week. It was the last seat on the left of row F I think. I couldn’t see anything that was staged on the balcony.\xa0', 'kind': 'attempt', 'show_text': 'Buena Vista (parent)', 'show': 'Buena Vista Social Club', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'true', 'outcome': 'got_rush', 'seat': 'partial view orchestra, row F far left', 'notes': ""'last week' - exact date unknown""}",
+pgp1hbw,field: needs_context,attempt,,true,false
+pgp1hbw,field: needs_context,line_count,,true,false
+pgp1hbw,field: needs_context,line_count,,true,false
+pgp1hbw,field: time,line_count,,,09:30

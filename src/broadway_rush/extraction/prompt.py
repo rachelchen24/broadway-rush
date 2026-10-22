@@ -73,8 +73,22 @@ no stated_count.
 - cast_note: cast information relevant to demand ("Audra is out").
 
 Fill only the fields that belong to the observation's kind (plus the shared ones) and leave \
-everything else out. Times are always "HH:MM" strings. Return every comment_id you were given, in \
-order, each with its observations list.
+everything else out. Times are always "HH:MM" strings.
+
+## Output
+Reply with only a JSON object, no other text. Include every comment_id you were given, in order, \
+each with its observations list (empty for comments with nothing to record). Example:
+{"comments": [
+  {"comment_id": "abc123", "observations": []},
+  {"comment_id": "def456", "observations": [
+    {"kind": "attempt", "show_text": "Gypsy", "show": "Gypsy", "perf_date": "2025-07-03", "perf": "unknown",
+     "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false,
+     "arrival_time": "09:25", "line_position": 6, "outcome": "unknown"},
+    {"kind": "line_count", "show_text": "DBH", "show": "Death Becomes Her", "perf_date": "2025-07-03",
+     "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high",
+     "needs_context": false, "time": "09:20", "count": 12, "count_qual": "exact"}
+  ]}
+]}
 """
 
 _S = {"type": "string"}

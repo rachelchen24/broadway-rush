@@ -22,7 +22,7 @@ import anthropic
 import pandas as pd
 from dotenv import load_dotenv
 
-from broadway_rush.extraction.prompt import OUTPUT_SCHEMA, SYSTEM_PROMPT, render_comments
+from broadway_rush.extraction.prompt import OBSERVATION_FIELDS, SYSTEM_PROMPT, render_comments
 
 ROOT = Path(__file__).resolve().parents[3]
 COMMENTS_CSV = ROOT / "data" / "raw" / "comments.csv"
@@ -39,6 +39,7 @@ PRICE = {"input": 0.10e-6, "cache_write": 0.125e-6, "cache_read": 0.01e-6, "outp
 HARD_STOP_USD = 8.00            # project-wide, across every run in the ledger (raised from $4 on 2026-10-22: $10 of credits, $8 allowed)
 PILOT_CAP_USD = 0.25            # per pilot run
 
+TIME_FIELDS = {"time", "arrival_time", "window_time", "sold_out_time"}
 SKIP_BODIES = {"[deleted]", "[removed]", ""}
 # Cheap pre-filter for the full run: comments with no digit and no rush-ish word are almost never reports
 PREFILTER_RE = re.compile(r"\d|\b(?:line|sold out|sro|standing|rush|got|left|nobody|no one|empty)\b",
@@ -97,18 +98,62 @@ def request_params(rows: list[dict], thinking: str) -> dict:
         # cache the shared instructions; every chunk reuses them
         system=[{"type": "text", "text": SYSTEM_PROMPT, "cache_control": {"type": "ephemeral"}}],
         messages=[{"role": "user", "content": render_comments(rows)}],
-        output_config={"effort": "low", "format": {"type": "json_schema", "schema": OUTPUT_SCHEMA}},
+        # No output_config.format: our 25-field schema is over the structured-outputs complexity limits,
+        # so the prompt describes the JSON and validate() checks it against OUTPUT_SCHEMA instead.
+        output_config={"effort": "low"},
     )
     if thinking == "off":
         params["thinking"] = {"type": "disabled"}  # allowed on Haiku 5.5 at effort low/medium/high
     return params
 
 
-def parse_response(msg) -> dict[str, list[dict]]:
+class BadOutput(Exception):
+    pass
+
+
+def validate(obs: dict, stats: dict) -> dict | None:
+    """Keep known fields with valid values; drop the rest (counted in stats). None if `kind` is bad."""
+    if obs.get("kind") not in OBSERVATION_FIELDS["kind"]["enum"]:
+        stats["bad_kind"] += 1
+        return None
+    py_types = {"string": str, "integer": int, "boolean": bool}
+    out = {}
+    for k, v in obs.items():
+        spec = OBSERVATION_FIELDS.get(k)
+        if spec is None:
+            stats["unknown_field"] += 1
+            continue
+        if v is None or v == "":
+            continue
+        t = py_types[spec["type"]]
+        if t is int and isinstance(v, str) and v.isdigit():
+            v = int(v)
+        ok = isinstance(v, t) and not (t is int and isinstance(v, bool))
+        if ok and "enum" in spec:
+            ok = v in spec["enum"]
+        if ok and k in TIME_FIELDS:
+            m = re.fullmatch(r"(\d{1,2}):(\d{2})", v)
+            ok = bool(m) and int(m[1]) < 24 and int(m[2]) < 60
+            v = f"{int(m[1]):02d}:{m[2]}" if ok else v  # "8:45" -> "08:45"
+        if ok:
+            out[k] = v
+        else:
+            stats["bad_value"] += 1
+    return out
+
+
+def parse_response(msg, stats: dict) -> dict[str, list[dict]]:
     if msg.stop_reason != "end_turn":
-        raise RuntimeError(f"stop_reason={msg.stop_reason} {getattr(msg, 'stop_details', None)}")
-    text = next(b.text for b in msg.content if b.type == "text")
-    return {c["comment_id"]: c["observations"] for c in json.loads(text)["comments"]}
+        raise BadOutput(f"stop_reason={msg.stop_reason} {getattr(msg, 'stop_details', None)}")
+    text = next((b.text for b in msg.content if b.type == "text"), "")
+    start, end = text.find("{"), text.rfind("}")  # tolerate a ```json fence or stray text around the object
+    try:
+        data = json.loads(text[start:end + 1])
+        comments = data["comments"]
+        return {c["comment_id"]: [o for o in (validate(o, stats) for o in c["observations"]) if o is not None]
+                for c in comments}
+    except (ValueError, KeyError, TypeError) as e:
+        raise BadOutput(f"unparseable JSON: {e}; starts {text[:120]!r}") from e
 
 
 def flatten(comment_ids: list[str], extracted: dict[str, list[dict]]) -> list[dict]:
@@ -142,33 +187,40 @@ def pilot(args):
         sys.exit(f"hard stop: ${before:.2f} already spent (limit ${HARD_STOP_USD:.2f})")
 
     client = anthropic.Anthropic(max_retries=4)
-    extracted, usages, run_usd, t0 = {}, [], 0.0, time.monotonic()
+    extracted, run_usd, done, t0 = {}, 0.0, 0, time.monotonic()
+    stats = {"bad_kind": 0, "unknown_field": 0, "bad_value": 0, "retries": 0, "failed_chunks": 0}
+    n_chunks = -(-len(rows) // CHUNK)
     for start in range(0, len(rows), CHUNK):
-        if run_usd >= PILOT_CAP_USD or before + run_usd >= HARD_STOP_USD:
-            print(f"stopping: run spend ${run_usd:.4f} hit a cap")
-            break
         chunk = rows[start:start + CHUNK]
-        msg = client.messages.create(**request_params(chunk, args.thinking))
-        usd = call_cost(msg.usage)
-        run_usd += usd
-        record(f"pilot:{tag}", msg.usage, usd, len(chunk))
-        usages.append(msg.usage)
-        try:
-            extracted.update(parse_response(msg))
-        except (RuntimeError, json.JSONDecodeError, StopIteration) as e:
-            print(f"  chunk {start // CHUNK}: {e}")
-        print(f"  chunk {start // CHUNK + 1}/{-(-len(rows) // CHUNK)}: in {msg.usage.input_tokens} "
-              f"cache_r {msg.usage.cache_read_input_tokens or 0} cache_w {msg.usage.cache_creation_input_tokens or 0} "
-              f"out {msg.usage.output_tokens} ${usd:.4f}")
+        for attempt in (1, 2):  # one retry if the reply isn't usable JSON
+            if run_usd >= PILOT_CAP_USD or before + run_usd >= HARD_STOP_USD:
+                print(f"stopping: run spend ${run_usd:.4f} hit a cap")
+                break
+            msg = client.messages.create(**request_params(chunk, args.thinking))
+            usd = call_cost(msg.usage)
+            run_usd += usd
+            record(f"pilot:{tag}", msg.usage, usd, len(chunk) if attempt == 1 else 0)
+            print(f"  chunk {start // CHUNK + 1}/{n_chunks}: in {msg.usage.input_tokens} "
+                  f"cache_r {msg.usage.cache_read_input_tokens or 0} cache_w {msg.usage.cache_creation_input_tokens or 0} "
+                  f"out {msg.usage.output_tokens} ${usd:.4f}")
+            try:
+                extracted.update(parse_response(msg, stats))
+                break
+            except BadOutput as e:
+                print(f"    bad output (attempt {attempt}): {e}")
+                stats["retries" if attempt == 1 else "failed_chunks"] += 1
+        if run_usd >= PILOT_CAP_USD or before + run_usd >= HARD_STOP_USD:
+            break
+        done += len(chunk)
 
     out = INTERIM / f"pilot_{tag}.csv"
     pd.DataFrame(flatten(ids, extracted), columns=LABEL_COLS).fillna("").to_csv(out, index=False)
-    done = sum(u is not None for u in usages) * CHUNK
     print(f"\nwrote {out}")
-    print(f"pilot spend ${run_usd:.4f} for {min(done, len(rows))} comments in {time.monotonic() - t0:.0f}s "
+    print(f"output checks: {stats}")
+    print(f"pilot spend ${run_usd:.4f} for {done} comments in {time.monotonic() - t0:.0f}s "
           f"(project total ${before + run_usd:.4f} of ${HARD_STOP_USD:.2f} hard stop)")
     if done:
-        project(per_comment_usd=run_usd / min(done, len(rows)))
+        project(per_comment_usd=run_usd / done)
 
 
 def project(per_comment_usd: float | None = None, args=None):
