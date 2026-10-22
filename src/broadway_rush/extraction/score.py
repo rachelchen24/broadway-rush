@@ -38,8 +38,13 @@ def minutes(v) -> int | None:
     return int(m[1]) * 60 + int(m[2]) if m else None
 
 
+BOOL_FIELDS = {"secondhand", "needs_context", "late_release"}
+
+
 def same(field: str, g, p) -> bool:
     g, p = norm(g), norm(p)
+    # "unknown" and a blank mean the same thing (not stated); so do "false" and blank for flags
+    g, p = ("" if v == "unknown" or (field in BOOL_FIELDS and v == "false") else v for v in (g, p))
     if not g and not p:
         return True
     if field in TIME_FIELDS:

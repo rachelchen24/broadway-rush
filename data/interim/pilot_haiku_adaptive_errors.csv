@@ -99,12 +99,8 @@ mytg2bb,missed observation,attempt,Just in Time,"{'comment_id': 'mytg2bb', 'kind
 myz3opu,extra observation,attempt,Sunset Boulevard,,"{'comment_id': 'myz3opu', 'kind': 'attempt', 'show_text': 'Sunset', 'show': 'Sunset Boulevard', 'perf_date': '2025-06-20', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'high', 'needs_context': 'false', 'arrival_time': '06:15', 'line_position': '10', 'outcome': 'unknown'}"
 myz3opu,extra observation,line_count,Sunset Boulevard,,"{'comment_id': 'myz3opu', 'kind': 'line_count', 'show_text': 'Sunset', 'show': 'Sunset Boulevard', 'perf_date': '2025-06-20', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'medium', 'needs_context': 'true', 'time': '04:30', 'count': '1', 'count_qual': 'exact'}"
 mz6hsm3,field: rush_type,supply,,general,unknown
-mz6hsm3,field: sro_offered,supply,,,unknown
-mz6hsm3,field: late_release,supply,,,false
 mz6hsm3,field: rush_type,line_count,,general,unknown
 mz6hsm3,field: confidence,line_count,,high,medium
-mzpo3qm,field: sro_offered,supply,Real Women Have Curves,,unknown
-mzpo3qm,field: late_release,supply,Real Women Have Curves,,false
 mzwdhqr,field: rush_type,attempt,Dead Outlaw,general,unknown
 mzwdhqr,field: rush_type,line_count,Dead Outlaw,general,unknown
 mzwdhqr,field: rush_type,line_count,Dead Outlaw,general,unknown
@@ -123,8 +119,6 @@ n6j1r7v,field: rush_type,attempt,Mamma Mia!,general,unknown
 n6j1r7v,field: rush_type,line_count,Mamma Mia!,general,unknown
 n6j1r7v,field: perf,supply,Mamma Mia!,unknown,evening
 n6j1r7v,field: rush_type,supply,Mamma Mia!,general,unknown
-n6j1r7v,field: sro_offered,supply,Mamma Mia!,,unknown
-n6j1r7v,field: late_release,supply,Mamma Mia!,,false
 n7mgmrw,field: confidence,attempt,Gypsy,medium,high
 n7mgmrw,field: outcome,attempt,Gypsy,unknown,got_rush
 n7mgmrw,field: tickets,attempt,Gypsy,,1
@@ -147,8 +141,6 @@ nep1ihh,field: rush_type,line_count,Buena Vista Social Club,general,unknown
 niykrsj,field: perf,supply,Beetlejuice,unknown,evening
 niykrsj,field: needs_context,supply,Beetlejuice,true,false
 niykrsj,field: time,supply,Beetlejuice,11:30,
-niykrsj,field: sro_offered,supply,Beetlejuice,,unknown
-niykrsj,field: late_release,supply,Beetlejuice,,false
 niykrsj,missed observation,attempt,Beetlejuice,"{'comment_id': 'niykrsj', 'thread_date': '2025-10-11', 'comment_time': '12:16', 'parent_body': 'Anyone rushing Beetlejuice and could tell me what seats they give? Thanks.', 'body': 'i got there at 11:30 today, no line, they had tickets for the matinee and evening performance. not partial view either which is great, i think it was $49 matinee and $59 evening? i might be wrong there on price but something like that. the screen inside said lydia was being performed by understudy not elizabeth as well.', 'kind': 'attempt', 'show_text': 'Beetlejuice', 'show': 'Beetlejuice', 'perf_date': '2025-10-11', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'arrival_time': '11:30', 'line_position': '1', 'outcome': 'unknown', 'cast_note': 'Lydia played by understudy', 'notes': ""show name only in parent -> needs_context. Didn't say if they bought. Prices $49 mat / $59 eve (unsure)""}",
 niykrsj,extra observation,line_count,Beetlejuice,,"{'comment_id': 'niykrsj', 'kind': 'line_count', 'show_text': 'Beetlejuice', 'show': 'Beetlejuice', 'perf_date': '2025-10-11', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'time': '11:30', 'count': '0', 'count_qual': 'exact'}"
 niykrsj,extra observation,supply,Beetlejuice,,"{'comment_id': 'niykrsj', 'kind': 'supply', 'show_text': 'Beetlejuice', 'show': 'Beetlejuice', 'perf_date': '2025-10-11', 'perf': 'matinee', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'stated_qual': 'remaining', 'sro_offered': 'unknown', 'late_release': 'false'}"
@@ -156,8 +148,6 @@ nn6udxg,field: rush_type,supply,,general,unknown
 nn6udxg,field: secondhand,supply,,false,true
 nn6udxg,field: confidence,supply,,low,medium
 nn6udxg,field: stated_qual,supply,,,remaining
-nn6udxg,field: sro_offered,supply,,,unknown
-nn6udxg,field: late_release,supply,,,false
 nny8pu8,field: rush_type,attempt,Maybe Happy Ending,general,unknown
 nq2srh2,missed observation,attempt,,"{'comment_id': 'nq2srh2', 'thread_date': '2025-11-13', 'comment_time': '14:58', 'parent_body': 'What sears you get?', 'body': 'Regular, got orchestra center, front row!', 'kind': 'attempt', 'perf_date': '2025-11-13', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'true', 'outcome': 'got_rush', 'seat': 'orchestra center, front row', 'notes': ""CHECK: show not in comment or parent; 'Regular' = regular rush (not SRO)?""}",
 nxdy2ht,field: rush_type,attempt,Just in Time,general,sro

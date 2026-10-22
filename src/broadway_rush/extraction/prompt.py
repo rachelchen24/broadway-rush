@@ -30,8 +30,13 @@ line_count whose count is that person's place in line (1 and 2 here).
 - "now", or a count with no time, means the comment's posting time.
 - "Evening sold out at the 17th person (arrived 9am)" is a secondhand attempt: arrival 09:00, \
 line_position 17, outcome sold_out_before_me.
-- A reply only gets observations for what IT says. Data that appears only in the parent comment \
-belongs to the parent, not to this comment; a reply that just asks a question or says thanks has none.
+- IMPORTANT: extract only what the comment's own <body> reports. The <parent> is context for \
+reading the body (which show, which time), never a source of observations: the parent is a \
+separate comment that gets extracted on its own. A reply that thanks someone, reacts, or asks a \
+question has no observations, even if the parent is full of data. Questions ("only 5 people for \
+the outsiders?"), opinions, and vague impressions ("the bulk of people got there at 7:30") are \
+not observations either.
+- When you use the parent to fill a field (usually the show), set needs_context true.
 - The comment may be about a different day than the thread (posted after midnight, "yesterday", \
 "I'm here on 3/19"); set perf_date to the day it describes.
 
@@ -45,7 +50,8 @@ Happy Ending, JPitV -> John Proctor is the Villain). "" if unsure.
 "Saturday", etc.
 - perf: matinee / evening / unknown. Only if stated or obvious ("for the 2pm show").
 - rush_type: general (in-person box office rush) / digital (app rush, e.g. TodayTix) / \
-student / sro (standing room) / lottery / other / unknown.
+student / sro (standing room) / lottery / other / unknown. These threads are about in-person \
+rush, so a line or box office visit is general unless the comment says student, SRO, digital, etc.
 - secondhand: true if the writer reports what someone else saw or said ("from a friend", \
 "1st in line said he got there a little after 5").
 - confidence: high / medium / low. low for jokes, sarcasm, heavy hedging ("12th-ish... I think").
@@ -59,7 +65,7 @@ student / sro (standing room) / lottery / other / unknown.
 - line_position (attempt): their place as written ("4th" -> 4, "#6" -> 6). Count PEOPLE, not \
 parties, unless the text explicitly counts parties or groups.
 - outcome (attempt): got_rush / sro_only / full_price_only / sold_out_before_me / left / unknown.
-- tickets (attempt): number of tickets bought.
+- tickets (attempt): number of tickets bought, only if the comment gives it ("a single seat", "2 tickets").
 - seat (attempt): seat description as written ("balcony", "orch J 9&11").
 - window_time (attempt): HH:MM when they reached the box office window.
 - stated_count (supply): number of rush tickets stated.
@@ -68,8 +74,9 @@ If rush tickets were still available at a time but no number is given ("they had
 the matinee and evening"), record a supply observation with stated_qual remaining and \
 no stated_count.
 - sold_out_time (supply): HH:MM when rush ran out.
-- sro_offered: yes / no / unknown.
-- late_release: true if tickets were released or offered later in the day ("come back later").
+- sro_offered: yes / no. Only when the comment talks about standing room.
+- late_release: true if tickets were released or offered later in the day ("come back later"); \
+otherwise leave it out.
 - cast_note: cast information relevant to demand ("Audra is out").
 
 Fill only the fields that belong to the observation's kind (plus the shared ones) and leave \
