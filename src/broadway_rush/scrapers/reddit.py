@@ -23,6 +23,7 @@ ET = ZoneInfo("America/New_York")
 START_UTC = int(datetime(2024, 6, 1, tzinfo=ET).timestamp())
 RECENT_SECONDS = 72 * 3600      # threads younger than this are re-fetched on the next run
 SAVE_EVERY = 10                 # pages between posts.csv / cursor checkpoints
+MAX_FAILED_IN_A_ROW = 5       # consecutive posts that fail before the comments phase stops
 
 # Title search on the archive is unreliable (keeps returning "Timeout"), so we scan each
 # subreddit by date and match keywords locally in title + body.
@@ -236,7 +237,7 @@ def scrape_comments(client: PoliteClient):
 
     new_comments_file = not COMMENTS_CSV.exists()
     new_done_file = not DONE_CSV.exists()
-    t0, added = time.monotonic(), 0
+    t0, added, failed = time.monotonic(), 0, []
     with COMMENTS_CSV.open("a", encoding="utf-8", newline="") as cf, DONE_CSV.open("a", encoding="utf-8", newline="") as df:
         cw = csv.DictWriter(cf, fieldnames=COMMENT_COLS)
         dw = csv.DictWriter(df, fieldnames=["post_id", "n_comments", "scraped_at"])
@@ -245,9 +246,21 @@ def scrape_comments(client: PoliteClient):
         if new_done_file:
             dw.writeheader()
 
+        failed_in_a_row = 0
         for i, p in enumerate(todo, 1):
-            comments = _fetch_all(client, "comments/search", {"link_id": p["post_id"], "fields": COMMENT_FIELDS},
-                                 int(p["created_utc"]) - 1)
+            try:
+                comments = _fetch_all(client, "comments/search", {"link_id": p["post_id"], "fields": COMMENT_FIELDS},
+                                     int(p["created_utc"]) - 1)
+                failed_in_a_row = 0
+            except RuntimeError as e:
+                # skip this post (not marked done, so the next run retries it); several in a row = archive is down
+                failed_in_a_row += 1
+                failed.append(p["post_id"])
+                log.error("skipping post %s: %s", p["post_id"], e)
+                if failed_in_a_row >= MAX_FAILED_IN_A_ROW:
+                    log.error("%d posts failed in a row; stopping. Rerun later to resume.", failed_in_a_row)
+                    break
+                continue
             for c in comments:
                 if c["id"] in have:
                     continue
@@ -268,7 +281,8 @@ def scrape_comments(client: PoliteClient):
                 rate = (time.monotonic() - t0) / i
                 log.info("%d/%d posts, +%d comments, ~%.0f min left", i, len(todo), added,
                          rate * (len(todo) - i) / 60)
-    log.info("done: +%d comments, %d requests", added, client.n_requests)
+    log.info("done: +%d comments, %d requests, %d posts skipped (rerun to retry them): %s",
+             added, client.n_requests, len(failed), ",".join(failed[:20]))
 
 
 # ---------- summary ----------

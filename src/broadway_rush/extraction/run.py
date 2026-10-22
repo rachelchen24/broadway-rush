@@ -36,7 +36,7 @@ MAX_TOKENS = 16000              # thinking counts toward this
 # USD per token, Haiku 5.5 (prompts <=100K tokens): input $0.10/M, output $0.50/M;
 # cache writes 1.25x input, cache reads 0.1x input; Batches API halves everything.
 PRICE = {"input": 0.10e-6, "cache_write": 0.125e-6, "cache_read": 0.01e-6, "output": 0.50e-6}
-HARD_STOP_USD = 4.00            # project-wide, across every run in the ledger
+HARD_STOP_USD = 8.00            # project-wide, across every run in the ledger (raised from $4 on 2026-10-22: $10 of credits, $8 allowed)
 PILOT_CAP_USD = 0.25            # per pilot run
 
 SKIP_BODIES = {"[deleted]", "[removed]", ""}

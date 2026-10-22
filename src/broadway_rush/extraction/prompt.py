@@ -26,7 +26,7 @@ opened." -> an attempt (Gypsy, arrival 09:25, position 6) and a line_count (Gyps
 line_count that just restates their own position at their own arrival time.
 - Someone else's arrival ("first at 7:30", "the two ahead of me got there at 7:30") is a \
 line_count whose count is that person's place in line (1 and 2 here).
-- "N in line when the box office opened" is a line_count with time null.
+- "N in line when the box office opened" is a line_count with no time.
 - "now", or a count with no time, means the comment's posting time.
 - "Evening sold out at the 17th person (arrived 9am)" is a secondhand attempt: arrival 09:00, \
 line_position 17, outcome sold_out_before_me.
@@ -35,11 +35,12 @@ belongs to the parent, not to this comment; a reply that just asks a question or
 - The comment may be about a different day than the thread (posted after midnight, "yesterday", \
 "I'm here on 3/19"); set perf_date to the day it describes.
 
-## Fields (use null when the comment doesn't say; never guess)
+## Fields (leave a field out when the comment doesn't say it; never guess)
 - show_text: the show as written ("DBH", "the Imperial", "r+j").
 - show: the full show title. Expand nicknames/abbreviations and theater names when you are \
 confident which show was playing there on that date (DBH -> Death Becomes Her, MHE -> Maybe \
-Happy Ending, JPitV -> John Proctor is the Villain). null if unsure.
+Happy Ending, JPitV -> John Proctor is the Villain). "" if unsure.
+- show_text and show are always present; use "" when the comment names no show.
 - perf_date: YYYY-MM-DD. Default to the thread date; shift it for "yesterday", "tomorrow", \
 "Saturday", etc.
 - perf: matinee / evening / unknown. Only if stated or obvious ("for the 2pm show").
@@ -50,7 +51,7 @@ student / sro (standing room) / lottery / other / unknown.
 - confidence: high / medium / low. low for jokes, sarcasm, heavy hedging ("12th-ish... I think").
 - needs_context: true if the observation only makes sense with the parent comment.
 - time: HH:MM, 24-hour ET, when the line_count or supply statement applied. "around 8" -> \
-"08:00". For "by the time the box office opened", use the opening time if stated, else null.
+"08:00". For "by the time the box office opened", use the opening time if stated, else leave time out.
 - count (line_count): number of people. "6/7" or "5 or 6" -> 5 with count_qual approx; \
 "50+" -> 50 at_least; "a couple dozen" -> 24 approx; "no line" -> 0 exact.
 - count_qual: exact / approx / at_least / at_most.
@@ -65,24 +66,24 @@ parties, unless the text explicitly counts parties or groups.
 - stated_qual (supply): total (the day's whole rush allotment) / remaining (left at that time). \
 If rush tickets were still available at a time but no number is given ("they had tickets for \
 the matinee and evening"), record a supply observation with stated_qual remaining and \
-stated_count null.
+no stated_count.
 - sold_out_time (supply): HH:MM when rush ran out.
 - sro_offered: yes / no / unknown.
 - late_release: true if tickets were released or offered later in the day ("come back later").
-- cast_note: cast information relevant to demand ("Audra is out"), else null.
+- cast_note: cast information relevant to demand ("Audra is out").
 
-Fill only the fields that belong to the observation's kind (plus the shared ones); set the \
-others to null. Times are always "HH:MM" strings. Return every comment_id you were given, in \
+Fill only the fields that belong to the observation's kind (plus the shared ones) and leave \
+everything else out. Times are always "HH:MM" strings. Return every comment_id you were given, in \
 order, each with its observations list.
 """
 
-_S = {"type": ["string", "null"]}
-_I = {"type": ["integer", "null"]}
-_B = {"type": ["boolean", "null"]}
+_S = {"type": "string"}
+_I = {"type": "integer"}
+_B = {"type": "boolean"}
 
 
 def _enum(*values: str) -> dict:
-    return {"anyOf": [{"type": "string", "enum": list(values)}, {"type": "null"}]}
+    return {"type": "string", "enum": list(values)}
 
 
 OBSERVATION_FIELDS = {
@@ -103,6 +104,9 @@ OBSERVATION_FIELDS = {
     "late_release": _B, "cast_note": _S,
 }
 
+SHARED_FIELDS = ["kind", "show_text", "show", "perf_date", "perf", "rush_type", "secondhand", "confidence",
+                 "needs_context"]
+
 OUTPUT_SCHEMA = {
     "type": "object",
     "properties": {
@@ -117,7 +121,9 @@ OUTPUT_SCHEMA = {
                         "items": {
                             "type": "object",
                             "properties": OBSERVATION_FIELDS,
-                            "required": list(OBSERVATION_FIELDS),
+                            # shared fields always present (the API caps optional fields); kind-specific ones
+                            # are optional and omitted when not stated
+                            "required": SHARED_FIELDS,
                             "additionalProperties": False,
                         },
                     },
