@@ -134,7 +134,8 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 
 ## ▶ Open items (as of 2026-10-22, after the top-up extraction)
 1. **Steps 1–3 are done.** The Reddit scrape is complete and all comments are extracted except 10 (1 failed request; `batch full` retries it).
-2. **Step 4 in progress.** Done: source check (4a), grosses backfill from Playbill + BroadwayWorld and today's rush policies (4b), show catalog + show-name mapping (4c, 97% of named reports mapped). Left: policy history from archived copies (Internet Archive; check its terms first). Weekly refresh: `.venv\Scripts\python -m broadway_rush.scrapers.playbill grosses`, `... playbill policies`, `... broadwayworld grosses`, then `... broadway_rush.catalog build`. After any `batch reports`, re-run `catalog build` (it adds show_id to reports.csv).
+2. **Step 4 done** (4a source check, 4b grosses + policies, 4c show catalog, 4d policy history + website scope decision). Weekly refresh: `.venv\Scripts\python -m broadway_rush.scrapers.playbill grosses`, `... playbill policies`, `... broadwayworld grosses`, then `.venv\Scripts\python -m broadway_rush.catalog build`. After any `batch reports`, re-run `catalog build` (it adds show_id to reports.csv). **Step 5 (baseline model) waits for Rachel's go-ahead.**
+2b. **Step 6 started early** (ticket-site rules + TKTS scraper; see the step 6 entry). Waiting on Rachel: Ticketmaster API key, and Task Scheduler vs. GitHub Actions for the daily run. Then Ticketmaster scraper, scheduling, then step 5 (model).
 3. **Notes for future sessions:**
    - LLM spend ledger: `data/interim/llm_spend.csv`; hard stop $8, $1.47 spent.
    - To refresh Reddit later: `.venv\Scripts\python -m broadway_rush.scrapers.reddit posts`, then `comments` (resumable; run one copy at a time), then `batch full` → `collect` → `reports`.
@@ -253,4 +254,42 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 - The reason: **shows without in-person rush/SRO get almost no reports** (39 shows, median 0.05/week) vs. 2.3/week for shows with it. Reddit's rush threads are about the in-person line.
 - **Among in-person-rush shows the idea holds:** the 10 quietest (<0.5 reports/week) average 84.5% capacity vs. 94% for the most discussed.
 
-**Next:** decide the website scope (which shows get full predictions), then step 5 (baseline model).
+**Decision (Rachel, 2026-10-22):** three groups. (1) in-person rush + enough data → full prediction; (2) in-person rush, little data → "limited data, probably easy" + policy + % capacity; (3) no in-person rush → lottery/digital info only. Recorded in SPEC §8.
+
+**Next:** step 5 (baseline model), after Rachel's go-ahead.
+
+---
+
+## Step 6 (moved up): ticket-site rules check + TKTS scraper (2026-10-22)
+
+**Why now:** ticket sites only show current inventory and prices, with no history (SPEC §3.2). Every day without snapshots is data we can't get back, so the snapshot scrapers move ahead of the model. Rachel asked me to check the rules first, then decide now vs. later.
+
+**Rules check (robots.txt + terms for 11 sites; all logged in `registry/sources.csv`):**
+| Site | Decision | Why |
+|---|---|---|
+| TKTS (tdf.org live board) | **scrape** | robots allows; no terms page (privacy policy only); 1 request per snapshot |
+| Ticketmaster | **API only** (Rachel gets a free key) | website ToU bans automated access; the Discovery API is allowed (5,000 calls/day, 5 req/s); events/dates/price ranges, no seat counts |
+| TodayTix | **hold** | ToU bans automated downloading, but its `/llms.txt` agent guide offers a read-only MCP server (`/mcp`: performances, availability, all-in seat prices) for helping a customer. Fits a user-initiated refresh better than a daily dataset; ask TodayTix before any scheduled use |
+| Telecharge, Broadway Direct, Lucky Seat, SeatGeek (site + API) | skip | 403 even on robots.txt = bot protection; we never bypass it |
+| StubHub, TickPick | skip | terms explicitly ban robots/scrapers |
+| Vivid Seats, Gametime | skip | terms unreadable / listing pages disallowed in robots.txt |
+
+**Implication:** there is no legal resale-price source. Price signals come from the weekly grosses (avg/top ticket), TKTS discounts, and Ticketmaster price ranges once we have a key.
+
+**Built:** `broadway_rush/scrapers/tkts.py`
+- `live`: today's board, cached as `data/raw/tkts/<UTC>-live.html`.
+- `history`: Internet Archive day-captures since June 2024 (CDX), cached as `<UTC>.html`.
+- `parse`: re-parse only.
+- Output `data/raw/tkts.csv`: snapshot time (UTC + ET), booth (times-square / lincoln-center), section (`broadway` / `off_broadway` / `next_day_*`), board "Updated" time, show, TDF URL, % off, price min/max, performance time.
+- Two page layouts: the 2026+ `div.tkts__grid` lists, and the older `div#<Booth>-<section>` tables (cells in varying order, some captures titles only), so each cell is recognized by content.
+
+**Result:**
+- Live board today: 54 rows (21 Broadway shows per booth).
+- History: 145 archived days fetched (146 requests, 5 s apart, ~13 min); **117 days with a board, 2024-06-12 → 2026-10-22, ~22 Broadway shows per board**; 54 days also have % off + prices. 9,083 rows total.
+- Caveats: archive captures happen at random hours (some at night, showing that day's or the next day's board); coverage is uneven (1–9 days/month, thin in early 2026). Good for a "share of days on TKTS" feature, not a daily one, until our own snapshots build up.
+
+**Didn't work (fixed):** the first parse only read the 2026 layout (18 of 145 days); added the table-layout parser and normalized the section names.
+
+**Waiting on Rachel:**
+1. A Ticketmaster Discovery API key (developer.ticketmaster.com, free), saved in `.env` as `TICKETMASTER_API_KEY`.
+2. How to run snapshots daily: Windows Task Scheduler on the laptop, or GitHub Actions (repo on GitHub).

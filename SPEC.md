@@ -151,6 +151,7 @@ A dataset of **every show playing and every performance** for the next 7 days, p
   - **Discount:** TodayTix (lowest price, discounts, "selling fast"), **TKTS** same-day board (on TKTS = soft demand).
   - **APIs first:** SeatGeek has a public developer API that includes per-event listing counts and prices; Ticketmaster Discovery includes price ranges. Prefer these over scraping.
 - **History problem:** snapshot prices only exist from when collection starts. Before that, use **average paid admission and top ticket price from weekly grosses (§3.3)**, which go back to June 2024.
+- **Rules check (2026-10-22, `registry/sources.csv`):** every resale site is out. StubHub and TickPick ban scrapers in their terms; SeatGeek, Vivid Seats and Gametime are blocked or disallowed. Telecharge, Broadway Direct and Lucky Seat block bots. **Usable:** TKTS board (scraped: `scrapers/tkts.py`, plus 117 archived days since June 2024), Ticketmaster Discovery API (needs a free key), TodayTix MCP (on hold: terms vs. agent guide; at most for user-initiated refresh). So price history = weekly grosses + TKTS discounts + Ticketmaster price ranges.
 - **Features:** `price_vs_show_median`, `price_percentile_in_show_history`, `days_since_price_low`, `resale_listing_count_change_7d`, `on_tkts_today`.
 
 ### 3.9 NYC context ("what's going on in the city")
@@ -377,7 +378,11 @@ Also include: a **feature-importance / ablation table** (what happens to accurac
 - **LLM:** Claude Haiku 5.5, **$8 total budget** (§5.5; raised from $5 on 2026-10-22).
 - **Labels:** one row per observation (`line_count` / `attempt` / `supply` / `none`), per `docs/labeling-schema.md`. The 100-comment answer key and the 50-comment held-out set were pre-labeled by Claude and reviewed by Rachel ("human-reviewed labels").
 - **Stack so far:** Python 3.14 venv, package in `src/broadway_rush/`, data in `data/` (`raw/` and `labels/` git-ignored), source registry in `registry/sources.csv`. Rachel handles all git commits.
-- **Build order:** 1 Reddit → CSV ✅ · 2 labels + Haiku pilot ✅ · 3 full extraction ✅ (top-up pending) · 4 grosses + rush policies + show catalog · 5 baseline model + results table · 6 daily snapshot scrapers · 7 website. Don't skip ahead without asking.
+- **Which shows get predictions (2026-10-22), three groups, decided per show and per date from the policy history:**
+  1. **In-person rush + enough data** (≥2 daily-thread reports per running week; ~11 shows now): full prediction (tickets, range, arrival time).
+  2. **In-person rush, little data** (~5 now: Chicago, Six, Hadestown SRO, & Juliet, Wicked): no number; "limited data, probably easy" plus the policy and recent % capacity. (Quiet in-person shows run ~84% full vs. 94% for busy ones; `process.md` step 4d.)
+  3. **No in-person rush** (lottery / digital only, e.g. Hamilton, Lion King, Book of Mormon): listed with lottery and digital-rush info only, no line prediction. Few Reddit posts here does *not* mean low demand: these shows are 94–99% full.
+- **Build order:** 1 Reddit → CSV ✅ · 2 labels + Haiku pilot ✅ · 3 full extraction ✅ · 4 grosses + rush policies + show catalog ✅ · 5 baseline model + results table · 6 daily snapshot scrapers · 7 website. Don't skip ahead without asking.
 - **Accuracy page:** yes (§2.6).
 - **Docs:** `SPEC.md` (this file), `process.md` (what was built and how, kept up to date during coding), `interview-notes.md` (private talking points, **git-ignored**).
 
