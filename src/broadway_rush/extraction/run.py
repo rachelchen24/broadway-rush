@@ -36,7 +36,8 @@ MAX_TOKENS = 16000              # thinking counts toward this
 # USD per token, Haiku 5.5 (prompts <=100K tokens): input $0.10/M, output $0.50/M;
 # cache writes 1.25x input, cache reads 0.1x input; Batches API halves everything.
 PRICE = {"input": 0.10e-6, "cache_write": 0.125e-6, "cache_read": 0.01e-6, "output": 0.50e-6}
-HARD_STOP_USD = 8.00            # project-wide, across every run in the ledger (raised from $4 on 2026-10-22: $10 of credits, $8 allowed)
+# project-wide, across every run in the ledger (raised from $4 on 2026-10-22: $10 of credits, $8 allowed)
+HARD_STOP_USD = 8.00
 PILOT_CAP_USD = 0.25            # per pilot run
 
 TIME_FIELDS = {"time", "arrival_time", "window_time", "sold_out_time"}
@@ -147,8 +148,14 @@ def parse_response(msg, stats: dict) -> dict[str, list[dict]]:
         raise BadOutput(f"stop_reason={msg.stop_reason} {getattr(msg, 'stop_details', None)}")
     text = next((b.text for b in msg.content if b.type == "text"), "")
     start, end = text.find("{"), text.rfind("}")  # tolerate a ```json fence or stray text around the object
+    raw = text[start:end + 1]
     try:
-        data = json.loads(text[start:end + 1])
+        try:
+            data = json.loads(raw)
+        except ValueError:
+            # seen in the wild: an unquoted enum value, `"count_qual": approx`. Quote bare words and retry.
+            data = json.loads(re.sub(r'(:\s*)(?!true\b|false\b|null\b)([A-Za-z_]+)(\s*[,}\]])', r'\1"\2"\3', raw))
+            stats["repaired"] = stats.get("repaired", 0) + 1
         comments = data["comments"]
         return {c["comment_id"]: [o for o in (validate(o, stats) for o in c["observations"]) if o is not None]
                 for c in comments}
@@ -201,8 +208,8 @@ def pilot(args):
             run_usd += usd
             record(f"pilot:{tag}", msg.usage, usd, len(chunk) if attempt == 1 else 0)
             print(f"  chunk {start // CHUNK + 1}/{n_chunks}: in {msg.usage.input_tokens} "
-                  f"cache_r {msg.usage.cache_read_input_tokens or 0} cache_w {msg.usage.cache_creation_input_tokens or 0} "
-                  f"out {msg.usage.output_tokens} ${usd:.4f}")
+                  f"cache_r {msg.usage.cache_read_input_tokens or 0} "
+                  f"cache_w {msg.usage.cache_creation_input_tokens or 0} out {msg.usage.output_tokens} ${usd:.4f}")
             try:
                 extracted.update(parse_response(msg, stats))
                 break

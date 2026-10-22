@@ -1,0 +1,10 @@
+{"comment_id": "lgk7d3f", "observations": [], "batch": "msgbatch_014FBELDrKjE8jLyZ3NcWJsZ", "model": "claude-haiku-5-5"}
+{"comment_id": "l8m63ud", "observations": [], "batch": "msgbatch_014FBELDrKjE8jLyZ3NcWJsZ", "model": "claude-haiku-5-5"}
+{"comment_id": "o3jp1a9", "observations": [{"kind": "attempt", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "low", "needs_context": false, "outcome": "got_rush"}], "batch": "msgbatch_014FBELDrKjE8jLyZ3NcWJsZ", "model": "claude-haiku-5-5"}
+{"comment_id": "lzlail6", "observations": [], "batch": "msgbatch_014FBELDrKjE8jLyZ3NcWJsZ", "model": "claude-haiku-5-5"}
+{"comment_id": "lgk8q6f", "observations": [], "batch": "msgbatch_014FBELDrKjE8jLyZ3NcWJsZ", "model": "claude-haiku-5-5"}
+{"comment_id": "ngy026g", "observations": [{"kind": "attempt", "show_text": "Gatsby", "show": "The Great Gatsby", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "arrival_time": "09:00", "outcome": "got_rush"}], "batch": "msgbatch_014FBELDrKjE8jLyZ3NcWJsZ", "model": "claude-haiku-5-5"}
+{"comment_id": "n357ulc", "observations": [], "batch": "msgbatch_014FBELDrKjE8jLyZ3NcWJsZ", "model": "claude-haiku-5-5"}
+{"comment_id": "n5mt2nm", "observations": [], "batch": "msgbatch_014FBELDrKjE8jLyZ3NcWJsZ", "model": "claude-haiku-5-5"}
+{"comment_id": "myiiwgb", "observations": [], "batch": "msgbatch_014FBELDrKjE8jLyZ3NcWJsZ", "model": "claude-haiku-5-5"}
+{"comment_id": "mgrk7ag", "observations": [{"kind": "attempt", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "outcome": "got_rush", "seat": "section 203 row O"}], "batch": "msgbatch_014FBELDrKjE8jLyZ3NcWJsZ", "model": "claude-haiku-5-5"}

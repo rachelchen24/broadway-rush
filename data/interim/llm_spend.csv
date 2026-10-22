@@ -36,3 +36,5 @@ at,run,model,n_comments,input,cache_write,cache_read,output,usd
 2026-10-22T12:17:08,pilot:holdout_v2,claude-haiku-5-5,10,1208,0,2404,1718,0.001004
 2026-10-22T12:17:20,pilot:holdout_v2,claude-haiku-5-5,10,1649,0,2404,3034,0.001706
 2026-10-22T12:17:26,pilot:holdout_v2,claude-haiku-5-5,10,1536,0,2404,2321,0.001338
+2026-10-22T12:26:10,batch:msgbatch_014FBELDrKjE8jLyZ3NcWJsZ,claude-haiku-5-5,10,1208,0,2457,552,0.000211
+2026-10-22T12:26:10,batch:msgbatch_014FBELDrKjE8jLyZ3NcWJsZ,claude-haiku-5-5,10,2012,2457,0,454,0.000368
