@@ -177,7 +177,7 @@ def flatten(comment_ids: list[str], extracted: dict[str, list[dict]]) -> list[di
 def pilot(args):
     load_dotenv(ROOT / ".env")
     INTERIM.mkdir(parents=True, exist_ok=True)
-    ids = pd.read_csv(MANIFEST, dtype=str).comment_id.tolist()
+    ids = pd.read_csv(args.manifest or MANIFEST, dtype=str).comment_id.tolist()
     c = load_comments().set_index("comment_id")
     rows = [{"comment_id": i, **c.loc[i, ["thread_date", "weekday", "comment_time", "parent_body", "body"]]}
             for i in ids]
@@ -249,6 +249,7 @@ def main():
     p = sub.add_parser("pilot", help="extract the hand-labeled sample (sync API calls)")
     p.add_argument("--thinking", choices=["adaptive", "off"], default="adaptive")
     p.add_argument("--tag", help="name for this run's output (default haiku_<thinking>)")
+    p.add_argument("--manifest", type=Path, help="which comments to run (default: the hand-label sample)")
     q = sub.add_parser("project", help="estimate full-run cost from pilot spend in the ledger")
     q.add_argument("--tag")
     args = ap.parse_args()

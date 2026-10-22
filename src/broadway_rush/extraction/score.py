@@ -56,8 +56,8 @@ def same(field: str, g, p) -> bool:
     return g == p
 
 
-def load_gold() -> pd.DataFrame:
-    g = pd.read_excel(GOLD, sheet_name="labels", dtype=str)
+def load_gold(gold: Path = GOLD) -> pd.DataFrame:
+    g = pd.read_excel(gold, sheet_name="labels", dtype=str)
     g["comment_id"] = g.comment_id.ffill()  # rows inserted for extra observations may leave it blank
     unlabeled = g.groupby("comment_id").kind.apply(lambda k: k.isna().all())
     if unlabeled.any():
@@ -86,8 +86,8 @@ def match(gold: list[dict], pred: list[dict]) -> list[tuple[dict | None, dict | 
     return out
 
 
-def score(pred_path: Path):
-    gold = load_gold()
+def score(pred_path: Path, gold_path: Path = GOLD):
+    gold = load_gold(gold_path)
     pred = pd.read_csv(pred_path, dtype=str, keep_default_na=False)
     ids = sorted(set(gold.comment_id))
     pred = pred[pred.comment_id.isin(ids)]
@@ -151,7 +151,9 @@ def main():
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("pred", type=Path)
-    score(ap.parse_args().pred)
+    ap.add_argument("--gold", type=Path, default=GOLD, help="hand-label sheet to score against")
+    a = ap.parse_args()
+    score(a.pred, a.gold)
 
 
 if __name__ == "__main__":

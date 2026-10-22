@@ -76,21 +76,22 @@ Conventions
 """
 
 
-def build_sample() -> pd.DataFrame:
+def build_sample(n_report: int = N_REPORT_LIKE, n_random: int = N_RANDOM, seed: int = SEED,
+                 exclude: set[str] = frozenset()) -> pd.DataFrame:
     c = pd.read_csv(COMMENTS_CSV, dtype=str, keep_default_na=False)
     bodies = dict(zip("t1_" + c.comment_id, c.body))
     d = c[(c.source == "daily_thread") & ~c.body.isin(["[deleted]", "[removed]", ""])
-          & ~c.author.isin(SKIP_AUTHORS)].copy()
+          & ~c.author.isin(SKIP_AUTHORS) & ~c.comment_id.isin(exclude)].copy()
     d["parent_body"] = d.parent_id.map(bodies).fillna("")
     d["comment_time"] = d.created_et.str[11:16]
     report_like = d[d.body.str.contains(REPORT_LIKE_RE)]
-    a = report_like.sample(N_REPORT_LIKE, random_state=SEED).assign(sample_group="report_like")
+    a = report_like.sample(n_report, random_state=seed).assign(sample_group="report_like")
     rest = d.drop(a.index)
-    b = rest.sample(N_RANDOM, random_state=SEED).assign(sample_group="random")
-    return pd.concat([a, b]).sample(frac=1, random_state=SEED).reset_index(drop=True)
+    b = rest.sample(n_random, random_state=seed).assign(sample_group="random")
+    return pd.concat([a, b]).sample(frac=1, random_state=seed).reset_index(drop=True)
 
 
-def write_sheet(s: pd.DataFrame):
+def write_sheet(s: pd.DataFrame, path: Path = SHEET):
     wb = Workbook()
     ws = wb.active
     ws.title = "labels"
@@ -125,20 +126,30 @@ def write_sheet(s: pd.DataFrame):
     for line in INSTRUCTIONS.splitlines():
         info.append([line])
     info.column_dimensions["A"].width = 110
-    wb.save(SHEET)
+    wb.save(path)
 
 
 def main():
     sys.stdout.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.parse_args()
-    if SHEET.exists():
-        sys.exit(f"{SHEET} already exists; not overwriting your labels. Move or rename it first.")
+    ap.add_argument("--name", help="build an extra sheet data/labels/<name>.xlsx (+ <name>_manifest.csv), "
+                                   "excluding comments already in other manifests (e.g. a held-out test set)")
+    ap.add_argument("--n-report", type=int, default=N_REPORT_LIKE)
+    ap.add_argument("--n-random", type=int, default=N_RANDOM)
+    ap.add_argument("--seed", type=int, default=SEED)
+    args = ap.parse_args()
+    sheet = LABELS / f"{args.name}.xlsx" if args.name else SHEET
+    manifest = LABELS / f"{args.name}_manifest.csv" if args.name else MANIFEST
+    if sheet.exists():
+        sys.exit(f"{sheet} already exists; not overwriting your labels. Move or rename it first.")
     LABELS.mkdir(parents=True, exist_ok=True)
-    s = build_sample()
-    write_sheet(s)
-    s[["comment_id", "post_id", "sample_group", "thread_date"]].to_csv(MANIFEST, index=False)
-    print(f"wrote {SHEET} ({len(s)} comments) and {MANIFEST}")
+    exclude = set()
+    for m in LABELS.glob("*manifest.csv"):
+        exclude |= set(pd.read_csv(m, dtype=str).comment_id)
+    s = build_sample(args.n_report, args.n_random, args.seed, exclude)
+    write_sheet(s, sheet)
+    s[["comment_id", "post_id", "sample_group", "thread_date"]].to_csv(manifest, index=False)
+    print(f"wrote {sheet} ({len(s)} comments, {len(exclude)} excluded as already sampled) and {manifest}")
     print(s.groupby("sample_group").size().to_string())
     print("threads:", s.post_id.nunique(), "| years:", s.thread_date.str[:4].value_counts().sort_index().to_dict(),
           "| replies:", (~s.parent_id.str.startswith("t3_")).sum())

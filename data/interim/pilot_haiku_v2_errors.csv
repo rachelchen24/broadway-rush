@@ -5,9 +5,13 @@ lg1z0ni,field: needs_context,attempt,"Oh, Mary!",true,false
 lmyy6fj,field: outcome,attempt,The Outsiders,full_price_only,got_rush
 lmyy6fj,field: seat,attempt,The Outsiders,orchestra,59 orchestra
 m0r615k,field: confidence,line_count,The Outsiders,high,medium
-m0vmska,field: perf,attempt,Gypsy,matinee,unknown
 m0vmska,field: confidence,attempt,Gypsy,medium,high
 m0vmska,field: needs_context,attempt,Gypsy,true,false
+m0vmska,field: time,attempt,Gypsy,09:20:00,
+m0vmska,field: count,attempt,Gypsy,17,
+m0vmska,field: count_qual,attempt,Gypsy,exact,
+m0vmska,field: line_position,attempt,Gypsy,30,
+m0vmska,field: outcome,attempt,Gypsy,sold_out_before_me,got_rush
 m0vmska,field: needs_context,attempt,Gypsy,true,false
 m0vmska,field: needs_context,attempt,Gypsy,true,false
 m0vmska,field: perf,supply,Gypsy,unknown,matinee
@@ -51,16 +55,21 @@ mtbaa9z,field: time,line_count,Gypsy,,00:00
 mtbaa9z,missed observation,attempt,Gypsy,"{'comment_id': 'mtbaa9z', 'thread_date': '2025-05-20', 'comment_time': '11:45', 'body': 'Gypsy: I came 7:40 and there was 1 person\n\n3rd came by 8, 4th at 8:17 then too much wind lol\n\nThere were 11 by the time the BO opened', 'kind': 'attempt', 'show_text': 'Gypsy', 'show': 'Gypsy', 'perf_date': '2025-05-20', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'arrival_time': '07:40', 'line_position': '2', 'outcome': 'unknown'}",
 mtbaa9z,extra observation,line_count,Gypsy,,"{'comment_id': 'mtbaa9z', 'kind': 'line_count', 'show_text': 'Gypsy', 'show': 'Gypsy', 'perf_date': '2025-05-20', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'false', 'time': '07:40', 'count': '1', 'count_qual': 'exact'}"
 mtuelsn,field: confidence,attempt,,high,low
-muscuvv,field: show,attempt,Sunset Blvd.,sunset blvd.,
-muscuvv,field: confidence,attempt,Sunset Blvd.,low,medium
-muscuvv,field: needs_context,attempt,Sunset Blvd.,true,false
-muscuvv,field: seat,attempt,Sunset Blvd.,"orchestra right, row h seat 22",orchestra row h seat 22
+muscuvv,field: show,attempt,Gypsy,gypsy,
+muscuvv,field: confidence,attempt,Gypsy,low,medium
+muscuvv,field: needs_context,attempt,Gypsy,true,false
+muscuvv,field: arrival_time,attempt,Gypsy,9,
+muscuvv,field: line_position,attempt,Gypsy,8,15
+muscuvv,field: outcome,attempt,Gypsy,,got_rush
+muscuvv,field: seat,attempt,Gypsy,"orchestra right, row h seat 22",orchestra row h seat 22
+muscuvv,missed observation,attempt,Sunset Blvd.,"{'comment_id': 'muscuvv', 'thread_date': '2025-05-28', 'comment_time': '19:05', 'parent_body': 'About 8 in line at Gypsy at 9:00. 2 at Boop. Still about 13-15 at Sunset.', 'body': 'For reference I was about 15th in line and got orchestra right, row H seat 22.', 'kind': 'attempt', 'show': 'Sunset Blvd.', 'perf_date': '2025-05-28', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'low', 'needs_context': 'true', 'line_position': '15', 'outcome': 'got_rush', 'seat': 'orchestra right, row H seat 22', 'notes': ""CHECK: parent (same author) lists Gypsy/Boop/Sunset - guessed Sunset from '13-15 at Sunset'""}",
 mx0qpnj,missed observation,attempt,,"{'comment_id': 'mx0qpnj', 'thread_date': '2025-06-10', 'comment_time': '10:15', 'parent_body': 'The standing room is very good. I did it in December. I did not miss a thing except for maybe a minute.', 'body': 'Awesome thanks great to hear!! Just got my ticket. Standing room spot 107!', 'kind': 'attempt', 'perf_date': '2025-06-10', 'perf': 'unknown', 'rush_type': 'sro', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'true', 'outcome': 'got_rush', 'seat': 'standing room spot 107', 'notes': 'CHECK: show not named'}",
 myt5t0j,field: confidence,line_count,Just in Time,high,medium
 myt5t0j,missed observation,attempt,Just in Time,"{'comment_id': 'myt5t0j', 'thread_date': '2025-06-20', 'comment_time': '09:36', 'body': '7th in line at Just in Time at 6.45-ish. 25-ish at 9.30.', 'kind': 'attempt', 'show_text': 'Just in Time', 'show': 'Just in Time', 'perf_date': '2025-06-20', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'false', 'arrival_time': '06:45', 'line_position': '7', 'outcome': 'unknown'}",
 myt5t0j,extra observation,line_count,Just in Time,,"{'comment_id': 'myt5t0j', 'kind': 'line_count', 'show_text': 'Just in Time', 'show': 'Just in Time', 'perf_date': '2025-06-20', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'false', 'time': '06:45', 'count': '7', 'count_qual': 'approx'}"
 mytg2bb,missed observation,supply,Just in Time,"{'comment_id': 'mytg2bb', 'thread_date': '2025-06-20', 'comment_time': '10:29', 'parent_body': 'Do you know how many seats (approx.) Just In Time gives to rush line?', 'body': ""From what I've gathered from other days right around 20. I unfortunately did not get rush tickets this time."", 'kind': 'supply', 'show_text': 'Just In Time (parent)', 'show': 'Just in Time', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'true', 'confidence': 'medium', 'needs_context': 'true', 'stated_count': '20', 'stated_qual': 'total', 'notes': ""'from what I've gathered from other days right around 20'""}",
 mytg2bb,missed observation,attempt,Just in Time,"{'comment_id': 'mytg2bb', 'kind': 'attempt', 'show': 'Just in Time', 'perf_date': '2025-06-20', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'high', 'needs_context': 'true', 'outcome': 'sold_out_before_me', 'notes': ""'did not get rush tickets this time'""}",
+mz6hsm3,field: line_position,supply,,30,
 mz6hsm3,field: confidence,line_count,,high,medium
 mz6hsm3,field: time,line_count,,,12:00
 n0xmhmr,field: confidence,attempt,Sunset Blvd.,medium,high
@@ -99,7 +108,7 @@ nlho4sj,field: perf,line_count,Art,unknown,matinee
 nn6udxg,field: rush_type,supply,,general,unknown
 nn6udxg,field: secondhand,supply,,false,true
 nn6udxg,field: stated_qual,supply,,,remaining
-nq2srh2,missed observation,attempt,,"{'comment_id': 'nq2srh2', 'thread_date': '2025-11-13', 'comment_time': '14:58', 'parent_body': 'What sears you get?', 'body': 'Regular, got orchestra center, front row!', 'kind': 'attempt', 'perf_date': '2025-11-13', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'true', 'outcome': 'got_rush', 'seat': 'orchestra center, front row', 'notes': ""CHECK: show not in comment or parent; 'Regular' = regular rush (not SRO)?""}",
+nq2srh2,missed observation,attempt,,"{'comment_id': 'nq2srh2', 'thread_date': '2025-11-13', 'comment_time': '14:58', 'parent_body': 'What sears you get?', 'body': 'Regular, got orchestra center, front row!', 'kind': 'attempt', 'perf_date': '2025-11-13', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'true', 'outcome': 'got_rush', 'seat': 'orchestra center, front row'}",
 nxdy2ht,field: rush_type,attempt,Just in Time,general,sro
 nxdy2ht,field: confidence,attempt,Just in Time,medium,high
 nxdy2ht,field: outcome,attempt,Just in Time,sro_only,got_rush
@@ -119,12 +128,15 @@ or1q2jo,extra observation,line_count,Oh Mary,,"{'comment_id': 'or1q2jo', 'kind':
 or1q2jo,extra observation,line_count,Oh Mary,,"{'comment_id': 'or1q2jo', 'kind': 'line_count', 'show_text': 'Oh Mary', 'show': 'Oh Mary', 'perf_date': '2026-06-11', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'low', 'needs_context': 'true', 'time': '09:41', 'count': '31', 'count_qual': 'exact'}"
 owvwmgf,field: show,line_count,Cats: The Jellicle Ball,cats: the jellicle ball,cat on a hot tin roof
 owvwmgf,field: confidence,line_count,Cats: The Jellicle Ball,high,medium
-ox3fzqj,field: count,line_count,,6,4
-ox3fzqj,field: count_qual,line_count,,approx,exact
+ox3fzqj,field: count,line_count,unknown,2,4
+ox3fzqj,field: count_qual,line_count,unknown,approx,exact
 p6n60wa,missed observation,attempt,Buena Vista Social Club,"{'comment_id': 'p6n60wa', 'thread_date': '2026-08-29', 'comment_time': '13:21', 'parent_body': 'Anyone know where Buena Vista Rush tickets are located? ', 'body': 'I got partial view in the orchestra when I rushed last week. It was the last seat on the left of row F I think. I couldn’t see anything that was staged on the balcony.\xa0', 'kind': 'attempt', 'show_text': 'Buena Vista (parent)', 'show': 'Buena Vista Social Club', 'perf': 'unknown', 'rush_type': 'general', 'secondhand': 'false', 'confidence': 'medium', 'needs_context': 'true', 'outcome': 'got_rush', 'seat': 'partial view orchestra, row F far left', 'notes': ""'last week' - exact date unknown""}",
 pgp1hbw,field: confidence,attempt,,high,medium
 pgp1hbw,field: needs_context,attempt,,true,false
 pgp1hbw,field: confidence,line_count,,high,medium
 pgp1hbw,field: needs_context,line_count,,true,false
+pgp1hbw,field: arrival_time,line_count,,08:10:00,
+pgp1hbw,field: line_position,line_count,,2,
+pgp1hbw,field: outcome,line_count,,got_rush,
 pgp1hbw,field: confidence,line_count,,high,medium
 pgp1hbw,field: needs_context,line_count,,true,false
