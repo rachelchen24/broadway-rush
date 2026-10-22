@@ -3,6 +3,7 @@
 Phases (each is resumable; raw HTML is cached so re-parsing never re-downloads):
     py -m broadway_rush.scrapers.playbill grosses    # every week since June 2024 -> data/raw/grosses_playbill.csv
     py -m broadway_rush.scrapers.playbill policies   # today's policy article -> data/raw/policies_playbill.csv
+    py -m broadway_rush.scrapers.playbill policies-history  # monthly Internet Archive copies since June 2024
     py -m broadway_rush.scrapers.playbill parse      # re-parse cached HTML only (no requests)
 """
 
@@ -21,6 +22,8 @@ from broadway_rush.http import PoliteClient
 
 GROSSES_URL = "https://playbill.com/grosses"
 POLICIES_URL = "https://playbill.com/article/broadway-rush-lottery-and-standing-room-only-policies-com-116003"
+WAYBACK_CDX = "https://web.archive.org/cdx/search/cdx"
+WAYBACK_WEB = "https://web.archive.org/web"
 START_WEEK = "2024-06-02"  # first week-ending Sunday that covers June 2024
 MIN_INTERVAL = 3.0         # seconds between requests
 
@@ -125,8 +128,11 @@ def parse_policies(html: str, snapshot: str) -> list[dict]:
     soup = BeautifulSoup(html, "lxml")
     meta = soup.find("meta", property="article:modified_time")
     modified = meta["content"][:10] if meta and meta.get("content") else ""
-    # the page has several "prose" divs; the policy list is the one split by <hr>s
-    prose = max(soup.find_all("div", class_="prose"), key=lambda d: len(d.find_all("hr", recursive=False)))
+    # the policy list is the article div split by <hr>s ("prose" since spring 2026, "bsp-article-content" before)
+    proses = soup.find_all("div", class_=["prose", "bsp-article-content"])
+    if not proses:
+        return []
+    prose = max(proses, key=lambda d: len(d.find_all("hr", recursive=False)))
     # one show per block between <hr>s
     blocks, cur = [], []
     for el in prose.find_all(recursive=False):
@@ -197,6 +203,27 @@ def scrape_policies(client: PoliteClient):
     write_policies()
 
 
+def scrape_policy_history(client: PoliteClient):
+    """Past versions of the policy article from the Internet Archive (public CDX API; registry/sources.csv).
+    One capture per month since START_WEEK, saved like a normal snapshot under its capture date."""
+    (CACHE / "policies").mkdir(parents=True, exist_ok=True)
+    rows = client.get_json(WAYBACK_CDX, {"url": POLICIES_URL.split("://", 1)[1], "from": START_WEEK[:7].replace("-", ""),
+                                         "output": "json", "filter": "statuscode:200", "collapse": "timestamp:6"})
+    caps = [dict(zip(rows[0], r)) for r in rows[1:]]
+    todo = [c for c in caps if not (CACHE / "policies" / f"{ts_date(c['timestamp'])}.html").exists()]
+    log.info("%d monthly captures, %d to fetch", len(caps), len(todo))
+    for c in todo:
+        # "id_" asks for the page as originally captured, without the Wayback toolbar
+        html = client.get_text(f"{WAYBACK_WEB}/{c['timestamp']}id_/{c['original']}")
+        (CACHE / "policies" / f"{ts_date(c['timestamp'])}.html").write_text(html, encoding="utf-8")
+        log.info("%s: %d policies", ts_date(c["timestamp"]), len(parse_policies(html, ts_date(c["timestamp"]))))
+    write_policies()
+
+
+def ts_date(ts: str) -> str:
+    return f"{ts[:4]}-{ts[4:6]}-{ts[6:8]}"
+
+
 def write_policies():
     rows = []
     for f in sorted((CACHE / "policies").glob("*.html")):
@@ -216,7 +243,7 @@ def write_csv(path: Path, cols: list[str], rows: list[dict]):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("phase", choices=["grosses", "policies", "parse"])
+    ap.add_argument("phase", choices=["grosses", "policies", "policies-history", "parse"])
     args = ap.parse_args()
     CACHE.mkdir(parents=True, exist_ok=True)
     logging.basicConfig(
@@ -228,6 +255,9 @@ def main():
         scrape_grosses(client)
     elif args.phase == "policies":
         scrape_policies(client)
+    elif args.phase == "policies-history":
+        client.min_interval = 5.0
+        scrape_policy_history(client)
     else:
         write_grosses()
         write_policies()

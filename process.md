@@ -229,3 +229,28 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 **Order matters:** `batch reports` rewrites `reports.csv` without `show_id`, so always run `python -m broadway_rush.catalog build` after it.
 
 **Next:** policy history from archived copies of the Playbill article (Internet Archive; check its API terms first). Then step 5 (baseline model).
+
+---
+
+## Step 4d: rush-policy history + "has rush changed?" (2026-10-22)
+
+**Did:**
+- Added `playbill.py policies-history`. It queries the Internet Archive's public CDX API for monthly captures of the Playbill policy article since June 2024 (29 captures), fetches each original page (`<timestamp>id_/` = no Wayback toolbar, 5 s apart, 30 requests total) and caches them next to today's snapshot. Logged the archive in `registry/sources.csv`.
+- Parser fix: before spring 2026 the article body was `div.bsp-article-content`, not `div.prose`.
+- Analysis (scratch script): mapped every policy row to the catalog (99.9%; only "Cult of Love" was listed after its run), grouped policy types, and tracked prices per show over time.
+
+**Result:** `policies_playbill.csv` now has **30 snapshots (2024-06-12 → 2026-10-22), 1,954 rows**, 22–40 shows each. **Rush has been very stable:**
+- **In-person general rush: median $45 in every one of the 30 months.** Of 61 shows with ≥2 snapshots, **5 changed price**: Maybe Happy Ending $40 → $49 (July 2025, after its Tony wins), Death Becomes Her $35 → $40, Boop $40 → $50, Job $39 → $47, Suffs $45 → $19 for one month (a promo) → $45.
+- Digital rush and lottery drifted up slightly: median $45 → $49.
+- The mix of what shows offer barely moved: ~55% of shows have in-person general rush, ~77% a lottery, ~25% digital rush, ~20% SRO, in each year.
+- **3 shows switched in-person rush on/off mid-run (verified, not parsing errors):** Harry Potter dropped its $49 general rush (late 2025); & Juliet added one (summer 2025); Wicked added $45 general rush (2026).
+- Box-office times only changed in wording.
+
+**Implication:** price is nearly constant, so it won't drive the model much. **Whether a show offers in-person rush on a given date matters a lot**, and we now have that month by month.
+
+**Also checked: is "few Reddit reports" = "low demand"?** Daily-thread reports per running week vs. average % capacity from the grosses (110 shows with ≥4 weeks):
+- Overall only weakly related (rank correlation 0.21). Many quiet shows are sold out: Hamilton, Lion King, Book of Mormon, Wicked, Hadestown (≥94% capacity, ~0 reports).
+- The reason: **shows without in-person rush/SRO get almost no reports** (39 shows, median 0.05/week) vs. 2.3/week for shows with it. Reddit's rush threads are about the in-person line.
+- **Among in-person-rush shows the idea holds:** the 10 quietest (<0.5 reports/week) average 84.5% capacity vs. 94% for the most discussed.
+
+**Next:** decide the website scope (which shows get full predictions), then step 5 (baseline model).
