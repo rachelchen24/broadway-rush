@@ -134,7 +134,7 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 
 ## ▶ Open items (as of 2026-10-22, after the top-up extraction)
 1. **Steps 1–3 are done.** The Reddit scrape is complete and all comments are extracted except 10 (1 failed request; `batch full` retries it).
-2. **Step 4 in progress.** Done: source check (4a), grosses backfill from Playbill + BroadwayWorld and today's rush policies (4b). Next: show catalog (canonicalize the 358 show-name variants in `reports.csv`), then policy history from archived copies. To refresh weekly: `.venv\Scripts\python -m broadway_rush.scrapers.playbill grosses`, `... playbill policies`, `... broadwayworld grosses`.
+2. **Step 4 in progress.** Done: source check (4a), grosses backfill from Playbill + BroadwayWorld and today's rush policies (4b), show catalog + show-name mapping (4c, 97% of named reports mapped). Left: policy history from archived copies (Internet Archive; check its terms first). Weekly refresh: `.venv\Scripts\python -m broadway_rush.scrapers.playbill grosses`, `... playbill policies`, `... broadwayworld grosses`, then `... broadway_rush.catalog build`. After any `batch reports`, re-run `catalog build` (it adds show_id to reports.csv).
 3. **Notes for future sessions:**
    - LLM spend ledger: `data/interim/llm_spend.csv`; hard stop $8, $1.47 spent.
    - To refresh Reddit later: `.venv\Scripts\python -m broadway_rush.scrapers.reddit posts`, then `comments` (resumable; run one copy at a time), then `batch full` → `collect` → `reports`.
@@ -197,3 +197,35 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 - Policy history before today needs archived copies (Internet Archive) of the Playbill article. Not checked yet.
 
 **Next:** build the show catalog. Join Playbill production IDs ↔ BroadwayWorld slugs ↔ policy shows, and map the 358 Reddit show-name variants in `reports.csv` onto it.
+
+---
+
+## Step 4c: show catalog + show-name mapping (2026-10-22)
+
+**Did:** `broadway_rush/catalog.py`:
+- `build` writes **`data/processed/shows.csv`**: one row per production from the Playbill grosses. Columns: readable `show_id` (e.g. `maybe-happy-ending`), name, theater, show_type, first/last grosses week, n_weeks, seats, Playbill production_id, BroadwayWorld slug(s). Playbill ↔ BroadwayWorld are joined on week + gross, which match exactly (4,018/4,024 rows).
+- It also adds `show_id` + `show_match` to `data/processed/reports.csv`, and writes `data/processed/show_names.csv` (every Reddit show string → show_id, with report counts). `review` lists what still needs a look.
+- Matching steps:
+  1. normalized name (lowercase, "&"/"+" → "and", drop "The", "the Musical", punctuation, apostrophes)
+  2. also the part before a colon and without (parentheses)
+  3. BroadwayWorld slugs
+  4. the hand alias list
+  5. a close spelling (difflib ≥ 0.88, only when unambiguous; marked `fuzzy`)
+- **Date check:** a match only counts if the show was on Broadway on the report's date (first → last grosses week + 7 days; shows still running are open-ended). The date is the daily thread's date, or the comment's date for keyword posts. This also chooses between same-name productions and rejects Off-Broadway runs of shows that later transferred (Titanique, Cats: The Jellicle Ball).
+- Hand-curated files (committed): **`registry/show_aliases.csv`** (nicknames like Mincemeat, MHE, JPITV, Dorian Gray; `-` = known non-Broadway, e.g. Off-Broadway, Shakespeare in the Park, shows that closed before June 2024) and **`registry/show_overrides.csv`** (show_type for the 6 shows BroadwayWorld left blank).
+
+**Result:**
+- **118 productions** (June 2024 → Oct 2026), all with a type.
+- **12,417 of 12,797 named reports (97.0%) mapped to 107 shows.** Breakdown: exact/alias 12,348 · fuzzy 55 · date-disambiguated 15 · known non-Broadway 185 · outside the show's run 89 · unmatched 106 (mostly one-offs).
+- All 28 policy shows map to the catalog.
+- Coverage is uneven: 41 shows have ≥50 reports (Oh, Mary! 1,036 · The Outsiders 1,019 · Just in Time 799 · Maybe Happy Ending 722 …), 34 have <10. That's the cold-start problem the SPEC predicted.
+
+**Checked by hand:**
+- All 22 fuzzy spellings are right ("O Mary", "Sterophonic", "Bueno Vista Social Club").
+- The 89 outside-run reports are comments from before previews or after closing ("I miss Sunset Boulevard"). No rush happened on those days, so excluding them is correct.
+
+**Found:** ~15 one-off "show names" were invented by Haiku expanding acronyms ("Edward Bear Tonight", "Bad Vibes: The Sheffield Crossroads", "Back to the Vaudeville Sumptuous Carnival"). Only 1 report each, so they're left unmatched. A prompt fix for next time: keep acronyms as written.
+
+**Order matters:** `batch reports` rewrites `reports.csv` without `show_id`, so always run `python -m broadway_rush.catalog build` after it.
+
+**Next:** policy history from archived copies of the Playbill article (Internet Archive; check its API terms first). Then step 5 (baseline model).
