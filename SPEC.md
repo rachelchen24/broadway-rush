@@ -1,6 +1,6 @@
 # Broadway Rush — Spec (draft)
 
-> Status: brainstorming / feasibility. No code yet. Each section describes what we want and how it could be done; nothing here has been built.
+> Status: steps 1–3 of the build order are built (Reddit scrape → labeled extraction pilot → full extraction into `data/processed/reports.csv`). What was built, and how, is in `process.md`. Sections not mentioned there are still plans.
 > Standalone project: nothing is reused from previous projects.
 
 ## 1. Concept
@@ -85,13 +85,14 @@ A dataset of **every show playing and every performance** for the next 7 days, p
 - **History:** grosses (§3.3) say which shows ran each week since June 2024. The weekly Playbill grid can be backfilled from archived copies if available.
 
 ### 3.1 Reddit testimony ✅ verified accessible
-- **What:** r/Broadway's **daily "Broadway Rush Community Reporting Thread"** (posted by u/BroadwayRushReport), going back to **June 2024**. That's about 850 threads at roughly 5–15 comments each, plus one-off posts with "rush" in the title.
-- **How:** reddit.com blocks unauthenticated API calls (403). The **Arctic Shift** archive (`arctic-shift.photon-reddit.com`) serves posts and comments without credentials:
-  - `GET /api/posts/search?subreddit=Broadway&title=Rush Community Reporting Thread` (paginate with `after`=last `created_utc`, `limit=100`, `sort=asc`)
-  - `GET /api/comments/search?link_id=<post id>` for each thread's comments
-  - Rate limited ("Timeout. Maybe slow down a bit"): about 1 request/sec with retry and backoff.
-- **Widen the net (June 2024+):** keyword searches ("rush", "box office", "line", "SRO", "TodayTix") across r/Broadway, r/musicals, r/AskNYC and r/nyc.
-- **Output:** `posts.csv`, `comments.csv` (thread id/title/date, comment id, parent, author, timestamp, score, body, subreddit).
+- **What:** r/Broadway's **daily rush reporting threads** (posted by u/BroadwayRushReport under 25+ title formats), June 14, 2024 onward: **790 threads, ~13.6k comments** (median 14 per thread).
+- **How (built, `broadway_rush/scrapers/reddit.py`):** reddit.com blocks unauthenticated API calls (403). The **Arctic Shift** archive (`arctic-shift.photon-reddit.com/api`) serves posts and comments without credentials.
+  - Daily threads = every r/Broadway post by u/BroadwayRushReport (author search). Title search was unreliable and was dropped.
+  - Keyword posts = a date scan of each subreddit, with keywords matched locally (whole words, title + body).
+  - Comments: `GET /comments/search?link_id=<post id>`, paged.
+  - Rate limit: about 10 requests/min. Its "Timeout. Maybe slow down a bit" error comes back as **HTTP 422**; wait for `x-ratelimit-reset`. Survives Wi-Fi drops, laptop sleep and server outages. Resumable.
+- **Widen the net (June 2024+):** keywords `rush, lottery, standing room, SRO, digital rush, TodayTix, box office, line` across r/Broadway, r/musicals, r/AskNYC, r/nyc (~251k posts scanned → 11.3k keyword posts). Comments are fetched only for title matches or non-"line" body matches; in r/nyc and r/AskNYC the post must also look theater-related.
+- **Output:** `data/raw/posts.csv`, `data/raw/comments.csv` (git-ignored; ~124k comments when complete).
 - **Then:** LLM extraction into structured rows (§4).
 - **Ongoing:** re-scrape daily.
 
@@ -263,7 +264,10 @@ Also include: a **feature-importance / ablation table** (what happens to accurac
 
 ### 5.5 LLM extraction budget (Claude Haiku)
 - **Model:** Claude Haiku 5.5 (`claude-haiku-5-5`) for extracting structured rows from Reddit and forum comments (§4) and casting news (§3.12).
-- **Total budget: $5 for the whole project.**
+- **Total budget: $8 for the whole project** (raised from $5 on 2026-10-22; $10 of credits loaded). The code enforces a hard stop at $8 across every run (`data/interim/llm_spend.csv`).
+- **Actual so far:** $1.34 (pilot + held-out $0.04; full extraction of 46.8k comments $1.30 via Batches + caching). See `process.md` step 3.
+- **Built:** `broadway_rush/extraction/` (prompt, sync pilot, Batches runner, scorer). Structured outputs were rejected because the 25-field schema is too complex for them, so the JSON is described in the prompt and validated plus auto-repaired in code. Effort low, thinking on (thinking off cost more and was less accurate).
+- **Accuracy (held-out 50 comments):** report vs none 94%, observation precision 77% / recall 87%, key fields 83–95%. Labeling rules: `docs/labeling-schema.md`.
 - **Pricing (as of Oct 2026):** $0.10 per 1M input tokens, $0.50 per 1M output tokens. The Batches API is 50% off; cached prompt reads are ~10% of the input price. Thinking tokens bill as output, so run at `effort: low`.
 - **Rough cost estimate** (one request per thread, ~20 comments each, sharing one ~1.5K-token instruction prompt):
   | Scope | Comments | Est. cost (batch) |
@@ -272,12 +276,12 @@ Also include: a **feature-importance / ablation table** (what happens to accurac
   | + other subreddits, BroadwayWorld forums, casting news | ~20–25K | **~$1–1.50** |
   | Re-runs after fixing the prompt (×2) | | **~$1–3 total** |
 
-  So **$5 covers everything with room for 2–3 full re-runs**. Money isn't the limit here; the amount of Reddit data is. Confirm with the 100-comment pilot before the full run.
+  (Original estimate; the real full run was ~46.8k comments for $1.30.) Confirm with a pilot before any full run.
 - **Staying under it:**
   - Pilot on ~100 comments first. Measure tokens per comment and accuracy vs. hand labels, then project the full cost before running everything.
   - Use the **Message Batches API** (discounted vs. real-time) and **prompt caching** for the shared instructions.
   - Batch several short comments per request; skip comments with no rush-related keywords.
-  - Hard stop: track spend in the pipeline and halt at $4 to leave headroom.
+  - Hard stop: track spend in the pipeline and halt at $8.
   - Only new comments get extracted on weekly runs; never re-extract old ones.
 
 ## 6. Scraping: how long does it take? (estimates)
@@ -365,7 +369,10 @@ Also include: a **feature-importance / ablation table** (what happens to accurac
 - **Website, no sign-in, no notifications.** No in-app prompting for reports; I'll tell family and friends about the report button myself.
 - **Broadway only** (musicals + plays); no off-Broadway.
 - **ML:** try multiple models (§5.2); report a results table (§5.3); retrain weekly at most.
-- **LLM:** Claude Haiku, **$5 total budget** (§5.5).
+- **LLM:** Claude Haiku 5.5, **$8 total budget** (§5.5; raised from $5 on 2026-10-22).
+- **Labels:** one row per observation (`line_count` / `attempt` / `supply` / `none`), per `docs/labeling-schema.md`. The 100-comment answer key and the 50-comment held-out set were pre-labeled by Claude and reviewed by Rachel ("human-reviewed labels").
+- **Stack so far:** Python 3.14 venv, package in `src/broadway_rush/`, data in `data/` (`raw/` and `labels/` git-ignored), source registry in `registry/sources.csv`. Rachel handles all git commits.
+- **Build order:** 1 Reddit → CSV ✅ · 2 labels + Haiku pilot ✅ · 3 full extraction ✅ (top-up pending) · 4 grosses + rush policies + show catalog · 5 baseline model + results table · 6 daily snapshot scrapers · 7 website. Don't skip ahead without asking.
 - **Accuracy page:** yes (§2.6).
 - **Docs:** `SPEC.md` (this file), `process.md` (what was built and how, kept up to date during coding), `interview-notes.md` (private talking points, **git-ignored**).
 

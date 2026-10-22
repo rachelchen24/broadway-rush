@@ -108,3 +108,16 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 - `perf_date` isn't validated (one "2025-00-…"). Validate dates when building model tables.
 
 **Next:** re-run `full` after the scraper finishes (new comments + 2 failed chunks). Then step 4 (weekly grosses + rush policies + show catalog), after checking the sources' robots.txt/ToS.
+
+---
+
+## ▶ Open items (as of 2026-10-22 ~12:45)
+1. **Reddit comments scraper still running** as a detached Windows process (started 11:35; ~1,300 keyword posts were left, ~3 h). Check progress: last lines of `data/raw/_state/scrape.log`. If it stopped, resume with `.venv\Scripts\python -m broadway_rush.scrapers.reddit comments` (run only one copy at a time; skipped/failed posts are retried automatically).
+2. **When it finishes:**
+   - `.venv\Scripts\python -m broadway_rush.extraction.batch full --dry-run`, then `full` (new comments + 2 failed chunks; ~$0.15), then `collect`, then `reports`.
+   - Run `.venv\Scripts\python -m broadway_rush.scrapers.reddit summary` and write the final step-1 numbers here and in interview-notes.md.
+3. **Step 4 is waiting on Rachel's go-ahead.** First task: check robots.txt + ToS for Playbill, BroadwayWorld, IBDB, and log them in `registry/sources.csv` (free, nothing scraped). Then backfill weekly grosses + rush policies + build the show catalog (it also canonicalizes the 346 show-name variants in `reports.csv`).
+4. **Notes for future sessions:**
+   - LLM spend ledger: `data/interim/llm_spend.csv`; hard stop $8, $1.34 spent.
+   - API key lives in `.env` (git-ignored); the variable name must be `ANTHROPIC_API_KEY` (underscores).
+   - Never run `data/labels/claude_prelabels*.py` again: they overwrite the reviewed label sheets (the holdout one refuses; the first one does not).
