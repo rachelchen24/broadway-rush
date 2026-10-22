@@ -80,7 +80,7 @@ A dataset of **every show playing and every performance** for the next 7 days, p
 - **Sources:**
   - **Playbill's "Weekly Schedule of Current Broadway Shows"** grid: shows × days with performance times (and "DARK" days). Scrape weekly.
   - **Each show's official site and seller calendar:** the source of truth for exact performances, including holiday changes and cancellations. Playbill itself says to confirm there.
-  - **Broadway League / IBDB:** show list, theater, opening and closing dates.
+  - ~~**Broadway League / IBDB:** show list, theater, opening and closing dates.~~ **Skipped (2026-10-22):** both sites' ToS forbid automated harvesting. Show list and theaters come from the weekly grosses tables instead (§3.3).
   - **Ticketmaster Discovery API (official):** lists events, venues and dates for Ticketmaster-sold theaters. Cross-check.
 - **History:** grosses (§3.3) say which shows ran each week since June 2024. The weekly Playbill grid can be backfilled from archived copies if available.
 
@@ -109,12 +109,16 @@ A dataset of **every show playing and every performance** for the next 7 days, p
 ### 3.3 Capacity / grosses — historical demand proxy
 - **What:** the Broadway League's **weekly grosses per show**: gross $, attendance, **capacity %**, **average paid admission**, **top ticket price**, number of performances. Covers all of June 2024 → now.
 - **How:** Playbill and BroadwayWorld republish the weekly table as HTML. Backfill every week since June 2024, then keep scraping weekly.
+  - **Checked 2026-10-22:** `playbill.com/grosses?week=YYYY-MM-DD` (week-ending Sunday) serves any week back to 1985 as one HTML table: show + theater, gross / potential, avg / top ticket, seats sold / seats in theater, perfs / previews, % capacity. About 125 requests for June 2024 → now. BroadwayWorld (`/grosses.php`) is the backup; its Excel export is disallowed by robots.txt, so we never use it.
+  - **Built 2026-10-22** (`scrapers/playbill.py grosses`, `scrapers/broadwayworld.py grosses`): 125 weeks × ~32 shows = 4,024 rows from each, agreeing to within 0.02% on weekly totals. BroadwayWorld adds show type (Musical/Play). Output: `data/raw/grosses_playbill.csv`, `data/raw/grosses_bww.csv`.
 - **Why it matters extra:** average paid admission and top price are a **price history back to June 2024**, which the snapshot sources can't give us (§3.8).
 - **Limits:** weekly, not per performance.
 
 ### 3.4 Rush policies per show (price varies!) 📝 must scrape
 - **What:** per show: **rush price** (often $49.50, **but not always**), box office open time, tickets per person, which performances offer rush, cash/card, seat location, **SRO policy**, digital rush details (§3.5).
-- **How:** BroadwayWorld's "Rush, Lottery and SRO Policies" listing as the main source; cross-check with Playbill's list and each show's official site. Re-scrape weekly.
+- **How:** ~~BroadwayWorld's listing as the main source~~ **Playbill's "Broadway Rush, Lottery, and Standing Room Only Policies" article** is the main source (2026-10-22: no dedicated BroadwayWorld page found). It lists per show: theater, type (rush / digital lottery / SRO), price, how, time, payment, ID, tickets per person, seat locations, special policies. Cross-check with each show's official site. Re-scrape weekly.
+  - **Built 2026-10-22** (`scrapers/playbill.py policies`): one row per show × policy type (price, how, where, time, payment, ID, limit, seats, tickets available, special policies) → `data/raw/policies_playbill.csv`. First snapshot: 56 policies, 28 shows. Each run keeps a dated copy, so history builds up from here.
+  - **History:** the article is edited in place, so past versions would have to come from archived copies (e.g. the Internet Archive). Still to check.
 - **Keep history:** store each policy with an `effective_from` date so old reports match the policy in force at the time.
 - **Data quality:** flag source disagreements for manual review; show "last verified" next to the price.
 

@@ -40,6 +40,13 @@ class PoliteClient:
         {"error": "Timeout..."}: waits for the server's x-ratelimit-reset when given, else backs off.
         Connection failures (Wi-Fi drop, laptop sleep) don't use up retries: wait and retry for up
         to max_offline seconds."""
+        return self._get(url, params, as_json=True)
+
+    def get_text(self, url: str, params: dict | None = None) -> str:
+        """GET an HTML page and return its text, with the same retry rules as get_json."""
+        return self._get(url, params, as_json=False)
+
+    def _get(self, url: str, params: dict | None, as_json: bool):
         attempt, offline_since, server_since = 0, None, None
         while True:
             self._wait_turn()
@@ -48,18 +55,20 @@ class PoliteClient:
             try:
                 r = self.session.get(url, params=params, timeout=90)
                 reset = r.headers.get("x-ratelimit-reset")
-                try:
-                    body = r.json()
-                except ValueError:
-                    body = {}
-                # Arctic Shift sends "Timeout. Maybe slow down a bit" with HTTP 422, so check the body first
-                err = body.get("error") if isinstance(body, dict) else None
+                body, err = r.text, None
+                if as_json:
+                    try:
+                        body = r.json()
+                    except ValueError:
+                        body = {}
+                    # Arctic Shift sends "Timeout. Maybe slow down a bit" with HTTP 422, so check the body first
+                    err = body.get("error") if isinstance(body, dict) else None
                 if (err and "timeout" in err.lower()) or r.status_code == 429:
                     raise requests.HTTPError(err or f"HTTP {r.status_code}")
                 if r.status_code >= 500:
                     raise ServerError(f"HTTP {r.status_code}")
                 if r.status_code >= 400 or err:
-                    raise RuntimeError(f"HTTP {r.status_code}: {err or r.text[:200]} params={params}")
+                    raise RuntimeError(f"HTTP {r.status_code}: {err or r.text[:200]} url={url} params={params}")
                 return body
             except requests.ConnectionError as e:  # DNS failure, refused, connect timeout
                 offline_since = offline_since or time.monotonic()

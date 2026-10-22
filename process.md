@@ -134,9 +134,66 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 
 ## ▶ Open items (as of 2026-10-22, after the top-up extraction)
 1. **Steps 1–3 are done.** The Reddit scrape is complete and all comments are extracted except 10 (1 failed request; `batch full` retries it).
-2. **Step 4 is waiting on Rachel's go-ahead.** First task: check robots.txt + ToS for Playbill, BroadwayWorld, IBDB, and log them in `registry/sources.csv` (free, nothing scraped). Then backfill weekly grosses + rush policies + build the show catalog (it also canonicalizes the 358 show-name variants in `reports.csv`).
+2. **Step 4 in progress.** Done: source check (4a), grosses backfill from Playbill + BroadwayWorld and today's rush policies (4b). Next: show catalog (canonicalize the 358 show-name variants in `reports.csv`), then policy history from archived copies. To refresh weekly: `.venv\Scripts\python -m broadway_rush.scrapers.playbill grosses`, `... playbill policies`, `... broadwayworld grosses`.
 3. **Notes for future sessions:**
    - LLM spend ledger: `data/interim/llm_spend.csv`; hard stop $8, $1.47 spent.
    - To refresh Reddit later: `.venv\Scripts\python -m broadway_rush.scrapers.reddit posts`, then `comments` (resumable; run one copy at a time), then `batch full` → `collect` → `reports`.
    - API key lives in `.env` (git-ignored); the variable name must be `ANTHROPIC_API_KEY` (underscores).
    - Never run `data/labels/claude_prelabels*.py` again: they overwrite the reviewed label sheets (the holdout one refuses; the first one does not).
+
+---
+
+## Step 4a: source check for grosses, policies, show catalog (2026-10-22)
+
+**Did:**
+- Read robots.txt for Playbill, BroadwayWorld, IBDB and the Broadway League, then searched each site for terms-of-use language about scraping/automated access (a handful of requests, ≥2 s apart, with a descriptive user agent).
+- Probed the pages we'd actually use and parsed one historical grosses week.
+- Logged all four in `registry/sources.csv`. Added `beautifulsoup4` + `lxml` to `pyproject.toml` (HTML parsing).
+
+**Result:**
+| Site | robots.txt | ToS | Decision |
+|---|---|---|---|
+| playbill.com | `Allow: /` for everyone; Content-Signal `ai-train=no` (we don't train AI on it) | no terms page found | **scrape** (main) |
+| broadwayworld.com | `Allow: /` except the grosses Excel export and `?before=/?after=` paging | no terms page found | scrape (backup) |
+| ibdb.com | mostly allowed | forbids automated harvesting | **skip** |
+| broadwayleague.com | none | same terms as IBDB, forbids harvesting | **skip** |
+
+- **Grosses backfill is easy:** `playbill.com/grosses?week=2024-06-16` returns one clean table (35 shows that week): gross, potential, avg + top ticket, seats sold, theater size, perfs/previews, % capacity. ~125 weeks to June 2024 = ~125 requests.
+- **Rush policies:** Playbill's policy article has structured per-show text (price, how, time, payment, ID, limit, seats, special policies). It's edited in place, so history needs archived copies.
+- **Show catalog:** without IBDB/League, the grosses tables give show + theater per week (which shows were running, and when they opened/closed, to within a week).
+
+**Didn't work:** no dedicated BroadwayWorld rush-policy page found (the old URL 404s). Playbill covers it.
+
+**Next:** build the Playbill grosses backfill scraper (June 2024 → now, ~125 requests at ≥3 s apart, about 7 minutes).
+
+---
+
+## Step 4b: grosses backfill + rush policies (2026-10-22)
+
+**Did:**
+- `broadway_rush/http.py`: added `get_text()` for HTML pages (same retry/outage rules as `get_json`). Added `beautifulsoup4` + `lxml`.
+- `broadway_rush/scrapers/playbill.py`:
+  - `grosses`: reads the week picker, then fetches `playbill.com/grosses?week=YYYY-MM-DD` for every week-ending Sunday from 2024-06-02. 3 s between requests; raw HTML is cached in `data/raw/playbill/grosses/`.
+  - `policies`: today's copy of the rush/lottery/SRO article, cached in `data/raw/playbill/policies/<date>.html`. Running it on later dates builds up a policy history.
+  - `parse`: re-parses from the cache with no requests.
+- `broadway_rush/scrapers/broadwayworld.py`: `grosses` does the same for `broadwayworld.com/grosses.php?week=…` (5 s between requests), and `parse` re-parses the cache.
+
+**Why both grosses sources:** Playbill gives a stable production ID + seats per performance. BroadwayWorld adds **show type (Musical / Play)** plus last week's / last year's numbers, and it cross-checks Playbill.
+
+**Result:**
+- `data/raw/grosses_playbill.csv`: **4,024 rows, 125 weeks (2024-06-02 → 2026-10-18), 118 productions**, 24–40 shows/week. Columns: gross, avg + top ticket, seats sold, seats in theater, perfs, previews, % capacity (+ week-over-week diffs). `potential_gross` is blank everywhere (Playbill no longer publishes it). 126 requests, ~7 min.
+- `data/raw/grosses_bww.csv`: **4,024 rows, 125 weeks, 119 show slugs**; Musical 2,945 · Play 955 rows. 127 requests, ~11 min.
+- **Cross-check:** every week has the same show count on both sites, and weekly total gross differs by at most **0.02%**.
+- `data/raw/policies_playbill.csv`: **56 policies for 28 shows** (Digital Lottery 21, General Rush 13, Digital Rush 8, Standing Room 6, Student Rush 3, plus one-offs like Harry Potter's "Friday Forty" and The Outsiders' "$30 Under 30"). 55 have a dollar price (Rocky Horror's student rush is "50% off").
+
+**Didn't work (fixed):**
+- The policy page has two `div.prose`; the parser now picks the one split by `<hr>`.
+- Policy headings without "rush/lottery/SRO" in them ("The Friday Forty", "Student Tickets") were missed. A short line directly before "Price:" now also counts as a heading. Added the label variants "Seating Locations" and "Number of Lottery Tickets Available".
+- BroadwayWorld's newest week returns an empty page with `?week=`; it's only served by the plain URL, so the scraper caches the landing page as that week. The scraper also checks that the page shows the requested week before caching.
+- The Windows console can't print "→" in log lines (cp1252). Replaced it with "to"; the data was unaffected.
+
+**Issues for later:**
+- 6 BroadwayWorld shows have no type (Two Strangers, Oedipus, The Hills of California, 3 specials). Fill them by hand in the show catalog.
+- Policy history before today needs archived copies (Internet Archive) of the Playbill article. Not checked yet.
+
+**Next:** build the show catalog. Join Playbill production IDs ↔ BroadwayWorld slugs ↔ policy shows, and map the 358 Reddit show-name variants in `reports.csv` onto it.
