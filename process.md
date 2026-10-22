@@ -135,7 +135,7 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 ## ▶ Open items (as of 2026-10-22, after the top-up extraction)
 1. **Steps 1–3 are done.** The Reddit scrape is complete and all comments are extracted except 10 (1 failed request; `batch full` retries it).
 2. **Step 4 done** (4a source check, 4b grosses + policies, 4c show catalog, 4d policy history + website scope decision). Weekly refresh: `.venv\Scripts\python -m broadway_rush.scrapers.playbill grosses`, `... playbill policies`, `... broadwayworld grosses`, then `.venv\Scripts\python -m broadway_rush.catalog build`. After any `batch reports`, re-run `catalog build` (it adds show_id to reports.csv). **Step 5 (baseline model) waits for Rachel's go-ahead.**
-2b. **Step 6 started early** (ticket-site rules + TKTS scraper; see the step 6 entry). Waiting on Rachel: Ticketmaster API key, and Task Scheduler vs. GitHub Actions for the daily run. Then Ticketmaster scraper, scheduling, then step 5 (model).
+2b. **Step 6 started early** (ticket-site rules + TKTS scraper; see the step 6 entry). TKTS + Ticketmaster scrapers built. Waiting on Rachel: Task Scheduler vs. GitHub Actions for the daily run. Then scheduling, then step 5 (model).
 3. **Notes for future sessions:**
    - LLM spend ledger: `data/interim/llm_spend.csv`; hard stop $8, $1.47 spent.
    - To refresh Reddit later: `.venv\Scripts\python -m broadway_rush.scrapers.reddit posts`, then `comments` (resumable; run one copy at a time), then `batch full` → `collect` → `reports`.
@@ -293,3 +293,16 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 **Waiting on Rachel:**
 1. A Ticketmaster Discovery API key (developer.ticketmaster.com, free), saved in `.env` as `TICKETMASTER_API_KEY`.
 2. How to run snapshots daily: Windows Task Scheduler on the laptop, or GitHub Actions (repo on GitHub).
+
+**Ticketmaster (same day, after Rachel added the key):**
+- Key check: 1 test request, HTTP 200, quota 5,000/day. Rachel first saved the line in the wrong file. Checked: no key text left in `.flake8` (that file is committed).
+- What the Discovery API gives for Broadway: every performance's date/time, attraction, venue, sale status (`onsale`/`offsale`/`cancelled`/…), and sales end time. **No `priceRanges`, no seat counts** (checked the list and one event's detail).
+- Safety: the key has to go in the URL, so `http.py` now hides key/token values in every error message (`redact`) and log line (`scrub`).
+- Built `broadway_rush/scrapers/ticketmaster.py`:
+  - `snapshot`: NYC theatre events for the next 8 days (paged, 200/page, 1 s apart), raw JSON cached in `data/raw/ticketmaster/<UTC>.json`.
+  - `parse`: re-parse only. Keeps only venues that match a catalog theater (`venue_key` drops "Theatre", "- NY", …).
+  - Output `data/raw/ticketmaster_events.csv`.
+- First snapshot: 683 NYC theatre events → **362 Broadway performances at 40 theaters**, 4 requests, no duplicate venue+time. It also has shows too new for the grosses (Downstate, The Fantasticks). Not on Ticketmaster: Stephen Sondheim (& Juliet), Todd Haimes, Vivian Beaumont.
+- Use: the next-7-days performance schedule (SPEC §3.0) and, from daily snapshots, early `offsale` as a possible sell-out signal (to test).
+
+**Still waiting on Rachel:** Task Scheduler vs. GitHub Actions for the daily runs (TKTS `live` + Ticketmaster `snapshot`).

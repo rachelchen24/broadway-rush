@@ -2,6 +2,7 @@
 
 import logging
 import random
+import re
 import time
 
 import requests
@@ -10,6 +11,18 @@ log = logging.getLogger(__name__)
 
 USER_AGENT = "broadway-rush/0.1 (personal research project; polite, rate-limited)"
 OFFLINE_WAIT = 300  # seconds between attempts while the network or the server is down
+
+
+def redact(params: dict | None) -> dict | None:
+    """Hide API keys before params go into an error message or log."""
+    if not params:
+        return params
+    return {k: ("<hidden>" if "key" in k.lower() or "token" in k.lower() else v) for k, v in params.items()}
+
+
+def scrub(text: str) -> str:
+    """Hide key=... / token=... inside URLs that error messages may contain."""
+    return re.sub(r"(?i)(\w*(?:key|token))=[^&\s'\"]+", r"\1=<hidden>", text)
 
 
 class ServerError(Exception):
@@ -68,13 +81,13 @@ class PoliteClient:
                 if r.status_code >= 500:
                     raise ServerError(f"HTTP {r.status_code}")
                 if r.status_code >= 400 or err:
-                    raise RuntimeError(f"HTTP {r.status_code}: {err or r.text[:200]} url={url} params={params}")
+                    raise RuntimeError(f"HTTP {r.status_code}: {err or r.text[:200]} url={url} params={redact(params)}")
                 return body
             except requests.ConnectionError as e:  # DNS failure, refused, connect timeout
                 offline_since = offline_since or time.monotonic()
                 down = time.monotonic() - offline_since
                 if down > self.max_offline:
-                    raise RuntimeError(f"no connection for {down / 60:.0f} min, giving up: {url} {params}") from e
+                    raise RuntimeError(f"no connection for {down / 60:.0f} min, giving up: {url} {redact(params)}") from None
                 log.warning("connection failed (offline %.0f min), retrying in %ds: %s",
                             down / 60, OFFLINE_WAIT, type(e).__name__)
                 time.sleep(OFFLINE_WAIT)
@@ -82,16 +95,16 @@ class PoliteClient:
                 server_since = server_since or time.monotonic()
                 down = time.monotonic() - server_since
                 if down > self.max_server_outage:
-                    raise RuntimeError(f"server errors for {down / 60:.0f} min, giving up: {url} {params}") from e
-                log.warning("server error %s (for %.0f min), retrying in %ds", e, down / 60, OFFLINE_WAIT)
+                    raise RuntimeError(f"server errors for {down / 60:.0f} min, giving up: {url} {redact(params)}") from None
+                log.warning("server error %s (for %.0f min), retrying in %ds", scrub(str(e)), down / 60, OFFLINE_WAIT)
                 time.sleep(OFFLINE_WAIT)
             except (requests.RequestException, ValueError) as e:
                 offline_since = None
                 if attempt == self.max_retries:
-                    raise RuntimeError(f"giving up after {self.max_retries} retries: {url} {params}") from e
+                    raise RuntimeError(f"giving up after {self.max_retries} retries: {url} {redact(params)}") from None
                 backoff = min(self.max_backoff, 2 ** (attempt + 2))
                 delay = (int(reset) + 1 if reset and reset.isdigit() and attempt < 2 else backoff)
                 delay += random.uniform(0, 1)
                 attempt += 1
-                log.warning("retry %d/%d in %.0fs (%s)", attempt, self.max_retries, delay, e)
+                log.warning("retry %d/%d in %.0fs (%s)", attempt, self.max_retries, delay, scrub(str(e)))
                 time.sleep(delay)

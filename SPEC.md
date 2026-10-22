@@ -82,6 +82,7 @@ A dataset of **every show playing and every performance** for the next 7 days, p
   - **Each show's official site and seller calendar:** the source of truth for exact performances, including holiday changes and cancellations. Playbill itself says to confirm there.
   - ~~**Broadway League / IBDB:** show list, theater, opening and closing dates.~~ **Skipped (2026-10-22):** both sites' ToS forbid automated harvesting. Show list and theaters come from the weekly grosses tables instead (§3.3).
   - **Ticketmaster Discovery API (official):** lists events, venues and dates for Ticketmaster-sold theaters. Cross-check.
+    - **Built 2026-10-22** (`scrapers/ticketmaster.py snapshot`): next 8 days → 362 Broadway performances at 40 of 43 theaters (missing: Sondheim, Todd Haimes, Vivian Beaumont), with sale status. No prices or seat counts for Broadway. Run daily.
 - **Built 2026-10-22 (history part):** `broadway_rush/catalog.py` → `data/processed/shows.csv`: 118 productions with `show_id`, theater, Musical/Play, first/last grosses week, seats, and Playbill + BroadwayWorld IDs. Free-text show names (Reddit reports, policies) are mapped to `show_id` by normalized name + hand aliases (`registry/show_aliases.csv`) + close spelling, and only count if the show was on Broadway that date: 97% of named reports are mapped. The forward-looking performance schedule (next 7 days) is still to build.
 - **History:** grosses (§3.3) say which shows ran each week since June 2024. The weekly Playbill grid can be backfilled from archived copies if available.
 
