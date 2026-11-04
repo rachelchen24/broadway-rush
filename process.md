@@ -135,7 +135,7 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 ## ▶ Open items (as of 2026-10-22, after the top-up extraction)
 1. **Steps 1–3 are done.** The Reddit scrape is complete and all comments are extracted except 10 (1 failed request; `batch full` retries it).
 2. **Step 4 done** (4a source check, 4b grosses + policies, 4c show catalog, 4d policy history + website scope decision). Weekly refresh: `.venv\Scripts\python -m broadway_rush.scrapers.playbill grosses`, `... playbill policies`, `... broadwayworld grosses`, then `.venv\Scripts\python -m broadway_rush.catalog build`. After any `batch reports`, re-run `catalog build` (it adds show_id to reports.csv). **Step 5 (baseline model) waits for Rachel's go-ahead.**
-2b. **Step 6 started early** (ticket-site rules + TKTS scraper; see the step 6 entry). TKTS + Ticketmaster scrapers built. Waiting on Rachel: Task Scheduler vs. GitHub Actions for the daily run. Then scheduling, then step 5 (model).
+2b. **Step 6 started early** (ticket-site rules + TKTS scraper; see the step 6 entry). TKTS + Ticketmaster scrapers built. Waiting on Rachel: where the scheduled jobs run and where snapshot data is saved (SPEC §9, questions 2–4). Then scheduling, then step 5 (model). The data refresh plan changed on 2026-11-02 (SPEC §6; entry below).
 3. **Notes for future sessions:**
    - LLM spend ledger: `data/interim/llm_spend.csv`; hard stop $8, $1.47 spent.
    - To refresh Reddit later: `.venv\Scripts\python -m broadway_rush.scrapers.reddit posts`, then `comments` (resumable; run one copy at a time), then `batch full` → `collect` → `reports`.
@@ -306,3 +306,20 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 - Use: the next-7-days performance schedule (SPEC §3.0) and, from daily snapshots, early `offsale` as a possible sell-out signal (to test).
 
 **Still waiting on Rachel:** Task Scheduler vs. GitHub Actions for the daily runs (TKTS `live` + Ticketmaster `snapshot`).
+
+---
+
+## 2026-11-02 — Planning: data refresh plan changed (no code)
+
+**Did:** brought `SPEC.md` in line with what's built (no seat counts or resale prices from any legal source, Ticketmaster has no price ranges for Broadway, sections marked built) and recorded Rachel's new decisions. Started `claude-notes.md` (Claude's working notes) and reorganized `interview-notes.md`; both git-ignored.
+
+**Decisions (Rachel):**
+- **Weekly job:** Reddit scrape → extract new comments → grosses + policies → catalog → retrain → predictions for the next 14 days.
+- **Ticket data (TKTS, Ticketmaster):** daily snapshots for now, to have training data; after launch, only when someone clicks Refresh. Reason: Rachel may not check the site every day or even every week. The old "never scrape on click" rule assumed 6–10 slow sources per performance; only two fast ones turned out to be legal (~5 requests, ~10–15 s for all shows).
+- **Repo:** private for now, probably public when the project is done (for interviewers). **Website:** Vercel.
+
+**Found:**
+- `data/labels/hand_labels.xlsx` (100 full Reddit comments + parent comments) is committed despite the `data/labels/` ignore rule, and `reports.csv` has an `author` column. Both need cleaning before the repo goes public (git history included).
+- No snapshots were taken Oct 23 – Nov 1 (nothing scheduled yet). Ticketmaster days are lost; TKTS can be partly backfilled from the Internet Archive.
+
+**Next:** Rachel picks where the scheduled jobs run and where snapshot data is saved (SPEC §9), then set up the daily snapshots, then step 5.
