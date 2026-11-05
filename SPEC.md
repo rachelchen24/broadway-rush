@@ -9,7 +9,7 @@
 
 **Why / who**
 - Built for me: I love shows but never know what to expect at the rush line.
-- A **portfolio ML project**.
+- A **portfolio ML project**, and my entry in a **data project competition, due 2026-11-17**. I want to win.
 - Used by family and friends if it proves accurate. Not designed for a large user base, so no need to optimize for scale, accounts or heavy spam protection.
 - **Used now and then:** I might not check it every day, or even every week, so nothing should depend on someone visiting daily (§6).
 
@@ -138,6 +138,10 @@ A dataset of **every show playing and every performance** for the next 7 days, p
 ### 3.6 Calendar features
 - Day of week, **day of month**, matinee/evening, holidays, school breaks (NYC public schools, colleges), Tonys week, weeks since opening, closing announced.
 - **Weather:** historical daily weather and 7-day forecasts from free APIs (Open-Meteo, NOAA).
+- **Built 2026-11-05:**
+  - `broadway_rush/calendar_features.py` → `data/processed/calendar_daily.csv`: one row per date, June 2024 → Jan 2027 (rule-based dates plus the sourced list in `registry/calendar_events.csv`). Adds Broadway Week, which cuts prices, and the 2026 World Cup, a one-off whose effect can't be separated from summer 2026.
+  - `scrapers/weather.py` → `data/raw/weather_nyc.csv` (886 days, no gaps) and `weather_forecast_nyc.csv` (16 days), with morning-line hours kept separate. Modeled values, not station readings: the Jan 25, 2026 storm reads ~7.8 in. against 11.4 reported at Central Park. The website must credit Open-Meteo (CC BY 4.0).
+  - **Not built:** college breaks. Only one could be verified (Mar 16–20, 2026), and a feature with holes would mark most real breaks as "not a break". Closing announcements and weeks since opening come with the cast and grosses work.
 
 ### 3.7 Later-in-day releases ("come back later") 💡 idea
 - **Observation (from a box office visit):** told "no tickets right now, but come back later today, there might be some."
@@ -162,6 +166,8 @@ There's **no single site that lists everything** happening in NYC, so combine se
 - **NYC Tourism + Conventions (nyctourism.com):** event calendar plus monthly tourism stats and seasonality.
 - **Hand-maintained annual list:** Marathon, UN General Assembly week, Fashion Week, Thanksgiving parade, New Year's Eve, Pride, US Open, etc.
 - **Features:** `major_event_midtown_today`, `msg_event_tonight`, `javits_convention_today`, `tourism_index_month`.
+- **Built 2026-11-05:** `scrapers/nyc_events.py` → `data/processed/nyc_events_daily.csv` (full street closures and parades in the theater district, parades and races in Manhattan), and the hand-kept list in `registry/calendar_events.csv`. Raw counts mislead: ~157k of 212k Manhattan rows are sports permits, and parade grandstands are listed three weeks early. **Unknown, not zero:** Sept–Oct 2026 and anything over a month ahead aren't published yet, and July 3–7, 2026 can't be told apart from a lull; these days have `permits_complete = 0` and blank counts.
+- **Not built:** Ticketmaster NYC events, SeatGeek, Javits, nyctourism.com.
 
 ### 3.10 User-submitted reports (verified) 🆕
 **Entry:** the floating "Report rush availability" button (§2.5).
@@ -273,7 +279,7 @@ Also include: a **feature-importance / ablation table** (what happens to accurac
 ### 5.5 LLM extraction budget (Claude Haiku)
 - **Model:** Claude Haiku 5.5 (`claude-haiku-5-5`) for extracting structured rows from Reddit and forum comments (§4) and casting news (§3.12).
 - **Total budget: $8 for the whole project** (raised from $5 on 2026-10-22; $10 of credits loaded). The code enforces a hard stop at $8 across every run (`data/interim/llm_spend.csv`).
-- **Actual so far:** $1.47 (pilot + held-out $0.04; full extraction of 46.8k comments $1.30 via Batches + caching; top-up of 7.4k comments $0.13). Result: 18,262 observations from 10,301 comments in `data/processed/reports.csv`. See `process.md` step 3 and its wrap-up.
+- **Actual so far:** $1.49 (pilot + held-out $0.04; full extraction of 46.8k comments $1.30 via Batches + caching; top-up of 7.4k comments $0.13; catch-up of 576 comments $0.02 on 2026-11-05). Result: 18,412 observations from 10,396 comments in `data/processed/reports.csv`. See `process.md` step 3 and its wrap-up.
 - **Built:** `broadway_rush/extraction/` (prompt, sync pilot, Batches runner, scorer). Structured outputs were rejected because the 25-field schema is too complex for them, so the JSON is described in the prompt and validated plus auto-repaired in code. Effort low, thinking on (thinking off cost more and was less accurate).
 - **Accuracy (held-out 50 comments):** report vs none 94%, observation precision 77% / recall 87%, key fields 83–95%. Labeling rules: `docs/labeling-schema.md`.
 - **Pricing (as of Oct 2026):** $0.10 per 1M input tokens, $0.50 per 1M output tokens. The Batches API is 50% off; cached prompt reads are ~10% of the input price. Thinking tokens bill as output, so run at `effort: low`.
@@ -378,6 +384,13 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 - **Labels:** one row per observation (`line_count` / `attempt` / `supply` / `none`), per `docs/labeling-schema.md`. The 100-comment answer key and the 50-comment held-out set were pre-labeled by Claude and reviewed by Rachel ("human-reviewed labels").
 - **Stack so far:** Python 3.14 venv, package in `src/broadway_rush/`, data in `data/` (`raw/` and `labels/` git-ignored, though `hand_labels.xlsx` and `sample_manifest.csv` were committed before that rule), source registry in `registry/sources.csv`. **Website deploys on Vercel** (2026-11-02). Rachel handles all git commits.
 - **Repo (2026-11-02):** private on GitHub for now; probably **public when the project is done**, so interviewers can see it. Before then, remove Reddit comment text and usernames from what's committed (§7, §9). Private notes stay git-ignored.
+- **Deadline and scope (2026-11-05):** data project competition entry, due **2026-11-17**. Everything stays in: cast + closing news, NYC permitted events, Refresh + PIN, report form + email approval, weekly automatic job, digital rush predictions. Cutting these was proposed and rejected. Core first (data, model, site), so a delay only moves an add-on. Schedule:
+  - **Nov 5–7:** data: catch-up, calendar, weather, NYC permitted events, cast + closing news.
+  - **Nov 8–11:** model: baseline, negative binomial, Bayesian hierarchical, LightGBM, digital rush, results and with/without tables.
+  - **Nov 12–14:** website: day picker, tiles, details, accuracy page; then report form + email approval, Refresh + PIN.
+  - **Nov 15:** weekly automatic job and a full end-to-end test.
+  - **Nov 16:** repo cleanup, README, competition write-up.
+  - **Nov 17:** buffer and submit.
 - **Scheduled jobs (2026-11-05):** GitHub Actions runs the daily ticket snapshots, so they run with the laptop closed. Snapshots are saved to a separate private repo, `broadway-rush-data`, which stays private when this repo goes public. The job commits to that repo by itself; Rachel still does all commits to this repo.
 - **Which shows get predictions (2026-10-22), three groups, decided per show and per date from the policy history:**
   1. **In-person rush + enough data** (≥2 daily-thread reports per running week; ~11 shows now): full prediction (tickets, range, arrival time).
@@ -400,5 +413,7 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 9. Hosting budget: likely **$0** now. The old worry was a nightly headless-browser scrape; the legal sources are one API and one plain page.
 10. Design phone-first? (Likely used at 7–8 am on a phone.)
 11. TodayTix: ask them for permission to use their data (§3.8), or drop it?
-12. Does the NYC Open Data permitted-events feed include the Marathon and other major races and parades? Verify against a past year (e.g. Nov 2024); the hand-maintained list (§3.9) covers them either way.
+12. ~~Does the NYC Open Data permitted-events feed include the Marathon and other major races and parades?~~ Checked 2026-11-05: yes, but the Marathon is listed through Parks setup permits and shows 0 in the daily table on race day, so its date comes from the hand-kept list. Thanksgiving, Pride and St. Patrick's parades show up on the right days.
+13. **Competition rules and judging criteria:** what has to be submitted (public repo, live site, video, slides?) and what are judges scoring? This decides how the last days are spent.
+14. **Refresh by the deadline:** there will only be about 12 days of daily snapshots by Nov 17, so the with/without test in §6.2 can't settle whether ticket data helps. Proposal: keep Refresh for the competition. It shows today's TKTS board and sale status, and changes a prediction only if the model has evidence for it, using the 118 archived TKTS days. The §6.2 rule about dropping Refresh waits until there's enough data.
 - ~~Confirm Ticketmaster Discovery API free-tier limits.~~ Done 2026-10-22: 5,000 calls/day, 5 per second.

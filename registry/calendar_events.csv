@@ -1,0 +1,35 @@
+event,category,start_date,end_date,confidence,source
+nyc_school_summer,school_break,2024-06-27,2024-09-04,official,"schools.nyc.gov 2024-25 calendar (first day Sep 5); the last day of 2023-24, Jun 26, was not re-checked"
+nyc_school_winter,school_break,2024-12-23,2025-01-01,official,schools.nyc.gov 2024-25 calendar PDF
+nyc_school_midwinter,school_break,2025-02-17,2025-02-21,official,schools.nyc.gov 2024-25 calendar PDF
+nyc_school_spring,school_break,2025-04-14,2025-04-18,official,schools.nyc.gov 2024-25 calendar PDF
+nyc_school_summer,school_break,2025-06-27,2025-09-03,official,schools.nyc.gov 2024-25 and 2025-26 calendars
+nyc_school_winter,school_break,2025-12-24,2026-01-02,official,schools.nyc.gov 2025-26 calendar
+nyc_school_midwinter,school_break,2026-02-16,2026-02-20,official,schools.nyc.gov 2025-26 calendar
+nyc_school_spring,school_break,2026-04-02,2026-04-10,official,schools.nyc.gov 2025-26 calendar
+nyc_school_summer,school_break,2026-06-27,2026-09-09,official,schools.nyc.gov 2025-26 and 2026-27 calendars
+nyc_school_winter,school_break,2026-12-24,2027-01-01,official,schools.nyc.gov 2026-27 calendar PDF
+broadway_week,discount,2024-09-03,2024-09-15,single source,nytix.com/articles/broadway-week-dates
+broadway_week,discount,2025-01-21,2025-02-09,multiple sources,"playbill.com, broadwayworld.com, broadwaynews.com"
+broadway_week,discount,2025-09-08,2025-09-21,official,business.nyctourism.com press release
+broadway_week,discount,2026-01-20,2026-02-12,multiple sources,"playbill.com, cbsnews.com"
+broadway_week,discount,2026-09-08,2026-09-20,multiple sources,"broadwayworld.com, travelpulse.com"
+broadway_week,discount,2027-01-19,2027-02-06,single source,nytix.com/articles/broadway-week-dates
+tony_awards,theater,2024-06-16,2024-06-16,multiple sources,news coverage of the 77th Tony Awards
+tony_awards,theater,2025-06-08,2025-06-08,multiple sources,"broadway.com, playbill.com, broadwaynews.com"
+tony_awards,theater,2026-06-07,2026-06-07,multiple sources,"broadway.com, broadwayworld.com, tonyawards.com"
+nyc_marathon,city,2024-11-03,2024-11-03,multiple sources,race listings; NYC Open Data shows the setup permits
+nyc_marathon,city,2025-11-02,2025-11-02,multiple sources,race listings
+nyc_marathon,city,2026-11-01,2026-11-01,multiple sources,"race listings, ny1.com"
+unga_general_debate,city,2024-09-24,2024-09-30,multiple sources,Wikipedia list of General Assembly debates
+unga_general_debate,city,2025-09-23,2025-09-29,multiple sources,Wikipedia list of General Assembly debates
+unga_general_debate,city,2026-09-22,2026-09-28,multiple sources,"Wikipedia, aljazeera.com"
+fashion_week,city,2024-09-06,2024-09-11,official,cfda.com
+fashion_week,city,2025-02-06,2025-02-11,official,cfda.com
+fashion_week,city,2025-09-11,2025-09-16,official,cfda.com
+fashion_week,city,2026-02-11,2026-02-16,multiple sources,"cfda.com schedule news, nationalworld.com"
+fashion_week,city,2026-09-10,2026-09-15,preliminary,third-party calendar quoting CFDA's preliminary schedule
+us_open_tennis,city,2024-08-26,2024-09-08,partly checked,"final date confirmed in search results; start date from memory, not re-checked"
+us_open_tennis,city,2025-08-24,2025-09-07,multiple sources,"bleacherreport.com, skysports.com, thestar.com.my"
+us_open_tennis,city,2026-08-30,2026-09-13,official,usopen.org 2026 tournament dates (search snippet)
+world_cup_2026,city,2026-06-11,2026-07-19,partly checked,"final at MetLife on Jul 19 confirmed in several sources; tournament start date from memory. One-off, so its effect can't be separated from summer 2026"

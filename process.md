@@ -347,3 +347,56 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 **Didn't work / dropped:** the TKTS backfill recovered little: 3 new archive captures since Oct 22, only 1 with a board (the evening of Oct 25). Ticketmaster has lost Oct 23 – Nov 4 (13 days), and TKTS has lost the same days except that one.
 
 **Next:** Rachel commits both repos, adds the token and secrets, and runs the first test. Then catch up Reddit, grosses and policies (running) and extract the new comments with Haiku.
+
+---
+
+## 2026-11-05 — Deadline and plan (no code)
+
+**Did:** set the schedule to the deadline and recorded the decision (SPEC §8).
+
+**Why:** this is Rachel's entry in a data project competition, due 2026-11-17, and she wants to win.
+
+**Result:** the scope doesn't change. Schedule:
+| Dates | Work |
+|---|---|
+| Nov 5–7 | Data: catch-up, calendar, weather, NYC permitted events, cast + closing news |
+| Nov 8–11 | Model: baseline, negative binomial, Bayesian hierarchical, LightGBM, digital rush, results and with/without tables |
+| Nov 12–14 | Website: day picker, tiles, details, accuracy page; then report form + email approval, Refresh + PIN |
+| Nov 15 | Weekly automatic job and a full end-to-end test |
+| Nov 16 | Repo cleanup, README, competition write-up |
+| Nov 17 | Buffer and submit |
+
+**Didn't work / dropped:** Claude proposed cutting six features to fit the time (cast news, permitted events, Refresh + PIN, report form, weekly job, digital rush predictions). Rachel kept them all. Time is handled through build order instead: data, model and site first, so a delay only moves an add-on.
+
+**Next:** get the competition rules and judging criteria (SPEC §9, question 13). Finish the data stage.
+
+---
+
+## 2026-11-05 — Data stage: catch-up, weather, permitted events, calendar
+
+**Did:**
+- Caught up the existing sources: Playbill and BroadwayWorld grosses (through week ending Nov 1), today's rush policies, and Reddit (172 new posts, 1,493 new comments). Extracted 576 comments with Haiku, including the 10 from the earlier failed request, then rebuilt `reports.csv` and the catalog.
+- Rules checks, logged in `registry/sources.csv`: Open-Meteo (free for private sites with no ads or subscriptions; CC BY 4.0, so the site must credit it) and NYC Open Data (public API, 1 s between requests; no ban found in a keyword search of nyc.gov's terms, not a full read).
+- `scrapers/weather.py`, `scrapers/nyc_events.py`, `calendar_features.py`, and `registry/calendar_events.csv` (each date with its source and confidence).
+
+**Why:** the model needs these for demand features, and all of them have history back to June 2024, so they don't depend on the daily snapshots.
+
+**Result:**
+- Haiku: **$0.02** (estimate $0.04). **Project total $1.49.** 58 of 58 requests ok, 3 needed the JSON repair.
+- `reports.csv`: **18,412 observations from 10,396 comments.** 12,510 of 12,899 named reports (97.0%) map to 108 shows. Catalog: 121 productions. Grosses: 127 weeks, 4,089 rows per site, same shows every week, weekly totals within 0.018%.
+- Reddit is quiet, not broken: late Oct–Nov daily threads have about 7 comments a day, and fetched counts match each thread's count.
+- Weather: 886 days, no gaps. Calendar: 975 days, checked against known dates (Thanksgiving, Pride, Tonys, holidays, school breaks).
+- Permits: 48,105 Manhattan events → a daily table of closures, parades and races. Thanksgiving, Pride and St. Patrick's parades land on the right days; a plain Tuesday is zero.
+
+**Found (would have hurt the model):**
+- **Zeros that mean "no data":** the permit files drop ~90% in Sept–Oct 2026 and more than a month ahead because the city hasn't published them. Those days are now marked unknown.
+- **Noise:** ~157k of 212k Manhattan rows are sports permits, and parade grandstands are listed three weeks early. So the table counts only street closures, parades and races.
+- **Third-party dates are often wrong:** search results gave winter recess 2024 as Dec 24; the official PDF says Dec 23. School dates came from the official calendars.
+- **Modeled weather:** the Jan 25, 2026 storm reads ~7.8 in. against 11.4 reported at Central Park.
+- `show_id` holds `-` for known non-Broadway reports (188 rows). Filter those out in model tables.
+
+**Didn't work / dropped:** college breaks. NYU's calendar isn't publicly readable and only Mar 16–20, 2026 could be verified. Weather, permits and the calendar are built, but the daily job doesn't refresh them; that's the weekly job on Nov 15.
+
+**Still failing:** the daily job's first two test runs ended in "Not Found" when getting the data repo. Rachel is replacing the saved token.
+
+**Next:** cast and closing news (check Playbill's `use=reference` signal first), then the model.
