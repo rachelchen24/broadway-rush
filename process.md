@@ -397,6 +397,6 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 
 **Didn't work / dropped:** college breaks. NYU's calendar isn't publicly readable and only Mar 16–20, 2026 could be verified. Weather, permits and the calendar are built, but the daily job doesn't refresh them; that's the weekly job on Nov 15.
 
-**Still failing:** the daily job's first two test runs ended in "Not Found" when getting the data repo. Rachel is replacing the saved token.
+**Still failing:** the daily job's test runs ended in "Not Found" when getting the data repo, even with token settings that looked right. The cause was never found. Switched from a token to a deploy key (`DATA_REPO_SSH_KEY`), which is tied to the one repo and doesn't expire. Not yet tested on GitHub.
 
 **Next:** cast and closing news (check Playbill's `use=reference` signal first), then the model.

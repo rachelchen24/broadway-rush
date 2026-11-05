@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: rachelchen24/broadway-rush-data
-          token: ${{ secrets.DATA_REPO_TOKEN }}
+          ssh-key: ${{ secrets.DATA_REPO_SSH_KEY }}  # deploy key on the data repo, with write access
           path: data/raw
 
       - name: Set up Python
