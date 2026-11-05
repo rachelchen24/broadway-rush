@@ -9,6 +9,7 @@ Phases (each is resumable; raw HTML is cached so re-parsing never re-downloads):
 
 import argparse
 import csv
+import gzip
 import logging
 import re
 import sys
@@ -239,6 +240,23 @@ def write_csv(path: Path, cols: list[str], rows: list[dict]):
         w = csv.DictWriter(f, fieldnames=cols)
         w.writeheader()
         w.writerows(rows)
+
+
+def write_gz(path: Path, text: str):
+    """Save a raw snapshot gzipped: a Ticketmaster snapshot is ~5 MB of JSON, too big to commit daily as is."""
+    path.write_bytes(gzip.compress(text.encode("utf-8"), mtime=0))
+
+
+def cached_files(folder: Path, pattern: str) -> list[Path]:
+    """Raw snapshots in time order. If a plain and a gzipped copy both exist, count only one."""
+    return sorted({f.name.split(".")[0]: f for f in folder.glob(pattern)}.values())
+
+
+def read_cached(path: Path) -> str:
+    """Read a raw snapshot, gzipped (.gz) or plain (files saved before 2026-11-05)."""
+    if path.suffix == ".gz":
+        return gzip.decompress(path.read_bytes()).decode("utf-8")
+    return path.read_text(encoding="utf-8")
 
 
 def main():

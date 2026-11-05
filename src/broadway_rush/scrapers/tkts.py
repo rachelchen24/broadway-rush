@@ -4,8 +4,9 @@
     py -m broadway_rush.scrapers.tkts history   # Internet Archive copies since June 2024 (one per day)
     py -m broadway_rush.scrapers.tkts parse     # re-parse cached HTML only (no requests)
 
-Snapshots are cached as data/raw/tkts/<UTC YYYYMMDDHHMMSS>-live.html (ours)
-or <UTC YYYYMMDDHHMMSS>.html (archive), so the board's history builds up run by run.
+Snapshots are cached as data/raw/tkts/<UTC YYYYMMDDHHMMSS>-live.html.gz (ours)
+or <UTC YYYYMMDDHHMMSS>.html.gz (archive), so the board's history builds up run by run.
+Files saved before 2026-11-05 are plain .html; both are read.
 """
 
 import argparse
@@ -19,7 +20,8 @@ from zoneinfo import ZoneInfo
 from bs4 import BeautifulSoup
 
 from broadway_rush.http import PoliteClient
-from broadway_rush.scrapers.playbill import START_WEEK, WAYBACK_CDX, WAYBACK_WEB, write_csv
+from broadway_rush.scrapers.playbill import (START_WEEK, WAYBACK_CDX, WAYBACK_WEB, cached_files, read_cached, write_csv,
+                                             write_gz)
 
 BOARD_URL = "https://www.tdf.org/discount-ticket-programs/tkts-by-tdf/tkts-live/"
 MIN_INTERVAL = 5.0
@@ -106,7 +108,7 @@ def scrape_live(client: PoliteClient):
     if n == 0:
         log.warning("board has no show rows; not cached (page layout changed?)")
     else:
-        (CACHE / f"{ts}-live.html").write_text(html, encoding="utf-8")
+        write_gz(CACHE / f"{ts}-live.html.gz", html)
         log.info("live board: %d rows", n)
     write_all()
 
@@ -116,12 +118,12 @@ def scrape_history(client: PoliteClient):
     rows = client.get_json(WAYBACK_CDX, {"url": BOARD_URL.split("://", 1)[1], "from": START_WEEK.replace("-", "")[:8],
                                          "output": "json", "filter": "statuscode:200", "collapse": "timestamp:8"})
     caps = [dict(zip(rows[0], r)) for r in rows[1:]]
-    todo = [c for c in caps if not (CACHE / f"{c['timestamp']}.html").exists()]
+    todo = [c for c in caps if not list(CACHE.glob(f"{c['timestamp']}.html*"))]
     log.info("%d archived days, %d to fetch (~%.0f min)", len(caps), len(todo), len(todo) * MIN_INTERVAL / 60)
     empty = 0
     for i, c in enumerate(todo, 1):
         html = client.get_text(f"{WAYBACK_WEB}/{c['timestamp']}id_/{c['original']}")
-        (CACHE / f"{c['timestamp']}.html").write_text(html, encoding="utf-8")  # cache even if unparsed
+        write_gz(CACHE / f"{c['timestamp']}.html.gz", html)  # cache even if unparsed
         empty += not parse_board(html, c["timestamp"], "archive")
         if i % 20 == 0 or i == len(todo):
             log.info("%d/%d fetched (%d with no rows so far)", i, len(todo), empty)
@@ -137,15 +139,16 @@ def section_key(section: str) -> str:
 
 def write_all():
     rows = []
-    for f in sorted(CACHE.glob("*.html")):
-        ts, _, tag = f.stem.partition("-")
-        rows += parse_board(f.read_text(encoding="utf-8"), ts, tag or "archive")
+    files = cached_files(CACHE, "*.html*")
+    for f in files:
+        ts, _, tag = f.name.split(".")[0].partition("-")
+        rows += parse_board(read_cached(f), ts, tag or "archive")
     for r in rows:
         r["section"] = section_key(r["section"])
     write_csv(TKTS_CSV, COLS, rows)
     snaps = {r["snapshot_utc"] for r in rows}
     log.info("wrote %s: %d rows from %d snapshots with rows (%d cached files)", TKTS_CSV.name, len(rows), len(snaps),
-             len(list(CACHE.glob("*.html"))))
+             len(files))
 
 
 def main():

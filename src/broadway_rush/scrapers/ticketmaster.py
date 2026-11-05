@@ -22,7 +22,7 @@ import pandas as pd
 from dotenv import load_dotenv
 
 from broadway_rush.http import PoliteClient
-from broadway_rush.scrapers.playbill import write_csv
+from broadway_rush.scrapers.playbill import cached_files, read_cached, write_csv, write_gz
 
 API = "https://app.ticketmaster.com/discovery/v2/events.json"
 DAYS_AHEAD = 8
@@ -72,8 +72,7 @@ def snapshot(client: PoliteClient):
     if pages > MAX_PAGES:
         log.warning("%d pages available, only %d fetched: shorten DAYS_AHEAD", pages, MAX_PAGES)
     CACHE.mkdir(parents=True, exist_ok=True)
-    path = CACHE / f"{now.strftime('%Y%m%d%H%M%S')}.json"
-    path.write_text(json.dumps(events), encoding="utf-8")
+    write_gz(CACHE / f"{now.strftime('%Y%m%d%H%M%S')}.json.gz", json.dumps(events))
     log.info("snapshot: %d NYC theatre events in the next %d days (%d pages)", len(events), DAYS_AHEAD, page)
     write_all()
 
@@ -101,9 +100,9 @@ def parse_events(events: list[dict], snapshot_utc: str, venues: set[str]) -> lis
 def write_all():
     venues = broadway_venues()
     rows = []
-    for f in sorted(CACHE.glob("*.json")):
-        ts = datetime.strptime(f.stem, "%Y%m%d%H%M%S").replace(tzinfo=timezone.utc).isoformat()
-        rows += parse_events(json.loads(f.read_text(encoding="utf-8")), ts, venues)
+    for f in cached_files(CACHE, "*.json*"):
+        ts = datetime.strptime(f.name.split(".")[0], "%Y%m%d%H%M%S").replace(tzinfo=timezone.utc).isoformat()
+        rows += parse_events(json.loads(read_cached(f)), ts, venues)
     write_csv(EVENTS_CSV, COLS, rows)
     latest = [r for r in rows if r["snapshot_utc"] == max((r["snapshot_utc"] for r in rows), default="")]
     log.info("wrote %s: %d rows; latest snapshot: %d Broadway performances at %d theaters, statuses %s",

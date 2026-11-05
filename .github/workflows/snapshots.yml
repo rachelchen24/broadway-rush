@@ -1,0 +1,75 @@
+# Daily ticket snapshots (SPEC section 6.2): Ticketmaster in the morning, TKTS around noon and in the evening.
+# Files go to the private repo broadway-rush-data, checked out at data/raw, which is where the scrapers write.
+name: Ticket snapshots
+
+on:
+  schedule:
+    # Times are UTC: Eastern is 5 hours behind in winter, 4 in summer. If you change a time, change it in the
+    # "if:" lines below too. Minute 7 because GitHub's start of the hour is busiest, and runs can start late.
+    - cron: "7 12 * * *"  # Ticketmaster: 7:07 am EST / 8:07 am EDT
+    - cron: "7 17 * * *"  # TKTS: 12:07 pm EST / 1:07 pm EDT
+    - cron: "7 23 * * *"  # TKTS: 6:07 pm EST / 7:07 pm EDT
+  workflow_dispatch:      # the "Run workflow" button on the Actions tab; runs both scrapers
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ticket-snapshots
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Get the data repo
+        uses: actions/checkout@v7
+        with:
+          repository: rachelchen24/broadway-rush-data
+          token: ${{ secrets.DATA_REPO_TOKEN }}
+          path: data/raw
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
+      # Editable install: the scrapers find data/raw relative to their own source files.
+      - name: Install the project
+        run: pip install -e .
+
+      - name: Ticketmaster snapshot
+        if: ${{ !cancelled() && (github.event_name == 'workflow_dispatch' || github.event.schedule == '7 12 * * *') }}
+        timeout-minutes: 10
+        env:
+          TICKETMASTER_API_KEY: ${{ secrets.TICKETMASTER_API_KEY }}
+        run: python -m broadway_rush.scrapers.ticketmaster snapshot
+
+      - name: TKTS snapshot
+        if: ${{ !cancelled() && (github.event_name == 'workflow_dispatch' || github.event.schedule != '7 12 * * *') }}
+        timeout-minutes: 10
+        run: python -m broadway_rush.scrapers.tkts live
+
+      # Runs even if a scraper failed, so one source's failure doesn't lose the other's data.
+      # The run still shows as failed, and GitHub emails about it.
+      - name: Save to the data repo
+        if: ${{ !cancelled() }}
+        timeout-minutes: 5
+        working-directory: data/raw
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing new to save"
+          else
+            git commit -m "snapshot $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase
+            git push
+          fi

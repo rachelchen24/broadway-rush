@@ -135,7 +135,7 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 ## ▶ Open items (as of 2026-10-22, after the top-up extraction)
 1. **Steps 1–3 are done.** The Reddit scrape is complete and all comments are extracted except 10 (1 failed request; `batch full` retries it).
 2. **Step 4 done** (4a source check, 4b grosses + policies, 4c show catalog, 4d policy history + website scope decision). Weekly refresh: `.venv\Scripts\python -m broadway_rush.scrapers.playbill grosses`, `... playbill policies`, `... broadwayworld grosses`, then `.venv\Scripts\python -m broadway_rush.catalog build`. After any `batch reports`, re-run `catalog build` (it adds show_id to reports.csv). **Step 5 (baseline model) waits for Rachel's go-ahead.**
-2b. **Step 6 started early** (ticket-site rules + TKTS scraper; see the step 6 entry). TKTS + Ticketmaster scrapers built. Waiting on Rachel: where the scheduled jobs run and where snapshot data is saved (SPEC §9, questions 2–4). Then scheduling, then step 5 (model). The data refresh plan changed on 2026-11-02 (SPEC §6; entry below).
+2b. **Step 6 started early** (ticket-site rules + TKTS scraper; see the step 6 entry). TKTS + Ticketmaster scrapers built, daily job written (2026-11-05 entry below). Waiting on Rachel: commit both repos, add the token and secrets, run the first test. Then the remaining data sources, then step 5 (model). The data refresh plan changed on 2026-11-02 (SPEC §6; entry below).
 3. **Notes for future sessions:**
    - LLM spend ledger: `data/interim/llm_spend.csv`; hard stop $8, $1.47 spent.
    - To refresh Reddit later: `.venv\Scripts\python -m broadway_rush.scrapers.reddit posts`, then `comments` (resumable; run one copy at a time), then `batch full` → `collect` → `reports`.
@@ -302,7 +302,7 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
   - `snapshot`: NYC theatre events for the next 8 days (paged, 200/page, 1 s apart), raw JSON cached in `data/raw/ticketmaster/<UTC>.json`.
   - `parse`: re-parse only. Keeps only venues that match a catalog theater (`venue_key` drops "Theatre", "- NY", …).
   - Output `data/raw/ticketmaster_events.csv`.
-- First snapshot: 683 NYC theatre events → **362 Broadway performances at 40 theaters**, 4 requests, no duplicate venue+time. It also has shows too new for the grosses (Downstate, The Fantasticks). Not on Ticketmaster: Stephen Sondheim (& Juliet), Todd Haimes, Vivian Beaumont.
+- First snapshot: 683 NYC theatre events → **362 Broadway performances at 40 theaters**, 4 requests, no duplicate venue+time. (Corrected 2026-11-05: this counted duplicates. Many shows are listed under two venue IDs, so the real figure is 263 performances at 29 theaters.) It also has shows too new for the grosses (Downstate, The Fantasticks). Not on Ticketmaster: Stephen Sondheim (& Juliet), Todd Haimes, Vivian Beaumont.
 - Use: the next-7-days performance schedule (SPEC §3.0) and, from daily snapshots, early `offsale` as a possible sell-out signal (to test).
 
 **Still waiting on Rachel:** Task Scheduler vs. GitHub Actions for the daily runs (TKTS `live` + Ticketmaster `snapshot`).
@@ -323,3 +323,27 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 - No snapshots were taken Oct 23 – Nov 1 (nothing scheduled yet). Ticketmaster days are lost; TKTS can be partly backfilled from the Internet Archive.
 
 **Next:** Rachel picks where the scheduled jobs run and where snapshot data is saved (SPEC §9), then set up the daily snapshots, then step 5.
+
+---
+
+## 2026-11-05 — Step 6: daily snapshot job + private data repo
+
+**Did:**
+- Rachel chose GitHub Actions plus a separate private repo, `broadway-rush-data`.
+- `.github/workflows/snapshots.yml`: Ticketmaster at 7:07 am EST; TKTS at 12:07 and 6:07 pm EST. The "Run workflow" button runs both. The data repo is checked out at `data/raw`, so the scrapers needed no path changes. If one scraper fails, the other's data is still saved and the run shows as failed.
+- New snapshots are gzipped (`write_gz`, `read_cached`, `cached_files` in `playbill.py`). The scrapers still read older plain files, and count one copy if both exist.
+- Took today's snapshots and re-ran the TKTS archive backfill.
+- Cloned the data repo next to this project, copied all snapshots in (gzipped), added a README and `.gitignore`, and staged 154 files for Rachel to commit.
+
+**Why:** ticket sites keep no history, so each day without a snapshot is lost. A raw Ticketmaster snapshot is ~5 MB, too big to commit daily.
+
+**Result:**
+- Today's snapshots: 768 NYC theatre events from Ticketmaster (4 requests), 82 TKTS rows (1 request). Ticketmaster file 5 MB → ~450 KB gzipped. Everything staged is ~4.3 MB.
+- Checked: the copies parse to the same rows as the local CSVs (TKTS 9,179 rows from 128 snapshots; Ticketmaster 773), and no API key appears in any staged file.
+- The workflow file parses as valid YAML but **hasn't run on GitHub yet**. Whether TKTS accepts GitHub's machines is unknown until the first test.
+- **Correction:** Ticketmaster lists many shows twice under two venue IDs. Nov 5: 411 rows → 302 unique performances at 36 theaters. Oct 22: 263 at 29, not the 362 at 40 logged earlier. Remove duplicates by theater + date + time when building model tables.
+- Reddit reports are scarcer than the spec assumed: ~6–11 a day in Sep–Oct, not ~16 (SPEC §6.2 updated).
+
+**Didn't work / dropped:** the TKTS backfill recovered little: 3 new archive captures since Oct 22, only 1 with a board (the evening of Oct 25). Ticketmaster has lost Oct 23 – Nov 4 (13 days), and TKTS has lost the same days except that one.
+
+**Next:** Rachel commits both repos, adds the token and secrets, and runs the first test. Then catch up Reddit, grosses and policies (running) and extract the new comments with Haiku.

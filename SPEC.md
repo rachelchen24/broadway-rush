@@ -1,6 +1,6 @@
 # Broadway Rush — Spec (draft)
 
-> Status (2026-11-02): build steps 1–4 are built (Reddit scrape → labeled extraction pilot → full extraction into `data/processed/reports.csv` → grosses, rush policies + history, show catalog). Step 6 was moved up: the TKTS and Ticketmaster snapshot scrapers are built, but the daily schedule isn't set up yet. Steps 5 (model) and 7 (website) aren't started. What was built, and how, is in `process.md`. ~~Struck~~ text was replaced; anything not marked built is still a plan.
+> Status (2026-11-05): build steps 1–4 are built (Reddit scrape → labeled extraction pilot → full extraction into `data/processed/reports.csv` → grosses, rush policies + history, show catalog). Step 6 was moved up: the TKTS and Ticketmaster snapshot scrapers are built, and the daily GitHub Actions job is written but hasn't run on GitHub yet. Steps 5 (model) and 7 (website) aren't started. What was built, and how, is in `process.md`. ~~Struck~~ text was replaced; anything not marked built is still a plan.
 > Standalone project: nothing is reused from previous projects.
 
 ## 1. Concept
@@ -83,7 +83,7 @@ A dataset of **every show playing and every performance** for the next 7 days, p
   - **Each show's official site and seller calendar:** the source of truth for exact performances, including holiday changes and cancellations. Playbill itself says to confirm there.
   - ~~**Broadway League / IBDB:** show list, theater, opening and closing dates.~~ **Skipped (2026-10-22):** both sites' ToS forbid automated harvesting. Show list and theaters come from the weekly grosses tables instead (§3.3).
   - **Ticketmaster Discovery API (official):** lists events, venues and dates for Ticketmaster-sold theaters. Cross-check.
-    - **Built 2026-10-22** (`scrapers/ticketmaster.py snapshot`): next 8 days → 362 Broadway performances at 40 of 43 theaters (missing: Sondheim, Todd Haimes, Vivian Beaumont), with sale status. No prices or seat counts for Broadway. Daily for now; only on Refresh after launch (§6.2).
+    - **Built 2026-10-22** (`scrapers/ticketmaster.py snapshot`): next 8 days → about 300 unique Broadway performances at 36 theaters (2026-11-05), with sale status. Many shows are listed twice under two venue IDs, so remove duplicates by theater + date + time. (First written as 362 at 40; that counted duplicates. The real Oct 22 figure was 263 at 29.) No prices or seat counts for Broadway. Daily for now; only on Refresh after launch (§6.2).
 - **Built 2026-10-22 (history part):** `broadway_rush/catalog.py` → `data/processed/shows.csv`: 118 productions with `show_id`, theater, Musical/Play, first/last grosses week, seats, and Playbill + BroadwayWorld IDs. Free-text show names (Reddit reports, policies) are mapped to `show_id` by normalized name + hand aliases (`registry/show_aliases.csv`) + close spelling, and only count if the show was on Broadway that date: 97% of named reports are mapped. The forward-looking performance schedule (next 7 days) is still to build.
 - **History:** grosses (§3.3) say which shows ran each week since June 2024. The weekly Playbill grid can be backfilled from archived copies if available.
 
@@ -316,8 +316,9 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 
 ### 6.2 Ticket data: daily for now, on click later
 - **Phase A, training collection (now → step 5):** a scheduled **daily** snapshot of TKTS + Ticketmaster (§3.2), whether or not anyone visits. The model can only learn what ticket data means from snapshots taken the same way every day, on days that also have Reddit reports.
-  - How long: at least 2–3 months is a guess (~16 daily-thread reports a day → ~1,000–1,500 reports with ticket data). Decide at step 5.
-  - Times: Ticketmaster in the morning (~7 am ET, when day-of users check); TKTS after the booths open (afternoon). Confirm from the boards' "Updated" times in `tkts.csv` first.
+  - How long: at least 2–3 months is a guess. Daily-thread reports ran ~6–11 a day in Sep–Oct 2026 (13 a day since May), about three-quarters naming a show, so three months may give ~450–750 usable reports with ticket data. (First written as ~16 a day → 1,000–1,500.) Decide at step 5.
+  - Times (`.github/workflows/snapshots.yml`): Ticketmaster at 7:07 am EST, when day-of users check; TKTS at 12:07 and 6:07 pm EST. All are an hour later on the clock during daylight time. Archived boards were updated 10 am – 8 pm, so a morning TKTS snapshot wouldn't help; cut to one a day once we see when the board settles.
+  - A day-of morning prediction can't see that day's TKTS board yet, so it would have to use the previous day's. Settle at step 5.
 - **Phase B, after launch:** ticket data is fetched **only when someone clicks Refresh** (§6.3).
 - **If step 5 shows the ticket features don't help** (ablation, §5.3), stop collecting them and drop the Refresh button.
 - **Watch out for (moving to click-only):**
@@ -339,7 +340,7 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 
 | Risk | Notes |
 |---|---|
-| No historical availability / price snapshots | §3.2, §3.8. No legal source has seat counts at all. Snapshots of what is legal (TKTS, Ticketmaster sale status) start once the daily job is scheduled; nothing was collected Oct 23 – Nov 1, 2026. Grosses are the proxy before that. |
+| No historical availability / price snapshots | §3.2, §3.8. No legal source has seat counts at all. Snapshots of what is legal (TKTS, Ticketmaster sale status) start once the daily job is scheduled; nothing was collected Oct 23 – Nov 4, 2026, except one archived TKTS board. Grosses are the proxy before that. |
 | Labels mostly bounds | §4. Intervals will be wide early on. |
 | Selection bias | People post wins and dramatic losses, not boring days: 3,382 "got rush" vs. 160 "sold out before me". |
 | Policy drift | Policy history stored (§3.4). Prices barely move; whether a show offers rush does. |
@@ -377,20 +378,21 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 - **Labels:** one row per observation (`line_count` / `attempt` / `supply` / `none`), per `docs/labeling-schema.md`. The 100-comment answer key and the 50-comment held-out set were pre-labeled by Claude and reviewed by Rachel ("human-reviewed labels").
 - **Stack so far:** Python 3.14 venv, package in `src/broadway_rush/`, data in `data/` (`raw/` and `labels/` git-ignored, though `hand_labels.xlsx` and `sample_manifest.csv` were committed before that rule), source registry in `registry/sources.csv`. **Website deploys on Vercel** (2026-11-02). Rachel handles all git commits.
 - **Repo (2026-11-02):** private on GitHub for now; probably **public when the project is done**, so interviewers can see it. Before then, remove Reddit comment text and usernames from what's committed (§7, §9). Private notes stay git-ignored.
+- **Scheduled jobs (2026-11-05):** GitHub Actions runs the daily ticket snapshots, so they run with the laptop closed. Snapshots are saved to a separate private repo, `broadway-rush-data`, which stays private when this repo goes public. The job commits to that repo by itself; Rachel still does all commits to this repo.
 - **Which shows get predictions (2026-10-22), three groups, decided per show and per date from the policy history:**
   1. **In-person rush + enough data** (≥2 daily-thread reports per running week; ~11 shows now): full prediction (tickets, range, arrival time).
   2. **In-person rush, little data** (~5 now: Chicago, Six, Hadestown SRO, & Juliet, Wicked): no number; "limited data, probably easy" plus the policy and recent % capacity. (Quiet in-person shows run ~84% full vs. 94% for busy ones; `process.md` step 4d.)
   3. **No in-person rush** (lottery / digital only, e.g. Hamilton, Lion King, Book of Mormon): listed with lottery and digital-rush info only, no line prediction. Few Reddit posts here does *not* mean low demand: these shows are 94–99% full.
-- **Build order:** 1 Reddit → CSV ✅ · 2 labels + Haiku pilot ✅ · 3 full extraction ✅ · 4 grosses + rush policies + show catalog ✅ · 6 snapshot scrapers (moved up because ticket data has no history; TKTS + Ticketmaster built 2026-10-22, daily schedule not set up yet) · 5 baseline model + results table · 7 website. Don't skip ahead without asking.
+- **Build order:** 1 Reddit → CSV ✅ · 2 labels + Haiku pilot ✅ · 3 full extraction ✅ · 4 grosses + rush policies + show catalog ✅ · 6 snapshot scrapers (moved up because ticket data has no history; TKTS + Ticketmaster built 2026-10-22, daily job written 2026-11-05, not yet run on GitHub) · 5 baseline model + results table · 7 website. Don't skip ahead without asking.
 - **Accuracy page:** yes (§2.6).
 - **Docs:** `SPEC.md` (this file), `process.md` (what was built and how, kept up to date during coding), `interview-notes.md` (private talking points, **git-ignored**), `claude-notes.md` (Claude's working notes between sessions, **git-ignored**).
 
 ## 9. Open questions
 
 1. Worth-it thresholds: what probability counts as "GO"? Decide after step 5, from the backtest.
-2. **Where the scheduled jobs run** (daily snapshots now, the weekly job later): GitHub Actions (runs with the laptop off; free minutes cover it) or Windows Task Scheduler on the laptop (only runs if it's awake)? Leaning GitHub Actions.
-3. **Where the daily snapshot data is saved,** if jobs run on GitHub Actions (each run starts on a fresh machine, so git-ignored files vanish): a separate private data repo (stays private when this repo goes public), this repo, or cloud storage? Leaning separate private repo.
-4. **Snapshot times:** Ticketmaster ~7 am ET, TKTS in the afternoon? Check the TKTS boards' "Updated" times first.
+2. ~~Where the scheduled jobs run.~~ Decided 2026-11-05: GitHub Actions (§8). If TKTS refuses GitHub's machines, that one source runs from the laptop instead.
+3. ~~Where the daily snapshot data is saved.~~ Decided 2026-11-05: private repo `broadway-rush-data` (§8).
+4. ~~Snapshot times.~~ Set 2026-11-05 (§6.2).
 5. **How long Phase A (daily ticket collection, §6.2) runs** before switching to click-only. Guess: at least 2–3 months; decide at step 5.
 6. **After launch, keep a cheap daily ticket snapshot anyway?** It keeps history-based features ("days on TKTS in the last 30") and adds training data that isn't skewed toward days someone clicked, at ~5 requests a day. Or go click-only as planned.
 7. **Before making the repo public:** git history keeps every old version, so deleting files isn't enough. Scrub `hand_labels.xlsx` and the `author` column of `reports.csv` out of the history, or publish a fresh copy with one clean starting commit? Also check whether Ticketmaster's API terms allow publishing its data.
