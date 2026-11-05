@@ -42,24 +42,26 @@ jobs:
 
       # Editable install: the scrapers find data/raw relative to their own source files.
       - name: Install the project
+        id: install
         run: pip install -e .
 
       - name: Ticketmaster snapshot
-        if: ${{ !cancelled() && (github.event_name == 'workflow_dispatch' || github.event.schedule == '7 12 * * *') }}
+        if: ${{ github.event_name == 'workflow_dispatch' || github.event.schedule == '7 12 * * *' }}
         timeout-minutes: 10
         env:
           TICKETMASTER_API_KEY: ${{ secrets.TICKETMASTER_API_KEY }}
         run: python -m broadway_rush.scrapers.ticketmaster snapshot
 
       - name: TKTS snapshot
-        if: ${{ !cancelled() && (github.event_name == 'workflow_dispatch' || github.event.schedule != '7 12 * * *') }}
+        if: ${{ !cancelled() && steps.install.outcome == 'success' && (github.event_name == 'workflow_dispatch' || github.event.schedule != '7 12 * * *') }}
         timeout-minutes: 10
         run: python -m broadway_rush.scrapers.tkts live
 
       # Runs even if a scraper failed, so one source's failure doesn't lose the other's data.
-      # The run still shows as failed, and GitHub emails about it.
+      # The run still shows as failed, and GitHub emails about it. Skipped if setup failed: without the
+      # data repo, data/raw is just a folder inside the code repo, and git would act on the wrong repo.
       - name: Save to the data repo
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.install.outcome == 'success' }}
         timeout-minutes: 5
         working-directory: data/raw
         run: |
