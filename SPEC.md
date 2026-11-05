@@ -1,6 +1,6 @@
 # Broadway Rush — Spec (draft)
 
-> Status (2026-11-05): build steps 1–4 are built (Reddit scrape → labeled extraction pilot → full extraction into `data/processed/reports.csv` → grosses, rush policies + history, show catalog). Step 6 was moved up: the TKTS and Ticketmaster snapshot scrapers are built, and the daily GitHub Actions job is written but hasn't run on GitHub yet. Steps 5 (model) and 7 (website) aren't started. What was built, and how, is in `process.md`. ~~Struck~~ text was replaced; anything not marked built is still a plan.
+> Status (2026-11-05): build steps 1–4 are built (Reddit scrape → labeled extraction pilot → full extraction into `data/processed/reports.csv` → grosses, rush policies + history, show catalog). Step 6 was moved up: the TKTS and Ticketmaster snapshot scrapers are built, and the daily GitHub Actions job works (manual run succeeded 2026-11-05; first scheduled run still to confirm). Calendar, weather and NYC permitted events were added 2026-11-05. Steps 5 (model) and 7 (website) aren't started; the combo is chosen and planned in §5.2, not built. What was built, and how, is in `process.md`. ~~Struck~~ text was replaced; anything not marked built is still a plan.
 > Standalone project: nothing is reused from previous projects.
 
 ## 1. Concept
@@ -9,7 +9,7 @@
 
 **Why / who**
 - Built for me: I love shows but never know what to expect at the rush line.
-- A **portfolio ML project**, and my entry in a **data project competition, due 2026-11-17**. I want to win.
+- A **portfolio ML project**, and my entry in a **data project competition**: ~~due 2026-11-17~~ complete by **2026-11-23**, turned in **2026-11-24**, presented **2026-12-07**. I want to win.
 - Used by family and friends if it proves accurate. Not designed for a large user base, so no need to optimize for scale, accounts or heavy spam protection.
 - **Used now and then:** I might not check it every day, or even every week, so nothing should depend on someone visiting daily (§6).
 
@@ -21,6 +21,31 @@
 - **In-person general rush** (main output) and **digital rush** (secondary output, §3.5). **SRO** is collected in user reports (§3.10) but not predicted (yet). Lotteries and student rush are out of scope.
 - **Horizon: the next 7 days.** Predicting weeks out would be extrapolation and isn't the point of the app.
 - **Day-of use is fine:** if someone checks at 8 am on the day, show everything (the latest snapshot, recommended arrival time, digital rush).
+
+### 1.1 Judging rubric (50 points, received 2026-11-05)
+| Criterion | Points | What it asks |
+|---|---|---|
+| Data Preprocessing / Data Cleaning | 8 | Is the data from a reliable source? What cleaning was necessary, and what was done? Were new columns added for processing? What other preparation was done? |
+| Data Processing | 10 | Do the techniques make sense? Is bias/overfitting accounted for? Are the technologies innovative? Are there mistakes? |
+| Visualization | 7 | Does the project include visualizations? Are they relevant to the results? Do they show important relationships in the data? Were the techniques effective in getting the point across? |
+| Presentation | 10 | Is it clear? Presentation skills, such as interaction with the audience. Quality of the slides and the audio. Did all team members speak an equal amount? |
+| Results | 7 | Does it address a significant problem or question? Do the results have practical applications and support meaningful decisions? Is the broader relevance well articulated and demonstrated? |
+| Creativity | 8 | Are the approaches creative and innovative? Does it tackle a unique issue? |
+
+### 1.2 Still to do for the rubric (mine to take care of)
+Compared against the project on 2026-11-05.
+| Criterion | Points | Where it stands | Still to do |
+|---|---|---|---|
+| Data Preprocessing | 8 | Strong: source rules check, new columns, extraction tested on held-out comments, grosses from two sites agreeing within 0.018% | Show why Reddit reports can be trusted. Make a clear cleaning funnel: 139,584 comments → 18,412 observations → the rows the model uses. |
+| Data Processing | 10 | Not built. The plan fits: bounds for one-sided labels, tests in time order | Build the model. Show the bias and overfitting checks, including the score against the lookup table and the 89% "always yes". Explain the step that joins the combo's two parts. |
+| Visualization | 7 | No charts exist; the spec plans only one (§2.6) | Make charts of how lines grow by time, chance vs arrival time, predicted vs actual, and what drives line length. |
+| Presentation | 10 | Not on the schedule | Make slides, set aside rehearsal time, plan audience interaction, and get good audio. |
+| Results | 7 | The question is clear, but there's no working site or real-world check yet | Get a working demo and do real rush runs. Explain the bigger point: rush costs about $45, against average tickets of $148–$200 at shows like The Outsiders and Just in Time. |
+| Creativity | 8 | Strong: unusual topic, AI-extracted labels from Reddit, predicting when to show up | Say this clearly in the presentation. |
+
+Also to do:
+- Put charts and the presentation on the schedule (§8). Together they're worth 17 points, and neither has time set aside. Doing them before the report form, Refresh and PIN would be the better order: those stay in scope but earn no direct points.
+- Find out what has to be turned in on Nov 24, whether this is solo or a team, and whether Dec 7 is live or recorded (§9, question 13).
 
 ## 2. User flow & UI
 
@@ -42,7 +67,7 @@
 > We're **__%** confident there will be **__ ± __** rush tickets at **$__**.
 > Get there by **__:__** for the best chance of getting one.
 
-- **Always show the arrival time**, even when it's absurd (e.g. 6 am). A 6 am time almost certainly means the bar is red, but people who want it badly enough deserve to know.
+- **Always show the arrival time**, even when it's absurd (e.g. 6 am). A 6 am time almost certainly means the bar is black, but people who want it badly enough deserve to know.
 - **Confidence slider (hidden by default):** an "Adjust confidence" button reveals a slider (e.g. 50%–95%) that widens or narrows the ± range live. Hidden so casual users only see the verdict and a default (e.g. 80%). It's cheap to build: the model outputs a full distribution, so the slider just reads different quantiles.
 - **Digital rush section** (only for shows that offer it):
   > Digital rush opens at **9:00 AM** on **TodayTix** for **$__**.
@@ -54,7 +79,7 @@
 
 ### 2.4 Look & feel
 - **Purple theme** (deep purple), with text in **glowing / illuminated light colors** (neon-marquee feel).
-- **Worth-it bar: red → blue.** Red = stay home, blue = GO. Fits the purple theme better than red → green, with purple in the middle as "Maybe."
+- **Worth-it bar: black → gray → gold** (~~red → purple → blue~~, changed 2026-11-05). Black = stay home, gray = Maybe, gold = GO.
 
 ### 2.5 Report button
 - A **floating button on the side** with a **form icon**, labeled **"Report rush availability"**.
@@ -224,7 +249,7 @@ People rarely post exact counts. They post things like:
 
 Most labels are **bounds** (interval-censored); the model must use them. Verified user reports (§3.10) are the cleanest labels.
 
-How much a show's rush count swings day to day is unknown; the Reddit data should reveal it.
+How much a show's rush count swings day to day: first look (2026-11-05), among the 13 shows with 5+ stated counts, the typical swing is about half the show's average (coefficient of variation: median 0.49, from 0.13 for Every Brilliant Thing to 0.88 for John Proctor Is the Villain). Some of that is extraction noise.
 
 **Extraction (LLM over each comment) → one row per observation** (`line_count` / `attempt` / `supply`, per `docs/labeling-schema.md`; one comment can have several):
 `show, performance date, matinee/evening, rush type, arrival time, line position, outcome (got / didn't / full price only), tickets bought, stated count, sellout time, SRO offered, return visit time/outcome, cast notes, comment timestamp, extraction confidence`
@@ -237,43 +262,189 @@ Validation: ~~hand-label ~100 comments first~~ done: a 100-comment answer key pl
 
 **Arrival time:** model line position vs. arrival time per show and day type; recommended time = latest arrival where expected line position < predicted supply with high probability. Always displayed, even if extreme.
 
-**Verdict / worth-it bar:** P(get a ticket | arrive at the recommended time). If that time is extreme (e.g. 6 am), the verdict reflects how unrealistic it is (likely red), but the time is still shown.
+**Verdict / worth-it bar:** P(get a ticket | arrive at the recommended time). If that time is extreme (e.g. 6 am), the verdict reflects how unrealistic it is (likely black), but the time is still shown.
 
 **Ranking:** **P(get a ticket)**, highest first.
+
+**Problem found 2026-11-05:** the chance at the recommended time comes out about the same for every show, because that time is chosen to hit a target chance. So the verdict and ranking need a fixed comparison, such as the chance if I arrive at 9:00 (§9, question 16).
 
 ### 5.1 Low-data shows
 - **No data at all → skip** (§2.7).
 - **Some data (prices, grosses) but no reports →** predict from the hierarchical prior + popularity features (§3.3, §3.8, §3.12), labeled `Low confidence` with a wider range. Show-specific data takes over as reports arrive.
 
-**Evaluation:** interval coverage (80% intervals contain the truth ~80% of the time), arrival-time error, verdict accuracy (did GO days work out?) on held-out recent months; plus real rush runs.
+**Evaluation:** interval coverage (80% intervals contain the truth ~80% of the time), arrival-time error, verdict accuracy (did GO days work out?) on ~~held-out recent months~~ rolling monthly test windows over the last 12 months (§5.2: recent months alone have too few labels); plus real rush runs.
 
-### 5.2 Models to try
-Try several and let the backtest pick. All are evaluated on the same **time-based split** (train on older months, test on the most recent ones, never shuffled), so there's no leakage from the future.
-| Model | Why try it |
+### 5.2 Model options (evaluated 2026-11-05; combo chosen)
+Replaces the first "Models to try" table, which listed the same families without checking them against the data. Nothing here is built. Accuracy notes are expectations until the backtest runs.
+
+**Decision (2026-11-05): the combo (Option 4) for both the first model and the final model, because it's more fun to talk about.** The first version stays simple, so I can see the whole site working on it. The final version is a leveled-up combo (~~full Bayesian or an improved combo~~). Not started; how it works is in §5.2a.
+- **Keeping the first version simple:** LightGBM for the line and the Bayesian model for the cutoff, with a small set of features and one fitted spread on the line side.
+- **What it's compared against:** the per-show lookup table stays as the bar to beat.
+- **Other first models considered:** Claude suggested the penalized regressions as the quickest first model. They stay as the fallback in the stop rule below and as a comparison row. Boosted trees alone would likely overstate the chance of a ticket.
+- **Cost:** this isn't the quickest possible first model (about 2–3 days to build, against about 1 for the regressions), but the work carries over into the final version. With about a day of shared groundwork, that fills the Nov 8–10 slot, so starting earlier helps.
+
+**Every option predicts the same two things:**
+1. **Line:** how many people are in line at time *t*, for this show on this day.
+2. **Cutoff:** how many people in line get a rush ticket that day.
+
+P(get a ticket if I arrive at *t*) = P(line at *t* is shorter than the cutoff). Arrival time, verdict and ranking all come from that (§5). The ticket count comes from the cutoff, converted from people to tickets: stated counts are in tickets, line positions are in people, and buyers report about 1.8 tickets each.
+
+**What the labels look like** (in-person rush, mapped to a show, counted 2026-11-05: 11,588 rows, 100 shows, 4,493 show-days):
+| Part | Amount | What it means for the model |
+|---|---|---|
+| Line | 7,973 time + count points before 10:00, on 3,397 show-days across 82 shows; 1,854 of those days have 2+ points | The strongest data by far. The spread is about 5.7× what a Poisson model allows (8:00–9:30), so negative binomial, not Poisson. |
+| Cutoff | 1,064 show-days: 207 with a stated count, 686 with only a lower bound ("got it at #7"), 81 with only an upper bound (sold out, or SRO / full price only), 11 with both, 79 with only a sold-out time | Almost entirely one-sided. The model must use bounds, and something has to set the ceiling for shows that only have lower bounds. |
+| Outcomes | 1,133 attempts with an arrival time and a known outcome: 89% got a ticket | People post their wins. A model that always says "yes" scores 89%. |
+| Matinee vs evening | 91% of rows don't say | Predict per show-day. Matinee vs evening can only be a small adjustment, so the details view (§2.1) may show one prediction for both. |
+| What explains line length at 8:00–9:30 | Show alone 24%, show + weekday 42%, show + quarter 37% (measured on the same data, so optimistic) | A lot stays unexplained. Expect wide ranges from any model. |
+| Line vs tickets | Rank correlation (0 = unrelated, 1 = move together) on the 125 show-days with both: 0.09 within a show (100 days, 14 shows), 0.29 pooled, 0.24 between shows (21 shows) | Mostly separate questions. Being good at predicting the line says little about predicting tickets. |
+| Line vs popularity | Across 38 shows: 0.57 with % capacity, 0.43 with average ticket price. 45% of shows moved by 1.5× or more between the first and second half of their reports | Related, not the same. Popularity also drifts, so every model needs a "recent line level" input. |
+
+**The options: pros and cons.** Build times are after about a day of shared groundwork, with 6 model days in total (Nov 8–10 and Nov 17–19, §8). Build and fit times are estimates; accuracy notes are expectations until the backtest runs. Each row lists one pro and one con; a pro and a con on the same row aren't related.
+| Option | Pros | Cons |
+|---|---|---|
+| **1. Bayesian hierarchical** (NumPyro) | Treats "got it at #7" as "at least 7", which is all that most cutoff days offer (686 of 1,064). | Longest build of the single models: ~2 days, and the most uncertain. |
+| | Shows with only lower bounds borrow a ceiling from other shows. | The fit could be slow or fail to converge. Weekly fit ~10–40 min. |
+| | New and thin shows start from similar shows, and their ranges widen by themselves, so `Low confidence` is computed (8 of the 22 shows reported in the last 45 days have under 35 rows). | We choose the shape of the line curve up front, and a wrong shape hurts every show. |
+| | Five reports from one morning count as one busy day, not five separate facts (1,854 days have 2+ points). | For shows with only lower bounds, the cutoff is an informed guess. |
+| | Slider, chance of a ticket and arrival time all read off the same simulations. | May lose to trees on plain line error. |
+| | Each factor is a plain multiplier on the line, so "why this prediction" is easy. Refresh on Vercel is arithmetic on saved results. | New heavy packages (numpyro, jax), not yet run on this laptop. The math takes more explaining. |
+| | Strongest competition story: biased, one-sided labels handled openly, with proof the ranges are honest. | Slow to test: 12 monthly test windows at 10–40 min each is about 2–8 hours per backtest, repeated for every with/without row in §5.3. A faster fit cuts that, with less reliable ranges. |
+| **2. Boosted trees** (LightGBM + XGBoost) | Quick: ~1 day to build, under a minute to fit. | Cutoffs will likely float too high: 686 lower bounds vs 81 upper, and nothing pulls them down. The app then says GO too often, and the 89% "always yes" score would hide it. |
+| | Likely the best at predicting line length. | A new show gets an average of similar rows, with no wider range to warn anyone. |
+| | Finds combinations by itself (this show + Saturday + school break), with no curve shape to choose. | Same-day reports look like separate evidence, unless we weight each show-day to count once. |
+| | Handles many features and messy data with little setup. | The slider needs one model per confidence level, or a distribution on top, and separate levels can contradict each other. |
+| | Standard tools that interviewers know. Per-feature contributions can explain each prediction. | Trees can't easily run on Vercel, so the weekly job has to save predictions for the few cases Refresh can change (on TKTS or not, on sale or not). |
+| | | Needs two libraries, because LightGBM can't take bounds (XGBoost's AFT objective does the cutoff). A familiar story that stands out less. |
+| **3. Penalized negative binomial regressions** (SciPy) | Quick: ~1 day to build, seconds to fit. | Ranges run narrow because they ignore uncertainty in the model's own estimates, most of all for thin shows. |
+| | Easiest to explain: every coefficient is a plain multiplier. | No busy-day effect, so same-day reports look like separate evidence. Weighting each show-day to count once helps; a real busy-day effect would make it a mixed model and lose the simplicity. |
+| | Takes bounds as bounds. | The penalty is a blunter ceiling than Option 1's, so shows with only lower bounds may still float high. |
+| | The penalty stops thin shows from going wild. | A new show falls back to the average, with no wider range. |
+| | Only needs SciPy. Refresh on Vercel is plain arithmetic. | Misses combinations unless we add them by hand. |
+| | Shares its likelihood with Option 1, so it's also Option 1's fallback. If it ties Option 1, it's the simpler thing to ship. | We write the bounds likelihood ourselves (statsmodels has none), which leaves room for bugs. A plain competition story. |
+| **4. Mix** (trees for the line, Bayesian for the cutoff; rescored 2026-11-05, first version was too harsh) | Each part gets the tool that fits its labels: full numbers for trees, bounds for Bayesian. | Longest build: ~2.5–3 days of the 6 available. |
+| | Possibly the most accurate overall. | Two systems to debug, plus the step that joins them. |
+| | Keeps Option 1's cutoff, which avoids the trees' too-rosy GO problem. The ticket range and slider come straight from it. | Joining assumes line and cutoff are unrelated once the features are known. First check: 0.09 within a show, so it looks safe, but on only 100 show-days. |
+| | Quick to test: trees fit in under a minute, and the cutoff model is much smaller than Option 1 (1,064 labeled days, no line curve, no busy-day effect for each of 3,397 line days), so minutes rather than 10–40. That makes the results and with/without tables practical. | Thin and new shows get no pull toward similar shows on the line side. `Low confidence` would be set by rule, and thin shows' spread calibrated separately. |
+| | The line needs no curve shape chosen up front. | No popularity number comes straight out of the line side. We'd compute one by predicting each show on a standard day, with no error bars. |
+| | Three new packages: lightgbm, numpyro, jax (no XGBoost needed). | Trees can't easily run on Vercel, so the weekly job has to save predictions for the few cases Refresh can change. |
+| | A clean story: demand has full numbers, supply has bounds, so each gets the tool that fits. | The busy-day effect isn't modeled directly on the line side, so same-day reports are weighted to count once. The joining step takes explaining. |
+
+**Ruled out:**
+| Model | Pro | Con |
+|---|---|---|
+| Direct "got it / didn't" classifier | The most direct answer to "will I get one?", and quick to build. | 89% of known outcomes are wins, so it would mostly learn who posts. It can't give a ticket count. |
+| Poisson regression | The simplest count model. | The line's spread is about 5.7× what it allows, so its ranges would be far too narrow. |
+| Survival on clock time (time to sellout) | A natural fit for "when does rush run out?" | Only 134 show-days have a sold-out time. Counted by line position instead, survival is already the cutoff part of Options 1 and 3. |
+
+**Recommendation: Option 4** (changed 2026-11-05; ~~Option 1~~). Working through it showed the first scoring was too harsh: it charged the combo for the full Bayesian model's fit time, but its Bayesian part covers only the cutoff, the smaller part. Testing speed decides it: the results and with/without tables (§5.3) need many full backtests, which is practical with the combo and slow with Option 1. Option 1 keeps two advantages: thin shows on the line side, and one joined model with no independence assumption. Trees winning on the line is still an expectation, so the comparison rows have to test it before the model freezes. **Stop rule:** if the cutoff model isn't working by the end of Nov 10, fit it a faster way, then use Option 3's cutoff, so a delay can't reach the website stage. **The model is frozen at turn-in, Nov 24 (§8).**
+
+**Same for every option:**
+- **The lookup table stays:** per-show median by weekday and time window (the first version of this spec called it the baseline). It's the bar to beat. If nothing beats it, say so.
+- **Test windows:** rolling monthly windows over the last 12 months, training only on earlier data, never shuffled. A single last-3-months test would hold only 3 stated counts and 5 negative outcomes; 12 months has 80 and 52, plus 2,467 line counts and 485 wins. Keep some windows untouched for the final score, so that picking winners doesn't become overfitting: the last few, or every fourth month, since the last 3 months are thin on ticket labels.
+- **Only what's known at prediction time:** grosses lag at least a week (published after the week ends), TKTS is the previous day's, forecasts replace modeled weather, blank permit counts stay unknown.
+- **Line points only from before the box office opens.** After that the line shrinks as tickets sell (1,260 rows at or after 10:00). Opening times vary by show and day, and many box offices open at noon on Sundays (§3.4), so measure time from that show's opening that day. The counts above used a flat 10:00 cutoff, so the real numbers will shift a little.
+- **Dates:** 1,135 in-person rows come from keyword posts and have only a comment date, which may not be the visit date, so test with and without them. Drop impossible dates (1900, "2025-06-00", anything before June 2024).
+- **Cast features plug in later:** cast + closing news isn't built yet (§3.12). Any option can take it as one more feature, so the model doesn't have to wait.
+- **Digital rush is separate and simple:** 443 rows, only 143 tied to a Broadway show, almost no sell-outs. A pooled estimate labeled low confidence, under any choice.
+- **Installs:** a dry run on Python 3.14 + Windows found ready-made packages for all of these (numpyro 0.22, jax 0.12, lightgbm 4.7, xgboost 3.4, scikit-learn 1.9, scipy 1.18), but none has been run yet. Only SciPy is installed so far (in `.venv`, not in `pyproject.toml`). The combo needs lightgbm and numpyro (which brings jax). Avoid `lifelines`: it would force pandas 3 back to 2.3.
+
+### 5.2a The combo: how it works (plan, nothing built)
+| On the page | Comes from |
 |---|---|
-| **Baseline:** per-show historical median (+ day-of-week) | The bar every other model must beat. If it can't be beaten, say so. |
-| Poisson / negative binomial GLM | Simple, interpretable count model |
-| **Bayesian hierarchical NB with interval-censored likelihood** (PyMC / NumPyro) | Handles bounded labels and sparse shows properly; gives full distributions |
-| Gradient-boosted trees (LightGBM / XGBoost) + quantile or conformal intervals | Strong on tabular features; tests whether nonlinearity helps |
-| *(maybe)* Survival / time-to-sellout model for arrival time | Natural fit for "when does rush run out" |
+| "__ ± __ rush tickets" and the confidence slider | The Bayesian cutoff |
+| Arrival time, chance %, worth-it bar, ranking | Both parts, joined |
+| "Why this prediction" | Trees for line reasons, Bayesian for ticket reasons |
+
+1. **Line (LightGBM):** predicts how many people are in line for each show-day, at each time before the box office opens. The line can never shrink as opening approaches, so arrival times make sense. Each show-day counts once in training. One fitted spread turns the prediction into a range of possible line lengths.
+2. **Cutoff (Bayesian negative binomial, NumPyro):** stated counts go in as exact numbers, and "got it at #7" goes in as "at least". Shows are pulled toward what's typical across shows. Its simulated draws give the ticket range at any confidence level.
+3. **Join:** on a 15-minute time grid, the chance of a ticket is how often the line comes out shorter than the cutoff across the draws. This assumes the two are unrelated once the features are known (first check: 0.09 within a show, on 100 show-days).
+4. **Arrival time:** the latest time that still reaches the target chance. Always shown, even if extreme.
+5. **One fixed predictions file:** the site reads only this file, so the model can be leveled up without touching the site.
+6. **Refresh:** trees can't easily run on Vercel, so the weekly job saves predictions for the few cases Refresh can change (on TKTS or not, on sale or not).
+
+**First version's features:** show, time before opening, weekday, calendar, weather, recent line level, and last available grosses. Cast news, TKTS and NYC events come later, one test at a time.
+
+### 5.2b Training times (estimates; nothing has been run)
+| Model | One training run | Full test (12 monthly windows) |
+|---|---|---|
+| Per-show lookup table | Under a second | Seconds |
+| Penalized regressions | Seconds | A few minutes |
+| Boosted trees | Under a minute | Under 15 minutes |
+| **Combo** | A few minutes | About an hour or less |
+| Full Bayesian | 10–40 minutes | 2–8 hours |
+
+The full test repeats for every with/without row in §5.3, so the gap between the last two rows adds up quickly.
+
+### 5.2c Ways to level up the combo (for the final version; I'll decide later)
+Best first. None has been tested: benefits are expectations, and effort is an estimate.
+| Level-up | What it does | Main benefit | Effort |
+|---|---|---|---|
+| **Borrow across shows on the line side** | Gives the trees a "show level" pulled toward similar shows | Better predictions for thin and new shows, which is full Bayesian's main advantage | Half a day |
+| **Use the reports the ticket model ignores** | Turns sold-out times and "2 left at 6 pm" reports into extra ticket labels (79 show-days have only a sold-out time, and hundreds of reports say tickets remained) | More labels for the weakest part of the data | About a day |
+| **Learn tickets per person** | Estimates how line positions convert to tickets, instead of assuming (buyers report about 1.8 each) | Could shift every ticket number on the site | A few hours |
+| **Give thin shows wider ranges** | Measures the line's uncertainty separately for thin and well-reported shows | More honest chances | A few hours |
+| **Add features one test at a time** | Tests cast news, TKTS and NYC events one by one, keeping only what helps | Accuracy, and it fills the with/without table | Under a day |
+| **Model the reporting bias directly** | Accounts for wins getting posted more often than losses | Speaks directly to the rubric's "is bias accounted for?", and would be the most impressive | 1–2 days; riskiest, and may not work with so few reported losses |
+| **Add clean labels from real trips** | Feeds in verified reports, including my own trips and any losses | Best long-term accuracy for my own show-going | Already planned with the report form (§3.10) |
+
+- **Suggested order:** the first four in the Nov 17–19 slot, then features as time allows, and the reporting-bias model only if there's time left.
+- **Not worth doing now:** modeling a link between line and tickets. The 0.09 correlation suggests little to gain.
+- **Keep it honest:** keep an upgrade only if it beats the previous version on the rolling tests, and report the final score on the untouched windows (§5.2).
+- **Timing:** design changes have to land before the Nov 24 freeze. Clean labels can keep helping after that through weekly retraining (§9, question 19).
+
+### 5.2d Questions worked out 2026-11-05 (expectations, untested)
+**Does being best at line length mean best at predicting tickets?** No. The line is how many people show up; tickets are what the theater has to sell. Trees should do well on the line because those labels are complete numbers. On tickets they'd likely be the weakest, because most labels only say "at least X".
+
+**Why does only full Bayesian treat same-day reports as a busy day?** It gives each show-day a hidden "how busy" number, estimated from all that morning's reports. Trees look at one row at a time and have nowhere to keep that number. Regressions could add it, but they'd lose their simplicity. This matters less than it first looked: weighting reports so each show-day counts once fixes the over-counting, and ranges calibrated on later days already include day-to-day swings.
+
+**Which is quickest on the frontend?** They're the same for page loads and the slider, because the site reads saved predictions. Only Refresh differs, and most of its 10–15 seconds is fetching TKTS and Ticketmaster.
+
+**Which measures show popularity best?** Full Bayesian: each show gets a line level with error bars, after adjusting for weekday and weather. The combo can compute one by predicting each show on a standard day, without error bars. Across all shows, grosses are the better measure, because shows without in-person rush (like Hamilton) have no line.
+
+**Is the combo more accurate than full Bayesian?** Unknown until tested.
+| What's predicted | Combo vs full Bayesian |
+|---|---|
+| Ticket count | About the same: it's the same kind of Bayesian model |
+| Line length, shows with lots of reports | Combo probably a little better |
+| Line length, new or thin shows | Full Bayesian probably better |
+
+**Will the combo score better with judges?** The choice mainly affects Data Processing, 10 of 50 points (§1.1), and no criterion scores accuracy by itself. Full Bayesian would likely score about the same. The join is where a judge is most likely to find a mistake, so it needs a clear explanation.
+
+**How do I explain the combo?** "Line counts are full numbers, so trees predict them. Ticket counts are mostly 'at least 7', so a Bayesian model handles those and borrows across shows. Then I combine them into a chance of a ticket at each arrival time."
+- **Hard question:** "Why assume line and tickets are unrelated?" Answer: 0.09 correlation within a show, though on only 100 show-days.
+- **Still need to know:** priors and convergence checks, because the ticket part is Bayesian.
+- **For comparison, full Bayesian:** "One model of the whole morning: each show has its own level, pulled toward similar shows, each day has a busy-day effect, and ticket labels go in as bounds." It stands out more, but it's riskier under questioning about convergence and curve shape.
+
+**What should impress judges and interviewers?** The thinking more than the model's name:
+- Catching that always saying "yes" scores 89%, so not training a simple got-it/didn't classifier.
+- Treating "got it at #7" as "at least 7".
+- Testing in time order, checking that ranges hold up, and reporting the score against a simple lookup table even if it's unflattering.
+- Testing the AI extraction on held-out comments checked by a human.
 
 ### 5.3 Results table (for the portfolio) 📊
 Report a table that makes it easy to show how the model works and how well it does. Keep it in the README and on the accuracy page (§2.6). Example layout:
 
 | Model | Features | MAE (tickets) | 80% interval coverage | Avg interval width | Verdict accuracy | Arrival-time error | Notes |
 |---|---|---|---|---|---|---|---|
-| Baseline | show, weekday | | | | | | |
+| Lookup table (bar to beat) | show, weekday | | | | | | |
+| Combo, first version | small set | | | | | | |
 | NB GLM | + capacity, prices | | | | | | |
 | Bayesian hierarchical | all | | | | | | |
 | LightGBM + conformal | all | | | | | | |
+| Final model | all | | | | | | |
 | *Ticket-data ablation:* with vs. without TKTS + Ticketmaster features | | | | | | | decides whether ticket data and the Refresh button stay (§6.2) |
 
 Also include: a **feature-importance / ablation table** (what happens to accuracy when you remove prices, NYC context, cast changes, etc.), dataset size (reports, shows, date range), and a one-paragraph plain-English "how it works."
 
+**Verdict accuracy needs a comparison:** always show it next to the "always say yes" score (89% on known outcomes so far, §5.2), and report how often the model catches the days people missed out, not just the overall score.
+
+**Comparison rows:** by default the NB GLM, Bayesian hierarchical and LightGBM rows stay as lighter fits, so the table shows what the combo beat. That's about 1 extra day (§9, question 17).
+
 ### 5.4 Training cadence
 - **Retrain weekly**, right after the weekly Reddit scrape and extraction (§6.1), then write predictions for the next 14 days. (Changed 2026-11-02; was "weekly or less, with predictions updated nightly and every morning.")
 - **Predictions change** when the model retrains and when someone clicks Refresh, which brings in today's ticket data (§6.3).
-- **Training time:** measure at step 5. The simple models should take seconds; the Bayesian model is the slow one (maybe minutes to tens of minutes). Whatever it is has to fit in the weekly job.
+- **Training time:** measure at step 5. The simple models should take seconds; the Bayesian model is the slow one (maybe minutes to tens of minutes). Whatever it is has to fit in the weekly job. Estimates by model are in §5.2b.
 - Watch interval coverage on the accuracy page; if it drifts, retrain sooner.
 
 ### 5.5 LLM extraction budget (Claude Haiku)
@@ -347,7 +518,7 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 | Risk | Notes |
 |---|---|
 | No historical availability / price snapshots | §3.2, §3.8. No legal source has seat counts at all. Snapshots of what is legal (TKTS, Ticketmaster sale status) start once the daily job is scheduled; nothing was collected Oct 23 – Nov 4, 2026, except one archived TKTS board. Grosses are the proxy before that. |
-| Labels mostly bounds | §4. Intervals will be wide early on. |
+| Labels mostly bounds | §4, §5.2. 686 show-days have only a lower bound, 81 only an upper bound, 207 a stated count. Intervals will be wide early on. |
 | Selection bias | People post wins and dramatic losses, not boring days: 3,382 "got rush" vs. 160 "sold out before me". |
 | Policy drift | Policy history stored (§3.4). Prices barely move; whether a show offers rush does. |
 | Uneven coverage | §5.1. 41 shows have 50+ reports, 34 have fewer than 10. |
@@ -362,7 +533,7 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 - **Product:** web app. Personal use + portfolio + family and friends. Not built for scale. Nothing reused from earlier projects.
 - **Usage (2026-11-02):** I might not check it every day, or even every week. Nothing should depend on daily visits.
 - **Flow:** pick a **day** → **tiles of all shows** ranked by likelihood of rush, each with **price** → optional checkboxes to focus on chosen shows → tap a tile for performance details.
-- **Look:** purple theme, glowing light text; worth-it bar **red → blue**.
+- **Look:** purple theme, glowing light text; worth-it bar **black → gray → gold** (~~red → blue~~, changed 2026-11-05).
 - In-person rush is the main output; digital rush is secondary; SRO is collected in reports.
 - Horizon: next 7 days; day-of (e.g. 8 am) checks show everything.
 - **Output:** worth-it bar + verdict, chance %, ticket count ± at a confidence level, price, arrival time; confidence slider hidden behind a button.
@@ -384,26 +555,31 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 - **Labels:** one row per observation (`line_count` / `attempt` / `supply` / `none`), per `docs/labeling-schema.md`. The 100-comment answer key and the 50-comment held-out set were pre-labeled by Claude and reviewed by Rachel ("human-reviewed labels").
 - **Stack so far:** Python 3.14 venv, package in `src/broadway_rush/`, data in `data/` (`raw/` and `labels/` git-ignored, though `hand_labels.xlsx` and `sample_manifest.csv` were committed before that rule), source registry in `registry/sources.csv`. **Website deploys on Vercel** (2026-11-02). Rachel handles all git commits.
 - **Repo (2026-11-02):** private on GitHub for now; probably **public when the project is done**, so interviewers can see it. Before then, remove Reddit comment text and usernames from what's committed (§7, §9). Private notes stay git-ignored.
-- **Deadline and scope (2026-11-05):** data project competition entry, due **2026-11-17**. Everything stays in: cast + closing news, NYC permitted events, Refresh + PIN, report form + email approval, weekly automatic job, digital rush predictions. Cutting these was proposed and rejected. Core first (data, model, site), so a delay only moves an add-on. Schedule:
+- **Model (2026-11-05):** the combo (trees for the line, Bayesian for the cutoff) for both the first and final models, because it's more fun to talk about. The first version stays simple, to see the whole site working; the final version is a leveled-up combo (§5.2, §5.2a, §5.2c). Not started.
+- **Deadline and scope (2026-11-05):** data project competition entry. ~~Due 2026-11-17.~~ **Complete by 2026-11-23, turn in 2026-11-24, present 2026-12-07** (corrected by me the same day). Between turn-in and the presentation, only small tweaks and improvements, **no model changes**. Everything stays in: cast + closing news, NYC permitted events, Refresh + PIN, report form + email approval, weekly automatic job, digital rush predictions. Cutting these was proposed and rejected. Core first (data, model, site), so a delay only moves an add-on. Schedule (stretched to the new dates by Claude, not yet reviewed by me):
   - **Nov 5–7:** data: catch-up, calendar, weather, NYC permitted events, cast + closing news.
-  - **Nov 8–11:** model: baseline, negative binomial, Bayesian hierarchical, LightGBM, digital rush, results and with/without tables.
-  - **Nov 12–14:** website: day picker, tiles, details, accuracy page; then report form + email approval, Refresh + PIN.
-  - **Nov 15:** weekly automatic job and a full end-to-end test.
-  - **Nov 16:** repo cleanup, README, competition write-up.
-  - **Nov 17:** buffer and submit.
-- **Scheduled jobs (2026-11-05):** GitHub Actions runs the daily ticket snapshots, so they run with the laptop closed. Snapshots are saved to a separate private repo, `broadway-rush-data`, which stays private when this repo goes public. The job commits to that repo by itself; Rachel still does all commits to this repo.
+  - **Nov 8–10:** first model: the simple combo and the lookup table to beat, with rolling tests.
+  - **Nov 11–16:** website on that model: day picker, tiles, details, accuracy page; then report form + email approval, Refresh + PIN.
+  - **Nov 17–19:** final model: level up the combo, refit, digital rush, comparison rows, results and with/without tables.
+  - **Nov 20:** weekly automatic job and a full end-to-end test.
+  - **Nov 21–22:** repo cleanup, README, competition write-up.
+  - **Nov 23:** buffer; project complete.
+  - **Nov 24:** turn in. The model's design is frozen from here; it keeps retraining weekly on new data.
+  - **Nov 25 – Dec 6:** small tweaks only. The weekly job keeps running, so the accuracy page builds up real results for the presentation.
+  - **Dec 7:** present.
+- **Scheduled jobs (2026-11-05):** GitHub Actions runs the daily ticket snapshots, so they run with the laptop closed. Snapshots are saved to a separate private repo, `broadway-rush-data`, which stays private when this repo goes public. The job commits to that repo by itself, using a deploy key (secret `DATA_REPO_SSH_KEY`); Rachel still does all commits to this repo.
 - **Which shows get predictions (2026-10-22), three groups, decided per show and per date from the policy history:**
   1. **In-person rush + enough data** (≥2 daily-thread reports per running week; ~11 shows now): full prediction (tickets, range, arrival time).
   2. **In-person rush, little data** (~5 now: Chicago, Six, Hadestown SRO, & Juliet, Wicked): no number; "limited data, probably easy" plus the policy and recent % capacity. (Quiet in-person shows run ~84% full vs. 94% for busy ones; `process.md` step 4d.)
   3. **No in-person rush** (lottery / digital only, e.g. Hamilton, Lion King, Book of Mormon): listed with lottery and digital-rush info only, no line prediction. Few Reddit posts here does *not* mean low demand: these shows are 94–99% full.
-- **Build order:** 1 Reddit → CSV ✅ · 2 labels + Haiku pilot ✅ · 3 full extraction ✅ · 4 grosses + rush policies + show catalog ✅ · 6 snapshot scrapers (moved up because ticket data has no history; TKTS + Ticketmaster built 2026-10-22, daily job written 2026-11-05, not yet run on GitHub) · 5 baseline model + results table · 7 website. Don't skip ahead without asking.
+- **Build order:** 1 Reddit → CSV ✅ · 2 labels + Haiku pilot ✅ · 3 full extraction ✅ · 4 grosses + rush policies + show catalog ✅ · 6 snapshot scrapers (moved up because ticket data has no history; TKTS + Ticketmaster built 2026-10-22, daily job working 2026-11-05) · 5 first model (simple combo) + results table · 7 website · final model (leveled-up combo). Don't skip ahead without asking.
 - **Accuracy page:** yes (§2.6).
 - **Docs:** `SPEC.md` (this file), `process.md` (what was built and how, kept up to date during coding), `interview-notes.md` (private talking points, **git-ignored**), `claude-notes.md` (Claude's working notes between sessions, **git-ignored**).
 
 ## 9. Open questions
 
 1. Worth-it thresholds: what probability counts as "GO"? Decide after step 5, from the backtest.
-2. ~~Where the scheduled jobs run.~~ Decided 2026-11-05: GitHub Actions (§8). If TKTS refuses GitHub's machines, that one source runs from the laptop instead.
+2. ~~Where the scheduled jobs run.~~ Decided 2026-11-05: GitHub Actions (§8). TKTS accepts GitHub's machines (tested 2026-11-05).
 3. ~~Where the daily snapshot data is saved.~~ Decided 2026-11-05: private repo `broadway-rush-data` (§8).
 4. ~~Snapshot times.~~ Set 2026-11-05 (§6.2).
 5. **How long Phase A (daily ticket collection, §6.2) runs** before switching to click-only. Guess: at least 2–3 months; decide at step 5.
@@ -414,6 +590,11 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 10. Design phone-first? (Likely used at 7–8 am on a phone.)
 11. TodayTix: ask them for permission to use their data (§3.8), or drop it?
 12. ~~Does the NYC Open Data permitted-events feed include the Marathon and other major races and parades?~~ Checked 2026-11-05: yes, but the Marathon is listed through Parks setup permits and shows 0 in the daily table on race day, so its date comes from the hand-kept list. Thanksgiving, Pride and St. Patrick's parades show up on the right days.
-13. **Competition rules and judging criteria:** what has to be submitted (public repo, live site, video, slides?) and what are judges scoring? This decides how the last days are spent.
-14. **Refresh by the deadline:** there will only be about 12 days of daily snapshots by Nov 17, so the with/without test in §6.2 can't settle whether ticket data helps. Proposal: keep Refresh for the competition. It shows today's TKTS board and sale status, and changes a prediction only if the model has evidence for it, using the 118 archived TKTS days. The §6.2 rule about dropping Refresh waits until there's enough data.
+13. **Competition rules:** ~~what are judges scoring?~~ Rubric received 2026-11-05 (§1.1). Still unknown: what has to be turned in on Nov 24 (public repo, live site, write-up?), whether this is solo or a team (the rubric asks whether all team members spoke equally), and whether the presentation is live or recorded (the rubric scores audio quality).
+14. **Refresh by the deadline:** there will only be about 18 days of daily snapshots by Nov 23 (about 32 by the Dec 7 presentation, after the model is frozen), so the with/without test in §6.2 can't settle whether ticket data helps. Proposal: keep Refresh for the competition. It shows today's TKTS board and sale status, and changes a prediction only if the model has evidence for it, using the 118 archived TKTS days. The §6.2 rule about dropping Refresh waits until there's enough data.
+15. **Thin shows, the spec disagrees with itself:** §2.7 and §5.1 say they get a low-confidence prediction; §8 says in-person shows with little data get no number ("limited data, probably easy"). Decide after the backtest shows whether thin-show ranges are honest.
+16. **Verdict and ranking:** what fixed comparison should they use (§5)? For example, the chance if I arrive at 9:00. The first model needs a placeholder for this.
+17. **Comparison rows:** keep the NB GLM, Bayesian hierarchical and LightGBM rows in the results table as lighter fits (the default, about 1 extra day), or show only the lookup table and the combo?
+18. **Cast + closing news:** waiting on my go-ahead (§3.12). The model can start without it, because cast features can be added later.
+19. **After the Nov 24 freeze:** does weekly retraining on new data continue? Assumed yes (§8): it's the same model on new data, and it lets the accuracy page build up real results for the presentation.
 - ~~Confirm Ticketmaster Discovery API free-tier limits.~~ Done 2026-10-22: 5,000 calls/day, 5 per second.

@@ -134,8 +134,8 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 
 ## ▶ Open items (as of 2026-10-22, after the top-up extraction)
 1. **Steps 1–3 are done.** The Reddit scrape is complete and all comments are extracted except 10 (1 failed request; `batch full` retries it).
-2. **Step 4 done** (4a source check, 4b grosses + policies, 4c show catalog, 4d policy history + website scope decision). Weekly refresh: `.venv\Scripts\python -m broadway_rush.scrapers.playbill grosses`, `... playbill policies`, `... broadwayworld grosses`, then `.venv\Scripts\python -m broadway_rush.catalog build`. After any `batch reports`, re-run `catalog build` (it adds show_id to reports.csv). **Step 5 (baseline model) waits for Rachel's go-ahead.**
-2b. **Step 6 started early** (ticket-site rules + TKTS scraper; see the step 6 entry). TKTS + Ticketmaster scrapers built, daily job written (2026-11-05 entry below). Waiting on Rachel: commit both repos, add the token and secrets, run the first test. Then the remaining data sources, then step 5 (model). The data refresh plan changed on 2026-11-02 (SPEC §6; entry below).
+2. **Step 4 done** (4a source check, 4b grosses + policies, 4c show catalog, 4d policy history + website scope decision). Weekly refresh: `.venv\Scripts\python -m broadway_rush.scrapers.playbill grosses`, `... playbill policies`, `... broadwayworld grosses`, then `.venv\Scripts\python -m broadway_rush.catalog build`. After any `batch reports`, re-run `catalog build` (it adds show_id to reports.csv). **Step 5: Rachel is starting a new chat to build the first model, the simple combo (SPEC §5.2a; last entry in this file).**
+2b. **Step 6 started early** (ticket-site rules + TKTS scraper; see the step 6 entry). TKTS + Ticketmaster scrapers built, daily job working (manual run succeeded 2026-11-05; first scheduled run still to confirm). Then cast and closing news, then step 5 (model). The data refresh plan changed on 2026-11-02 (SPEC §6; entry below).
 3. **Notes for future sessions:**
    - LLM spend ledger: `data/interim/llm_spend.csv`; hard stop $8, $1.47 spent.
    - To refresh Reddit later: `.venv\Scripts\python -m broadway_rush.scrapers.reddit posts`, then `comments` (resumable; run one copy at a time), then `batch full` → `collect` → `reports`.
@@ -354,7 +354,7 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 
 **Did:** set the schedule to the deadline and recorded the decision (SPEC §8).
 
-**Why:** this is Rachel's entry in a data project competition, due 2026-11-17, and she wants to win.
+**Why:** this is Rachel's entry in a data project competition, due 2026-11-17, and the goal is to win.
 
 **Result:** the scope doesn't change. Schedule:
 | Dates | Work |
@@ -397,6 +397,116 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 
 **Didn't work / dropped:** college breaks. NYU's calendar isn't publicly readable and only Mar 16–20, 2026 could be verified. Weather, permits and the calendar are built, but the daily job doesn't refresh them; that's the weekly job on Nov 15.
 
-**Still failing:** the daily job's test runs ended in "Not Found" when getting the data repo, even with token settings that looked right. The cause was never found. Switched from a token to a deploy key (`DATA_REPO_SSH_KEY`), which is tied to the one repo and doesn't expire. Not yet tested on GitHub.
+**Daily job, fixed:** the first test runs ended in "Not Found" when getting the data repo, even with token settings that looked right. The cause was never found. Switched from a token to a deploy key (`DATA_REPO_SSH_KEY`), which is tied to the one repo and doesn't expire, and tested it from the laptop first. **Manual run succeeded 2026-11-05:** commit `cc2029d` in the data repo, with Ticketmaster (302 unique performances at 36 theaters) and TKTS (81 rows). So TKTS accepts GitHub's machines. The first scheduled run hasn't happened yet.
 
 **Next:** cast and closing news (check Playbill's `use=reference` signal first), then the model.
+
+---
+
+## 2026-11-05 — Step 5 planning: model options (no code)
+
+**Did:** Rachel asked for model options to choose from, evaluated against this project, docs only. Counted what the labels actually look like (read-only, nothing saved in the project), did a dry-run package check (nothing installed), and wrote the evaluation into SPEC §5.2.
+
+**Why:** the first model list (SPEC §5.2) named model families without checking them against the data. The choice depends on the shape of the labels, so that had to be measured first.
+
+**Result:**
+- In-person rush mapped to a show: 11,588 rows, 100 shows, 4,493 show-days.
+- **The line is the strong part:** 7,973 time + count points before 10:00, on 3,397 show-days. Spread about 5.7× what a Poisson model allows.
+- **The cutoff is the weak part:** 1,064 show-days, and almost all one-sided: 207 stated counts, 686 lower bound only, 81 upper bound only, 11 both, 79 sold-out time only.
+- Four options, compared in SPEC §5.2: Bayesian hierarchical, boosted trees, penalized negative binomial regressions, and a mix. **I recommended Bayesian hierarchical**, with a stop rule (end of Nov 10) and a fallback that reuses the work. Rachel's choice is pending.
+- First answer to the §4 question: a show's stated rush count typically swings by about half its average (13 shows with 5+ counts).
+
+**Found (would have hurt the model):**
+- **"Always yes" scores 89%.** Of 1,133 attempts with an arrival time and known outcome, 89% got a ticket. Any verdict score means little without that comparison (SPEC §5.3).
+- **A last-3-months test is too thin:** only 3 stated counts and 5 negative outcomes. 12 months of rolling windows gives 80 and 52.
+- **91% of rows don't say matinee or evening,** so the model has to predict per show-day.
+- **1,135 in-person rows have no performance date,** only a comment date (keyword posts), and a few dates are impossible (1900, "2025-06-00").
+- **Digital rush:** only 143 of 443 rows are tied to a Broadway show.
+- **The spec disagrees with itself on thin shows** (SPEC §9, question 15).
+
+**Didn't work / dropped:** a direct "got it / didn't" classifier (it would learn who posts), Poisson (too narrow), survival on clock time as its own model (134 sold-out times), LightGBM for the cutoff (it can't take bounds, so XGBoost's AFT objective fills that role in the trees option), `lifelines` (it would force pandas 3 back to 2.3).
+
+**Not checked:** fit times and build times are estimates. No model has been installed or run. `interview-notes.md` wasn't updated, because Rachel limited this work to the spec, this log and `claude-notes.md`.
+
+**Next:** Rachel picks a model. Then shared groundwork: model table, features as known at prediction time, rolling test windows, baseline, scoring.
+
+---
+
+## 2026-11-05 — New dates; combo option rescored (no code)
+
+**Did:** Rachel corrected the dates and asked about the models, and leaned toward the combo (trees for the line, Bayesian for the cutoff). Stretched the schedule, ran two more read-only counts, and corrected the combo's scores in SPEC §5.2.
+
+**Why:** the first dates were wrong, and thinking the combo through showed my first scoring of it was too harsh.
+
+**Result:**
+- **New dates:** complete by Nov 23, turn in Nov 24, present Dec 7. After turn-in: small tweaks only, no model changes. New schedule in SPEC §8, not yet reviewed by Rachel: model Nov 8–13, website Nov 14–19, weekly job Nov 20, cleanup and write-up Nov 21–22, buffer Nov 23.
+- **Line and tickets are mostly separate questions.** On the 125 show-days with both, rank correlation is 0.09 within a show (100 days, 14 shows), 0.29 pooled, 0.24 between shows (21 shows). This also backs the combo's joining step, on thin evidence.
+- **Line length tracks popularity but isn't the same thing:** 0.57 with % capacity and 0.43 with average ticket price across 38 shows. 45% of shows moved by 1.5× or more between the first and second half of their reports, so a "recent line level" input matters.
+- Days with a "fewer than" label had slightly longer lines than usual for that show (log difference 0.20, vs 0.07 on days with only "at least" labels), the direction the line-vs-cutoff logic expects.
+- **Recommendation changed from Option 1 to Option 4** (the combo). Rachel hasn't picked yet.
+
+**Didn't work / dropped:** my first scoring of the combo.
+- It charged the combo 10–40 minutes a fit, but that figure was for the whole Bayesian model. The cutoff alone is much smaller.
+- It said the slider had the trees' problem, but the ticket range and slider come from the Bayesian cutoff.
+- It said Refresh needed a tree reader on Vercel, but the weekly job can save predictions for the few cases Refresh can change.
+- It overstated the busy-day loss for trees and the combo: weighting each show-day to count once handles the over-counting, and ranges calibrated on later days already include day-to-day swings.
+- I had also missed a cost of Option 1: 12 test windows at 10–40 minutes each is about 2–8 hours per backtest, repeated for every with/without row.
+
+**Not checked:** fit and build times are still estimates. Nothing has been installed or run. `interview-notes.md` and my saved memory of the old deadline weren't updated, because writes are limited to the spec, this log and `claude-notes.md`.
+
+**Next:** Rachel decides on the combo and reviews the schedule.
+
+---
+
+## 2026-11-05 — Rubric received (no code)
+
+**Did:** recorded Rachel's judging rubric in SPEC §1.1 and compared the project against it.
+
+**Why:** the rubric decides where the remaining time should go. It had been an open question since the deadline was set.
+
+**Result:**
+- 50 points: Data Preprocessing 8, Data Processing 10, Visualization 7, Presentation 10, Results 7, Creativity 8.
+- No criterion scores accuracy by itself. Data Processing asks whether the techniques make sense, whether bias and overfitting are handled, whether the technology is innovative, and whether there are mistakes.
+- Charts and the presentation (17 points) aren't in the schedule yet. The spec plans only one chart.
+- Nothing in the rubric directly scores the report form, Refresh or the PIN. Those stay in scope; this only affects their order, which Rachel hasn't decided.
+
+**Didn't work / dropped:** I took Rachel's "I want to try one model now" as a go-ahead and started setting up to train. Rachel stopped me. Nothing was trained and no code was written; SciPy 1.18.1 did get installed in `.venv` (not added to `pyproject.toml`), and a throwaway environment was never created.
+
+**Next:** Rachel picks a baseline model, and says whether this is solo or a team, whether the presentation is live or recorded, and what gets turned in on Nov 24. No building until Rachel says so.
+
+---
+
+## 2026-11-05 — First model chosen: the combo (no code)
+
+**Did:** added the rubric to-do list to SPEC §1.2, recorded the first-model decision in SPEC §5.2 and §8, added the combo and final model to the results table (§5.3), and renamed the old "baseline" to "lookup table" so the two don't get confused.
+
+**Why:** Rachel wants to see the whole site working on a first model, then decide the final one: full Bayesian or an improved combo. Rachel also plans to use the app for real show-going, so accuracy matters beyond the rubric. Rachel will take care of the rubric to-do list.
+
+**Result:** the schedule in SPEC §8 now runs first model Nov 8–10, website Nov 11–16, final model Nov 17–19. I proposed these dates; Rachel hasn't reviewed them. Whether the combo beats full Bayesian is still untested.
+
+**Update (same day):** Rachel said "we're going with the combo". I read that as the final model too: a leveled-up combo, no longer full Bayesian or a combo. SPEC §5.2 and §8 now say so. Full Bayesian can still appear as a comparison row.
+
+**Next:** waiting on Rachel's plain go before any building.
+
+---
+
+## 2026-11-05 — Handoff before the new chat (no code)
+
+**Did:** wrote everything from this planning chat into the docs, because Rachel is starting a new chat to build the first model. SPEC additions: rubric to-do (§1.2), how the combo works (§5.2a), training-time estimates (§5.2b), level-ups (§5.2c), answers to Rachel's questions (§5.2d), and open questions 16–19 (§9).
+
+**Why:** a new chat only knows what's written down.
+
+**Result:**
+- **Confirmed by Rachel:** the combo for both the first and final models, because it's more fun to talk about. Level-ups stay undecided until later. Rachel will take care of the rubric to-do list.
+- **Decided in this chat:** complete by Nov 23, turn in Nov 24, present Dec 7, no model changes after turn-in. Worth-it bar is black (stay home), gray (Maybe), gold (GO).
+- **Proposed, not reviewed by Rachel:** the dates in SPEC §8, and the suggested order of level-ups.
+- **Found while planning the build, and new in the spec:** the verdict as first written is circular, because the chance at the recommended time comes out about the same for every show (§5, §9 question 16). Line times should be measured from each show's opening, since many box offices open at noon on Sundays.
+- **Moved the stop rule** to the end of Nov 10, to match the new first-model slot.
+
+**Not checked:** every training time, build time and accuracy expectation in SPEC §5.2–§5.2d is an estimate. Nothing has been trained, and lightgbm, numpyro and jax haven't been installed or run on this setup. Only SciPy is installed.
+
+**Also updated:** `interview-notes.md`, at Rachel's request: the model plan and new findings (items 17–24), the dates, and what to emphasize. I also marked two likely-question answers as planned, because they described a model that isn't built.
+
+**Not updated:** my saved memory of the old deadline, because it's outside the files Rachel listed. `claude-notes.md` tells the next chat to fix it.
+
+**Next:** in the new chat, the first model: model table, rolling test windows, lookup table, simple combo, scores, predictions file. Website and level-ups come later.
