@@ -1002,3 +1002,57 @@ Twelve months would take about 11 minutes. That's scaled up, not run, because 3 
 **Still not confirmed, the daily snapshot job:** at 07:13 UTC Nov 6 the data repo's latest commit is still the manual run from 21:52 UTC Nov 5. Rachel needs to check the Actions tab.
 
 **Not done, as instructed:** no stars filter, font unchanged, no retraining or model changes, no commits, deploys, accounts or API money. Other features for limited-data shows and the "probably easy" wording wait for the next talk (SPEC §9 questions 26 and 20).
+
+---
+
+## 2026-11-06 11:52 ET — Daily job check: two scheduled runs missing
+
+Rachel asked what I need to get the daily data. Checked at 16:50 UTC (11:50 am EST) on Nov 6. The data repo's newest commit is still `cc2029d`, the manual run from 21:52 UTC on Nov 5. Two scheduled runs were due by then and added nothing: TKTS at 23:07 UTC on Nov 5 and Ticketmaster at 12:07 UTC on Nov 6.
+
+The workflow file is on GitHub's `master`, and local and remote match, so an unpushed file isn't the cause. I can't tell whether the runs never started or started and failed. `broadway-rush` is private, so GitHub's API returned 404 without a login, `gh` isn't installed, and I don't use Rachel's stored git login for API calls. Asked Rachel to read the Actions tab and press Run workflow, which should also save a Nov 6 snapshot.
+
+Also removed an empty `--help/shots` folder from the project root, which looks like a leftover from my click-through script being run with `--help` during last night's site work. It held no files.
+
+---
+
+## 2026-11-06 12:05 ET — Daily job: manual run saved today's snapshot
+
+Rachel pressed Run workflow and GitHub reported success. Commit `61821ee` reached the data repo at 17:02 UTC (12:02 pm EST) with one Ticketmaster file (470 KB) and one TKTS board (51 KB), so Nov 6 has ticket data. I pulled it into the local clone, `../broadway-rush-data`.
+
+Rachel asked whether this lands in a different folder. It does: the job saves to the data repo, not to this project's `data/raw`, which the model and site read. Nothing here copies the files across yet. That's the sync command the notes already planned, still not built.
+
+This doesn't prove the schedule works, since it was a button press. Started a read-only check of the data repo until 18:15 UTC to see whether the 17:07 UTC scheduled run saves anything.
+
+---
+
+## 2026-11-06 12:29 ET — Sync command: getting snapshots to the model and site
+
+Rachel said to build whatever gets the data in here. Built `src/broadway_rush/sync.py`, run with `.venv\Scripts\python -m broadway_rush.sync`. It pulls the local clone of the data repo, copies any snapshot this project doesn't have into `data/raw`, rebuilds `tkts.csv` and `ticketmaster_events.csv`, and updates predictions if the schedule date is newer. It sends no requests to ticket sites.
+
+Choices I made:
+- A plain and a gzipped copy of one snapshot count as the same file, so the 130-odd older plain files aren't doubled. Files already here are never overwritten.
+- A pull that fails stops the run, instead of quietly carrying on with old data.
+- It warns if the newest Ticketmaster snapshot is over 30 hours old, because the job has already gone quiet once.
+- It runs only when someone starts it. I didn't add a scheduled task on the laptop.
+
+Result: 2 new TKTS and 2 new Ticketmaster snapshots copied. No old row was lost or changed in either CSV (tkts 9,179 to 9,320 rows, Ticketmaster 773 to 1,599). The site now runs Nov 7-13 instead of Nov 6-12. Ad hoc tests of the copy and failure rules passed 10 of 10; they live in my scratchpad, not the repo.
+
+Correction: I told Rachel this wouldn't retrain the model. That was wrong. `predict.py` refits the combo on every run. With the same reports and settings, the line spread, the cutoff checks (R-hat 1.004, ESS 564, 0 divergences), the accuracy numbers and every 9:00 line estimate came out identical, so the model didn't change, but it does refit, which takes 2 to 4 minutes (196-207 s today; the earlier "under 2 min" was on an idle laptop).
+
+Two problems the first run showed, both fixed in `predict.py` date and seed handling. The fitted model is untouched:
+1. A snapshot covers exactly 8 days, so today's midday run cut Nov 14 off partway, leaving 1 performance at 1 theater. The site would have shown that as a nearly empty day. A last date that gets cut off is now left out.
+2. With no new information, 9:00 chances moved up to 2.8 points and The Outsiders on Nov 7 went from GO (70.6%) to Maybe (69.5%). All days shared one stream of random draws, so dropping Nov 6 shifted every later day, and a daily sync would have done this every day. Each day now has its own seed. Test: a run with the clock set to 1 pm on Nov 7 matched today's file exactly on all 171 show-days.
+
+Changing seeds moved the numbers one last time. Against the file from 2:12 am, on the 79 show-days with a chance in both: chance at 9:00 moved 0.7 points on average and 2.1 at most, arrival time moved 15 minutes on 21 and not at all on 58, and one verdict changed (Oh, Mary! on Nov 11, Maybe 69.7% to GO 70.1%). That one sits right at the placeholder 70% line. The show lists and performance times didn't change.
+
+The click-through crashed once, right after these runs, and failed again on the rerun. It wasn't the site: 30 timed page loads all worked with no page errors, 29 of them in about 50-300 ms and one in 2.2 s, and my test only waited a fixed 1 second. It now waits for the page. Three runs in a row then passed 195 of 195.
+
+Still open: only manual runs have saved anything. Rachel says the Actions list shows 3 runs, but the data repo has only 2 job saves, so one saved nothing. Still 61821ee at 12:28 pm ET, 21 minutes after the 12:07 pm scheduled time. Runs can start late, so I'm watching until 1:15 pm.
+
+---
+
+## 2026-11-06 13:44 ET — Daily job: 12:07 pm scheduled run saved nothing
+
+The watch on the data repo ended at 18:44 UTC (1:44 pm ET), about half an hour past its planned stop. A fresh check then still showed `61821ee`, Rachel's button press, as the newest commit. That's 1 hour 37 minutes after the 17:07 UTC scheduled time, so three scheduled runs in a row have saved nothing: 23:07 UTC Nov 5, 12:07 UTC Nov 6 and 17:07 UTC Nov 6. Two of the watch's checks failed with "Could not resolve host", so the network dropped briefly, which doesn't affect this result.
+
+I still can't tell whether the runs never started or started and saved nothing. That depends on the third run in the Actions list, which I've asked Rachel about. Next scheduled run: 23:07 UTC (6:07 pm ET).

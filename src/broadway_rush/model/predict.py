@@ -26,7 +26,7 @@ from broadway_rush.model.table import (
     CUTOFF_FEATURES, FALLBACK_OPENING, LINE_FEATURES, PROCESSED, RAW, ROOT, Features, clean_text, load_policies,
     load_tables, opening_lookup, tickets_bounds,
 )
-from broadway_rush.scrapers.ticketmaster import venue_key
+from broadway_rush.scrapers.ticketmaster import DAYS_AHEAD, venue_key
 
 OUT = ROOT / "web" / "data" / "predictions.json"
 TARGET_CHANCE = 0.80  # placeholder: the arrival time is the latest time that still reaches this
@@ -231,7 +231,6 @@ def build(per_person: float, tag: str):
     t2 = time.time()
     print("final fit: line", round(t1 - t0, 1), "s, cutoff", round(t2 - t1, 1), "s", cm.diagnostics, "phi", round(lm.phi, 2),
           flush=True)
-    rng = np.random.default_rng(11)
 
     gross = pd.read_csv(RAW / "grosses_playbill.csv")
     by_prod = shows.drop_duplicates("production_id").set_index("production_id").show_id
@@ -250,6 +249,9 @@ def build(per_person: float, tag: str):
     # Today still counts until noon, when the morning's rush is over
     dates = sorted(d for d in sched.local_date.unique()
                    if pd.Timestamp(d) > today or (pd.Timestamp(d) == today and now.hour < 12))
+    # A snapshot covers exactly 8 days, so its last date can stop partway through and would list too few shows
+    window_end = pd.Timestamp(sched.snapshot_utc.iloc[0]).tz_convert("America/New_York") + pd.Timedelta(days=DAYS_AHEAD)
+    dates = [d for d in dates if pd.Timestamp(d).date() < window_end.date()]
     running = shows[shows.last_week == shows.last_week.max()]
 
     def describe(sid, title, day: pd.Timestamp, entry_name, theater):
@@ -365,7 +367,8 @@ def build(per_person: float, tag: str):
         if ones:
             ids = [e["show_id"] for e in ones]
             base = feats.build(pd.DataFrame({"show_id": ids, "date": day}))
-            tick = cm.draws(base, rng)
+            # Seeded per day, so a day's numbers don't shift just because an earlier day left the file
+            tick = cm.draws(base, np.random.default_rng([11, int(d.replace("-", ""))]))
             for i, e in enumerate(ones):
                 row = base.iloc[[i]]
                 sid = e["show_id"]
