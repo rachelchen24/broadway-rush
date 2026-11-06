@@ -164,9 +164,12 @@ def build():
     r = pd.read_csv(REPORTS_CSV, low_memory=False)
     # thread date for daily threads, else the comment's own date (perf_date is LLM output, so less trusted)
     when = r.thread_date.fillna(r.created_et.str[:10]).astype(str)
-    res = [match(n, w, keys, by_id, last) for n, w in zip(r.show, when)]
+    # The model often leaves its cleaned-up title blank for a nickname it wasn't sure of ("bvsc"), so fall back to
+    # the text as written, which the alias list and the run dates can still resolve.
+    names_used = r.show.where(r.show.notna(), r.show_text)
+    res = [match(n, w, keys, by_id, last) for n, w in zip(names_used, when)]
     r["show_id"] = [sid for sid, _ in res]
-    r["show_match"] = [how if isinstance(n, str) else "" for (_, how), n in zip(res, r.show)]
+    r["show_match"] = [how if isinstance(n, str) else "" for (_, how), n in zip(res, names_used)]
     r.to_csv(REPORTS_CSV, index=False)
 
     names = (r[r.show.notna()].groupby("show")

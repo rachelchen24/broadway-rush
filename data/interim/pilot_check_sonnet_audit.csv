@@ -1,0 +1,121 @@
+comment_id,obs_index,verdict,reason,changed
+niykrsj,0,fix,,stated_qual: remaining -> total
+niykrsj,1,keep,,
+m5crosb,0,keep,,
+on5c153,0,fix,,show:  -> Schmigadoon; show_text:  -> Schmigadoon; perf_date: 2026-05-19 -> 2026-05-23; arrival_time: 15:00 -> 13:15
+nlho4sj,0,keep,,
+nlho4sj,1,keep,,
+nlho4sj,2,keep,,
+nlho4sj,3,keep,,
+mnrbuq0,0,keep,,
+mnrbuq0,1,fix,,count_qual: exact -> approx
+ox3fzqj,0,fix,,show:  -> Dog Day Afternoon; show_text:  -> Dog Day Afternoon; count_qual: exact -> at_least
+lt0a3gz,0,keep,,
+nq2srh2,0,fix,,show:  -> The Great Gatsby; show_text:  -> Gatsby
+omwmer2,0,keep,,
+mwb66el,0,fix,,count: 6 -> 7
+mwb66el,1,keep,,
+m0vmska,0,keep,,
+m0vmska,1,keep,,
+m0vmska,2,fix,,count:  -> 17; count_qual:  -> exact; outcome: sold_out_before_me -> unknown
+m0vmska,3,keep,,
+m0vmska,4,keep,,
+lmyy6fj,0,drop,quoted,
+lmyy6fj,1,keep,,
+lmyy6fj,2,drop,other,
+lzlsfnn,0,drop,vague,
+mrri5bo,0,keep,,
+mrri5bo,1,keep,,
+pgp1hbw,0,fix,,show:  -> Hell's Kitchen
+pgp1hbw,1,fix,,show:  -> Hell's Kitchen
+pgp1hbw,2,fix,,show:  -> Hell's Kitchen
+mqjxh7s,0,keep,,
+myg02lg,0,drop,quoted,
+myg02lg,1,drop,quoted,
+myg02lg,2,drop,quoted,
+p6n60wa,0,fix,,show:  -> Buena Vista Social Club
+mgp13gu,0,keep,,
+mytg2bb,0,keep,,
+mytg2bb,1,keep,,
+n3tu7gd,0,keep,,
+n3tu7gd,1,keep,,
+n3tu7gd,2,keep,,
+n3tu7gd,3,keep,,
+n3tu7gd,4,keep,,
+n3tu7gd,5,keep,,
+m8r4n4j,0,fix,,outcome: got_rush -> unknown
+m8r4n4j,1,keep,,
+ns5cgzg,0,keep,,
+obupdbv,0,keep,,
+m56ld9h,0,keep,,
+opigc0q,0,keep,,
+mz6hsm3,0,fix,,show:  -> Smash; show_text:  -> Smash
+mz6hsm3,1,drop,vague,
+nay45gh,0,keep,,
+nay45gh,1,keep,,
+mtbaa9z,0,keep,,
+mtbaa9z,1,keep,,
+mtbaa9z,2,keep,,
+mtbaa9z,3,keep,,
+mtbaa9z,4,keep,,
+nny8pu8,0,keep,,
+obahbnu,0,keep,,
+oo62hxl,0,fix,,show:  -> The Lost Boys
+mzwdhqr,0,keep,,
+mzwdhqr,1,keep,,
+mzwdhqr,2,keep,,
+mzwdhqr,3,keep,,
+m61tw49,0,keep,,
+lg1z0ni,0,fix,,"show:  -> Oh, Mary!; show_text:  -> oh Mary"
+lg1z0ni,1,drop,vague,
+nxm9x65,0,drop,quoted,
+nxm9x65,1,fix,,time: 08:01 -> 07:54
+n9ptobe,0,drop,quoted,
+n9ptobe,1,drop,quoted,
+ndmiwkm,0,keep,,
+lajs75s,0,fix,,"show:  -> Oh, Mary!; show_text:  -> Oh, Mary!; outcome: unknown -> got_rush"
+n7mqd51,0,fix,,"show:  -> Oh, Mary!; show_text:  -> Oh, Mary!"
+lev3mh5,0,keep,,
+mk2xgcg,0,keep,,
+mk2xgcg,1,keep,,
+mk2xgcg,2,keep,,
+mk2xgcg,3,keep,,
+nep1ihh,0,fix,,show:  -> Buena Vista
+nep1ihh,1,fix,,show:  -> Buena Vista
+myt5t0j,0,keep,,
+myt5t0j,1,keep,,
+mk0q2d1,0,keep,,
+mk0q2d1,1,fix,,time: 10:48 -> 09:00
+mk0q2d1,2,drop,not_a_report,
+n5glyn7,0,fix,,count_qual: exact -> approx
+mx9nn4o,0,drop,quoted,
+mx9nn4o,1,drop,quoted,
+nxdy2ht,0,fix,,rush_type: general -> sro
+owvwmgf,0,fix,,show:  -> Cat on a Hot Tin Roof
+n0xmhmr,0,keep,,
+n0xmhmr,1,keep,,
+m7cwsk6,0,fix,,show: Gypsy -> Death Becomes Her; show_text: Gypsy -> Death Becomes Her
+lykv13g,0,fix,,outcome: got_rush -> unknown
+mind5xw,0,drop,quoted,
+n2q0l1p,0,keep,,
+n2q0l1p,1,keep,,
+p9bvp5e,0,fix,,show: Mincemeat -> Something Rotten
+o2817o7,0,keep,,
+mzpo3qm,0,keep,,
+mzpo3qm,1,keep,,
+mzpo3qm,2,keep,,
+mhgid6v,0,keep,,
+o9i47kk,0,keep,,
+ooknw8o,0,drop,quoted,
+mtuelsn,0,fix,,show:  -> John Proctor Is the Villain; show_text:  -> John Proctor
+mjo7n7a,0,fix,,"show:  -> Oh, Mary!; count_qual: exact -> at_least"
+mjo7n7a,1,fix,,"show:  -> Oh, Mary!; count: 2 -> 3; count_qual: exact -> at_least"
+olkcssa,0,keep,,
+m0r615k,0,keep,,
+n6j1r7v,0,keep,,
+n6j1r7v,1,keep,,
+n6j1r7v,2,keep,,
+muscuvv,0,fix,,show:  -> Sunset Blvd.; show_text:  -> Sunset
+n8aem19,0,keep,,
+n8aem19,1,keep,,
+mshpqh2,0,drop,quoted,

@@ -1,0 +1,64 @@
+comment_id,obs_index,verdict,reason,changed
+myxp6ey,0,keep,,
+m5jbvfo,0,drop,quoted,
+ooiec6b,0,keep,,
+ooiec6b,1,keep,,
+ooiec6b,2,keep,,
+ooiec6b,3,fix,,outcome: got_rush -> unknown
+ooiec6b,4,keep,,
+ooiec6b,5,keep,,
+oodjt27,0,keep,,
+oodjt27,1,keep,,
+lqmdaii,0,keep,,
+p8xwk0b,0,keep,,
+lmxj9i0,0,keep,,
+lmxj9i0,1,keep,,
+lmxj9i0,2,keep,,
+owyd3qr,0,fix,,"show:  -> Oh, Mary!; show_text:  -> Oh Mary; time: 16:00 -> 10:00"
+lr3udg7,0,keep,,
+n2qky5y,0,keep,,
+n2qky5y,1,keep,,
+ms9np13,0,keep,,
+ms9np13,1,keep,,
+mwbnndf,0,drop,quoted,
+mwbnndf,1,drop,quoted,
+mwbnndf,2,drop,vague,
+olsltvt,0,fix,,outcome: unknown -> sold_out_before_me
+olsltvt,1,keep,,
+olsltvt,2,fix,,time: 15:00 -> 13:04
+m957a5q,0,keep,,
+m957a5q,1,keep,,
+m957a5q,2,keep,,
+n2xk7nn,0,drop,quoted,
+n2xk7nn,1,keep,,
+mzpu857,0,drop,quoted,
+mzpu857,1,drop,quoted,
+mzpu857,2,keep,,
+mkckw7x,0,keep,,
+nnfiygm,0,keep,,
+n3nchb6,0,keep,,
+n3nchb6,1,keep,,
+no1u5yp,0,keep,,
+no1u5yp,1,fix,,time: 19:30 -> 07:30
+mtunhf8,0,drop,quoted,
+n66dcqf,0,keep,,
+myhsmfz,0,fix,,show:  -> Death Becomes Her; show_text:  -> Death Becomes Her
+mkd06de,0,fix,,show:  -> Stranger Things; show_text:  -> Stranger Things
+mxe2rv9,0,fix,,show:  -> Oh Mary; show_text:  -> Oh Mary
+m7wzimg,0,keep,,
+ph3o1ul,0,keep,,
+ph3o1ul,1,keep,,
+oiuacte,0,keep,,
+mz5zvsm,0,keep,,
+mz5zvsm,1,keep,,
+lhw9hdu,0,fix,,perf_date: 2024-08-11 -> 2024-08-12; outcome: left -> sold_out_before_me
+lhw9hdu,1,fix,,perf_date: 2024-08-12 -> 2024-08-13
+lhw9hdu,2,fix,,perf_date: 2024-08-12 -> 2024-08-13
+nirqn7s,0,keep,,
+nirqn7s,1,keep,,
+nirqn7s,2,keep,,
+nxd7sql,0,fix,,perf: unknown -> matinee
+nxd7sql,1,keep,,
+lgbbka4,0,keep,,
+lgbbka4,1,keep,,
+oorvjyv,0,drop,other,

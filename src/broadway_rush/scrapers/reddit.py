@@ -30,7 +30,9 @@ MAX_FAILED_IN_A_ROW = 5       # consecutive posts that fail before the comments 
 DAILY_AUTHOR = "BroadwayRushReport"
 BOT_NON_DAILY = re.compile(r"availability list", re.IGNORECASE)  # bot posts that are not daily reports
 MAX_TITLE_DATE_DRIFT = 3  # days between title date and post date before we distrust the title
-SUBREDDITS = ["Broadway", "musicals", "AskNYC", "nyc"]
+# Show-fan subreddits added 2026-11-06: they hold reports for shows the daily threads rarely cover (Hadestown, Six)
+SUBREDDITS = ["Broadway", "musicals", "AskNYC", "nyc", "Hadestown", "wicked", "SixTheMusical", "andjuliet",
+              "hamiltonmusical", "TheOutsidersMusical", "BroadwayTickets", "theatre"]
 KEYWORDS = ["rush", "lottery", "standing room", "SRO", "digital rush", "TodayTix", "box office", "line"]
 # In these general NYC subs most keyword hits aren't theater ("rush hour", "the 7 line"); only
 # fetch comments when the post looks theater-related. Posts are kept either way.
