@@ -31,11 +31,11 @@ MAX_ATTEMPTS = 3
 GOOD_R_HAT = 1.05
 
 
-def _model(x, show, n_shows, exact, lower, upper, kmax):
+def _model(x, show, n_shows, exact, lower, upper, kmax, phi_prior=(2.0, 0.4)):
     a = numpyro.sample("a", dist.Normal(jnp.log(12.0), 1.0))
     sigma = numpyro.sample("sigma", dist.HalfNormal(1.0))
     beta = numpyro.sample("beta", dist.Normal(0.0, 0.5).expand([x.shape[1]]))
-    phi = numpyro.sample("phi", dist.Gamma(2.0, 0.4))
+    phi = numpyro.sample("phi", dist.Gamma(*phi_prior))
     z = numpyro.sample("z", dist.Normal(0.0, 1.0).expand([n_shows]))
     mu = jnp.exp(a + sigma * z[show] + x @ beta)
 
@@ -92,7 +92,7 @@ class CutoffModel:
         return rng.negative_binomial(phi, phi / (phi + mu))
 
 
-def fit(cut: pd.DataFrame, per_person: float, warmup=300, samples=300, chains=4, seed=0) -> CutoffModel:
+def fit(cut: pd.DataFrame, per_person: float, warmup=300, samples=300, chains=4, seed=0, phi_prior=(2.0, 0.4)) -> CutoffModel:
     """The faster fit (SPEC 5.2 stop rule). 500 + 500 steps at target 0.9 with chains on separate devices didn't finish
     a window in 11 minutes on this laptop; running the chains together ("vectorized") is what made it practical."""
     start = time.time()
@@ -118,7 +118,7 @@ def fit(cut: pd.DataFrame, per_person: float, warmup=300, samples=300, chains=4,
                     progress_bar=False)
         mcmc.run(
             jax.random.PRNGKey(seed + attempt), jnp.array(design), jnp.array(x.show_id.map(show_index).to_numpy()),
-            len(show_index), jnp.array(exact), jnp.array(lower), jnp.array(upper), kmax, extra_fields=("diverging",),
+            len(show_index), jnp.array(exact), jnp.array(lower), jnp.array(upper), kmax, phi_prior, extra_fields=("diverging",),
         )
         grouped = mcmc.get_samples(group_by_chain=True)
         stats = summary({k: np.asarray(v) for k, v in grouped.items()})

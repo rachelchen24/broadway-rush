@@ -670,3 +670,108 @@ From those 9,406 rows:
 8. **Not shown because nothing computes them:** digital rush sell-out time reads "not available yet". The badges `Star leaving Sunday` and `Prices way above usual` are left out.
 9. **Reports form and Refresh + PIN:** screens only, labeled "Not connected yet". Nothing leaves the page, the PIN isn't checked and it's cleared after you press the button.
 10. **Added beyond the list, because it uses numbers we already have:** a chance-by-arrival-time chart on the details view. It helps the rubric's visualization points.
+
+---
+
+## 2026-11-06 00:02 ET — A converged fit, but the ticket ranges are too wide
+
+**Did:** Rachel stopped the 4 stuck runs herself (I checked: all gone). I stopped my own older test, which used the old code, and started clean tests at 1.0, 1.4 and 1.8 tickets per person. I also wrote a new predictions file from a fit on all the data: **R-hat 1.003, sample size 554, 0 divergences, first attempt.** So the fix for stuck chains (starting from the middle of the priors) held up there.
+
+**Result:** the numbers are now real model output, but **the ticket ranges are too wide to be useful.** Two Strangers on a Saturday: 80% range 14 to 239 tickets. The model's typical day is about 40 tickets, while stated counts have a median of 6 and 90% are 23 or below (91 stated days before the test months).
+
+**Why:** this is the risk SPEC §5.2 warned about. 549 "at least" days push the estimate up with nothing pushing back, and only 138 stated days and 75 "at most" days pull down. The fitted day-to-day spread (phi about 1.3) lets a very high average still tolerate low stated counts.
+
+**One more finding:** on the 39 days with both a stated count and a "got it at #p", the last reported position is typically about two-thirds of the stated count, and it's above the stated count on only 10 of them. That fits tickets per person between 1.0 and 1.4 better than 1.8.
+
+**What I'm trying next:** one variant, a tighter prior on the spread (centered on phi = 3, was 5 with much more room). Before the test months, stated counts swing about 70% of the show's average within a show (median of 6 shows with 5+ stated days), which is roughly phi = 2 to 7. **The rule:** it runs on the same 9 test months and stays only if it beats the current version. If it wins on tickets but hurts the chance of a ticket, I'll say so.
+
+**Fix:** today now counts as a prediction day until noon. The midnight rollover had dropped Nov 6 from the file.
+
+---
+
+## 2026-11-06 00:37 ET — Step 5, first real scores: the combo loses to the lookup table on tickets
+
+**Did:** two of the clean tests finished (1.0 and 1.4 tickets per person, 9 test months). **All 18 fits converged:** worst R-hat 1.013, 0 divergences.
+
+**Result so far. The combo doesn't beat the lookup table except on line length:**
+| 9 test months | Combo at 1.4 | Combo at 1.0 | Lookup table | Always yes |
+|---|---|---|---|---|
+| Ticket error, 33 stated counts | 19.5 | 11.6 | **6.2** | |
+| 80% ticket range held | 87.9% | 93.9% | 69.7% | |
+| Width of that range, tickets | 95.7 | 57.6 | **11.5** | |
+| Chance error (Brier, lower is better), 138 attempts | 0.114 | 0.107 | **0.097** | 0.103 for a flat rate |
+| Yes/no right at 50% | 87.7% | 88.4% | 88.4% | 88.4% |
+| Misses caught, of 16 | 1 | 1 | 0 | 0 |
+
+Line length is unchanged: combo 4.73, lookup 5.82.
+
+**What this means:** the ticket half floats too high, as SPEC §5.2 warned, and that also hurts the chance. It adds almost nothing over always saying yes, catching just 1 of 16 misses. **Lower tickets per person is better,** so 1.8 looks unlikely to help (that run is still going).
+
+**Next:** the tighter-spread variant is running at both 1.4 and 1.0. I added the 1.0 run because 1.0 did better. Whichever way it comes out, I'll report these numbers.
+
+---
+
+## 2026-11-06 00:56 ET — Step 5 results: tickets per person chosen, the variant dropped, the combo doesn't beat the lookup table
+
+**Did:** finished the tests at 1.0, 1.4 and 1.8 tickets per person, plus the tighter-spread variant at 1.4. **All converged:** worst R-hat 1.018, 0 divergences across 36 fits.
+
+**Result (9 test months):**
+| | 1.0 per person | 1.4 | 1.8 | 1.4, tighter prior | Lookup table | Flat rate / always yes |
+|---|---|---|---|---|---|---|
+| Ticket error (33 stated counts) | **11.6** | 19.5 | 29.0 | 19.1 | **6.2** | |
+| 80% ticket range held | 93.9% | 87.9% | 87.9% | 87.9% | 69.7% | |
+| Width of that range | 57.6 | 95.7 | 148.8 | 90.4 | 11.5 | |
+| Chance error (Brier, 138 attempts) | **0.107** | 0.114 | 0.119 | 0.114 | **0.097** | 0.103 |
+| Yes/no right at 50% | 88.4% | 87.7% | 87.7% | 87.7% | 88.4% | 88.4% |
+| Misses caught, of 16 | 1 | 1 | 1 | 1 | 0 | 0 |
+| Line error | 4.73 | same | same | same | 5.82 | |
+| 80% line range held | 86.5% | same | same | same | 58.8% | |
+| Arrival-time error (min) | 102 | same | same | same | 95 | |
+
+**Plainly: the combo beats the lookup table on line length and on honest line ranges. It does NOT beat it on ticket counts, on the chance of a ticket, or on arrival time.** On the chance of a ticket it's also worse than a flat rate, and it's no better than always saying yes on yes/no accuracy. Its one small win there is catching 1 of 16 misses, which is too few to mean much. And 33 stated counts and 16 misses are small samples.
+
+**The "got a ticket" check is rough either way:** losses are under-reported, so the share who got one is likely too high.
+
+**Verdicts at the placeholder thresholds (1.0 per person), scored on the chance when each person really arrived:** GO worked out 109 of 118 times (92%), Maybe 12 of 18 (67%), Stay home 1 of 2. The order is right but the sample is small, and "Stay home" barely ever fires, so the top of the range is doing almost no work.
+
+**Choices made for Rachel:**
+1. **1.0 tickets per person.** It wins on every measure of tickets and chance. Caveat: it's the lowest value tried, and buyers report about 1.8 each. One possible reason: not everyone ahead of you buys a rush ticket. That belongs with the "learn tickets per person" level-up.
+2. **The tighter prior is dropped.** The fitted spread barely moved (1.32 to 1.36) and scores barely changed. I stopped its run at 1.0 because the 1.4 result already answered the question. So this isn't a tuning problem: stated counts and "got it at #p" reports disagree.
+3. **I kept the combo rather than falling back to the regressions.** It isn't broken: it converges, and the fallback was for that. You asked to be told if it doesn't beat the lookup, and this is me telling you.
+4. **The details page now warns on every full prediction** that the ticket count is a rough guess, quoting these test numbers from the file, so it updates itself if the model improves.
+
+**Most useful next steps, for when you pick level-ups:** use the sold-out-time and "tickets remain" reports, which add upper bounds and are the most direct help for the ceiling problem; then learn tickets per person; then look at whether stated counts mean what we think (many may be partial, like "6 left"). I haven't tested any of these.
+
+**Also finished:** final predictions file at 1.0 per person (R-hat 1.004). Final click-through: **106 of 106 checks passed at 390 and 1280 pixels, 0 page errors.** I read the screenshots, and fixed the last small things they showed: Hadestown's standing room price ($39), Harry Potter's Friday Forty, no gold on the "width" rows, a note explaining the gaps in the charts, and the chart scale adjusting to the data.
+
+---
+
+## 2026-11-06 01:07 ET — Final pass: clean training times, docs, and what's left
+
+**Did:** ran the 1.0 test again with the laptop otherwise idle, to get fair times, and rebuilt the predictions file the same way. Updated `SPEC.md` (status, §5.2, §5.2a, §5.2b, §5.3, §8, §9), `interview-notes.md` and `claude-notes.md`. Reran the click-through on the final file.
+
+**Training times, measured (replacing the estimates in SPEC §5.2b):**
+| Model | One test month | All 9 test months |
+|---|---|---|
+| Lookup table | 0.03 seconds | under a second |
+| LightGBM line | 0.7 seconds (1.8 on all data) | under 10 seconds |
+| Bayesian cutoff, faster fit | 55 seconds (69 on all data) | about 8 minutes |
+| **Whole combo** | under a minute | **8.4 minutes** |
+
+Twelve months would take about 11 minutes. That's scaled up, not run, because 3 months are locked. My earlier estimate was about an hour. The slow runs earlier in this log came from competing jobs and bad settings, not from the model.
+
+**Checks:**
+- The idle run matched the earlier 1.0 test exactly, so the results repeat (same seed, 8 vs 2 LightGBM threads).
+- Final click-through: **106 of 106 checks passed at 390 and 1280 pixels, 0 page errors.**
+- Every number on the accuracy page comes from the test file, and every unavailable item says so.
+
+**Still not confirmed: the daily snapshot job.** At 06:06 UTC the data repo's latest commit is still the manual run from 21:52 UTC Nov 5. The run due at 23:07 UTC never landed, nearly 7 hours later. I can't see the Actions tab. The next run is due at 12:07 UTC. Rachel needs to check.
+
+**Things Rachel should know:**
+- Her 23:56 commit holds the bad predictions file (R-hat 28.5). Her next commit replaces it. `data/processed/backtest_fast1.4*` from the failed run are also in the repo and safe to delete.
+- The schedule is the Nov 5 Ticketmaster snapshot, so the site covers Nov 6–12 only, then says it's out of date.
+- I released the "don't sleep" hold. The local web server I started is still running on port 8000.
+
+**Not done, as instructed:** no commits, deploys, accounts, API money or new scrapes by me. No level-ups, cast news or comparison rows. The report form and Refresh + PIN are screens only.
+
+**Next, for Rachel to decide:** which level-ups to do first, real GO and Maybe thresholds, the verdict's fixed comparison, the wording for standing-room shows (new SPEC §9 question 20). Charts and the presentation still aren't on the schedule, and they're worth 17 of the 50 points.

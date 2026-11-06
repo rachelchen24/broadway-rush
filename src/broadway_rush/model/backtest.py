@@ -138,7 +138,8 @@ def calibration(got, p) -> list:
     return out
 
 
-def run(per_person: float, line_only: bool, features: list[str], months: list[str], tag: str, seed: int = 0):
+def run(per_person: float, line_only: bool, features: list[str], months: list[str], tag: str, seed: int = 0,
+        phi_prior=(2.0, 0.4)):
     rng = np.random.default_rng(seed)
     t = load_tables()
     cut = tickets_bounds(t["cutoff"], per_person)
@@ -180,7 +181,7 @@ def run(per_person: float, line_only: bool, features: list[str], months: list[st
             lookup_hi=lk_line.hi))
 
         if not line_only:
-            cm = cutoff_model.fit(cut_train, per_person, seed=seed)
+            cm = cutoff_model.fit(cut_train, per_person, seed=seed, phi_prior=phi_prior)
             row["seconds_cutoff"] = cm.seconds
             row["cutoff_diagnostics"] = cm.diagnostics
             row["cutoff_posterior"] = {
@@ -216,7 +217,7 @@ def run(per_person: float, line_only: bool, features: list[str], months: list[st
 
     allline = pd.concat(preds_line)
     res = {
-        "tag": tag, "per_person": per_person, "features": features, "months": months, "locked": sorted(LOCKED),
+        "tag": tag, "per_person": per_person, "phi_prior": list(phi_prior), "features": features, "months": months, "locked": sorted(LOCKED),
         "windows": windows, "seconds_total": time.time() - started,
         "pooled": {
             "line_combo": line_score(allline.people, allline.combo_med, allline.combo_lo, allline.combo_hi,
@@ -265,11 +266,12 @@ def main():
     ap.add_argument("--line-only", action="store_true")
     ap.add_argument("--weather", action="store_true", help="adds what really happened: a best case, not a fair test")
     ap.add_argument("--drop", nargs="*", default=[], help="line features to leave out")
+    ap.add_argument("--phi-prior", nargs=2, type=float, default=[2.0, 0.4], help="Gamma prior on the ticket spread")
     ap.add_argument("--tag", default=None)
     a = ap.parse_args()
     features = [f for f in LINE_FEATURES if f not in a.drop] + (WEATHER_FEATURES if a.weather else [])
     tag = a.tag or (f"pp{a.per_person}" + ("_weather" if a.weather else "") + ("_lineonly" if a.line_only else ""))
-    run(a.per_person, a.line_only, features, DEV, tag)
+    run(a.per_person, a.line_only, features, DEV, tag, phi_prior=tuple(a.phi_prior))
 
 
 if __name__ == "__main__":

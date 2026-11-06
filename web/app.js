@@ -147,6 +147,7 @@ function otherOffers(e) {
   if (p.digital) parts.push(`Digital rush${p.digital.price ? ` ${money(p.digital.price)}` : ""}`);
   if (p.lottery) parts.push(`Digital lottery${p.lottery.price ? ` ${money(p.lottery.price)}` : ""}`);
   if (p.student) parts.push("Student rush");
+  for (const name of p.other || []) parts.push(name);
   if (!parts.length) return "No in-person rush, lottery or digital rush listed.";
   return `No in-person rush. ${parts.join(" · ")}.`;
 }
@@ -215,6 +216,10 @@ function ticketsPanel(e) {
       priceText ? [" at ", h("b", {}, priceText)] : [" (price not listed)"], ".",
       h("span", { class: "muted", style: "display:block;font-size:.88rem;margin-top:2px" }, `That's ${lo} to ${hi} tickets.`));
   }
+  const acc = state.data.accuracy;
+  const ticketCaution = acc && acc.tickets_combo.mae > acc.tickets_lookup.mae
+    ? h("p", { class: "notice" }, `Treat the ticket count as a rough guess. In tests it missed stated counts by ${num(acc.tickets_combo.mae, 1)} tickets on average, and a simple per-show lookup missed by ${num(acc.tickets_lookup.mae, 1)}. Most reports only say "at least", so the range runs wide.`)
+    : null;
   paint(80);
   const output = h("output", {}, "80%");
   const slider = h("input", {
@@ -231,7 +236,7 @@ function ticketsPanel(e) {
       button.textContent = wrap.hidden ? "Adjust confidence" : "Hide confidence slider";
     },
   }, "Adjust confidence");
-  return h("section", { class: "panel" }, sentence,
+  return h("section", { class: "panel" }, sentence, ticketCaution,
     h("p", { class: "statement" }, "Get there by ", h("b", {}, time12(e.arrival)), " for the best chance of getting one."),
     e.arrival_reaches_target ? h("p", { class: "muted" }, `That's the latest time that still reaches the ${pct(state.data.placeholders.target_chance)} target (a placeholder).`)
       : h("p", { class: "muted" }, `Even this early, the chance stays under the ${pct(state.data.placeholders.target_chance)} target (placeholder), because this show may have very few tickets.`),
@@ -349,6 +354,7 @@ function renderAccuracy() {
     const [x, y] = bestClass(combo, lookup, smaller);
     return h("tr", {}, h("td", {}, label), h("td", { class: x }, fmt(combo)), h("td", { class: y }, fmt(lookup)), h("td", {}, always ?? "–"));
   };
+  const plainRow = (label, combo, lookup, fmt) => h("tr", {}, h("td", {}, label), h("td", {}, fmt(combo)), h("td", {}, fmt(lookup)), h("td", {}, "–"));
   const covRow = (label, c, l) => {
     const [x, y] = bestClass(covGap(c), covGap(l));
     return h("tr", {}, h("td", {}, label), h("td", { class: x }, pct(c, 1)), h("td", { class: y }, pct(l, 1)), h("td", {}, "–"));
@@ -358,11 +364,11 @@ function renderAccuracy() {
     h("tbody", {},
       row(`Line error, people (${lc.points} reports)`, lc.mae, ll.mae, (v) => num(v, 2)),
       covRow("80% line range held", lc.coverage80, ll.coverage80),
-      row("Width of that range, people", lc.width80, ll.width80, (v) => num(v, 1)),
+      plainRow("Width of that range, people", lc.width80, ll.width80, (v) => num(v, 1)),
       row("Arrival-time error, minutes", lc.arrival_error_min, ll.arrival_error_min, (v) => num(v, 0)),
       row(`Ticket error, tickets (${tc.days} stated counts)`, tc.mae, tl.mae, (v) => num(v, 2)),
       covRow("80% ticket range held", tc.coverage80, tl.coverage80),
-      row("Width of that range, tickets", tc.width80, tl.width80, (v) => num(v, 1)),
+      plainRow("Width of that range, tickets", tc.width80, tl.width80, (v) => num(v, 1)),
       row(`Yes/no right, at 50% (${cc.attempts} attempts)`, cc.accuracy_at_50, cl.accuracy_at_50, (v) => pct(v, 1), false, pct(a.always_yes_accuracy, 1)),
       row(`Misses caught, of ${cc.misses}`, cc.misses_caught_at_50, cl.misses_caught_at_50, (v) => String(v), false, "0"),
       row("Wins wrongly warned about", cc.wins_wrongly_warned_at_50, cl.wins_wrongly_warned_at_50, (v) => String(v), true, "0"),
@@ -408,7 +414,7 @@ function renderAccuracy() {
         h("p", {}, beats.length ? `Better than the lookup table on: ${beats.join(", ")}. ` : "It doesn't beat the lookup table on the main measures. ",
           loses.length ? `Not better on: ${loses.join(", ")}.` : ""),
         table,
-        h("p", { class: "muted", style: "margin-top:8px" }, "Gold marks the better of the combo and the lookup table. For ranges, better means closer to the 80% it promises. Ticket and outcome rows rest on few reports, so small gaps may be luck.")),
+        h("p", { class: "muted", style: "margin-top:8px" }, "Gold marks the better of the combo and the lookup table. For ranges, better means closer to the 80% it promises; width isn't marked, because a narrow range that doesn't hold isn't better. Ticket and outcome rows rest on few reports, so small gaps may be luck.")),
       h("section", { class: "panel" }, h("h2", {}, "The 89% problem"),
         h("p", {}, `People mostly post their wins. Across ${a.funnel.outcomes_arrived_before_opening_known_result} attempts with a known result, ${pct(a.always_yes_all_attempts, 1)} got a ticket (${pct(a.always_yes_spec)} on a wider count that includes reports without a stated date). On the ${cc.attempts} attempts in these tests, always saying yes is right ${pct(a.always_yes_accuracy, 1)} of the time.`),
         h("div", { class: "stat-row" },
@@ -422,24 +428,26 @@ function renderAccuracy() {
           h("tbody", {}, vr("GO"), vr("Maybe"), vr("Stay home")))),
         h("p", { class: "muted", style: "margin-top:8px" }, `Scored on the chance at the time each person really arrived, with GO at ${pct(state.data.placeholders.go_at_or_above)} and up and Maybe at ${pct(state.data.placeholders.maybe_at_or_above)} and up.`)),
       h("section", { class: "panel" }, h("h2", {}, "Line error by test month"),
-        h("p", { class: "muted" }, "Average miss on the number of people in line. Lower is better."), legend(), errorChart),
+        h("p", { class: "muted" }, "Average miss on the number of people in line. Lower is better. Gaps are the locked months."), legend(), errorChart),
       h("section", { class: "panel" }, h("h2", {}, "Did the 80% line range hold?"),
-        h("p", { class: "muted" }, "Share of real counts inside the range. The goal is 80%, not 100%."), legend(), coverChart),
+        h("p", { class: "muted" }, "Share of real counts inside the range. The goal is 80%, not 100%. Gaps are the locked months."), legend(), coverChart),
       h("section", { class: "panel" }, h("h2", {}, "Real trips"),
         live ? null : h("p", { class: "not-available" }, "Not available yet: no predictions have been checked against real rush days or verified reports.")),
       h("section", { class: "panel" }, h("h2", {}, "What's behind these numbers"),
         h("p", {}, `${a.funnel.comments_scanned.toLocaleString()} Reddit comments gave ${a.funnel.all_observations.toLocaleString()} observations. After cleaning, the model uses ${a.funnel.line_points_after_dropping_duplicates.toLocaleString()} line reports and ${a.funnel.cutoff_show_days.toLocaleString()} show-days with ticket information, from ${dayName(a.funnel.first_date, { month: "short", year: "numeric" })} to ${dayName(a.funnel.last_date, { month: "short", year: "numeric" })}.`),
         h("p", {}, `Test months: ${dev.map(monthName).join(", ")}. ${a.locked.map(monthName).join(", ")} are locked and unscored here, so they can give the final model an honest score.`),
-        h("p", {}, `Tickets per person is fixed at ${a.per_person}, the value that did best in these tests. The Bayesian part's sampler checks: largest R-hat ${state.data.model.cutoff_checks.max_r_hat} (want close to 1), ${state.data.model.cutoff_checks.divergences} divergences (want few).`),
+        h("p", {}, `Each person in line is counted as ${a.per_person} ${a.per_person === 1 ? "ticket" : "tickets"}, the best of the values tried. The Bayesian part used a faster fit (${state.data.model.fit.replace("faster fit: ", "")}). Its sampler checks: largest R-hat ${state.data.model.cutoff_checks.max_r_hat} (want close to 1), ${state.data.model.cutoff_checks.divergences} divergences (want few).`),
         state.data.model.fallback_used ? h("p", { class: "notice strong" }, "This run used the fallback cutoff, not the Bayesian model.") : null)));
 
+  const biggestMiss = Math.max(...a.windows.flatMap((w) => [w.line_mae_combo, w.line_mae_lookup]));
+  const errorTop = Math.ceil(biggestMiss / 2) * 2;
   lineChart(errorChart, {
     x: slots.map(monthName),
     series: [
       { name: "Combo", color: "var(--series-1)", values: series("line_mae_combo") },
       { name: "Lookup table", color: "var(--series-2)", dash: "6 4", values: series("line_mae_lookup") },
     ],
-    yMax: 8, yTicks: [0, 2, 4, 6, 8], height: 220, labelEvery: 2, markers: true, ySuffix: "",
+    yMax: errorTop, yTicks: [0, errorTop / 4, errorTop / 2, (3 * errorTop) / 4, errorTop], height: 220, labelEvery: 2, markers: true, ySuffix: "",
     tipRows: (i) => (byMonth[slots[i]]
       ? [`${num(byMonth[slots[i]].line_mae_combo, 2)} Combo`, `${num(byMonth[slots[i]].line_mae_lookup, 2)} Lookup table`, chartTitles(i)]
       : [chartTitles(i)]),

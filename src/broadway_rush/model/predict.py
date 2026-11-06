@@ -225,8 +225,11 @@ def build(per_person: float, tag: str):
     line_points = t["line"].groupby("show_id").size()
     cutoff_days = t["cutoff"].groupby("show_id").size()
 
-    today = pd.Timestamp(datetime.now(ZoneInfo("America/New_York")).date())
-    dates = sorted(d for d in sched.local_date.unique() if pd.Timestamp(d) > today)
+    now = datetime.now(ZoneInfo("America/New_York"))
+    today = pd.Timestamp(now.date())
+    # Today still counts until noon, when the morning's rush is over
+    dates = sorted(d for d in sched.local_date.unique()
+                   if pd.Timestamp(d) > today or (pd.Timestamp(d) == today and now.hour < 12))
     running = shows[shows.last_week == shows.last_week.max()]
 
     def describe(sid, title, day: pd.Timestamp, entry_name, theater):
@@ -244,7 +247,7 @@ def build(per_person: float, tag: str):
         source = "policy" if general or sro else ("reports" if by_reports else "none")
         if general:
             price = general["price"]
-        elif sro and not by_reports:
+        elif sro:
             price = sro["price"]
             price_note = "standing room"
         elif by_reports:
@@ -257,7 +260,9 @@ def build(per_person: float, tag: str):
             "show_id": sid or norm(title or entry_name).replace(" ", "-"), "name": entry_name, "theater": theater, "group": group,
             "price": price, "price_note": price_note, "rush_source": source, "reports_per_week": round(show_rate, 2),
             "recent_reports": n_recent,
-            "policy": {"general": general, "standing_room": sro, "digital": digital, "lottery": lottery, "student": student},
+            "policy": {"general": general, "standing_room": sro, "digital": digital, "lottery": lottery, "student": student,
+                       "other": sorted(set(rows.policy_type) - {"General Rush", "Standing Room", "Digital Rush",
+                                                                "Digital Lottery", "Student Rush"})},
             "recent_pct_cap": None if gr is None or pd.isna(gr.pct_cap) else round(float(gr.pct_cap), 1),
             "recent_pct_cap_week": None if gr is None else gr.week_ending,
             "badges": [],
