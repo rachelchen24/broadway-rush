@@ -22,11 +22,13 @@ import numpyro.distributions as dist  # noqa: E402
 import pandas as pd  # noqa: E402
 from jax.scipy.special import gammaln  # noqa: E402
 from numpyro.diagnostics import summary  # noqa: E402
-from numpyro.infer import MCMC, NUTS  # noqa: E402
+from numpyro.infer import MCMC, NUTS, init_to_median  # noqa: E402
 
 from broadway_rush.model.table import CUTOFF_FEATURES, tickets_bounds  # noqa: E402
 
 numpyro.set_host_device_count(4)
+MAX_ATTEMPTS = 3
+GOOD_R_HAT = 1.05
 
 
 def _model(x, show, n_shows, exact, lower, upper, kmax):
@@ -108,18 +110,25 @@ def fit(cut: pd.DataFrame, per_person: float, warmup=300, samples=300, chains=4,
     upper = x.upper_t.where(x.exact.isna()).fillna(-1).astype(int).to_numpy()
     kmax = int(max(exact.max(), lower.max(), upper.max()) + 5)
 
-    mcmc = MCMC(NUTS(_model, target_accept_prob=0.8, max_tree_depth=7), num_warmup=warmup, num_samples=samples,
-                num_chains=chains, chain_method="vectorized", progress_bar=False)
-    mcmc.run(
-        jax.random.PRNGKey(seed), jnp.array(design), jnp.array(x.show_id.map(show_index).to_numpy()), len(show_index),
-        jnp.array(exact), jnp.array(lower), jnp.array(upper), kmax, extra_fields=("diverging",),
-    )
-    grouped = mcmc.get_samples(group_by_chain=True)
-    stats = summary({k: np.asarray(v) for k, v in grouped.items()})
-    rhat = max(float(np.nanmax(v["r_hat"])) for v in stats.values())
-    ess = min(float(np.nanmin(v["n_eff"])) for v in stats.values())
-    div = int(np.asarray(mcmc.get_extra_fields()["diverging"]).sum())
+    # Starting from the priors' middle: a random start can land where every "at least" label looks impossible, the slope
+    # goes flat and a chain stays stuck (R-hat 6.16 on one window). If the chains still disagree, try again.
+    for attempt in range(MAX_ATTEMPTS):
+        kernel = NUTS(_model, target_accept_prob=0.8, max_tree_depth=7, init_strategy=init_to_median(num_samples=15))
+        mcmc = MCMC(kernel, num_warmup=warmup, num_samples=samples, num_chains=chains, chain_method="vectorized",
+                    progress_bar=False)
+        mcmc.run(
+            jax.random.PRNGKey(seed + attempt), jnp.array(design), jnp.array(x.show_id.map(show_index).to_numpy()),
+            len(show_index), jnp.array(exact), jnp.array(lower), jnp.array(upper), kmax, extra_fields=("diverging",),
+        )
+        grouped = mcmc.get_samples(group_by_chain=True)
+        stats = summary({k: np.asarray(v) for k, v in grouped.items()})
+        rhat = max(float(np.nanmax(v["r_hat"])) for v in stats.values())
+        ess = min(float(np.nanmin(v["n_eff"])) for v in stats.values())
+        div = int(np.asarray(mcmc.get_extra_fields()["diverging"]).sum())
+        if rhat <= GOOD_R_HAT:
+            break
     flat = {k: np.asarray(v) for k, v in mcmc.get_samples().items()}
     seconds = time.time() - start
     return CutoffModel(flat, show_index, center, scale, per_person,
-                       {"max_r_hat": round(rhat, 3), "min_ess": round(ess), "divergences": div}, seconds)
+                       {"max_r_hat": round(rhat, 3), "min_ess": round(ess), "divergences": div, "attempts": attempt + 1,
+                        "converged": rhat <= GOOD_R_HAT}, seconds)

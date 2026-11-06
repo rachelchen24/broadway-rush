@@ -208,6 +208,8 @@ def build(per_person: float, tag: str):
     lm = line_model.fit(t["line"], LINE_FEATURES)
     t1 = time.time()
     cm = cutoff_model.fit(tickets_bounds(t["cutoff"], per_person), per_person)
+    if not cm.diagnostics["converged"]:
+        raise SystemExit(f"Cutoff fit did not converge, so no predictions were written: {cm.diagnostics}")
     t2 = time.time()
     print("final fit: line", round(t1 - t0, 1), "s, cutoff", round(t2 - t1, 1), "s", cm.diagnostics, "phi", round(lm.phi, 2),
           flush=True)

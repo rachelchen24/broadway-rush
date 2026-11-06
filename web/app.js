@@ -57,6 +57,10 @@ function savePicks() {
   try { localStorage.setItem("rush-picks", JSON.stringify([...picks])); } catch { /* fine */ }
 }
 
+function setApp(...nodes) {
+  app.replaceChildren(...nodes.flat().filter((n) => n !== null && n !== undefined && n !== false));
+}
+
 /* ---------- pieces ---------- */
 function verdictChip(v) {
   return h("span", { class: `verdict verdict-${v.split(" ")[0]}` }, v);
@@ -70,6 +74,7 @@ function worthBar(e) {
     verdictChip(e.verdict));
 }
 function priceBlock(e) {
+  if (e.group === 3) return null; // no in-person rush, so no rush price to show
   if (e.price === null || e.price === undefined) {
     return h("div", { class: "price" }, h("small", {}, "price not listed"));
   }
@@ -155,7 +160,7 @@ function renderHome(selected) {
   const stale = upcoming.length === 0;
   const dates = (stale ? all : upcoming).slice(0, 7);
   if (!dates.length) {
-    app.replaceChildren(h("p", { class: "empty" }, "No predictions in the file yet."));
+    setApp(h("p", { class: "empty" }, "No predictions in the file yet."));
     return;
   }
   const day = selected && dates.includes(selected) ? selected : dates[0];
@@ -172,7 +177,7 @@ function renderHome(selected) {
     h("input", { type: "checkbox", checked: state.picksOnly, onchange: (ev) => { state.picksOnly = ev.target.checked; route(); } }),
     h("span", { id: "pick-count" }, `Only my picks (${picks.size})`));
 
-  app.replaceChildren(
+  setApp(
     h("h1", {}, "Is rush worth it this morning?"),
     h("p", { class: "lede" }, "Pick a day. Shows are ranked by your chance of a ticket if you arrive at 9:00 AM."),
     stale ? h("p", { class: "notice" }, "These predictions are out of date: every day in the file has passed.") : null,
@@ -228,7 +233,7 @@ function ticketsPanel(e) {
   }, "Adjust confidence");
   return h("section", { class: "panel" }, sentence,
     h("p", { class: "statement" }, "Get there by ", h("b", {}, time12(e.arrival)), " for the best chance of getting one."),
-    e.arrival_reaches_target ? h("p", { class: "muted" }, `That's the latest time that still gets a ${pct(state.data.placeholders.target_chance)} chance (placeholder target).`)
+    e.arrival_reaches_target ? h("p", { class: "muted" }, `That's the latest time that still reaches the ${pct(state.data.placeholders.target_chance)} target (a placeholder).`)
       : h("p", { class: "muted" }, `Even this early, the chance stays under the ${pct(state.data.placeholders.target_chance)} target (placeholder), because this show may have very few tickets.`),
     worthBar(e),
     h("p", { class: "muted", style: "margin-top:8px" }, `${pct(e.chance_9am)} chance if you arrive at 9:00 AM. Box office opens ${time12(e.open_time)}.`),
@@ -285,7 +290,7 @@ function renderDetails(day, id) {
   const entries = state.data.days[day] || [];
   const e = entries.find((x) => x.show_id === id);
   if (!e) {
-    app.replaceChildren(h("a", { class: "back", href: "#/" }, "← Back to shows"), h("p", { class: "empty" }, "That show isn't on the schedule for this day."));
+    setApp(h("a", { class: "back", href: "#/" }, "← Back to shows"), h("p", { class: "empty" }, "That show isn't on the schedule for this day."));
     return;
   }
   const head = h("div", { class: "detail-head" },
@@ -305,7 +310,7 @@ function renderDetails(day, id) {
       e.drivers.tickets.length ? h("ul", { class: "reasons" }, e.drivers.tickets.map((t) => h("li", {}, t))) : h("p", { class: "muted" }, "Nothing stands out from a typical show."),
       h("p", { class: "muted" }, "Compared with an average day across shows. Built from ", String(e.data.line_points), " line reports and ", String(e.data.cutoff_days), " days with ticket information for this show."),
       h("p", { class: "muted" }, "One prediction per day: most reports don't say matinee or evening."));
-    app.replaceChildren(back, head, h("div", { class: "detail-grid" },
+    setApp(back, head, h("div", { class: "detail-grid" },
       h("div", { class: "col" }, ticketsPanel(e), chancePanel(e)),
       h("div", { class: "col" }, why, digitalPanel(e), policyPanel(e))));
     return;
@@ -319,7 +324,7 @@ function renderDetails(day, id) {
       h("p", {}, otherOffers(e)),
       h("p", {}, capacityLine(e)),
       h("p", { class: "muted" }, "No line to predict. Few reports here doesn't mean low demand."));
-  app.replaceChildren(back, head, h("div", { class: "detail-grid" },
+  setApp(back, head, h("div", { class: "detail-grid" },
     h("div", { class: "col" }, note, policyPanel(e)), h("div", { class: "col" }, digitalPanel(e))));
 }
 
@@ -332,7 +337,7 @@ function bestClass(a, b, smallerIsBetter = true) {
 function renderAccuracy() {
   const a = state.data.accuracy;
   if (!a) {
-    app.replaceChildren(h("h1", {}, "How accurate have we been?"),
+    setApp(h("h1", {}, "How accurate have we been?"),
       h("p", { class: "empty" }, "Not available yet: the test on past months hasn't finished, and this page shows only real test results."));
     return;
   }
@@ -395,7 +400,7 @@ function renderAccuracy() {
     const v = vc[name];
     return h("tr", {}, h("td", {}, name), h("td", {}, String(v.attempts)), h("td", {}, String(v.got)), h("td", {}, v.attempts ? pct(v.share_got) : NOT_AVAILABLE));
   };
-  app.replaceChildren(
+  setApp(
     h("h1", {}, "How accurate have we been?"),
     h("p", { class: "lede" }, `Each month below was predicted using only earlier days. These are ${dev.length} test months on past reports, not real trips yet.`),
     h("div", { class: "accuracy-grid" },
@@ -463,7 +468,7 @@ function s(tag, attrs, text) {
 const charts = [];
 function lineChart(holder, cfg) {
   charts.push({ holder, cfg });
-  drawChart(holder, cfg);
+  requestAnimationFrame(() => drawChart(holder, cfg));
 }
 function drawChart(holder, cfg) {
   if (!holder.isConnected) return;
@@ -667,12 +672,12 @@ function renderFooter() {
   const d = state.data;
   footer.replaceChildren(
     h("p", {}, `${d.model.name}: ${d.model.line} for the line, ${d.model.cutoff} for the tickets. Made ${d.generated_at}. Reports through ${dayName(d.data_through.reports, { month: "short", day: "numeric" })}, grosses through ${dayName(d.data_through.grosses_week, { month: "short", day: "numeric" })}, schedule from Ticketmaster ${dayName(d.data_through.schedule, { month: "short", day: "numeric" })}.`),
-    h("p", {}, `Placeholder settings, not final: GO at ${pct(d.placeholders.go_at_or_above)} and up, Maybe at ${pct(d.placeholders.maybe_at_or_above)} and up, based on the chance if you arrive at 9:00 AM. Arrival times aim for a ${pct(d.placeholders.target_chance)} chance.`));
+    h("p", {}, `Placeholder settings, not final: GO at ${pct(d.placeholders.go_at_or_above)} and up, Maybe at ${pct(d.placeholders.maybe_at_or_above)} and up, based on the chance if you arrive at 9:00 AM. The arrival target is ${pct(d.placeholders.target_chance)}.`));
 }
 
 fetch("data/predictions.json", { cache: "no-store" })
   .then((r) => { if (!r.ok) throw new Error(`status ${r.status}`); return r.json(); })
   .then((data) => { state.data = data; renderFooter(); route(); })
   .catch((err) => {
-    app.replaceChildren(h("p", { class: "empty" }, `Couldn't load the predictions file (${err.message}). Start the site with a local server, not by opening the file directly.`));
+    setApp(h("p", { class: "empty" }, `Couldn't load the predictions file (${err.message}). Start the site with a local server, not by opening the file directly.`));
   });
