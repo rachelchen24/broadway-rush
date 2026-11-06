@@ -324,7 +324,7 @@ function renderDetails(day, id) {
     ? h("section", { class: "panel" }, h("h2", {}, "Limited data, probably easy"),
       h("p", {}, "Too few reports for a prediction, so there's no number here."),
       h("p", {}, capacityLine(e)),
-      h("p", { class: "muted" }, `${e.reports_per_week} reports a week, and a full prediction needs at least 2.`))
+      h("p", { class: "muted" }, `${e.comments_per_week} comments a week and ${e.line_reports} line reports. A full prediction needs 2 comments a week or 35 line reports.`))
     : h("section", { class: "panel" }, h("h2", {}, "No in-person rush line"),
       h("p", {}, otherOffers(e)),
       h("p", {}, capacityLine(e)),

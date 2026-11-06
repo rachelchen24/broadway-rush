@@ -31,8 +31,9 @@ from broadway_rush.scrapers.ticketmaster import venue_key
 OUT = ROOT / "web" / "data" / "predictions.json"
 TARGET_CHANCE = 0.80  # placeholder: the arrival time is the latest time that still reaches this
 LEVELS = list(range(50, 100, 5))
-MIN_RATE = 2.0  # SPEC 8: daily-thread reports per running week, for "enough data"
-ALWAYS_FULL = {"chicago"}  # Rachel's request, 2026-11-06: under 2 a week, but 81 line reports and 11 ticket days
+# "Enough data" for a full prediction (SPEC 8, Rachel 2026-11-06): either of these.
+MIN_COMMENTS_PER_WEEK = 2.0  # distinct daily-thread comments per running week
+MIN_LINE_REPORTS = 35  # line reports in the model table. In the tests, 10-34 lost to the lookup table; 35+ beat it
 RECENT_DAYS = 30
 RECENT_ROWS = 3
 THIN_LINE_POINTS = 35  # fewer line points than this gets the Low confidence badge
@@ -88,7 +89,7 @@ def report_rates(shows: pd.DataFrame) -> tuple[pd.Series, pd.Series, pd.Timestam
     daily = r[r.source == "daily_thread"]
     weeks = (pd.to_datetime(shows.last_week) - pd.to_datetime(shows.first_week)).dt.days / 7 + 1
     weeks.index = shows.show_id
-    rate = daily.groupby("show_id").size().reindex(shows.show_id).fillna(0) / weeks
+    rate = daily.groupby("show_id").comment_id.nunique().reindex(shows.show_id).fillna(0) / weeks
     recent = r[r.date > latest - pd.Timedelta(days=RECENT_DAYS)].groupby("show_id").size()
     return rate, recent, latest
 
@@ -242,7 +243,8 @@ def build(per_person: float, tag: str):
         by_reports = n_recent >= RECENT_ROWS and general is None
         in_person = general is not None or sro is not None or by_reports
         show_rate = float(rate.get(sid, 0.0)) if sid else 0.0
-        group = 3 if not in_person else (1 if show_rate >= MIN_RATE or sid in ALWAYS_FULL else 2)
+        n_line = int(line_points.get(sid, 0)) if sid else 0
+        group = 3 if not in_person else (1 if show_rate >= MIN_COMMENTS_PER_WEEK or n_line >= MIN_LINE_REPORTS else 2)
         gr = latest_gross.loc[sid] if sid and sid in latest_gross.index else None
         price, price_note = None, None
         source = "policy" if general or sro else ("reports" if by_reports else "none")
@@ -259,7 +261,7 @@ def build(per_person: float, tag: str):
                 price_note = f"last listed {last.snapshot_date}"
         base = {
             "show_id": sid or norm(title or entry_name).replace(" ", "-"), "name": entry_name, "theater": theater, "group": group,
-            "price": price, "price_note": price_note, "rush_source": source, "reports_per_week": round(show_rate, 2),
+            "price": price, "price_note": price_note, "rush_source": source, "comments_per_week": round(show_rate, 2), "line_reports": n_line,
             "recent_reports": n_recent,
             "policy": {"general": general, "standing_room": sro, "digital": digital, "lottery": lottery, "student": student,
                        "other": sorted(set(rows.policy_type) - {"General Rush", "Standing Room", "Digital Rush",

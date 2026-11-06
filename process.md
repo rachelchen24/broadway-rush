@@ -789,3 +789,97 @@ Twelve months would take about 11 minutes. That's scaled up, not run, because 3 
 **Found while checking:** the "enough data" rule (reports per running week, my choice of how to measure it) favors brand-new shows. **Wanted gets a full prediction from 3 line reports and 0 ticket days, and 860 from 9 and 0.** Both carry the Low confidence badge, but those numbers rest mostly on what's typical across shows. Chicago had far more data and got none. I didn't change the rule: it's in §8 and it's Rachel's call. Added as SPEC §9 question 21.
 
 **Also from Rachel:** she finds the fonts ugly and will deal with that later. No change made.
+
+---
+
+## 2026-11-06 01:33 ET — Spec: tile filters, sorting and plain wording (no code)
+
+**Did:** added SPEC §2.2a at Rachel's request: rush-type labels on tiles; filters for rush type, days showing, runtime, high-profile stars, and play or musical; sorts for rush price, typical ticket price, runtime and latest arrival; and words in place of "__% full". Added questions 23–25 to §9. The site wasn't changed.
+
+**Why:** "% full" made no sense to Rachel, let alone a typical user. People planning weeks ahead also need to find shows by the days they play, not just by a date in the next 7 days.
+
+**Result (data checked first):**
+- **Have now:** rush types (14 in person, 10 online, 5 student, 25 lottery, 6 standing room), play or musical, rush price, average paid ticket, seats sold.
+- **Runtime has a source:** Playbill's production page says "Running Time: 2 hours and 45 minutes, including one intermission". Checked on Wicked only, using a few requests. Log these pages in `registry/sources.csv` before collecting them.
+- **Days showing is partly covered:** Ticketmaster shows 27 of 37 theaters with the same weekly pattern (no Monday show), but it only looks 8 days ahead, there are only 2 snapshots so far, and two shows aren't on it.
+- **Stars aren't collected:** they need cast news, which still waits on Rachel's go-ahead.
+
+**Choices I made for Rachel, all listed in the spec:**
+- **Median price:** a true median non-rush price isn't available, because the grosses only give average and top price. I used the median of the last 4 weekly averages, labeled "Typical ticket price". It includes rush and discounted tickets.
+- **Star rule:** billed above the title, or a Tony, Oscar, Emmy or Grammy win.
+- **Word cutoffs for how full a show is:** 98%, 90% and 75%. Placeholders.
+- **Runtime bands:** placeholders.
+- **Lottery and Standing room in the rush-type filter:** added, though they aren't rush, because the site already lists them.
+- **"Any day" mode:** a new choice on the day picker, showing facts with no chance or arrival time, because predictions stop at 7 days.
+
+**Didn't work / dropped:** a check command of mine was blocked because it included a needless delete of a temp file. It never ran, so nothing was created or removed; I reran the check without it.
+
+**Next:** build when Rachel says. The parts with data on hand come first; runtime needs collecting, and stars need cast news.
+
+---
+
+## 2026-11-06 01:36 ET — "Enough data" rule changed: 35 line reports or 2 comments a week
+
+**Did:** Rachel said to use "__ minimum reports OR 2 comments/week", leaving the number for me. Changed `predict.py`, rewrote the predictions file and reran the click-through: **106 of 106 checks passed, 0 page errors.** Fit unchanged (R-hat 1.004). The accuracy page doesn't change, because the tests score every show regardless of group. Chicago's one-show exception is gone: it qualifies under the new rule.
+
+**How I picked the number:** line error in the 9 test months, grouped by how many line reports the show had before each test month (each show-day counted once):
+| Line reports before the month | Test points | Combo error | Lookup error | 80% range held |
+|---|---|---|---|---|
+| 0 | 133 | 3.86 | 5.72 | 85% |
+| 1–9 | 59 | 4.31 | 5.65 | 79% |
+| 10–19 | 104 | 6.20 | 5.80 | 75% |
+| 20–34 | 129 | 5.66 | 5.05 | 75% |
+| 35–49 | 160 | 5.24 | 6.07 | 86% |
+| 50–99 | 244 | 4.93 | 5.52 | 87% |
+| 100–199 | 128 | 4.13 | 5.68 | 92% |
+| 200+ | 550 | 4.44 | 6.14 | 90% |
+
+**Choices made for Rachel:**
+1. **35 line reports.** That's where the combo starts beating the lookup and its range starts holding. It's also the Low confidence cutoff already in use. Any number from 23 to 81 picks the same shows today, so the exact value isn't fragile. The 0 and 1–9 rows look good, but those are mostly new shows with short lines (5–6 people on average) and few points, so I don't read them as "no data is fine".
+2. **"Comments" taken literally:** distinct daily-thread comments per running week, not extraction rows as before. One comment can give several rows, so this is stricter. **It's what moves 860 and Wanted down;** on the old row count they sat at exactly 2.0.
+
+**Result:**
+- **Moved up to full predictions:** Chicago (81 line reports), Stranger Things (104).
+- **Moved down to "limited data":** Paranormal Activity (22 line reports, 1.92 comments a week), 860 (9, 1.80), Wanted (3, 1.67).
+- **Full predictions now:** 13 shows, 2 to 13 per day (only 2 on Monday). No full prediction carries the Low confidence badge now.
+
+**A problem this creates, not changed:** the second section says "Limited data, probably easy", which came from quiet shows being less full. 860 and Paranormal Activity were about 99% full, and Hadestown 95%, so it's probably wrong for them. It's Rachel's §8 wording, so I asked her (SPEC §9 question 20).
+
+---
+
+## 2026-11-06 01:38 ET — Spec: days showing, runtime and "seats sold" corrected (no code)
+
+**Did:** changed SPEC §2.2a after Rachel corrected my 01:33 entry. No code in this chat; Rachel said nothing gets built here.
+
+**Why:** I overcomplicated two things.
+- **Days showing** just means which weekdays a show plays (Just in Time doesn't play Monday or Wednesday), and show websites have that. Ticketmaster isn't needed.
+- **"__% seats sold"** makes sense as it is, so the word labels and their cutoffs aren't needed.
+
+**Result:**
+- Days showing and runtime are now simple facts, looked up once per show into `registry/show_facts.csv` and reviewed by Rachel.
+- The tile says "92% seats sold last week", capped at 100% because standing room can push it just past that (the cap is my choice).
+- §9 question 24, about pulling Ticketmaster further ahead, is dropped.
+- I kept "Any day" on the day picker: once a specific date is picked, the days-showing filter has nothing left to do.
+
+**Didn't work / dropped:** the 01:33 word labels ("Almost sold out") and the Ticketmaster plan for days showing.
+
+**Next:** nothing to build from this chat. Another chat is working in `web/` and `predict.py`, so §2.2a is there for whichever chat builds it.
+
+---
+
+## 2026-11-06 01:40 ET — Spec: wider site, lighter background, font later (no code)
+
+**Did:** changed SPEC §2.4 and §8 at Rachel's request, and wrote a prompt for the build chat to reread the spec. Nothing built in this chat.
+
+**Why:** the site is a centered column capped at 1040 pixels (`web/styles.css`), which looks like half the screen on a big monitor. Rachel doesn't like dark mode, but thinks white would look bad. Rachel also wants a better font, later.
+
+**Result:**
+- **Width:** at least 7/8 of the screen at every size, with tiles adding columns to use the room.
+- **Background:** a clearly lighter purple, with `#B9A5E6` as a starting point (my pick).
+- **Font:** stays until Rachel picks a new one (§9 question 22).
+
+**Found:** lighter purple breaks other parts of the look, by my contrast math on the current colors.
+- The current light text would be about 2:1 on that purple, so I changed the spec to dark purple body text, with glow only as an accent. This drops the original neon-text idea, so Rachel should check it.
+- Gold and gray would be about 1.4:1 and 1.6:1, so the worth-it bar needs a dark outline.
+
+**Next:** Rachel sends the prompt to the build chat.
