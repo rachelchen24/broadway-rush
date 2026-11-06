@@ -95,6 +95,9 @@ def opening_lookup(policies: pd.DataFrame):
     return opening
 
 
+AT_OPENING_HOURS = 1 / 60  # a report "at opening" counts as one minute before
+
+
 def clock_hours(s: pd.Series) -> pd.Series:
     parts = s.str.extract(r"^(\d{1,2}):(\d{2})")
     return pd.to_numeric(parts[0], errors="coerce") + pd.to_numeric(parts[1], errors="coerce") / 60
@@ -125,7 +128,23 @@ def base_reports(funnel: dict) -> pd.DataFrame:
     last = np.where(last == np.datetime64(open_ended), np.datetime64("2100-01-01"), last)
     r = r[(r.date.to_numpy() >= first - np.timedelta64(7, "D")) & (r.date.to_numpy() <= last + np.timedelta64(7, "D"))]
     funnel["date_inside_the_shows_run"] = len(r)
-    return r.copy()
+    return fix_am_pm(r.copy(), funnel)
+
+
+def fix_am_pm(r: pd.DataFrame, funnel: dict) -> pd.DataFrame:
+    """A report can't describe a time later than when it was posted, so "16:45" posted at 9:30 that morning is 4:45 am.
+    The extraction sometimes reads "7:13" in a list as 19:13, which would throw the report out as after opening."""
+    posted = clock_hours(r.created_et.str[11:16])
+    same_day = r.created_et.str[:10] == r.perf_date.astype(str).str[:10]
+    fixed = 0
+    for col in ("time", "arrival_time"):
+        t = clock_hours(r[col])
+        bad = same_day & (t >= 12.5) & (t > posted + 0.25)
+        am = t[bad] - 12
+        r.loc[bad, col] = [f"{int(h):02d}:{int(round((h - int(h)) * 60)):02d}" for h in am]
+        fixed += int(bad.sum())
+    funnel["times_corrected_from_pm_to_am"] = fixed
+    return r
 
 
 def line_points(r: pd.DataFrame, opening, funnel: dict) -> pd.DataFrame:
@@ -136,8 +155,14 @@ def line_points(r: pd.DataFrame, opening, funnel: dict) -> pd.DataFrame:
     at = at.assign(clock=clock_hours(at.arrival_time), raw=at.line_position, people=at.line_position - 1)
     cols = ["show_id", "date", "created", "kind", "clock", "raw", "people", "source"]
     x = pd.concat([lc[cols], at[cols]], ignore_index=True).dropna(subset=["clock"])
+    # A count "by the time the box office opened" has no clock time: it's the last moment before opening
+    ao = r[r["at_opening"].astype(str).eq("True")] if "at_opening" in r else r.iloc[0:0]
+    ao = ao[~ao.count_qual.isin(["at_least", "at_most"])]
+    ao = ao.assign(clock=np.nan, raw=ao["count"], people=ao["count"])
+    x = pd.concat([x, ao[cols]], ignore_index=True)
     funnel["line_points_with_a_time_and_number"] = len(x)
     x["open_hour"] = [opening(s, d)[d.weekday()] for s, d in zip(x.show_id, x.date)]
+    x["clock"] = x.clock.fillna(x.open_hour - AT_OPENING_HOURS)
     x["hours_before"] = x.open_hour - x.clock
     x = x[(x.hours_before > 0) & (x.hours_before <= MAX_HOURS_BEFORE)]
     funnel["line_points_before_opening"] = len(x)

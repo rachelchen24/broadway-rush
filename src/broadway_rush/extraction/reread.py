@@ -22,6 +22,7 @@ import json
 import random
 import re
 import sys
+from collections import defaultdict
 from datetime import date, datetime
 from pathlib import Path
 
@@ -53,6 +54,9 @@ PRICES = {
 }
 FIXABLE = ["show_text", "show", "perf_date", "perf", "rush_type", "time", "count", "count_qual", "arrival_time",
            "line_position", "outcome", "stated_count", "stated_qual", "sold_out_time"]
+OPENING_RE = re.compile(r"(?:by|at|when|before|until|till) (?:the )?(?:time )?(?:the )?(?:box office |bo )?(?:they |it )?open"
+                        r"|box office open|BO open|by open", re.IGNORECASE)
+NO_FILL = {"time", "arrival_time", "sold_out_time"}
 DROP_REASONS = {"question", "hypothetical", "vague", "quoted", "plan", "joke", "not_a_report", "other"}
 
 SYSTEM_PROMPT = """\
@@ -206,7 +210,7 @@ def apply_checks(observations: list[dict], checks: list[dict], stats: dict) -> t
             reason = c.get("reason", "other")
             row["reason"] = reason if reason in DROP_REASONS else "other"
             audit.append(row)
-            stats["drop"] = stats.get("drop", 0) + 1
+            stats["drop"] += 1
             continue
         new = dict(o)
         if verdict == "fix" and isinstance(c.get("fixes"), dict):
@@ -216,6 +220,8 @@ def apply_checks(observations: list[dict], checks: list[dict], stats: dict) -> t
             for k in asked:
                 if k == "perf_date" and o.get(k):  # fill blanks only: shifting a stated date scored worse on the labels
                     continue
+                if k in NO_FILL and not o.get(k):  # a blank time got the posting time, wrong for "at opening"
+                    continue
                 if k in clean and clean[k] != o.get(k):
                     new[k] = clean[k]
                     changed.append(f"{k}: {o.get(k, '')} -> {clean[k]}")
@@ -223,7 +229,7 @@ def apply_checks(observations: list[dict], checks: list[dict], stats: dict) -> t
             row["verdict"] = "fix" if changed else "keep"
         else:
             row["verdict"] = "keep"
-        stats[row["verdict"]] = stats.get(row["verdict"], 0) + 1
+        stats[row["verdict"]] += 1
         kept.append(new)
         audit.append(row)
     return kept, audit
@@ -238,7 +244,7 @@ def pilot(args):
               "ancestors", "posted_date", "posted_day", "sub"]
     todo = [c.loc[i, fields].to_dict() for i in ids if obs.get(i)]
     client = anthropic.Anthropic(max_retries=4)
-    usd_run, out, stats, audits = 0.0, {}, {}, []
+    usd_run, out, stats, audits = 0.0, {}, defaultdict(int), []
     for start in range(0, len(todo), CHUNK):
         chunk = todo[start:start + CHUNK]
         if usd_run >= PILOT_CAP_USD or spent_total() >= BUDGET_USD:
@@ -262,7 +268,7 @@ def pilot(args):
     path = INTERIM / f"pilot_{args.tag}.csv"
     pd.DataFrame(flatten(ids, final), columns=LABEL_COLS).fillna("").to_csv(path, index=False)
     pd.DataFrame(audits).to_csv(INTERIM / f"pilot_{args.tag}_audit.csv", index=False)
-    print(f"{args.tag}: {args.model} effort {args.effort} | {stats} | ${usd_run:.4f} for {len(todo)} comments "
+    print(f"{args.tag}: {args.model} effort {args.effort} | {dict(stats)} | ${usd_run:.4f} for {len(todo)} comments "
           f"| project total ${spent_total():.2f}")
 
 
@@ -325,7 +331,7 @@ def collect(args):
               f"errored {rc.errored}, expired {rc.expired}")
         if b.processing_status != "ended":
             continue
-        stats, n_ok, n_bad, usd_total = {}, 0, 0, 0.0
+        stats, n_ok, n_bad, usd_total = defaultdict(int), 0, 0, 0.0
         with CHECKED.open("a", encoding="utf-8") as out:
             for res in client.messages.batches.results(b.id):
                 members = meta["chunks"][res.custom_id]
@@ -348,10 +354,30 @@ def collect(args):
                                               "batch": b.id, "model": meta["model"]}) + "\n")
                 n_ok += 1
         meta.update(collected=True, collected_at=datetime.now().isoformat(timespec="seconds"),
-                    actual_usd=round(usd_total, 4), ok_chunks=n_ok, bad_chunks=n_bad, checks=stats)
+                    actual_usd=round(usd_total, 4), ok_chunks=n_ok, bad_chunks=n_bad, checks=dict(stats))
         path.write_text(json.dumps(meta))
         print(f"collected: {n_ok} chunks ok, {n_bad} failed | ${usd_total:.2f} vs estimate ${meta['estimate_usd']:.2f} "
-              f"| {stats} | project total ${spent_total():.2f}")
+              f"| {dict(stats)} | project total ${spent_total():.2f}")
+
+
+def undo_time_fills(e: dict):
+    """Results collected before NO_FILL existed: blank a time the check filled in, and say so in the audit."""
+    kept = iter(e["observations"])
+    for a in e["audit"]:
+        if a["verdict"] == "drop":
+            continue
+        o = next(kept)
+        parts = a["changed"].split("; ") if a["changed"] else []
+        stay = []
+        for p in parts:
+            field = p.split(":")[0]
+            if field in NO_FILL and p.startswith(f"{field}:  ->"):
+                o.pop(field, None)
+            else:
+                stay.append(p)
+        a["changed"] = "; ".join(stay)
+        if parts and not stay:
+            a["verdict"] = "keep"
 
 
 def reports(args):
@@ -363,6 +389,7 @@ def reports(args):
         with CHECKED.open(encoding="utf-8") as f:
             for line in f:
                 e = json.loads(line)
+                undo_time_fills(e)
                 final[e["comment_id"]] = e["observations"]
                 audit_rows += [{"comment_id": e["comment_id"], **a} for a in e["audit"]]
     rows = []
@@ -371,6 +398,9 @@ def reports(args):
             rows.append({"comment_id": cid, "obs_index": k, **{m: c.at[cid, m] for m in meta_cols},
                          **{f: o.get(f) for f in LABEL_COLS[1:]}})
     df = pd.DataFrame(rows)
+    # "13 by the time the box office opened" has a count and no clock time, so the model table would lose it
+    bodies = df.comment_id.map(c.body).fillna("")
+    df["at_opening"] = (df.kind.eq("line_count") & df["count"].notna() & df.time.isna() & bodies.str.contains(OPENING_RE))
     df.to_csv(REPORTS, index=False)
     pd.DataFrame(audit_rows).to_csv(AUDIT, index=False)
     print(f"wrote {REPORTS}: {len(df):,} observations from {df.comment_id.nunique():,} comments")

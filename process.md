@@ -1229,3 +1229,29 @@ Findings:
 Checks: 263 of 263 click-through checks pass, 0 page errors, at phone and desktop widths. All 206 show-days match the predictions from before this work. File versions are bumped to `20261106d`, so a normal refresh gets the new page.
 
 Daily job: still at `c43f4a5` from 2:09 pm. The backup times were pushed at 2:34 pm, and the 4:07 pm TKTS backup hasn't saved anything as of 4:19 pm. Runs can start late, so the first real test is tomorrow.
+
+---
+
+## 2026-11-06 17:28 ET — Data cleaning, part 1: a full re-extraction failed its test, so a checker replaced it
+
+Rachel asked for the data to be cleaned as well as possible and for as much data as possible, approving up to $5 of API money. "Don't care where it's from" doesn't override the rule on legal sources, because breaking a site's terms could put the competition entry at risk, and I told Rachel so. The budget is a hard cap in the code: $6.49 project total, which is the $1.49 already spent plus $5.
+
+Where reports were being lost (15,728 in-person rush reports, 4,001 with no show):
+- 2,999 had no show at all. The first pass saw only a comment and its parent, never the post title ("Oh Mary rush tix") or the rest of the reply chain.
+- 867 had a show as written ("Buena Vista", "Dorian", "EBT") but a blank cleaned-up title, and the matcher only read the title. The nickname list already knew many of them. Fixed in `catalog.py`, for free.
+
+First attempt, which failed: re-extract all comments with the extra context. Tested on the human-reviewed labels before the full run, for about 2 cents. Precision on observations fell from 80% to 61% on the hand labels (148 predicted vs. 101 real) and held at 77% on the holdout. Show accuracy fell on both sets. Reading the errors showed it was inventing reports: "only 5 people for the outsiders?" became a line count, against the prompt's own rule. Scrapped before spending the roughly $2.
+
+Second attempt: keep the first pass and ask only for a verdict on each report (keep, fix or drop). It can't add reports. Scores on the human-reviewed labels:
+- Hand labels: precision 73% to 82%, recall 87% to 84%.
+- Holdout labels: precision 79% to 93%, recall 93% to 93%.
+- Sonnet 5.5 cost about 8 times as much and wasn't clearly better (holdout 92% and 85%), so I used Haiku 5.5.
+- Show accuracy looks flat or slightly lower, but several of those "errors" are shows filled in from context the human labelers never saw.
+
+One guard came from reading its changes: it moved already-stated dates and was wrong as often as right, so it may only fill blank dates now. Every verdict and reason is kept in `label_audit.csv`, and the first pass stays untouched.
+
+Submitted the check of all 10,396 comments with reports: estimate $1.14.
+
+More data, from the already approved Arctic Shift archive: Reddit refreshed through today (+50 comments), and added fan subreddits r/Hadestown, r/wicked, r/SixTheMusical, r/andjuliet, r/hamiltonmusical, r/TheOutsidersMusical, r/BroadwayTickets and r/theatre, because the limited-data shows barely appear in the daily threads.
+
+Not yet known: whether any of this makes the model better. The test will compare new and old on the same test reports, because cleaning the test answers would otherwise flatter the score.
