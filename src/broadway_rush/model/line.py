@@ -5,6 +5,7 @@ negative binomial spread, fitted on the latest 20% of training days using predic
 them, turns the prediction into a range.
 """
 
+import os
 from dataclasses import dataclass
 
 import lightgbm as lgb
@@ -28,7 +29,7 @@ PARAMS = {
     "max_cat_to_onehot": 4,
     "monotone_constraints_method": "advanced",
     "verbose": -1,
-    "num_threads": 8,
+    "num_threads": int(os.environ.get("LGBM_THREADS", 8)),  # lower it when the machine is busy: threads spin-wait
     "seed": 7,
 }
 CATEGORICAL = ["show_code", "weekday", "show_type_code"]

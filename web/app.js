@@ -331,6 +331,11 @@ function bestClass(a, b, smallerIsBetter = true) {
 }
 function renderAccuracy() {
   const a = state.data.accuracy;
+  if (!a) {
+    app.replaceChildren(h("h1", {}, "How accurate have we been?"),
+      h("p", { class: "empty" }, "Not available yet: the test on past months hasn't finished, and this page shows only real test results."));
+    return;
+  }
   const lc = a.line_combo, ll = a.line_lookup, tc = a.tickets_combo, tl = a.tickets_lookup;
   const cc = a.chance_combo, cl = a.chance_lookup, cb = a.chance_base_rate;
   const dev = a.months;

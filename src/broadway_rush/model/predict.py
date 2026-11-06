@@ -161,7 +161,10 @@ def ticket_drivers(model: cutoff_model.CutoffModel, row: pd.DataFrame) -> list[s
     return out
 
 
-def accuracy_block(tag: str, funnel: dict, timings: dict) -> dict:
+def accuracy_block(tag: str, funnel: dict, timings: dict) -> dict | None:
+    """The accuracy page's numbers, straight from a finished test. None if that test hasn't finished."""
+    if not (PROCESSED / f"backtest_{tag}.json").exists():
+        return None
     res = json.loads((PROCESSED / f"backtest_{tag}.json").read_text(encoding="utf-8"))
     p = res["pooled"]
     windows = []
