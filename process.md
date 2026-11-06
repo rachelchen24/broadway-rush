@@ -1197,3 +1197,15 @@ Failures and fixes:
 - Other small fixes: 0-report shows drew a sliver of a bar, "Nov 25" read like a date (now Nov '25), and tall panels left holes (the page now fills columns).
 
 Checks: 241 of 241 click-through checks pass, 0 page errors, at 390 and 1280 pixels; that's the earlier 195 plus new ones for fonts and charts. Chart colors passed the palette validator on the dark card (protan delta E 19.9), and the text on grid squares has contrast of at least 5.3. All 206 show-days match the predictions from before this work, so adding charts changed no prediction. Not tested on a real phone or in Safari.
+
+---
+
+## 2026-11-06 15:55 ET — Nerd stats tab and fonts didn't show for Rachel: browser kept old files
+
+Rachel reported that the Nerd stats tab wasn't working and the font hadn't changed, right after I'd reported both as done. My mistake was in how I tested. Every test opens a brand-new Chrome profile with nothing saved, so it can't show what happens in a browser that already has the old site.
+
+Reproduced it in Chrome, starting from the site before the charts (`029db5a`). After a normal refresh with the new files, the page came through new but the browser kept its saved old `app.js` and `styles.css`. The tab said "Nerd stats", the font was still Segoe UI, and clicking the tab landed on the home page because the old code didn't know that page. That matches both of Rachel's symptoms, though I can't see Rachel's screen, so it isn't confirmed there.
+
+Telling Rachel to press Ctrl+Shift+R wasn't a fix. `web/index.html` now loads `styles.css?v=20261106b` and `app.js?v=20261106b`, so the browser treats them as new files. In the same test, a normal refresh then gave Poppins and the Nerd stats page. **The version has to change whenever those files change.** The click-through still passes 241 of 241.
+
+My first run of this test was invalid. Rachel had committed the charts by then, so the "old" site already had the new code, and the test showed no problem. I reran it from the older commit.
