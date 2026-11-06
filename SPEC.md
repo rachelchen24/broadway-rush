@@ -151,6 +151,7 @@ All of this goes in the predictions file, so the site still reads only that file
   - **Where the data comes from:** the cleaning funnel and reports per show.
   - **What the model looks at:** what moves the line most, and how it's built.
   - **How good it is:** the scoreboard, predicted vs. real line, chance vs. what happened, the 89% problem and verdicts, error and range by month, and real trips.
+  - **Model vs. ground truth (added 2026-11-06, my request):** every test result next to what was reported: 1,507 line reports, 33 stated ticket counts and 138 attempts, each with a switch between the model and the lookup table, plus a table to look up any result by show or month, biggest miss first. Ground truth here means Reddit reports, so it isn't verified. Numbers only, with no usernames or comment text.
 - **Show pages get the plain versions (built 2026-11-06):** how the line builds that morning, which days are busiest for that show, and what you'd save. Any day mode shows only the savings, because the other two come too close to the weekday numbers §9 question 23 holds back.
 - **Every number comes from the predictions file.** The chart numbers are counted from the model tables and the finished test by `src/broadway_rush/model/site_charts.py`.
 
@@ -472,6 +473,8 @@ Best first. None has been tested: benefits are expectations, and effort is an es
   - **Waiting won't fix it.** At the Aug–Oct pace, the 17 days to Nov 23 add about 90 line rows (1.5%), 6 ticket show-days (0.8%) and 5 outcomes (0.8%).
   - **Tickets look like the weak part.** On the 33 stated counts, the combo's middle estimate is 18 against a stated 6, though people may mention a count more often when it's small.
   - **Telling hits from misses is weak.** Given one attempt that got a ticket and one that missed, the combo ranks them correctly 60% of the time and the lookup 64% (a coin flip is 50%). 9 of the 16 misses were rated GO, and 6 of the 16 were at Just in Time.
+  - **The "too high" ticket result has a second side.** On the 122 test days with only an "at least" report, the combo's middle estimate cleared that minimum 95% of the time, and the lookup 62%.
+  - **Big line misses all go one way.** Every one of the 42 misses of 20+ people was a real line longer than predicted. Some may be bad reports, not bad predictions: Oh, Mary! on Mar 4, 2026 has reports of 9 people and, about 1.4 hours later, 79. The Lost Boys on May 27 has 15 and 50 at the same time. Read the comments before removing anything, and never remove a report just because the model missed it.
   - **So do the ticket upgrades and outcome step first.** 16 misses is a small test, so one or two can swing a result, and "always yes" may look better than it is because wins get posted more than losses. Judge upgrades on catching misses and ranking as well as overall accuracy.
 - **Not worth doing now:** modeling a link between line and tickets. The 0.09 correlation suggests little to gain.
 - **Tried 2026-11-06, didn't help:** a tighter prior on the ticket spread (§5.2a).

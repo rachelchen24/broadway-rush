@@ -93,7 +93,42 @@ def predicted_vs_real(tag: str) -> dict | None:
     }
 
 
-def build(line: pd.DataFrame, model, tag: str, show_ids: set[str]) -> dict:
+def test_results(tag: str, shows: pd.DataFrame) -> dict | None:
+    """Every test prediction next to what was reported, for the Nerd stats page. Numbers only, no usernames or comments."""
+    paths = {k: PROCESSED / f"backtest_{tag}_{k}.csv" for k in ("line", "tickets", "outcomes")}
+    if not all(p.exists() for p in paths.values()):
+        return None
+    line, tickets, attempts = (pd.read_csv(paths[k]) for k in ("line", "tickets", "outcomes"))
+    names = shows.drop_duplicates("show_id").set_index("show_id")["name"].to_dict()
+    ids = sorted(set(line.show_id) | set(tickets.show_id) | set(attempts.show_id))
+    code = {sid: i for i, sid in enumerate(ids)}
+    within = {}
+    for n in (3, 5):
+        within[f"within{n}"] = {m: round(float(np.average((line[f"{m}_med"] - line.people).abs() <= n, weights=line.weight)), 3)
+                                for m in ("combo", "lookup")}
+    stated = tickets[tickets.exact.notna()]
+    floors = tickets[tickets.lower_t.notna() & tickets.exact.isna()]
+    return {
+        "shows": [names.get(sid, sid) for sid in ids],
+        "line": {
+            "summary": within,
+            "rows": [[code[r.show_id], r.date, round(float(r.hours_before), 2), int(r.people), float(r.combo_med), float(r.combo_lo),
+                      float(r.combo_hi), round(float(r.lookup_med), 1)] for r in line.itertuples()],
+        },
+        "tickets": {
+            "at_least": {"days": len(floors), "combo": round(float((floors.combo_med >= floors.lower_t).mean()), 3),
+                         "lookup": round(float((floors.lookup_med >= floors.lower_t).mean()), 3)},
+            "rows": [[code[r.show_id], r.date, float(r.exact), round(float(r.combo_med), 1), round(float(r.combo_lo), 1),
+                      round(float(r.combo_hi), 1), round(float(r.lookup_med), 1)] for r in stated.itertuples()],
+        },
+        "attempts": {
+            "rows": [[code[r.show_id], r.date, round(float(r.hours_before), 2), r.outcome, round(float(r.combo), 3),
+                      round(float(r.lookup), 3)] for r in attempts.itertuples()],
+        },
+    }
+
+
+def build(line: pd.DataFrame, model, tag: str, show_ids: set[str], shows: pd.DataFrame) -> dict:
     return {
         "line_growth": line_growth(line),
         "show_days": show_days(line, show_ids),
@@ -101,4 +136,5 @@ def build(line: pd.DataFrame, model, tag: str, show_ids: set[str]) -> dict:
         "min_days_per_cell": MIN_DAYS_PER_CELL,
         "drivers": drivers(line, model),
         "predicted_vs_real": predicted_vs_real(tag),
+        "test_results": test_results(tag, shows),
     }

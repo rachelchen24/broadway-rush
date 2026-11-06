@@ -1209,3 +1209,23 @@ Reproduced it in Chrome, starting from the site before the charts (`029db5a`). A
 Telling Rachel to press Ctrl+Shift+R wasn't a fix. `web/index.html` now loads `styles.css?v=20261106b` and `app.js?v=20261106b`, so the browser treats them as new files. In the same test, a normal refresh then gave Poppins and the Nerd stats page. **The version has to change whenever those files change.** The click-through still passes 241 of 241.
 
 My first run of this test was invalid. Rachel had committed the charts by then, so the "old" site already had the new code, and the test showed no problem. I reran it from the older commit.
+
+---
+
+## 2026-11-06 16:19 ET — Nerd stats: model vs. ground truth
+
+Rachel asked to see the test results against the ground truth. We have them: the test saved every prediction next to what was reported. Added a sixth Nerd stats section with three charts (line, stated tickets, got a ticket or not), each with a Model / Lookup table switch, plus a table to look up any result by show or month, biggest miss first. Locked months aren't in these files, so they stay unscored.
+
+Choices I made: dots are nudged slightly so they don't hide each other, and the page says so. One report over 60 people isn't drawn on the line chart, and the page says that too. The rows hold numbers only, with no usernames or comment text. The predictions file grew to about 1 MB; 15 timed loads had a median of 78 ms and a maximum of 420 ms on this laptop.
+
+Problems found in screenshots and fixed: on phones the table cut off the model, real and miss columns (now fewer columns, with the date under the show name); dots in the attempts chart sat on the axis labels; there was a big gap beside the first chart (the attempts chart now runs the full width).
+
+Findings:
+- Every one of the 42 line misses of 20+ people was a real line longer than predicted. At 10+ it's 187 of 196. The model misses surges and doesn't badly overshoot.
+- Tickets have a second side. On 33 stated counts the middle estimate is 18 against a stated 6, but on 122 "at least" days it cleared the minimum 95% of the time, and the lookup 62%.
+- Of the 16 misses, 9 still had standing room, 5 sold out first and 2 had only full price left.
+- Some ground truth looks wrong. Oh, Mary! on Mar 4, 2026 has 9 people, then 79 about 1.4 hours later. The Lost Boys on May 27 has 15 and 50 at the same time. Other big ones look real, like Schmigadoon! on Jun 6 with two reports at 55 and 60. I checked the numbers only and haven't read the comments. Nothing was removed.
+
+Checks: 263 of 263 click-through checks pass, 0 page errors, at phone and desktop widths. All 206 show-days match the predictions from before this work. File versions are bumped to `20261106d`, so a normal refresh gets the new page.
+
+Daily job: still at `c43f4a5` from 2:09 pm. The backup times were pushed at 2:34 pm, and the 4:07 pm TKTS backup hasn't saved anything as of 4:19 pm. Runs can start late, so the first real test is tomorrow.

@@ -664,7 +664,7 @@ function bestClass(a, b, smallerIsBetter = true) {
 }
 const NS_SECTIONS = [
   ["ns-summary", "Short version"], ["ns-lines", "How lines behave"], ["ns-data", "The data"],
-  ["ns-model", "The model"], ["ns-tests", "How good is it?"],
+  ["ns-model", "The model"], ["ns-tests", "How good is it?"], ["ns-truth", "Model vs. ground truth"],
 ];
 function nsSection(id, title, intro, ...panels) {
   return h("section", { id, class: "ns-section" }, h("h2", {}, title), intro ? h("p", { class: "lede" }, intro) : null,
@@ -867,6 +867,239 @@ function calibrationPanel(a) {
     numbersTable(["We said", "On average", "Got a ticket", "Attempts"], all.map((b) => [label(b), pct(b.mean_chance), pct(b.share_got), String(b.attempts)])));
 }
 
+/* ---------- Model vs. ground truth: every test result next to what really happened ---------- */
+function scatterChart(holder, cfg) {
+  const full = { ...cfg, draw: drawScatter };
+  charts.push({ holder, cfg: full });
+  requestAnimationFrame(() => drawScatter(holder, full));
+  return full;
+}
+/* Same offsets every time, so dots don't jump around when the page redraws */
+const nudge = (i, salt) => (((i + 1) * (salt ? 0.7548776662 : 0.5698402910)) % 1) - 0.5;
+function drawScatter(holder, cfg) {
+  if (!holder.isConnected) return;
+  const width = Math.max(240, holder.clientWidth || 320);
+  const m = { top: cfg.yTitle ? 30 : 14, right: 14, bottom: 42, left: cfg.yLabels ? 92 : 40 };
+  const height = cfg.height || Math.min(430, Math.round((width - m.left - m.right) * 0.86) + m.top + m.bottom);
+  const w = width - m.left - m.right, ht = height - m.top - m.bottom;
+  const xPos = (v) => m.left + (v / cfg.xMax) * w;
+  const yPos = (v) => m.top + ht - (v / cfg.yMax) * ht;
+  const svg = s("svg", { viewBox: `0 0 ${width} ${height}`, height, role: "img", "aria-label": cfg.label });
+  for (const t of cfg.xTicks) {
+    svg.append(s("line", { x1: xPos(t), x2: xPos(t), y1: m.top, y2: m.top + ht, stroke: "var(--line)", "stroke-width": 1, opacity: 0.4 }));
+    svg.append(s("text", { x: xPos(t), y: height - 24, "text-anchor": "middle" }, `${t}${cfg.xSuffix || ""}`));
+  }
+  if (cfg.yLabels) {
+    for (const row of cfg.yLabels) svg.append(s("text", { x: m.left - 8, y: yPos(row.y) + 4, "text-anchor": "end", class: "value-label" }, row.label));
+  } else {
+    for (const t of cfg.yTicks) {
+      svg.append(s("line", { x1: m.left, x2: width - m.right, y1: yPos(t), y2: yPos(t), stroke: "var(--line)", "stroke-width": 1, opacity: 0.4 }));
+      svg.append(s("text", { x: m.left - 6, y: yPos(t) + 4, "text-anchor": "end" }, String(t)));
+    }
+  }
+  if (cfg.yTitle) svg.append(s("text", { x: 0, y: 12, class: "axis-title" }, cfg.yTitle));
+  svg.append(s("text", { x: m.left + w / 2, y: height - 4, "text-anchor": "middle", class: "axis-title" }, cfg.xTitle));
+  if (cfg.identity) {
+    const end = Math.min(cfg.xMax, cfg.yMax);
+    svg.append(s("line", { x1: xPos(0), y1: yPos(0), x2: xPos(end), y2: yPos(end), stroke: "var(--ink-2)", "stroke-width": 1.5, "stroke-dasharray": "2 4" }));
+  }
+  const spots = cfg.points.map((p) => ({ p, cx: xPos(p.x), cy: yPos(p.y) }));
+  for (const d of spots) svg.append(s("circle", { class: "dot", cx: d.cx.toFixed(1), cy: d.cy.toFixed(1), r: cfg.radius || 2.4, fill: cfg.color, "fill-opacity": cfg.opacity || 0.5 }));
+  const ring = s("circle", { r: (cfg.radius || 2.4) + 4, fill: "none", stroke: "var(--ink)", "stroke-width": 2, visibility: "hidden" });
+  svg.append(ring);
+  const hit = s("rect", { x: m.left - 8, y: 0, width: w + 22, height, fill: "transparent" });
+  const hide = () => { ring.setAttribute("visibility", "hidden"); tooltip.hidden = true; };
+  const seek = (ev) => {
+    const box = svg.getBoundingClientRect();
+    const scale = width / box.width;
+    const px = (ev.clientX - box.left) * scale, py = (ev.clientY - box.top) * scale;
+    let best = null, bestGap = 26 * 26;
+    for (const d of spots) {
+      const gap = (d.cx - px) ** 2 + (d.cy - py) ** 2;
+      if (gap < bestGap) { best = d; bestGap = gap; }
+    }
+    if (!best) { hide(); return; }
+    ring.setAttribute("cx", best.cx); ring.setAttribute("cy", best.cy); ring.setAttribute("visibility", "visible");
+    showTip(best.p.title, best.p.rows, ev.clientX, ev.clientY);
+  };
+  hit.addEventListener("pointermove", seek);
+  hit.addEventListener("pointerdown", seek);
+  hit.addEventListener("pointerleave", hide);
+  svg.append(hit);
+  holder.replaceChildren(svg);
+}
+function methodToggle(onChange) {
+  const buttons = [["combo", "Model"], ["lookup", "Lookup table"]].map(([key, name], i) => h("button", {
+    type: "button", class: "chip", "aria-pressed": i === 0 ? "true" : "false",
+    onclick: (ev) => {
+      for (const b of buttons) b.setAttribute("aria-pressed", "false");
+      ev.currentTarget.setAttribute("aria-pressed", "true");
+      onChange(key);
+    },
+  }, name));
+  return h("div", { class: "control-row method-toggle", role: "group", "aria-label": "Which predictions to show" }, buttons);
+}
+const METHOD_COLOR = { combo: "var(--gold)", lookup: "var(--series-2-light)" };
+const METHOD_NAME = { combo: "Model", lookup: "Lookup table" };
+function beforeOpening(hours) {
+  const mins = Math.round(hours * 60);
+  const hh = Math.floor(mins / 60), mm = mins % 60;
+  return `${hh ? `${hh}h ` : ""}${mm || !hh ? `${mm}m` : ""}`.trim();
+}
+const shortDate = (d) => dayName(d, { month: "short", day: "numeric", year: "numeric" });
+const OUTCOME_NAMES = { got_rush: "Got rush", sro_only: "Only standing room left", sold_out_before_me: "Sold out first", full_price_only: "Only full price left" };
+const trimNum = (v) => (Number.isInteger(v) ? String(v) : v.toFixed(1));
+
+function truthLinePanel(r) {
+  const top = 60;
+  const rows = r.line.rows;
+  const over = rows.filter((x) => x[3] > top).length;
+  const holder = h("div", { class: "chart" });
+  const points = (key) => rows.map((x, i) => ({ x, i })).filter(({ x }) => x[3] <= top && x[key === "combo" ? 4 : 7] <= top).map(({ x, i }) => {
+    const said = x[key === "combo" ? 4 : 7];
+    return {
+      x: Math.min(top, Math.max(0, said + nudge(i, 0) * 0.7)), y: Math.min(top, Math.max(0, x[3] + nudge(i, 1) * 0.7)),
+      title: r.shows[x[0]],
+      rows: [`${shortDate(x[1])}, ${beforeOpening(x[2])} before opening`, `${METHOD_NAME[key]} said ${trimNum(said)} people`, `Real line: ${x[3]}`],
+    };
+  });
+  const cfg = scatterChart(holder, {
+    label: "Predicted line against the real line for every test report", points: points("combo"), color: METHOD_COLOR.combo, opacity: 0.45,
+    xMax: top, yMax: top, xTicks: [0, 20, 40, 60], yTicks: [0, 20, 40, 60], identity: true,
+    xTitle: "Predicted people in line", yTitle: "Real people in line",
+  });
+  const toggle = methodToggle((key) => { cfg.points = points(key); cfg.color = METHOD_COLOR[key]; drawScatter(holder, cfg); });
+  const t = r.line.summary;
+  return nsPanel("The line: every test report",
+    `The model was within 3 people ${pct(t.within3.combo)} of the time, and the lookup table ${pct(t.within3.lookup)}. Within 5 people: ${pct(t.within5.combo)} vs. ${pct(t.within5.lookup)}. Switch between them to compare.`,
+    toggle, holder,
+    h("p", { class: "muted", style: "margin-top:6px" }, `${rows.length.toLocaleString()} reports. A dot on the dotted line is a perfect prediction; above it, the real line was longer than predicted. Dots are nudged slightly so they don't hide each other.${over ? ` ${over} report${over === 1 ? "" : "s"} over ${top} people ${over === 1 ? "isn't" : "aren't"} drawn.` : ""}`));
+}
+
+function truthTicketsPanel(r) {
+  const rows = r.tickets.rows;
+  const { top, ticks } = niceTicks(Math.max(...rows.flatMap((x) => [x[2], x[3], x[6]])));
+  const holder = h("div", { class: "chart" });
+  const points = (key) => rows.map((x) => {
+    const said = x[key === "combo" ? 3 : 6];
+    return {
+      x: said, y: x[2], title: r.shows[x[0]],
+      rows: [shortDate(x[1]), `${METHOD_NAME[key]} said ${trimNum(said)} tickets`, key === "combo" ? `80% range: ${trimNum(x[4])} to ${trimNum(x[5])}` : null, `Stated: ${trimNum(x[2])}`].filter(Boolean),
+    };
+  });
+  const cfg = scatterChart(holder, {
+    label: "Predicted tickets against stated ticket counts", points: points("combo"), color: METHOD_COLOR.combo, opacity: 0.8, radius: 4,
+    xMax: top, yMax: top, xTicks: ticks, yTicks: ticks, identity: true,
+    xTitle: "Predicted rush tickets", yTitle: "Tickets people said there were",
+  });
+  const toggle = methodToggle((key) => { cfg.points = points(key); cfg.color = METHOD_COLOR[key]; drawScatter(holder, cfg); });
+  const f = r.tickets.at_least;
+  return nsPanel("The tickets: every stated count",
+    `On the ${rows.length} days someone stated a count, the model's middle estimate was ${trimNum(median(rows.map((x) => x[3])))} against a stated ${trimNum(median(rows.map((x) => x[2])))}, so it looks too high. But on the ${f.days} days people only said "at least" so many, it cleared that minimum ${pct(f.combo)} of the time, and the lookup table ${pct(f.lookup)}.`,
+    toggle, holder,
+    h("p", { class: "muted", style: "margin-top:6px" }, "People may mention an exact count more often when it's small, so neither view is the whole story. Dots right of the dotted line mean we predicted more tickets than people said."));
+}
+
+function truthAttemptsPanel(r) {
+  const rows = r.attempts.rows;
+  const holder = h("div", { class: "chart" });
+  const points = (key) => rows.map((x, i) => {
+    const got = x[3] === "got_rush";
+    const chance = x[key === "combo" ? 4 : 5];
+    return {
+      x: chance * 100, y: (got ? 1.2 : 0.4) + nudge(i, 1) * 0.6, title: r.shows[x[0]],
+      rows: [`${shortDate(x[1])}, arrived ${beforeOpening(x[2])} before opening`, `${METHOD_NAME[key]} said ${pct(chance)}`, OUTCOME_NAMES[x[3]] || x[3]],
+    };
+  });
+  const cfg = scatterChart(holder, {
+    label: "Chance given to each attempt, split by whether the person got a ticket", points: points("combo"), color: METHOD_COLOR.combo, opacity: 0.7, radius: 3.5,
+    xMax: 100, yMax: 1.6, xTicks: [0, 25, 50, 75, 100], xSuffix: "%", yTicks: [], height: 220,
+    yLabels: [{ y: 1.2, label: "Got a ticket" }, { y: 0.4, label: "Missed" }], xTitle: "Chance we gave them",
+  });
+  const toggle = methodToggle((key) => { cfg.points = points(key); cfg.color = METHOD_COLOR[key]; drawScatter(holder, cfg); });
+  const got = rows.filter((x) => x[3] === "got_rush");
+  const missed = rows.filter((x) => x[3] !== "got_rush");
+  const avg = (list, k) => list.reduce((a, x) => a + x[k], 0) / list.length;
+  const kinds = Object.entries(OUTCOME_NAMES).filter(([k]) => k !== "got_rush")
+    .map(([k, name]) => [missed.filter((x) => x[3] === k).length, name.toLowerCase()]).filter(([n]) => n);
+  const panel = nsPanel("Got a ticket or not: every attempt",
+    `The model gave people who got a ticket an average chance of ${pct(avg(got, 4))}, and people who missed ${pct(avg(missed, 4))}. The bigger the gap between the two rows, the better. Of the ${missed.length} misses: ${kinds.map(([n, name]) => `${n} ${name}`).join(", ")}.`,
+    toggle, holder,
+    h("p", { class: "muted", style: "margin-top:6px" }, `${rows.length} attempts where the person said what happened. Losses are under-reported, so real misses are probably more common than this.`));
+  panel.classList.add("wide");
+  return panel;
+}
+
+function modelCell(value, lo, hi) {
+  return [trimNum(value), h("small", {}, `${trimNum(lo)}–${trimNum(hi)}`)];
+}
+function truthBrowser(r) {
+  const view = { set: "line", show: "", month: "", sort: "miss", limit: 25 };
+  const body = h("div", {});
+  const sets = {
+    line: {
+      name: "Line reports", rows: r.line.rows,
+      heads: ["Show", "Model", "Lookup", "Real", "Miss"],
+      when: (x) => `${shortDate(x[1])} · ${beforeOpening(x[2])} before opening`,
+      miss: (x) => Math.abs(x[4] - x[3]),
+      cells: (x) => [modelCell(x[4], x[5], x[6]), trimNum(x[7]), String(x[3]), trimNum(Math.abs(x[4] - x[3]))],
+    },
+    tickets: {
+      name: "Stated ticket counts", rows: r.tickets.rows,
+      heads: ["Show", "Model", "Lookup", "Stated", "Miss"],
+      when: (x) => shortDate(x[1]),
+      miss: (x) => Math.abs(x[3] - x[2]),
+      cells: (x) => [modelCell(x[3], x[4], x[5]), trimNum(x[6]), trimNum(x[2]), trimNum(Math.abs(x[3] - x[2]))],
+    },
+    attempts: {
+      name: "Attempts", rows: r.attempts.rows,
+      heads: ["Show", "Model", "Lookup", "What happened"],
+      when: (x) => `${shortDate(x[1])} · arrived ${beforeOpening(x[2])} before opening`,
+      miss: (x) => Math.abs((x[3] === "got_rush" ? 1 : 0) - x[4]),
+      cells: (x) => [pct(x[4]), pct(x[5]), OUTCOME_NAMES[x[3]] || x[3]],
+    },
+  };
+  const months = [...new Set(r.line.rows.map((x) => x[1].slice(0, 7)))].sort();
+  const paint = () => {
+    const set = sets[view.set];
+    const usedShows = [...new Set(set.rows.map((x) => x[0]))].sort((a, b) => r.shows[a].localeCompare(r.shows[b]));
+    if (view.show !== "" && !usedShows.includes(Number(view.show))) view.show = "";
+    const list = set.rows.filter((x) => (view.show === "" || x[0] === Number(view.show)) && (view.month === "" || x[1].startsWith(view.month)));
+    const sorted = [...list].sort((a, b) => (view.sort === "miss" ? set.miss(b) - set.miss(a) : b[1].localeCompare(a[1])));
+    const shown = sorted.slice(0, view.limit);
+    const choose = (label, value, options, onchange) => h("label", { class: "ns-select" }, label,
+      h("select", { onchange: (ev) => { onchange(ev.target.value); view.limit = 25; paint(); } },
+        options.map(([v, text]) => { const o = h("option", { value: v }, text); o.selected = String(v) === String(value); return o; })));
+    body.replaceChildren(
+      h("div", { class: "control-row" }, Object.entries(sets).map(([k, x]) => h("button", {
+        type: "button", class: "chip", "aria-pressed": view.set === k ? "true" : "false",
+        onclick: () => { view.set = k; view.limit = 25; paint(); },
+      }, `${x.name} (${x.rows.length.toLocaleString()})`))),
+      h("div", { class: "control-row browse-filters" },
+        choose("Show", view.show, [["", "All shows"], ...usedShows.map((i) => [i, r.shows[i]])], (v) => { view.show = v; }),
+        choose("Month", view.month, [["", "All test months"], ...months.map((m) => [m, monthName(m)])], (v) => { view.month = v; }),
+        choose("Sort", view.sort, [["miss", view.set === "attempts" ? "Biggest surprise first" : "Biggest miss first"], ["date", "Newest first"]], (v) => { view.sort = v; })),
+      h("p", { class: "muted browse-count" }, list.length ? `Showing ${shown.length} of ${list.length.toLocaleString()}` : "No results match these filters."),
+      list.length ? h("div", { class: "table-wrap" }, h("table", { class: "browse" },
+        h("thead", {}, h("tr", {}, set.heads.map((x) => h("th", {}, x)))),
+        h("tbody", {}, shown.map((x) => h("tr", {},
+          h("td", {}, h("span", { class: "show-name" }, r.shows[x[0]]), h("small", {}, set.when(x))), set.cells(x).map((c) => h("td", {}, c))))))) : null,
+      shown.length < list.length ? h("button", { type: "button", class: "link-button browse-more", onclick: () => { view.limit += 25; paint(); } }, `Show ${Math.min(25, list.length - shown.length)} more`) : null);
+  };
+  paint();
+  return h("section", { class: "panel wide" }, h("h3", {}, "Look up any test result"),
+    h("p", {}, "Every prediction next to what was really reported. Pick a show or month, or start with the biggest misses."),
+    h("p", { class: "muted" }, "The small numbers under the model's prediction are its 80% range. Miss is how far the model was from what was reported. A big miss can mean the model was wrong or the report was: these come from Reddit comments and aren't verified."), body);
+}
+
+function truthSection(ch) {
+  const r = ch.test_results;
+  if (!r) return null;
+  return nsSection("ns-truth", "Model vs. ground truth",
+    `Every result from the test months, each predicted using only earlier days. Ground truth here means what people reported on Reddit, pulled from comments by AI and tested against human-reviewed labels. It isn't verified, and wins get posted more than losses.`,
+    truthLinePanel(r), truthTicketsPanel(r), truthAttemptsPanel(r), truthBrowser(r));
+}
+
 function renderNerdStats() {
   const a = state.data.accuracy;
   const ch = state.data.charts;
@@ -970,7 +1203,8 @@ function renderNerdStats() {
       nsPanel("Did the 80% line range hold?", null,
         h("p", { class: "muted" }, "Share of real counts inside the range. The goal is 80%, not 100%. Gaps are the locked months."), legend(), coverChart),
       nsPanel("Real trips", null,
-        live ? null : h("p", { class: "not-available" }, "Not available yet: no predictions have been checked against real rush days or verified reports."))));
+        live ? null : h("p", { class: "not-available" }, "Not available yet: no predictions have been checked against real rush days or verified reports."))),
+    truthSection(ch));
 
   const biggestMiss = Math.max(...a.windows.flatMap((w) => [w.line_mae_combo, w.line_mae_lookup]));
   const errorTop = Math.ceil(biggestMiss / 2) * 2;
@@ -1101,7 +1335,7 @@ function drawChart(holder, cfg) {
 let resizeTimer = null;
 window.addEventListener("resize", () => {
   clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => charts.forEach((c) => drawChart(c.holder, c.cfg)), 120);
+  resizeTimer = setTimeout(() => charts.forEach((c) => (c.cfg.draw || drawChart)(c.holder, c.cfg)), 120);
 });
 
 /* ---------- modals: screens only, nothing is connected ---------- */

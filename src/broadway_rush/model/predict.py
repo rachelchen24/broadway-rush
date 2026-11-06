@@ -432,7 +432,7 @@ def build(per_person: float, tag: str):
         "has_show_facts": bool(facts),
         "days": days,
         "accuracy": accuracy_block(tag, funnel, timings),
-        "charts": {**site_charts.build(t["line"], lm, tag, {e["show_id"] for es in days.values() for e in es}),
+        "charts": {**site_charts.build(t["line"], lm, tag, {e["show_id"] for es in days.values() for e in es}, shows),
                    "full_prediction_rule": {"line_reports": MIN_LINE_REPORTS, "reports_per_week": MIN_REPORTS_PER_WEEK}},
     }
     timings["whole_predictions_run_seconds"] = round(time.time() - started, 1)
