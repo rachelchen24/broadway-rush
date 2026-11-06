@@ -66,7 +66,7 @@ Also to do:
 - Small badges: `Digital rush 9 AM`, `Star leaving Sunday`, `Low confidence`, `Prices way above usual`
 - **__% seats sold** ("92% seats sold last week"), in place of "__% full" (§2.2a)
 
-### 2.2a Filters, sorting and plain wording (added 2026-11-06; not built)
+### 2.2a Filters, sorting and plain wording (added and built 2026-11-06, except high-profile stars)
 **Rush types on the tile.** Each tile shows what the show offers. The same labels drive the first filter.
 | Label | Policy types it covers (§3.4) | Shows now (Nov 5 snapshot) | Predicted? |
 |---|---|---|---|
@@ -83,12 +83,12 @@ Also to do:
 | Filter | Options | Data | Status |
 |---|---|---|---|
 | Rush type | In person, Online, Student, Lottery, Standing room | Rush policies (§3.4) | Have it |
-| Days showing | M, T, W, Th, F, S, Su | Which weekdays the show plays, from its website (for example, Just in Time doesn't play Monday or Wednesday) | Not collected; easy to look up |
-| Runtime | Under 90 min, 90 min–2 hrs, 2–2.5 hrs, Over 2.5 hrs | Looked up online: show websites, or Playbill's show pages | Not collected; easy to look up |
+| Days showing | M, T, W, Th, F, S, Su | Which weekdays the show plays (for example, Just in Time doesn't play Monday or Wednesday; see §9 question 27) | Built: 8 weeks of Playbill's weekly schedule |
+| Runtime | Under 90 min, 90 min–2 hrs, 2–2.5 hrs, Over 2.5 hrs | Playbill's show pages | Built: 34 of 35 shows |
 | High-profile stars | Has a high-profile star | Hand-kept list (below) | Not collected; needs cast news (§3.12) |
 | Play or musical | Play, Musical | Show catalog (§3.0) | Have it |
 
-**Days showing and runtime are simple show facts.** Claude looks them up once per show into a hand-kept file, `registry/show_facts.csv` (show, days, runtime, source, date checked), and I review it. No Ticketmaster and no scraper needed for these. The date picker's performance times still come from Ticketmaster (§3.0).
+**Days showing and runtime are simple show facts.** Claude looks them up once per show into a hand-kept file, `registry/show_facts.csv` (show, days, runtime, source, date checked, plus a review flag and note), and I review it. **Done 2026-11-06:** days come from Playbill's weekly schedule page over 8 weeks, using past copies on the Internet Archive, because one week can mislead (Election Day week had several shows swapping Tuesday for Monday). Ticketmaster is only a cross-check: where it disagrees, the row is flagged. 6 of 35 rows are flagged for me. The date picker's performance times still come from Ticketmaster (§3.0).
 
 While a filter is on, shows with an unknown value are hidden, and the page says so ("3 shows hidden: runtime not known"). The page also shows the count ("12 of 33 shows") and a clear-all button.
 
@@ -106,7 +106,7 @@ While a filter is on, shows with an unknown value are hidden, and the page says 
 | Latest arrival time | Latest | Model | The latest you can arrive and still probably get a ticket. Only for shows with a prediction on the picked date; not available in Any day mode. |
 | Rush price | Lowest | Rush policies (§3.4) | In-person price, or the online price if there's no in-person rush |
 | Typical ticket price | Lowest | Weekly grosses (§3.3) | See below |
-| Runtime | Shortest | Show facts file (above) | Not collected |
+| Runtime | Shortest | Show facts file (above) | Built |
 
 **"Typical ticket price" instead of median non-rush price.** No legal source gives a true median or leaves out rush tickets: the weekly grosses only give the average paid per ticket and the top price (§3.3, §3.8). The closest honest number is the median of the last 4 weekly averages, labeled "Typical ticket price (average paid, recent weeks)". It includes rush and discounted tickets, so it runs a little below full price.
 
@@ -130,9 +130,8 @@ All of this goes in the predictions file, so the site still reads only that file
 
 ### 2.4 Look & feel
 - **Width: at least 7/8 of the screen** at every screen size (changed 2026-11-06). It was a centered column capped at 1040 pixels, which looks like half the screen on a big monitor. Tiles use the extra room by adding columns, so lines of text don't stretch too long.
-- **Lighter purple background** (~~deep purple~~, changed 2026-11-06): clearly lighter, not near-black and not white. No dark mode. Starting point about `#B9A5E6`, adjusted by eye.
-- **Readable text** (~~glowing / illuminated light colors, neon-marquee feel~~, changed 2026-11-06): the current light text would be only about 2:1 contrast on that purple, so body text goes dark purple, at least 4.5:1. Glow stays only as an accent where it still reads.
-- **Gold and gray on the lighter background:** they'd be only about 1.4:1 and 1.6:1 against that purple, so the worth-it bar needs a dark outline, and gold can't be used for text directly on the background.
+- **Purple theme** (deep purple), with text in **glowing / illuminated light colors** (neon-marquee feel). ~~A lighter purple background with dark text and no dark mode~~ was tried on 2026-11-06, and I changed it back to dark the same night.
+- **Worth-it bar on dark:** it has a light outline, so the black end still shows.
 - **Font:** the current one is going. Pick a better one later (§9, question 22).
 - **Worth-it bar: black → gray → gold** (~~red → purple → blue~~, changed 2026-11-05). Black = stay home, gray = Maybe, gold = GO.
 
@@ -606,7 +605,7 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 - **Product:** web app. Personal use + portfolio + family and friends. Not built for scale. Nothing reused from earlier projects.
 - **Usage (2026-11-02):** I might not check it every day, or even every week. Nothing should depend on daily visits.
 - **Flow:** pick a **day** → **tiles of all shows** ranked by likelihood of rush, each with **price** → optional checkboxes to focus on chosen shows → tap a tile for performance details.
-- **Look (changed 2026-11-06):** lighter purple background, no dark mode, readable dark text (~~glowing light text~~), at least 7/8 of the screen width, font to be replaced later; worth-it bar **black → gray → gold** (~~red → blue~~, changed 2026-11-05).
+- **Look (changed 2026-11-06):** purple theme, glowing light text (~~lighter background with dark text~~, tried and changed back the same night), at least 7/8 of the screen width, font to be replaced later; worth-it bar **black → gray → gold** (~~red → blue~~, changed 2026-11-05).
 - In-person rush is the main output; digital rush is secondary; SRO is collected in reports.
 - Horizon: next 7 days; day-of (e.g. 8 am) checks show everything.
 - **Output:** worth-it bar + verdict, chance %, ticket count ± at a confidence level, price, arrival time; confidence slider hidden behind a button.
@@ -628,7 +627,7 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 - **Labels:** one row per observation (`line_count` / `attempt` / `supply` / `none`), per `docs/labeling-schema.md`. The 100-comment answer key and the 50-comment held-out set were pre-labeled by Claude and reviewed by Rachel ("human-reviewed labels").
 - **Stack so far:** Python 3.14 venv, package in `src/broadway_rush/`, data in `data/` (`raw/` and `labels/` git-ignored, though `hand_labels.xlsx` and `sample_manifest.csv` were committed before that rule), source registry in `registry/sources.csv`. **Website deploys on Vercel** (2026-11-02). Rachel handles all git commits.
 - **Repo (2026-11-02):** private on GitHub for now; probably **public when the project is done**, so interviewers can see it. Before then, remove Reddit comment text and usernames from what's committed (§7, §9). Private notes stay git-ignored.
-- **Tile filters and sorting (2026-11-06):** tiles show rush types. Filters: rush type, days showing, runtime, high-profile stars, play or musical. Sorts: best chance, latest arrival, rush price, typical ticket price, runtime. Days showing and runtime are looked up online. The site says "__% seats sold" instead of "__% full" (§2.2a). Not built.
+- **Tile filters and sorting (2026-11-06):** tiles show rush types. Filters: rush type, days showing, runtime, high-profile stars, play or musical. Sorts: best chance, latest arrival, rush price, typical ticket price, runtime. Days showing and runtime are looked up online. The site says "__% seats sold" instead of "__% full" (§2.2a). Built 2026-11-06, except the stars filter, which needs cast news.
 - **Model (2026-11-05):** the combo (trees for the line, Bayesian for the cutoff) for both the first and final models, because it's more fun to talk about. The first version stays simple, to see the whole site working; the final version is a leveled-up combo (§5.2, §5.2a, §5.2c). Not started.
 - **Deadline and scope (2026-11-05):** data project competition entry. ~~Due 2026-11-17.~~ **Complete by 2026-11-23, turn in 2026-11-24, present 2026-12-07** (corrected by me the same day). Between turn-in and the presentation, only small tweaks and improvements, **no model changes**. Everything stays in: cast + closing news, NYC permitted events, Refresh + PIN, report form + email approval, weekly automatic job, digital rush predictions. Cutting these was proposed and rejected. Core first (data, model, site), so a delay only moves an add-on. Schedule (stretched to the new dates by Claude, not yet reviewed by me):
   - **Nov 5–7:** data: catch-up, calendar, weather, NYC permitted events, cast + closing news.
@@ -643,11 +642,11 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
   - **Dec 7:** present.
 - **Scheduled jobs (2026-11-05):** GitHub Actions runs the daily ticket snapshots, so they run with the laptop closed. Snapshots are saved to a separate private repo, `broadway-rush-data`, which stays private when this repo goes public. The job commits to that repo by itself, using a deploy key (secret `DATA_REPO_SSH_KEY`); Rachel still does all commits to this repo.
 - **Which shows get predictions (2026-10-22), three groups, decided per show and per date from the policy history:**
-  1. **In-person rush + enough data** (~~≥2 daily-thread reports per running week; ~11 shows~~ 35+ line reports or 2+ daily-thread comments per running week; 13 shows on Nov 6: Oh, Mary!, The Outsiders, Operation Mincemeat, Just in Time, Maybe Happy Ending, The Great Gatsby, Rocky Horror, Schmigadoon!, The Lost Boys, Buena Vista Social Club, Two Strangers, Stranger Things, Chicago): full prediction (tickets, range, arrival time).
-  2. **In-person rush, little data** (~~~5: Chicago, Six, Hadestown SRO, & Juliet, Wicked~~ 9 on Nov 6: Six, Hadestown SRO, & Juliet, Wicked, Paranormal Activity, 860, Wanted, Downstate, It's a Wonderful Life): no number; "limited data, probably easy" plus the policy and __% seats sold (§2.2a). (Quiet in-person shows run ~84% full vs. 94% for busy ones; `process.md` step 4d.)
+  1. **In-person rush + enough data** (~~≥2 daily-thread reports per running week; ~11 shows~~ 35+ line reports or 2+ daily-thread reports per running week; 16 shows on Nov 6: Oh, Mary!, The Outsiders, Operation Mincemeat, Just in Time, Maybe Happy Ending, The Great Gatsby, Rocky Horror, Schmigadoon!, The Lost Boys, Buena Vista Social Club, Two Strangers, Stranger Things, Chicago, Paranormal Activity, 860, Wanted): full prediction (tickets, range, arrival time).
+  2. **In-person rush, little data** (~~~5: Chicago, Six, Hadestown SRO, & Juliet, Wicked~~ 6 on Nov 6: Six, Hadestown SRO, & Juliet, Wicked, Downstate, It's a Wonderful Life): no number; "limited data, probably easy" plus the policy and __% seats sold (§2.2a). (Quiet in-person shows run ~84% full vs. 94% for busy ones; `process.md` step 4d.)
   3. **No in-person rush** (lottery / digital only, e.g. Hamilton, Lion King, Book of Mormon): listed with lottery and digital-rush info only, no line prediction. Few Reddit posts here does *not* mean low demand: these shows are 94–99% full.
 - **First model and website (2026-11-06, built unattended at my request; each choice is in `process.md`):** the simple combo with the faster fit, 1.0 ticket per person, 9:00 verdict with placeholder thresholds (§5.2a). Three test months locked for the final score. Plain HTML/CSS/JS in `web/`, reads only `web/data/predictions.json`; report form and Refresh + PIN are labeled "Not connected yet". Worth-it thresholds and the verdict comparison are still mine to decide (§9).
-- **"Enough data" rule changed (2026-11-06, my decision):** a full prediction needs **35+ line reports OR 2+ daily-thread comments per running week.** Claude picked 35 from the tests: shows with 10–34 line reports before the test month lost to the lookup table (80% range held 75%), and shows with 35+ beat it (86–92%). Any cutoff from 23 to 81 picks the same shows today.
+- **"Enough data" rule changed (2026-11-06, my decision):** a full prediction needs **35+ line reports OR 2+ daily-thread reports per running week.** Claude picked 35 from the tests: shows with 10–34 line reports before the test month lost to the lookup table (80% range held 75%), and shows with 35+ beat it (86–92%). Any cutoff from 23 to 81 picks the same shows today.
 - **Build order:** 1 Reddit → CSV ✅ · 2 labels + Haiku pilot ✅ · 3 full extraction ✅ · 4 grosses + rush policies + show catalog ✅ · 6 snapshot scrapers (moved up because ticket data has no history; TKTS + Ticketmaster built 2026-10-22, daily job working 2026-11-05) · 5 first model (simple combo) + results table · 7 website · final model (leveled-up combo). Don't skip ahead without asking.
 - **Accuracy page:** yes (§2.6).
 - **Docs:** `SPEC.md` (this file), `process.md` (what was built and how, kept up to date during coding), `interview-notes.md` (private talking points, **git-ignored**), `claude-notes.md` (Claude's working notes between sessions, **git-ignored**).
@@ -673,10 +672,12 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 17. **Comparison rows:** keep the NB GLM, Bayesian hierarchical and LightGBM rows in the results table as lighter fits (the default, about 1 extra day), or show only the lookup table and the combo?
 18. **Cast + closing news:** waiting on my go-ahead (§3.12). The model can start without it, because cast features can be added later.
 19. **After the Nov 24 freeze:** does weekly retraining on new data continue? Assumed yes (§8): it's the same model on new data, and it lets the accuracy page build up real results for the presentation.
-20. **"Limited data, probably easy" on a nearly sold-out show:** "probably easy" came from quiet shows being less full. It doesn't fit standing-room shows (standing room sells only when the show sells out; Hadestown was 95% full on Nov 1) or new hits moved here by the rule change (860 was 99% full, Paranormal Activity 99%). Should the wording change for those?
+20. **"Limited data, probably easy" on a nearly sold-out show:** "probably easy" came from quiet shows being less full. It doesn't fit standing-room shows: standing room sells only when the show sells out, and Hadestown was 95% full on Nov 1. Goes with question 26.
 21. ~~"Enough data" rule.~~ Decided 2026-11-06 (§8).
 22. **Fonts:** I don't like them. Fix later.
 23. **Any day mode, later dates:** should a tile show a rough number for the weekday ("Usually on Tuesdays: get there by 8:40")? Default no, because §1 limits predictions to the next 7 days and calls anything further extrapolation.
 24. ~~**Real dates further ahead:** the weekly job could pull Ticketmaster's schedule about 5 weeks out.~~ Dropped 2026-11-06: days showing comes from show websites (§2.2a).
-25. **Filter choices to review (§2.2a):** the high-profile star rule, the runtime bands, and whether Lottery and Standing room belong in the rush-type filter, since they aren't rush.
+25. **Filter choices to review (§2.2a):** the high-profile star rule, the runtime bands, and whether Lottery and Standing room belong in the rush-type filter, since they aren't rush. Also from the build: a standing-room price counts as the rush price when a show has nothing else (Hadestown $39, Six $49), and Hadestown gets `In person (reported)` as well as `Standing room`.
+26. **Limited-data shows:** look at other features for them. To talk through next session; nothing built.
+27. **Just in Time's days:** §2.2a's example says it doesn't play Monday or Wednesday. Playbill's schedule (Wednesday in all 8 weeks) and Ticketmaster both show it playing Wednesdays, dark Monday only. The site follows the data. Was the example about something else?
 - ~~Confirm Ticketmaster Discovery API free-tier limits.~~ Done 2026-10-22: 5,000 calls/day, 5 per second.

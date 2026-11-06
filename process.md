@@ -883,3 +883,122 @@ Twelve months would take about 11 minutes. That's scaled up, not run, because 3 
 - Gold and gray would be about 1.4:1 and 1.6:1, so the worth-it bar needs a dark outline.
 
 **Next:** Rachel sends the prompt to the build chat.
+
+---
+
+## 2026-11-06 01:42 ET — Correction: reports, not comments
+
+**Did:** Rachel meant reports when she wrote "comments". I'd taken it literally in the entry above, so that part was wrong. Counting reports again: **a full prediction needs 35+ line reports OR 2+ daily-thread reports per running week.** The 35 stands. Rewrote the predictions file and reran the click-through.
+
+**Result compared with the entry above:** Paranormal Activity, 860 and Wanted go back to full predictions, each with the Low confidence badge. Chicago and Stranger Things stay full through the 35-report route. Downstate, & Juliet, Hadestown, It's a Wonderful Life, Six and Wicked stay "limited data".
+
+**Parked for the next session, at Rachel's request:** other features for limited-data shows (SPEC §9 question 23). Nothing built. The "probably easy" wording on Hadestown (question 20) goes with that talk, so I left it as is.
+
+---
+
+## 2026-11-06 01:46 ET — Site update, step 1: new look (§2.4)
+
+**Did:** Rachel changed `SPEC.md` from another chat and asked for the site to match. I reread §1, §2.1, §2.2, §2.2a, §2.4, the §8 lines, §9 questions 22–25, and the 01:33, 01:38 and 01:40 entries first. Then I rewrote `web/styles.css`: 92% of the screen wide at every size (spec minimum is 7/8, 87.5%), tiles adding columns as room grows, a `#B9A5E6` background, dark text, no dark mode, and a dark outline on the worth-it bar. Fonts unchanged, per Rachel.
+
+**Conflicts found, and how I handled them (told Rachel):**
+1. **Two question 23s in §9:** mine (limited-data shows) and the other chat's (Any day). Renumbered mine to 26, and fixed the two references to it.
+2. **Hadestown and Six:** §8 treats standing room as in-person, but §2.2a's `In person` label means General Rush only. I follow both: they stay in the second group, labeled `Standing room`. That section is retitled "At the box office, not enough reports".
+3. **Standing-room prices:** §2.2a's rush price is in-person, or online if there's none, and doesn't mention standing room. I still show Hadestown's $39, labeled "standing room", and sort it with the others. For Rachel to review.
+
+**Choices made for Rachel:**
+- **Contrast, computed:** dark ink is 8.2:1 on the background and 15.5:1 on tiles; the lightest text color (`#46306F`) is 5.0:1 on the background and 9.5:1 on tiles. The spec's minimum is 4.5:1.
+- **Tiles are a pale purple (`#F1ECFB`), not the background color,** so text and bars have somewhere to sit.
+- **Gold and gray stay as fills with dark outlines, never as text,** because they're under 1.6:1 on the background. Selected chips are dark with white text.
+- **Chart lines changed to darker gold (`#A06F00`) and teal (`#127FA0`).** They pass all 5 color checks on the tile color, including color-blind separation. The lookup line stays dashed as a second cue.
+- **Gold on the accuracy table is now a highlight behind the best value,** because gold text doesn't read. Key numbers in the details view get a gold underline instead of a glow.
+- **Glow:** kept only as a soft white glow on the logo and page title.
+- **Tiles start at 270 pixels wide** (was 290), which gives about 4 columns at 1280 pixels, 6 at 1920 and 8 at 2560. Paragraphs stop at about 78 characters so lines don't stretch.
+
+**Next:** "% seats sold", then the labels, filters, sorts and "Any day".
+
+---
+
+## 2026-11-06 01:57 ET — Site update, steps 2 and 3: seats sold, rush-type labels, filters, sorts, Any day
+
+**Did:** added new fields to the predictions file (rush types, play or musical, typical ticket price, seats sold) and rebuilt the home and details pages in `web/app.js`. The model didn't change: the fit is the same (R-hat 1.004), and I only reran `predict.py` to write the new fields.
+
+**What's on the site now:**
+- **"__% seats sold" everywhere,** including the "why this prediction" lines: "57% seats sold last week", rounded and capped at 100%. It names the week once the data is over 2 weeks old. No "% full" or "capacity" is left on any page; a test checks this.
+- **Rush-type labels on tiles.** Counts match §2.2a exactly: In person 14, Online 10, Student 5, Lottery 25, Standing room 6, plus 7 `In person (reported)`.
+- **Filters:** rush type and play or musical. Any selected option within a filter counts, and a show must match all filters. There's a "12 of 33 shows" count, a clear-all button and "hidden: not known" notes. Filters are open by default on desktop and closed on phones.
+- **Sorts:** best chance (default), latest arrival, rush price, typical ticket price. Tapping a sort again reverses it, and unknown values always go last.
+- **Any day** on the day picker: facts only, with no chance, bar or arrival time, "Check back within 7 days of your date", and a note to confirm before going.
+
+**Choices made for Rachel:**
+1. **Every sort except best chance shows one flat list,** so the sort means something across groups. Best chance keeps the three group sections.
+2. **Tiles show a small facts line** (play or musical, typical ticket) on dates too, not just in Any day. §2.2 doesn't list it, but a sort is confusing if you can't see what it's sorting by.
+3. **Rush price order:** listed in-person price, then a reported show's last listed price (with its date), then online (marked "online"), then standing room (marked). Paranormal Activity now shows "$40 online" instead of "price not listed". The details sentence won't call an online or standing-room price the in-person price.
+4. **The `In person` filter also finds `In person (reported)`.**
+5. **Hadestown gets both `In person (reported)` and `Standing room`.** It's on Playbill's list only for standing room and lottery, but has 3+ recent in-person reports. I read "doesn't list" as "doesn't list General Rush".
+6. **Any day sorts by rush price by default,** since best chance isn't available there. It lists all 35 shows that appear on any day in the file.
+7. **Other deals (Friday Forty and so on) moved to the details view,** with "Other deals in the details" on a tile if that's all the show has.
+8. **Typical ticket price with under 4 weeks of data** uses what there is and says so in the details ("only 1 week so far"). Much Ado has 1 week.
+9. **Stars aren't on Any day tiles,** though §2.2a lists them there, because that needs cast news.
+
+**Didn't work, then fixed:** a stray word "null" appeared beside the show count. My check had missed it because I'd loosened the check while debugging, and I only saw it in a screenshot. I fixed the bug and made the check strict again. The white dot on the chance chart was also invisible on the lighter tiles, so it's dark now.
+
+**Next:** step 4, days showing and runtime.
+
+---
+
+## 2026-11-06 02:02 ET — Back to dark
+
+**Did:** Rachel changed her mind partway through this work: "change it back to dark mode". Put back the deep purple background and glowing light text. **Kept, because she only mentioned the colors:** the 92% width with extra tile columns, and all the new labels, filters, sorts and Any day. Updated SPEC §2.4 and §8 to match, and left the lighter version struck through so the history shows. The 01:46 look entry is superseded by this one.
+
+**Choices made for Rachel:**
+- **Worth-it bar:** a light outline, as before, since a dark one would disappear and the black end needs to show. Her "dark outline" instruction belonged to the lighter background.
+- **Chart lines:** gold darkened a little to pass all 5 color checks on the dark tile, because the earlier dark version just missed the lightness limit. Teal `#2F9FC0` is unchanged.
+- **Selected sort and filter chips are gold with dark text.** The accuracy table's best values go back to gold text.
+- **Contrast, computed:** the lightest text is 5.3:1 at worst, on a hovered tile.
+
+**Next:** back to step 4.
+
+---
+
+## 2026-11-06 02:13 ET — Site update, step 4: days showing and runtime
+
+**Did:** logged the sources in `registry/sources.csv` first, then looked up all 35 shows into `registry/show_facts.csv`, and added the days-showing and runtime filters and the runtime sort. Reran `predict.py` to add the fields; the model didn't change (R-hat 1.004).
+
+**Result:** days for 35 of 35 shows, runtime for 34 of 35 (Downstate's page has none, so it shows as not available). **6 rows are flagged for Rachel's review:** Downstate, Here There Are Blueberries, It's a Wonderful Life, Much Ado About Nothing, The Fantasticks and Wanted. All have 1 or 2 weeks of schedule history. The reasons are in the file's `note` column. About 45 requests in total, spaced 3 to 5 seconds apart.
+
+**Didn't work, then fixed:**
+1. **Playbill's show pages have runtime but no days.** They do link to its "Weekly Schedule of Current Broadway Shows", which lists every show's times, so that became the source for days.
+2. **One week was misleading.** The live page covers Nov 2–8, and 10 shows disagreed with Ticketmaster. Nov 3 was Election Day, and several shows swapped Tuesday for Monday. So I added past copies of the same page from the Internet Archive and took the usual pattern across 8 weeks (logged first). Aladdin, Harry Potter, The Lion King, The Lost Boys and Hadestown all then play Tuesday 7 of 8 weeks.
+3. **Two Playbill links on the rush list were dead (404): Hadestown and Harry Potter.** I found their pages through their grosses pages instead, and a note in the file says so. A cached page then hid this in a later run, so Hadestown's source briefly showed the dead link. I caught it in a screenshot and fixed it.
+4. **My theater check gave false alarms** on The Great Gatsby ("Broadway Theatre") and The Fantasticks ("Hayes Theater"), because it was too strict about names. Fixed.
+
+**Conflict with the spec, not resolved by me:** §2.2a says Just in Time doesn't play Monday or Wednesday. Playbill shows Wednesday in all 8 weeks and Ticketmaster agrees; it's dark Monday only. The site follows the data, and I asked Rachel (SPEC §9 question 27).
+
+**Choices made for Rachel:**
+1. **Days come from Playbill's schedule page, not "show websites or show pages" as she asked.** Runtime does come from show pages. One Playbill page beats 35 sites that would each need a rules check.
+2. **Ticketmaster is only a cross-check.** The spec says it isn't needed for days. It flags rows; it never sets them.
+3. **A day counts if the show played at least half the weeks.** A tie counts as playing, because wrongly hiding a show from a filter is worse than wrongly including it.
+4. **Runtime bands:** exactly 90 minutes goes in "90 min–2 hrs", exactly 2 hours too, and exactly 2.5 hours in "2–2.5 hrs".
+5. **A flagged show says on its details page that we're not sure.** Tiles look the same either way.
+6. **Blueberries and It's a Wonderful Life are labeled Play,** inferred from the credits on their pages, because the catalog has no type for them yet. Both are flagged.
+7. **Shows not on Ticketmaster (A Few Good Men, The Imaginary Invalid) no longer appear on days the facts say they're dark.** They still say "Schedule not confirmed".
+8. **The site says "Playbill, checked Nov 6, 2026".** Full links are in the file.
+9. **The lookup script was one-time,** in my temp folder, not the repo. Its pages are cached in `data/raw/playbill/show_pages/` (git-ignored).
+
+**One thing for Rachel to judge:** Playbill's robots.txt blocks AI training crawlers by name, including Anthropic's, and says `ai-train=no, use=reference`. This lookup isn't training, and it used the project's own identifying User-Agent, like her existing Playbill scrapers. A script kept only the facts, and pages weren't sent to an AI model. These facts drive site filters, not the model.
+
+---
+
+## 2026-11-06 02:13 ET — Site update, step 5: final click-through
+
+**Did:** extended the headless Chrome test and ran it on the final file, then read the screenshots. The browser pane still isn't available in this session.
+
+**Result: 195 of 195 checks passed, 0 page errors.** Covers phone (390 pixels) and desktop (1280): every day, every kind of tile, details, slider, chart hover, picks, rush-type and play-or-musical filters including combinations and clear-all, all five sorts and reversing them with unknowns last, Any day and its details, days and runtime filters, greyed-out days on a date, the accuracy page, the report form and Refresh + PIN. No "% full" or "capacity" remains on any page checked.
+
+**Width:** 92% of the screen at 320, 390, 768, 1280, 1920, 2560 and 3840 pixels, with 1, 1, 2, 4, 6, 8 and 12 tile columns, and no sideways scroll.
+
+**Not covered:** real phones and Safari; nothing here tests whether the numbers are right, only that they appear and behave.
+
+**Still not confirmed, the daily snapshot job:** at 07:13 UTC Nov 6 the data repo's latest commit is still the manual run from 21:52 UTC Nov 5. Rachel needs to check the Actions tab.
+
+**Not done, as instructed:** no stars filter, font unchanged, no retraining or model changes, no commits, deploys, accounts or API money. Other features for limited-data shows and the "probably easy" wording wait for the next talk (SPEC §9 questions 26 and 20).

@@ -1,7 +1,11 @@
 /* Broadway Rush site. Reads only data/predictions.json. Never computes or invents a prediction. */
 "use strict";
 
-const state = { data: null, picksOnly: false };
+const state = {
+  data: null, picksOnly: false, paint: null, filtersOpen: null,
+  sort: { key: "chance", reversed: false },
+  filters: { rush: new Set(), type: new Set(), days: new Set(), runtime: new Set() },
+};
 const app = document.getElementById("app");
 const footer = document.getElementById("footer");
 const modal = document.getElementById("modal");
@@ -62,6 +66,25 @@ function setApp(...nodes) {
 }
 
 /* ---------- pieces ---------- */
+const RUSH_OPTIONS = ["In person", "Online", "Student", "Lottery", "Standing room"];
+const TYPE_OPTIONS = ["Play", "Musical"];
+const DAY_OPTIONS = ["M", "T", "W", "Th", "F", "S", "Su"];
+const RUNTIME_OPTIONS = [
+  { key: "under90", label: "Under 90 min", test: (m) => m < 90 },
+  { key: "90to120", label: "90 min–2 hrs", test: (m) => m >= 90 && m <= 120 },
+  { key: "120to150", label: "2–2.5 hrs", test: (m) => m > 120 && m <= 150 },
+  { key: "over150", label: "Over 2.5 hrs", test: (m) => m > 150 },
+];
+const minutesOf = (t) => { const [a, b] = t.split(":").map(Number); return a * 60 + b; };
+// "Better" comes first by default: highest chance, latest arrival, lowest prices, shortest runtime. Unknowns always go last.
+const SORTS = [
+  { key: "chance", label: "Best chance", needsDate: true, value: (e) => e.chance_9am, bigFirst: true },
+  { key: "arrival", label: "Latest arrival", needsDate: true, value: (e) => (e.arrival ? minutesOf(e.arrival) : null), bigFirst: true },
+  { key: "price", label: "Rush price", value: (e) => e.price, bigFirst: false },
+  { key: "typical", label: "Typical ticket price", value: (e) => e.typical_ticket, bigFirst: false },
+  { key: "runtime", label: "Runtime", needsFacts: true, value: (e) => e.runtime_minutes, bigFirst: false },
+];
+
 function verdictChip(v) {
   return h("span", { class: `verdict verdict-${v.split(" ")[0]}` }, v);
 }
@@ -74,14 +97,11 @@ function worthBar(e) {
     verdictChip(e.verdict));
 }
 function priceBlock(e) {
-  if (e.group === 3) return null; // no in-person rush, so no rush price to show
   if (e.price === null || e.price === undefined) {
+    if (e.group === 3) return null; // no rush price to show
     return h("div", { class: "price" }, h("small", {}, "price not listed"));
   }
-  let note = null;
-  if (e.price_note === "standing room") note = "standing room";
-  else if (e.price_note) note = e.price_note;
-  return h("div", { class: "price" }, money(e.price), note ? h("small", {}, note) : null);
+  return h("div", { class: "price" }, money(e.price), e.price_note ? h("small", {}, e.price_note) : null);
 }
 function badges(e) {
   const list = [...(e.badges || [])];
@@ -89,46 +109,41 @@ function badges(e) {
   if (!list.length) return null;
   return h("div", { class: "badges" }, list.map((b) => h("span", { class: `badge${b === "Low confidence" ? " low" : ""}` }, b)));
 }
+function rushLabels(e) {
+  if (!e.rush_labels || !e.rush_labels.length) return null;
+  return h("div", { class: "badges" }, e.rush_labels.map((l) => h("span", { class: `rush-label${l.includes("reported") ? " reported" : ""}` }, l)));
+}
+function seatsLine(e) {
+  if (e.seats_sold_pct === null || e.seats_sold_pct === undefined) return "% seats sold: not available yet";
+  const age = (parseDay(localToday()) - parseDay(e.seats_sold_week)) / 86400000;
+  if (age <= 14) return `${e.seats_sold_pct}% seats sold last week`;
+  return `${e.seats_sold_pct}% seats sold, week ending ${dayName(e.seats_sold_week, { month: "short", day: "numeric" })}`;
+}
+function runtimeText(e) {
+  return e.runtime_text || null;
+}
+function typicalText(e) {
+  if (e.typical_ticket === null || e.typical_ticket === undefined) return "Typical ticket price not available";
+  return `Typical ticket ${money(e.typical_ticket)}`;
+}
+function factsLine(e, anyMode) {
+  const parts = [e.show_type || "Play or musical not available", typicalText(e)];
+  if (state.data.has_show_facts) {
+    parts.splice(1, 0, runtimeText(e) || "Runtime not available");
+    if (anyMode) parts.push(e.days ? `Plays ${e.days.join(" ")}` : "Days not available");
+  }
+  return h("div", { class: "facts-line" }, parts.join(" · "));
+}
 function pickBox(e) {
   const box = h("input", {
     type: "checkbox", checked: picks.has(e.show_id),
     onchange: (ev) => {
       if (ev.target.checked) picks.add(e.show_id); else picks.delete(e.show_id);
       savePicks();
-      if (state.picksOnly) route();
-      else updatePickCount();
+      if (state.paint) state.paint();
     },
   });
   return h("label", { class: "pick" }, box, "Interested");
-}
-function updatePickCount() {
-  const c = document.getElementById("pick-count");
-  if (c) c.textContent = `Only my picks (${picks.size})`;
-}
-function tile(day, e) {
-  const href = `#/show/${day}/${encodeURIComponent(e.show_id)}`;
-  const head = h("div", { class: "tile-top" },
-    h("div", { class: "tile-name" },
-      h("a", { class: "tile-link", href }, e.name),
-      h("span", { class: "theater" }, e.theater)),
-    priceBlock(e));
-  if (e.group === 1) {
-    return h("article", { class: "tile" }, head, worthBar(e),
-      h("div", { class: "stats" },
-        h("span", { class: "chance" }, pct(e.chance_9am), " ", h("small", {}, "chance at 9:00 AM")),
-        h("span", { class: "arrival" }, `Get there by ${time12(e.arrival)}`)),
-      badges(e), pickBox(e));
-  }
-  if (e.group === 2) {
-    return h("article", { class: "tile" }, head,
-      h("div", { class: "simple-line" }, h("b", {}, "Limited data, probably easy.")),
-      h("div", { class: "simple-line" }, policyLine(e)),
-      h("div", { class: "simple-line" }, capacityLine(e)),
-      badges(e), pickBox(e));
-  }
-  return h("article", { class: "tile" }, head,
-    h("div", { class: "simple-line" }, otherOffers(e)),
-    badges(e), pickBox(e));
 }
 function policyLine(e) {
   const p = e.policy || {};
@@ -137,22 +152,112 @@ function policyLine(e) {
   if (e.rush_source === "reports") return "Not on Playbill's current rush list, but recent reports describe an in-person line.";
   return "In-person policy not listed.";
 }
-function capacityLine(e) {
-  if (e.recent_pct_cap === null || e.recent_pct_cap === undefined) return "Recent % capacity: not available yet.";
-  return `${e.recent_pct_cap}% full, week ending ${dayName(e.recent_pct_cap_week, { month: "short", day: "numeric" })}.`;
-}
 function otherOffers(e) {
   const p = e.policy || {};
   const parts = [];
-  if (p.digital) parts.push(`Digital rush${p.digital.price ? ` ${money(p.digital.price)}` : ""}`);
-  if (p.lottery) parts.push(`Digital lottery${p.lottery.price ? ` ${money(p.lottery.price)}` : ""}`);
-  if (p.student) parts.push("Student rush");
-  for (const name of p.other || []) parts.push(name);
-  if (!parts.length) return "No in-person rush, lottery or digital rush listed.";
-  return `No in-person rush. ${parts.join(" · ")}.`;
+  if (p.digital) parts.push(`Online rush${p.digital.price ? ` ${money(p.digital.price)}` : ""}`);
+  if (p.lottery) parts.push(`Lottery${p.lottery.price ? ` ${money(p.lottery.price)}` : ""}`);
+  if (p.student) parts.push("Student");
+  if (parts.length) return `No in-person rush. ${parts.join(" · ")}.`;
+  if (p.other && p.other.length) return "No in-person rush. Other deals in the details.";
+  return "No in-person rush, lottery or online rush listed.";
+}
+function tile(day, e, anyMode) {
+  const href = `#/show/${day}/${encodeURIComponent(e.show_id)}`;
+  const head = h("div", { class: "tile-top" },
+    h("div", { class: "tile-name" },
+      h("a", { class: "tile-link", href }, e.name),
+      h("span", { class: "theater" }, e.theater)),
+    priceBlock(e));
+  if (anyMode) {
+    return h("article", { class: "tile" }, head, rushLabels(e),
+      h("div", { class: "seats" }, seatsLine(e)), factsLine(e, true),
+      h("div", { class: "check-back" }, "Check back within 7 days of your date."),
+      pickBox(e));
+  }
+  if (e.group === 1) {
+    return h("article", { class: "tile" }, head, rushLabels(e), worthBar(e),
+      h("div", { class: "stats" },
+        h("span", { class: "chance" }, pct(e.chance_9am), " ", h("small", {}, "chance at 9:00 AM")),
+        h("span", { class: "arrival" }, `Get there by ${time12(e.arrival)}`)),
+      h("div", { class: "seats" }, seatsLine(e)), factsLine(e, false),
+      badges(e), pickBox(e));
+  }
+  if (e.group === 2) {
+    return h("article", { class: "tile" }, head, rushLabels(e),
+      h("div", { class: "simple-line" }, h("b", {}, "Limited data, probably easy.")),
+      h("div", { class: "simple-line" }, policyLine(e)),
+      h("div", { class: "seats" }, seatsLine(e)), factsLine(e, false),
+      badges(e), pickBox(e));
+  }
+  return h("article", { class: "tile" }, head, rushLabels(e),
+    h("div", { class: "simple-line" }, otherOffers(e)),
+    h("div", { class: "seats" }, seatsLine(e)), factsLine(e, false),
+    badges(e), pickBox(e));
+}
+
+/* ---------- filters and sorting: everything runs in the browser from the predictions file ---------- */
+const anyFilterOn = () => Object.values(state.filters).some((f) => f.size);
+function matchesFilters(e, anyMode) {
+  const f = state.filters;
+  if (f.rush.size && !(e.rush_labels || []).some((l) => f.rush.has(l.startsWith("In person") ? "In person" : l))) return false;
+  if (f.type.size && !(e.show_type && f.type.has(e.show_type))) return false;
+  if (anyMode && f.days.size && !(e.days && e.days.some((d) => f.days.has(d)))) return false;
+  if (f.runtime.size) {
+    if (e.runtime_minutes === null || e.runtime_minutes === undefined) return false;
+    if (!RUNTIME_OPTIONS.some((o) => f.runtime.has(o.key) && o.test(e.runtime_minutes))) return false;
+  }
+  return true;
+}
+function hiddenForUnknown(entries, anyMode) {
+  const f = state.filters;
+  const notes = [];
+  const add = (n, what) => { if (n) notes.push(`${n} ${n === 1 ? "show" : "shows"} hidden: ${what} not known`); };
+  if (f.type.size) add(entries.filter((e) => !e.show_type).length, "play or musical");
+  if (anyMode && f.days.size) add(entries.filter((e) => !e.days).length, "days showing");
+  if (f.runtime.size) add(entries.filter((e) => e.runtime_minutes === null || e.runtime_minutes === undefined).length, "runtime");
+  return notes;
+}
+function activeSort(anyMode) {
+  const wanted = SORTS.find((x) => x.key === state.sort.key);
+  if (anyMode && wanted.needsDate) return { spec: SORTS.find((x) => x.key === "price"), reversed: false };
+  return { spec: wanted, reversed: state.sort.reversed };
+}
+function sortEntries(list, spec, reversed) {
+  const known = [], unknown = [];
+  for (const e of list) (spec.value(e) === null || spec.value(e) === undefined ? unknown : known).push(e);
+  const sign = (spec.bigFirst ? -1 : 1) * (reversed ? -1 : 1);
+  known.sort((a, b) => sign * (spec.value(a) - spec.value(b)) || a.name.localeCompare(b.name));
+  unknown.sort((a, b) => a.name.localeCompare(b.name));
+  return [...known, ...unknown];
+}
+function chipRow(name, options, set, opts = {}) {
+  const row = h("div", { class: "control-row", role: "group", "aria-label": name },
+    h("span", { class: "control-name" }, name),
+    options.map((o) => {
+      const key = o.key || o;
+      const label = o.label || o;
+      return h("button", {
+        type: "button", class: "chip", "aria-pressed": set.has(key) ? "true" : "false", disabled: !!opts.disabled, "data-filter": name, "data-value": key,
+        onclick: (ev) => {
+          if (set.has(key)) set.delete(key); else set.add(key);
+          ev.currentTarget.setAttribute("aria-pressed", set.has(key) ? "true" : "false");
+          state.paint();
+        },
+      }, label);
+    }),
+    opts.note ? h("span", { class: "control-note" }, opts.note) : null);
+  return row;
 }
 
 /* ---------- home ---------- */
+function allShows() {
+  const seen = new Map();
+  for (const d of Object.keys(state.data.days).sort()) {
+    for (const e of state.data.days[d]) if (!seen.has(e.show_id)) seen.set(e.show_id, e);
+  }
+  return [...seen.values()];
+}
 function renderHome(selected) {
   const data = state.data;
   const all = Object.keys(data.days).sort();
@@ -164,63 +269,141 @@ function renderHome(selected) {
     setApp(h("p", { class: "empty" }, "No predictions in the file yet."));
     return;
   }
-  const day = selected && dates.includes(selected) ? selected : dates[0];
-  const entries = data.days[day];
-  const visible = state.picksOnly ? entries.filter((e) => picks.has(e.show_id)) : entries;
-  const groups = [1, 2, 3].map((g) => visible.filter((e) => e.group === g));
+  const anyMode = selected === "any";
+  const day = anyMode ? "any" : (selected && dates.includes(selected) ? selected : dates[0]);
+  const entries = anyMode ? allShows() : data.days[day];
+
   const picker = h("div", { class: "day-picker", role: "group", "aria-label": "Pick a day" },
     dates.map((d) => h("button", {
       type: "button", class: "day-chip", "aria-pressed": d === day ? "true" : "false",
       onclick: () => { location.hash = `#/day/${d}`; },
-    }, h("b", {}, d === today ? "Today" : dayName(d, { weekday: "short" })), h("span", {}, dayName(d, { month: "short", day: "numeric" })))));
+    }, h("b", {}, d === today ? "Today" : dayName(d, { weekday: "short" })), h("span", {}, dayName(d, { month: "short", day: "numeric" })))),
+    h("button", {
+      type: "button", class: "day-chip", "aria-pressed": anyMode ? "true" : "false",
+      onclick: () => { location.hash = "#/any"; },
+    }, h("b", {}, "Any day"), h("span", {}, "Plan ahead")));
+
+  const sortRow = h("div", { class: "control-row", role: "group", "aria-label": "Sort" },
+    h("span", { class: "control-name" }, "Sort"),
+    SORTS.filter((x) => !x.needsFacts || data.has_show_facts).map((x) => {
+      const off = anyMode && x.needsDate;
+      return h("button", {
+        type: "button", class: "chip", disabled: off, "data-sort": x.key,
+        title: off ? "Not available in Any day: predictions stop at 7 days" : null,
+        onclick: () => {
+          const current = activeSort(anyMode);
+          if (current.spec.key === x.key) state.sort = { key: x.key, reversed: !current.reversed };
+          else state.sort = { key: x.key, reversed: false };
+          state.paint();
+        },
+      }, x.label);
+    }));
+
+  const filterRows = [
+    chipRow("Rush type", RUSH_OPTIONS, state.filters.rush),
+    chipRow("Play or musical", TYPE_OPTIONS, state.filters.type),
+  ];
+  if (data.has_show_facts) {
+    filterRows.push(chipRow("Days showing", DAY_OPTIONS, state.filters.days, anyMode ? {} : { disabled: true, note: "Pick Any day to use this: a date already decides." }));
+    filterRows.push(chipRow("Runtime", RUNTIME_OPTIONS, state.filters.runtime));
+  }
+  if (state.filtersOpen === null) state.filtersOpen = window.matchMedia("(min-width: 700px)").matches;
+  const filterSummary = h("summary", {}, "Filters");
+  const filterBox = h("details", { class: "filters", open: state.filtersOpen, ontoggle: (ev) => { state.filtersOpen = ev.target.open; } },
+    filterSummary, h("div", { class: "filter-body" }, filterRows));
 
   const picksToggle = h("label", { class: "toggle" },
-    h("input", { type: "checkbox", checked: state.picksOnly, onchange: (ev) => { state.picksOnly = ev.target.checked; route(); } }),
-    h("span", { id: "pick-count" }, `Only my picks (${picks.size})`));
+    h("input", { type: "checkbox", checked: state.picksOnly, onchange: (ev) => { state.picksOnly = ev.target.checked; state.paint(); } }),
+    h("span", { id: "pick-count" }, ""));
+  const resultLine = h("div", { class: "result-line", role: "status" });
+  const results = h("div", {});
+
+  state.paint = () => {
+    const visible = entries.filter((e) => matchesFilters(e, anyMode) && (!state.picksOnly || picks.has(e.show_id)));
+    const { spec, reversed } = activeSort(anyMode);
+    document.getElementById("pick-count").textContent = `Only my picks (${picks.size})`;
+    sortRow.querySelectorAll("[data-sort]").forEach((b) => {
+      const on = b.dataset.sort === spec.key;
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      const name = SORTS.find((x) => x.key === b.dataset.sort).label;
+      b.textContent = on ? `${name} ${reversed ? "↑" : "↓"}` : name;
+    });
+    const active = Object.values(state.filters).reduce((n, f) => n + f.size, 0);
+    filterSummary.textContent = active ? `Filters (${active} on)` : "Filters";
+    const notes = hiddenForUnknown(entries, anyMode);
+    resultLine.replaceChildren(
+      h("b", {}, `${visible.length} of ${entries.length} shows`),
+      ...notes.map((n) => h("span", {}, n)),
+      ...(anyFilterOn() ? [h("button", {
+        type: "button", class: "clear-all",
+        onclick: () => {
+          Object.values(state.filters).forEach((f) => f.clear());
+          filterBox.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-pressed", "false"));
+          state.paint();
+        },
+      }, "Clear all")] : []));
+
+    const grid = (list) => h("div", { class: "tiles" }, list.map((e) => tile(day, e, anyMode)));
+    const sections = [];
+    if (!visible.length) {
+      sections.push(h("p", { class: "empty" }, state.picksOnly && !anyFilterOn()
+        ? "None of your picks are here. Turn off \"Only my picks\" to see every show."
+        : "No shows match. Try turning off a filter."));
+    } else if (!anyMode && spec.key === "chance") {
+      // The default view keeps the three show groups (SPEC 8). Shows without a number stay at the bottom.
+      const groups = [1, 2, 3].map((g) => visible.filter((e) => e.group === g));
+      if (groups[0].length) sections.push(h("section", {}, h("h2", { class: "group-title" }, "Full predictions"), grid(sortEntries(groups[0], spec, reversed))));
+      if (groups[1].length) {
+        sections.push(h("section", {}, h("h2", { class: "group-title" }, "At the box office, not enough reports"),
+          h("p", { class: "group-note" }, "Too few reports for a number. Quiet shows like these tend to sell fewer seats, so a line is probably short."),
+          grid(groups[1])));
+      }
+      if (groups[2].length) {
+        sections.push(h("section", {}, h("h2", { class: "group-title" }, "No in-person rush line"),
+          h("p", { class: "group-note" }, "Lottery and online rush only, so there's no line to predict. Few reports here doesn't mean low demand."),
+          grid(groups[2])));
+      }
+    } else {
+      sections.push(h("section", {}, grid(sortEntries(visible, spec, reversed))));
+    }
+    results.replaceChildren(...sections);
+  };
 
   setApp(
-    h("h1", {}, "Is rush worth it this morning?"),
-    h("p", { class: "lede" }, "Pick a day. Shows are ranked by your chance of a ticket if you arrive at 9:00 AM."),
+    h("h1", {}, anyMode ? "What's playing when you can go?" : "Is rush worth it this morning?"),
+    h("p", { class: "lede" }, anyMode
+      ? "Planning further ahead: show facts only, with no chance or arrival time."
+      : "Pick a day. Shows are ranked by your chance of a ticket if you arrive at 9:00 AM."),
     stale ? h("p", { class: "notice" }, "These predictions are out of date: every day in the file has passed.") : null,
     picker,
-    h("div", { class: "toolbar" }, picksToggle, h("span", { class: "hint" }, `${dayName(day, { weekday: "long", month: "long", day: "numeric" })}`)),
-    groups[0].length ? h("section", {},
-      h("h2", { class: "group-title" }, "Full predictions"),
-      h("div", { class: "tiles" }, groups[0].map((e) => tile(day, e)))) : null,
-    groups[1].length ? h("section", {},
-      h("h2", { class: "group-title" }, "In-person rush, not enough reports"),
-      h("p", { class: "group-note" }, "Too few reports for a number. Quiet shows like these tend to be less full, so a line is probably short."),
-      h("div", { class: "tiles" }, groups[1].map((e) => tile(day, e)))) : null,
-    groups[2].length ? h("section", {},
-      h("h2", { class: "group-title" }, "No in-person rush line"),
-      h("p", { class: "group-note" }, "Lottery and digital rush only, so there's no line to predict. Few reports here doesn't mean low demand."),
-      h("div", { class: "tiles" }, groups[2].map((e) => tile(day, e)))) : null,
-    visible.length ? null : h("p", { class: "empty" }, state.picksOnly
-      ? "None of your picks are playing this day. Turn off \"Only my picks\" to see every show."
-      : "No shows on the schedule for this day."));
+    anyMode ? h("p", { class: "notice" }, "Predictions stop 7 days out, so these tiles don't have any. Schedules change and a show could close before your date, so confirm before you go.") : null,
+    h("div", { class: "controls" }, sortRow, filterBox,
+      h("div", { class: "control-row" }, picksToggle), resultLine),
+    results);
+  state.paint();
 }
 
 /* ---------- details ---------- */
 function ticketsPanel(e) {
   const levels = e.tickets.levels;
   const sentence = h("p", { class: "statement" });
+  const inPersonPrice = e.price_note === "online" || e.price_note === "standing room" ? null : money(e.price);
   function paint(level) {
     const [lo, hi] = levels[String(level)];
     const mid = (lo + hi) / 2;
     const half = (hi - lo) / 2;
     const fmt = (x) => (Number.isInteger(x) ? String(x) : x.toFixed(1));
-    const priceText = money(e.price);
     sentence.replaceChildren(
       "We're ", h("b", {}, `${level}%`), " confident there will be ",
       h("b", {}, `${fmt(mid)} ± ${fmt(half)}`), " rush tickets",
-      priceText ? [" at ", h("b", {}, priceText)] : [" (price not listed)"], ".",
+      ...(inPersonPrice ? [" at ", h("b", {}, inPersonPrice), e.price_note ? ` (${e.price_note})` : ""] : [" (in-person price not listed)"]), ".",
       h("span", { class: "muted", style: "display:block;font-size:.88rem;margin-top:2px" }, `That's ${lo} to ${hi} tickets.`));
   }
+  paint(80);
   const acc = state.data.accuracy;
   const ticketCaution = acc && acc.tickets_combo.mae > acc.tickets_lookup.mae
     ? h("p", { class: "notice" }, `Treat the ticket count as a rough guess. In tests it missed stated counts by ${num(acc.tickets_combo.mae, 1)} tickets on average, and a simple per-show lookup missed by ${num(acc.tickets_lookup.mae, 1)}. Most reports only say "at least", so the range runs wide.`)
     : null;
-  paint(80);
   const output = h("output", {}, "80%");
   const slider = h("input", {
     type: "range", min: 50, max: 95, step: 5, value: 80, "aria-label": "Confidence level",
@@ -284,29 +467,55 @@ function policyPanel(e) {
     h("h3", {}, name, x.price ? ` · ${money(x.price)}` : ""),
     h("p", { class: "muted" }, [x.time, x.where, x.limit].filter(Boolean).join(" · "))) : null;
   const rows = [row("In-person rush", p.general), row("Standing room", p.standing_room), row("Digital rush", p.digital),
-    row("Digital lottery", p.lottery), row("Student rush", p.student)].filter(Boolean);
+    row("Digital lottery", p.lottery), row("Student", p.student), ...(p.other || []).map((x) => row(x.name, x))].filter(Boolean);
   return h("section", { class: "panel" }, h("h2", {}, "Rush policy"),
     rows.length ? rows : h("p", { class: "not-available" }, "No policy listed."),
     e.rush_source === "reports" ? h("p", { class: "muted" }, "This show isn't on Playbill's current in-person rush list, but recent Reddit reports describe one. Check at the box office.") : null,
     h("p", { class: "muted" }, `From Playbill's list of ${dayName(state.data.data_through.policies, { month: "short", day: "numeric", year: "numeric" })}.`));
 }
 
+function factsPanel(e) {
+  const na = h("span", { class: "not-available" }, "not available");
+  const item = (label, value) => [h("dt", {}, label), h("dd", {}, value || na.cloneNode(true))];
+  const weeks = e.typical_ticket_weeks && e.typical_ticket_weeks < 4 ? ` (only ${e.typical_ticket_weeks} ${e.typical_ticket_weeks === 1 ? "week" : "weeks"} so far)` : "";
+  return h("section", { class: "panel" }, h("h2", {}, "About this show"),
+    h("dl", { class: "fact-list" },
+      item("Play or musical", e.show_type),
+      state.data.has_show_facts ? item("Runtime", e.runtime_detail || runtimeText(e)) : null,
+      state.data.has_show_facts ? item("Days showing", e.days ? e.days.join(" ") : null) : null,
+      item("Typical ticket price", e.typical_ticket !== null && e.typical_ticket !== undefined ? `${money(e.typical_ticket)}${weeks}` : null),
+      item("Seats sold", e.seats_sold_pct !== null && e.seats_sold_pct !== undefined ? seatsLine(e) : null)),
+    h("p", { class: "muted", style: "margin-top:8px" }, "Typical ticket price is the average paid over recent weeks, so it includes rush and discounted tickets."),
+    e.facts_review ? h("p", { class: "notice" }, "We're not sure about the runtime or days for this show. Check before you plan around them.") : null,
+    e.facts_source ? h("p", { class: "muted" }, `Runtime and days: ${e.facts_source}.`) : null);
+}
+
 function renderDetails(day, id) {
-  const entries = state.data.days[day] || [];
+  const anyMode = day === "any";
+  const entries = anyMode ? allShows() : (state.data.days[day] || []);
   const e = entries.find((x) => x.show_id === id);
+  const backHref = anyMode ? "#/any" : `#/day/${day}`;
   if (!e) {
     setApp(h("a", { class: "back", href: "#/" }, "← Back to shows"), h("p", { class: "empty" }, "That show isn't on the schedule for this day."));
     return;
   }
+  const when = anyMode ? "Any day" : dayName(day, { weekday: "long", month: "long", day: "numeric" });
   const head = h("div", { class: "detail-head" },
     h("div", { style: "min-width:0" }, h("h1", {}, e.name),
-      h("p", { class: "muted", style: "margin:2px 0 0" }, `${e.theater} · ${dayName(day, { weekday: "long", month: "long", day: "numeric" })}`),
-      h("p", { class: "muted", style: "margin:0" }, e.schedule_known === false
+      h("p", { class: "muted", style: "margin:2px 0 0" }, `${e.theater} · ${when}`),
+      anyMode ? null : h("p", { class: "muted", style: "margin:0" }, e.schedule_known === false
         ? "Schedule not confirmed: this show isn't on Ticketmaster. Check before you go."
-        : `Performances: ${e.performances.map(time12).join(", ") || NOT_AVAILABLE}`)),
+        : `Performances: ${e.performances.map(time12).join(", ") || NOT_AVAILABLE}`),
+      rushLabels(e)),
     priceBlock(e));
-  const back = h("a", { class: "back", href: `#/day/${day}` }, "← Back to shows");
+  const back = h("a", { class: "back", href: backHref }, "← Back to shows");
 
+  if (anyMode) {
+    setApp(back, head, h("p", { class: "notice" }, "Check back within 7 days of your date for a prediction. Schedules change, so confirm before you go."),
+      h("div", { class: "detail-grid", style: "margin-top:12px" },
+        h("div", { class: "col" }, factsPanel(e), policyPanel(e)), h("div", { class: "col" }, digitalPanel(e))));
+    return;
+  }
   if (e.group === 1) {
     const why = h("section", { class: "panel" }, h("h2", {}, "Why this prediction"),
       h("h3", {}, "The line"),
@@ -317,20 +526,20 @@ function renderDetails(day, id) {
       h("p", { class: "muted" }, "One prediction per day: most reports don't say matinee or evening."));
     setApp(back, head, h("div", { class: "detail-grid" },
       h("div", { class: "col" }, ticketsPanel(e), chancePanel(e)),
-      h("div", { class: "col" }, why, digitalPanel(e), policyPanel(e))));
+      h("div", { class: "col" }, why, factsPanel(e), digitalPanel(e), policyPanel(e))));
     return;
   }
   const note = e.group === 2
     ? h("section", { class: "panel" }, h("h2", {}, "Limited data, probably easy"),
       h("p", {}, "Too few reports for a prediction, so there's no number here."),
-      h("p", {}, capacityLine(e)),
-      h("p", { class: "muted" }, `${e.comments_per_week} comments a week and ${e.line_reports} line reports. A full prediction needs 2 comments a week or 35 line reports.`))
+      h("p", {}, seatsLine(e), "."),
+      h("p", { class: "muted" }, `${e.reports_per_week} reports a week and ${e.line_reports} line reports. A full prediction needs 2 reports a week or 35 line reports.`))
     : h("section", { class: "panel" }, h("h2", {}, "No in-person rush line"),
       h("p", {}, otherOffers(e)),
-      h("p", {}, capacityLine(e)),
+      h("p", {}, seatsLine(e), "."),
       h("p", { class: "muted" }, "No line to predict. Few reports here doesn't mean low demand."));
   setApp(back, head, h("div", { class: "detail-grid" },
-    h("div", { class: "col" }, note, policyPanel(e)), h("div", { class: "col" }, digitalPanel(e))));
+    h("div", { class: "col" }, note, factsPanel(e), policyPanel(e)), h("div", { class: "col" }, digitalPanel(e))));
 }
 
 /* ---------- accuracy ---------- */
@@ -517,7 +726,7 @@ function drawChart(holder, cfg) {
   }
   for (const mk of cfg.marks || []) {
     const v = cfg.series[0].values[mk.i];
-    svg.append(s("circle", { cx: xPos(mk.i), cy: yPos(v), r: 5, fill: "#fff", stroke: "var(--card)", "stroke-width": 2 }));
+    svg.append(s("circle", { cx: xPos(mk.i), cy: yPos(v), r: 5, fill: "var(--ink)", stroke: "var(--card)", "stroke-width": 2 }));
     const right = xPos(mk.i) > width * 0.55;
     svg.append(s("text", { class: "value-label", x: xPos(mk.i) + (right ? -9 : 9), y: yPos(v) + (v > 80 ? 18 : -9), "text-anchor": right ? "end" : "start" }, mk.label));
   }
@@ -670,7 +879,7 @@ function route() {
     renderDetails(parts[1], decodeURIComponent(parts[2]));
   } else {
     setNav("home");
-    renderHome(parts[0] === "day" ? parts[1] : null);
+    renderHome(parts[0] === "any" ? "any" : (parts[0] === "day" ? parts[1] : null));
   }
   window.scrollTo(0, 0);
 }

@@ -32,12 +32,13 @@ OUT = ROOT / "web" / "data" / "predictions.json"
 TARGET_CHANCE = 0.80  # placeholder: the arrival time is the latest time that still reaches this
 LEVELS = list(range(50, 100, 5))
 # "Enough data" for a full prediction (SPEC 8, Rachel 2026-11-06): either of these.
-MIN_COMMENTS_PER_WEEK = 2.0  # distinct daily-thread comments per running week
+MIN_REPORTS_PER_WEEK = 2.0  # daily-thread reports per running week
 MIN_LINE_REPORTS = 35  # line reports in the model table. In the tests, 10-34 lost to the lookup table; 35+ beat it
 RECENT_DAYS = 30
 RECENT_ROWS = 3
 THIN_LINE_POINTS = 35  # fewer line points than this gets the Low confidence badge
 THIN_CUTOFF_DAYS = 5
+DAY_CODES = ["M", "T", "W", "Th", "F", "S", "Su"]
 WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 # On Ticketmaster, but with no rush policy, no grosses and no reports, so skipped for now (SPEC 2.7)
 SCHEDULE_ALIASES = {"billy crystal": "860", "billy crystal 860": "860"}
@@ -80,6 +81,21 @@ def policy_row(rows: pd.DataFrame, kind: str):
     }
 
 
+def load_facts() -> dict:
+    """Hand-kept show facts (SPEC 2.2a): days showing and runtime, looked up once per show. Empty if not collected."""
+    path = ROOT / "registry" / "show_facts.csv"
+    if not path.exists():
+        return {}
+    f = pd.read_csv(path, dtype=str, keep_default_na=False)
+    return {r.show_id: r for r in f.itertuples()}
+
+
+def typical_prices(gross: pd.DataFrame) -> dict:
+    """Median of the last 4 weekly average paid prices (SPEC 2.2a): show_id -> (price, weeks used)."""
+    g = gross.dropna(subset=["show_id", "avg_ticket"]).sort_values("week_ending").groupby("show_id").tail(4)
+    return {sid: (round(float(w.avg_ticket.median())), len(w)) for sid, w in g.groupby("show_id")}
+
+
 def report_rates(shows: pd.DataFrame) -> tuple[pd.Series, pd.Series, pd.Timestamp]:
     r = pd.read_csv(PROCESSED / "reports.csv", low_memory=False)
     r = r[(r.rush_type == "general") & r.show_id.notna() & (r.show_id != "-") & (r.confidence != "low")].copy()
@@ -89,7 +105,7 @@ def report_rates(shows: pd.DataFrame) -> tuple[pd.Series, pd.Series, pd.Timestam
     daily = r[r.source == "daily_thread"]
     weeks = (pd.to_datetime(shows.last_week) - pd.to_datetime(shows.first_week)).dt.days / 7 + 1
     weeks.index = shows.show_id
-    rate = daily.groupby("show_id").comment_id.nunique().reindex(shows.show_id).fillna(0) / weeks
+    rate = daily.groupby("show_id").size().reindex(shows.show_id).fillna(0) / weeks
     recent = r[r.date > latest - pd.Timedelta(days=RECENT_DAYS)].groupby("show_id").size()
     return rate, recent, latest
 
@@ -110,7 +126,7 @@ def line_drivers(contrib: pd.Series, row: pd.Series) -> list[str]:
         elif f == "recent_level":
             text = f"Lines over the past month have been {word} than typical (about {pct})"
         elif f == "pct_cap" and pd.notna(row.pct_cap):
-            text = f"The show was {row.pct_cap:.0f}% full in a recent week, which points to a {word} line (about {pct})"
+            text = f"{min(row.pct_cap, 100):.0f}% seats sold in a recent week, which points to a {word} line (about {pct})"
         elif f == "avg_ticket" and pd.notna(row.avg_ticket):
             text = f"Average ticket of ${row.avg_ticket:.0f} in a recent week points to a {word} line (about {pct})"
         elif f == "weeks_since_first" and pd.notna(row.weeks_since_first):
@@ -155,7 +171,7 @@ def ticket_drivers(model: cutoff_model.CutoffModel, row: pd.DataFrame) -> list[s
         text = {
             "show": f"This show has reported {word} rush tickets than typical (about {pct})",
             "weekend": f"{'Weekend' if r.weekend else 'Weekday'}: {word} rush tickets (about {pct})",
-            "pct_cap": f"Recent % capacity points to {word} rush tickets (about {pct})",
+            "pct_cap": f"Recent % seats sold points to {word} rush tickets (about {pct})",
             "log_seats": f"Theater size points to {word} rush tickets (about {pct})",
             "is_musical": f"{'Musicals' if r.is_musical else 'Plays'} tend to have {word} rush tickets (about {pct})",
         }[f]
@@ -221,6 +237,8 @@ def build(per_person: float, tag: str):
     by_prod = shows.drop_duplicates("production_id").set_index("production_id").show_id
     gross["show_id"] = gross.production_id.map(by_prod)
     latest_gross = gross.sort_values("week_ending").groupby("show_id").tail(1).set_index("show_id")
+    typical = typical_prices(gross)
+    facts = load_facts()
     latest_policy_date = policies.snapshot_date.max()
     current = policies[policies.snapshot_date == latest_policy_date]
     shows_by_id = shows.set_index("show_id")
@@ -238,36 +256,70 @@ def build(per_person: float, tag: str):
         rows = current[current.show_id == sid] if sid else current[current.show == title]
         general, sro = policy_row(rows, "General Rush"), policy_row(rows, "Standing Room")
         digital, lottery = policy_row(rows, "Digital Rush"), policy_row(rows, "Digital Lottery")
-        student = policy_row(rows, "Student Rush")
+        student = policy_row(rows, "Student Rush") or policy_row(rows, "Student Tickets")
         n_recent = int(recent.get(sid, 0)) if sid else 0
         by_reports = n_recent >= RECENT_ROWS and general is None
         in_person = general is not None or sro is not None or by_reports
         show_rate = float(rate.get(sid, 0.0)) if sid else 0.0
         n_line = int(line_points.get(sid, 0)) if sid else 0
-        group = 3 if not in_person else (1 if show_rate >= MIN_COMMENTS_PER_WEEK or n_line >= MIN_LINE_REPORTS else 2)
+        group = 3 if not in_person else (1 if show_rate >= MIN_REPORTS_PER_WEEK or n_line >= MIN_LINE_REPORTS else 2)
         gr = latest_gross.loc[sid] if sid and sid in latest_gross.index else None
+        # Rush types on the tile (SPEC 2.2a). Other deals stay in the details view.
+        labels = []
+        if general:
+            labels.append("In person")
+        elif by_reports:
+            labels.append("In person (reported)")
+        if digital:
+            labels.append("Online")
+        if student:
+            labels.append("Student")
+        if lottery:
+            labels.append("Lottery")
+        if sro:
+            labels.append("Standing room")
+        known = ("General Rush", "Standing Room", "Digital Rush", "Digital Lottery", "Student Rush", "Student Tickets")
+        other = [{"name": name, **policy_row(rows, name)} for name in sorted(set(rows.policy_type))
+                 if not name.startswith(known)]
+        # Rush price (SPEC 2.2a): in person, or online if there's no in-person price. Standing room only if nothing else.
         price, price_note = None, None
         source = "policy" if general or sro else ("reports" if by_reports else "none")
-        if general:
+        older = policies[(policies.show_id == sid) & policies.policy_type.str.startswith("General Rush")] if sid else []
+        older_priced = older[older.price.notna()] if len(older) else older
+        if general and general["price"] is not None:
             price = general["price"]
-        elif sro:
+        elif by_reports and len(older_priced):
+            last = older_priced.sort_values("snapshot_date").iloc[-1]
+            price = float(last.price)
+            price_note = "last listed " + pd.Timestamp(last.snapshot_date).strftime("%b %Y")
+        elif digital and digital["price"] is not None:
+            price = digital["price"]
+            price_note = "online"
+        elif sro and sro["price"] is not None:
             price = sro["price"]
             price_note = "standing room"
-        elif by_reports:
-            older = policies[(policies.show_id == sid) & policies.policy_type.str.startswith("General Rush")]
-            if len(older):
-                last = older.sort_values("snapshot_date").iloc[-1]
-                price = None if pd.isna(last.price) else float(last.price)
-                price_note = f"last listed {last.snapshot_date}"
+        meta = shows_by_id.loc[sid] if sid else None
+        fact = facts.get(sid or norm(title or entry_name).replace(" ", "-"))
+        show_type = meta.show_type if meta is not None and meta.show_type in ("Play", "Musical") else None
+        if show_type is None and fact is not None and fact.show_type in ("Play", "Musical"):
+            show_type = fact.show_type
+        cap = None if gr is None or pd.isna(gr.pct_cap) else min(round(float(gr.pct_cap)), 100)
         base = {
             "show_id": sid or norm(title or entry_name).replace(" ", "-"), "name": entry_name, "theater": theater, "group": group,
-            "price": price, "price_note": price_note, "rush_source": source, "comments_per_week": round(show_rate, 2), "line_reports": n_line,
-            "recent_reports": n_recent,
+            "price": price, "price_note": price_note, "rush_source": source, "reports_per_week": round(show_rate, 2), "line_reports": n_line,
+            "recent_reports": n_recent, "rush_labels": labels, "show_type": show_type,
+            "typical_ticket": typical[sid][0] if sid in typical else None,
+            "typical_ticket_weeks": typical[sid][1] if sid in typical else None,
+            "days": fact.days.split() if fact is not None and fact.days else None,
+            "runtime_minutes": int(fact.runtime_minutes) if fact is not None and fact.runtime_minutes else None,
+            "runtime_text": fact.runtime_text if fact is not None and fact.runtime_text else None,
+            "runtime_detail": fact.runtime_detail if fact is not None and fact.runtime_detail else None,
+            "facts_review": bool(fact is not None and fact.needs_review.lower() == "yes"),
+            "facts_source": f"Playbill, checked {pd.Timestamp(fact.date_checked).strftime('%b %d, %Y').replace(' 0', ' ')}" if fact is not None and fact.source else None,
             "policy": {"general": general, "standing_room": sro, "digital": digital, "lottery": lottery, "student": student,
-                       "other": sorted(set(rows.policy_type) - {"General Rush", "Standing Room", "Digital Rush",
-                                                                "Digital Lottery", "Student Rush"})},
-            "recent_pct_cap": None if gr is None or pd.isna(gr.pct_cap) else round(float(gr.pct_cap), 1),
-            "recent_pct_cap_week": None if gr is None else gr.week_ending,
+                       "other": other},
+            "seats_sold_pct": cap,
+            "seats_sold_week": None if gr is None else gr.week_ending,
             "badges": [],
         }
         if digital:
@@ -301,6 +353,9 @@ def build(per_person: float, tag: str):
         have_schedule_at_all = {venue_key(str(x)) for x in sched.venue}
         for s in running.itertuples():
             if venue_key(s.theater) not in have_schedule_at_all and venue_key(s.theater) not in on_schedule:
+                fact = facts.get(s.show_id)
+                if fact is not None and fact.days and DAY_CODES[day.weekday()] not in fact.days.split():
+                    continue  # not on Ticketmaster, but the show facts say it's dark this weekday
                 e = describe(s.show_id, "", day, s.name, s.theater)
                 e["performances"] = []
                 e["schedule_known"] = False
@@ -370,6 +425,7 @@ def build(per_person: float, tag: str):
                          "verdict_basis": "chance if you arrive at 9:00"},
         "data_through": {"reports": str(reports_through.date()), "policies": latest_policy_date,
                          "grosses_week": gross.week_ending.max(), "schedule": sched.snapshot_utc.iloc[0][:10]},
+        "has_show_facts": bool(facts),
         "days": days,
         "accuracy": accuracy_block(tag, funnel, timings),
     }
