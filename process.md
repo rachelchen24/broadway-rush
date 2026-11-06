@@ -510,3 +510,121 @@ What was built, how, and why, step by step. Updated as coding happens, so it's e
 **Not updated:** my saved memory of the old deadline, because it's outside the files Rachel listed. `claude-notes.md` tells the next chat to fix it.
 
 **Next:** in the new chat, the first model: model table, rolling test windows, lookup table, simple combo, scores, predictions file. Website and level-ups come later.
+
+---
+
+## 2026-11-05 18:20 ET — Overnight build, step 1: stale memory, daily job check
+
+**Did:** started the 2-hour unattended build Rachel asked for (steps 1–9). Replaced my stale memory file `finish-by-2026-11-17` with `competition-deadline` (complete Nov 23, turn in Nov 24, present Dec 7, rubric in SPEC §1.1) and fixed its line in `MEMORY.md`. Pulled `../broadway-rush-data` and read its log.
+
+**Why:** `claude-notes.md` listed the memory fix as owed, and the first scheduled run of the daily job was due at about 23:07 UTC.
+
+**Result:** the data repo's latest commit is still `cc2029d` (the manual run, 21:52 UTC), and that's also what's on GitHub. It's 23:20 UTC now, so the 23:07 run hasn't landed. That doesn't mean it failed: GitHub often starts scheduled runs late, especially a brand-new schedule. **Not confirmed yet.** I'll check again before I finish.
+
+**Choice made for Rachel:** renamed the memory file rather than keeping a wrong date in its name.
+
+**Next:** step 2, install lightgbm and numpyro.
+
+---
+
+## 2026-11-05 18:35 ET — Step 2: lightgbm and numpyro on Python 3.14 + Windows
+
+**Did:** installed lightgbm 4.7.0 and numpyro 0.22.0 (which brings jax 0.12.0.1) into `.venv` in 45 seconds, then ran a real test of each with made-up data, not just an import: LightGBM with the Poisson objective and the "line never shrinks as opening approaches" constraint, and NumPyro sampling a small negative binomial model with "at least" labels.
+
+**Why:** the earlier dry run only proved they install.
+
+**Result:** both really run. LightGBM fit 8,000 rows in 0.26 seconds, and the constraint held. NumPyro ran 600 sampling steps on 500 rows in 13 seconds with 0 divergences (a sampler health check, 0 is what you want) and got close to the values I'd built in. Sampling runs on the CPU, the only device jax sees here.
+
+**Didn't work / dropped:** my first Bayesian test crashed: "Betainc gradient with respect to a and b not supported". JAX can't take the slope of the standard formula for "chance of at least k", and the sampler needs that slope. **Fix:** add up the chances of 0, 1, 2 ... k−1 directly. It's slower per step but works, and the test above used it.
+
+**Choice made for Rachel:** in `pyproject.toml` these go in an optional group, `model` (lightgbm, numpyro, scipy), not the main list. The daily snapshot job runs `pip install -e .` on every run, so putting them in the main list would add heavy downloads and a new way for that job to break. To install everything: `.venv\Scripts\python -m pip install -e ".[model]"`.
+
+**Next:** step 3, the model table.
+
+---
+
+## 2026-11-05 18:33 ET — Step 3: model table
+
+**Correction to the entry above:** I typed its time by hand, and 18:35 was wrong: it was written around 18:25. From here on, times come from the computer's clock.
+
+**Did:** wrote `src/broadway_rush/model/table.py`. It makes three tables in `data/processed/` (`model_line.csv`, `model_cutoff.csv`, `model_outcomes.csv`) plus the row counts at each cleaning step (`model_funnel.json`). All features come from one function, used for history and for future dates alike, so training and predicting can't drift apart.
+
+**Why:** this follows the plan in `claude-notes.md`, with only what's known at prediction time and only data already on disk.
+
+**What "known at prediction time" means here:** the model predicts up to 7 days ahead, so every feature must be available 7 days before the performance. Grosses come from a week that ended at least 9 days before. "Recent line level" uses only reports from 35 to 7 days before. The calendar is known ahead of time.
+
+**Result, the cleaning funnel (also useful for the rubric):**
+| Step | Rows |
+|---|---|
+| Comments scanned | 139,584 |
+| Observations extracted | 18,412 |
+| In-person general rush | 15,728 |
+| Mapped to a real Broadway show | 11,588 |
+| Not low confidence | 10,860 |
+| Stated, valid date from June 2024 | 9,894 |
+| Date within 2 days before to 14 days after the comment | 9,407 |
+| Date inside the show's run | 9,406 |
+
+From those 9,406 rows:
+- **Line:** 7,746 points with a time and a number → 7,106 before that show's opening → **6,060** after dropping duplicates (3,098 show-days, 81 shows).
+- **Cutoff:** **762 show-days** (66 shows): 138 with a stated count, 549 lower bound only, 69 upper bound only, 6 both. 1 contradictory day dropped.
+- **Outcomes:** **669** attempts with an arrival before opening and a known result. **87.3% got a ticket.**
+
+**The numbers came out lower than the SPEC counts, as expected:** those counted comment-date rows and used a flat 10:00 cutoff. One consequence: the **89% "always yes" was measured on the wider 1,133-row set.** On the rows I'm actually scoring it will be a bit different, so I'll report it on the same rows as the model, next to the 89%.
+
+**Parsing check:** I ran all the General Rush opening-time wordings through the parser, and each came out right (10 AM Mon–Sat with noon or 11 AM Sunday, and so on).
+
+**Choices made for Rachel:**
+1. **Two extra date checks I added, not in the plan:** drop rows dated more than 2 days after or 14 days before the comment was posted (487 rows, usually a misread year or a plan rather than a report), and rows dated outside the show's run (1 row). Why: `weeks_since_first` first came out as low as −84 weeks, which can't be right.
+2. **Someone who arrives and is #6 counts as 5 people already in line,** so line counts and attempts mean the same thing.
+3. **No times more than 9 hours before opening:** overnight camp-outs or mistyped times.
+4. **Dates only as stated:** comment-date rows are left for a later with/without test, as planned.
+5. **Left out of the first version, per SPEC §5.2a:** NYC events, TKTS and cast news.
+6. **Weather:** it's in the table, but the history is what actually happened, and a real prediction can only have a forecast. No past forecasts are on disk. So using it in a test would quietly be cheating. I'll test what it adds as a best case, and leave it out of the scored model unless it's clearly worth it.
+
+**Next:** step 4, test windows and the lookup table.
+
+---
+
+## 2026-11-05 18:37 ET — Step 4: test windows and the lookup table
+
+**Did:** wrote `model/lookup.py` (the bar to beat) and `model/backtest.py` (the rolling test). Ran the line half first, because it takes seconds.
+
+**Test windows:** 12 calendar months, Nov 2025 to Oct 2026. Each month is predicted by models trained only on earlier days, never shuffled. For a row to be in training, both its date and its posting time must be before the month starts.
+
+**Lookup table:** line = median for that show + weekday + time window, falling back to show + time window, then all shows + time window, when there are under 3 reports. Tickets = that show's stated counts, falling back to all shows. Chance = share who got a ticket for that show and time window, pulled toward the overall share.
+
+**Choices made for Rachel:**
+1. **Three windows are locked for the final score and are not scored here: Dec 2025, Apr 2026, Aug 2026.** SPEC §5.2 says to keep some untouched. I picked "every fourth month" and chose which ones by label counts only, before any model ran: this set holds 12 of the 28 misses and 14 of the 47 stated counts. The obvious alternative (Feb, Jun, Oct) held only 1 miss, so its final score couldn't have tested anything. **All scores below come from the other 9 windows.** The locked three stay locked for the final model.
+2. **Weather stays out of the first model.** Tested as a best case, using what really happened: line error 4.73 with it, 4.73 without (1,507 points). Even with a perfect forecast it adds nothing, so there's no need for the unfair test or for forecasts.
+
+**Result, line half only (9 windows, 1,507 points, each show-day counted once):**
+| | Combo (LightGBM) | Lookup table |
+|---|---|---|
+| Line error (people) | **4.73** | 5.82 |
+| Line error, 2 to 0.5 hours before opening | **4.96** | 6.48 |
+| 80% range really contains the count | **86.5%** | 58.8% |
+| Average width of that range (people) | 15.1 | 13.5 |
+| Arrival-time error (minutes) | 102 | **95** |
+
+- The combo wins clearly on line length and on honest ranges. It beat the lookup in all 9 windows.
+- **The lookup table wins slightly on arrival-time error.** Both are bad, off by over an hour and a half. This measures: given a real count at a real time, how far off is the predicted time for the line to reach that count? Lines jump around a lot from day to day, so a typical-day curve can't time a specific report well.
+- The combo's ranges run a bit wide (86.5% against the 80% target), which is better than too narrow.
+
+**Next:** the cutoff half. Three background runs are going now, trying 1.0, 1.4 and 1.8 tickets per person.
+
+---
+
+## 2026-11-05 20:34 ET — Cutoff model too slow; computer seems to have paused; switching to a faster fit
+
+**What happened:** the three background test runs (1.0, 1.4 and 1.8 tickets per person, 4 chains, 1,000 steps each) hadn't finished even their first window after about 11 minutes. A profile showed why: the fit does run, but my settings were too heavy. 200 steps took 17–50 seconds with the machine busy.
+
+**Didn't work:**
+1. I tried to stop those three runs so I could restart them with lighter settings. **A safety check on this session blocked that command,** which stopped every Python process using a lot of CPU. I didn't try to get around it. The three runs are still going, and I'll give Rachel the command to stop them.
+2. My next command ran past its 5-minute limit. **The clock then read 20:33, up from 18:48.** The runs had used only about 1,400 more CPU-seconds in that 1 hour 45 minutes, when they'd used about 2,000 in the first 7.5 minutes. So the computer most likely went to sleep or was heavily throttled. I can't prove which: the Windows power log returned nothing.
+
+**Where that leaves us:** Rachel's 2 hours are about up, and no Bayesian test has finished. The rule she gave me: "use a faster fit, then the regressions' cutoff, label that clearly, and move on."
+
+**Choice made for Rachel:** moving to the **faster fit now,** with the same Bayesian model and the same labels but less sampling: 2 chains, 300 warmup + 300 kept steps (was 4 chains, 500 + 500), acceptance target 0.8 (was 0.9), tree depth capped at 6. The risk is rougher ranges. I'll report R-hat, sample size and divergences for every window, and the site will label it as a faster fit. The regressions' cutoff isn't needed unless this fails too.
+
+**Also seen in the profile, worth watching:** on data before Nov 2025 the model's average day comes out around 45 tickets with a very wide spread, while stated counts have a median of about 6–7. That's the risk SPEC §5.2 flagged: "at least" labels (549 days) far outnumber upper bounds (69). The test on stated counts will show how much it hurts.

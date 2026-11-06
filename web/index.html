@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Broadway Rush</title>
+  <meta name="description" content="Is it worth going to the box office this morning for rush, and which show gives you the best shot?">
+  <meta name="theme-color" content="#1a0d2e">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#/">Broadway Rush</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="#/" data-nav="home">Today's picks</a>
+      <a href="#/accuracy" data-nav="accuracy">How accurate?</a>
+      <button type="button" class="nav-button" id="open-refresh">Refresh</button>
+    </nav>
+  </header>
+
+  <main id="app" tabindex="-1"><p class="loading">Loading predictions...</p></main>
+
+  <footer class="site-footer" id="footer"></footer>
+
+  <button type="button" class="report-fab" id="open-report">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5"/><path d="M9 12h7M9 16h7"/></svg>
+    <span>Report rush availability</span>
+  </button>
+
+  <dialog id="modal" aria-labelledby="modal-title"></dialog>
+  <div class="tooltip" id="tooltip" role="status" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>
