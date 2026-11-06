@@ -1156,3 +1156,44 @@ Added one idea to SPEC 5.2c: a last step that adjusts the chance using real got-
 Rachel asked to see the chart ideas and choose before anything was built. Picked 8: line growth over time, show-by-day grid, predicted vs. actual, what drives the line, chance vs. what happened, cleaning funnel, rush savings, and reports per show. Not picked: seats sold vs. line, line vs. tickets, and the model vs. lookup scoreboard.
 
 Where they go isn't decided (site, slide images or both). Rachel asked me to hold off until another prompt arrives, so nothing is built.
+
+---
+
+## 2026-11-06 15:12 ET — Fonts: Bebas Neue and Poppins
+
+Rachel added the fonts to SPEC 2.4 and asked for them on the site. Bebas Neue now covers the logo, headings, show names and big numbers (chance %, prices, arrival time). Poppins covers everything else. Both load from Google Fonts.
+
+Choices I made: base text went from 16 to 15 px because Poppins runs wide. Headings got larger because Bebas runs small. Bold is turned off on Bebas text because it has only one weight and browsers fake the rest. Fallbacks are Impact and Segoe UI, with Arial removed, since Rachel can't stand it. Without internet the site falls back to those.
+
+One problem came from this: Poppins' width made the phone chart labels run together ("3:00 AM4:45 AM"). I spotted it in a screenshot, not from a check, and widened the label spacing.
+
+---
+
+## 2026-11-06 15:12 ET — Charts: show pages and Nerd stats
+
+Rachel picked 8 charts and asked for plain ones on the show page plus a very organized "nerd stats" section built onto the accuracy page.
+
+Show pages now have how the line builds (with its likely range and the arrival time marked), which days are busiest, and what you'd save.
+
+The accuracy page is now Nerd stats, with jump buttons and five sections: the short version, how rush lines behave (line growth, show-by-day grid, rush savings), where the data comes from (cleaning funnel, reports per show), what the model looks at (what moves the line, how it's built), and how good it is (everything that was already on the page, plus predicted vs. real and chance vs. what happened). The old #/accuracy link still works.
+
+New module `model/site_charts.py` counts the numbers for `predict.py` to add to the predictions file, so the site still reads only that file.
+
+Choices I made:
+- The name "Nerd stats" over "Learn more".
+- Slide images weren't made, because Rachel's message didn't ask for them. Screenshots work for now.
+- The show-by-day grid counts each past day once, however many people posted. So it differs from the preview I gave Rachel: 80 of 112 squares filled at 3+ past days, not 78 at 5+ reports, and Just in Time on Saturday is 29, not 25.
+- Days a show isn't playing now show a dash, even if it played them in the past, like Just in Time on Mondays.
+- Shows with fewer than 3 filled days are listed in a note, not as nearly empty rows: Wanted, 860, Paranormal Activity.
+- Reports per show covers only the 22 shows with in-person rush.
+- Any day mode shows savings but not busiest days, because that comes too close to the weekday numbers SPEC 9, question 23 holds back.
+- The funnel's bars start at 18,412 reports, not 139,584 comments. They're different units, and the comments bar would have shrunk everything else.
+
+Failures and fixes:
+- The first install command was too long for the shell (ENAMETOOLONG), so I wrote the code to files.
+- A stray bracket in the show-by-day grid broke the page code. `node --check` caught it, after the predictions had already been regenerated. That run wasn't wasted, because the module it depends on was fine.
+- Looking closely at screenshots, I found my summary line on the chance chart quoted the best-looking band and skipped the weak one. When the model said about 97%, only 73% got a ticket (15 attempts). The line now states the worst band. Same kind of fix on predicted vs. real: it now says that when the model predicts 18-20, the real line is about 24, and when the lookup predicts 18-20, about 11.
+- A note said shows with "fewer than 35" reports lost to the lookup. Only 10 to 34 were tested, so I corrected it.
+- Other small fixes: 0-report shows drew a sliver of a bar, "Nov 25" read like a date (now Nov '25), and tall panels left holes (the page now fills columns).
+
+Checks: 241 of 241 click-through checks pass, 0 page errors, at 390 and 1280 pixels; that's the earlier 195 plus new ones for fonts and charts. Chart colors passed the palette validator on the dark card (protan delta E 19.9), and the text on grid squares has contrast of at least 5.3. All 206 show-days match the predictions from before this work, so adding charts changed no prediction. Not tested on a real phone or in Safari.

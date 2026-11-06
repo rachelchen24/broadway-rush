@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-06 12:20 ET",
+ "generated_at": "2026-11-06 15:07 ET",
  "model": {
   "name": "Simple combo, first version",
   "line": "LightGBM",
@@ -38560,10 +38560,1007 @@
    "last_date": "2026-11-05"
   },
   "timings": {
-   "line_fit_seconds": 10.5,
-   "cutoff_fit_seconds": 180.3,
-   "whole_predictions_run_seconds": 206.6
+   "line_fit_seconds": 11.2,
+   "cutoff_fit_seconds": 162.6,
+   "whole_predictions_run_seconds": 195.5
   },
   "live_results": null
+ },
+ "charts": {
+  "line_growth": {
+   "bands": [
+    {
+     "from": 5.0,
+     "to": 4.5
+    },
+    {
+     "from": 4.5,
+     "to": 4.0
+    },
+    {
+     "from": 4.0,
+     "to": 3.5
+    },
+    {
+     "from": 3.5,
+     "to": 3.0
+    },
+    {
+     "from": 3.0,
+     "to": 2.5
+    },
+    {
+     "from": 2.5,
+     "to": 2.0
+    },
+    {
+     "from": 2.0,
+     "to": 1.5
+    },
+    {
+     "from": 1.5,
+     "to": 1.0
+    },
+    {
+     "from": 1.0,
+     "to": 0.5
+    },
+    {
+     "from": 0.5,
+     "to": 0.0
+    }
+   ],
+   "weekday": [
+    {
+     "average": 2.8,
+     "reports": 69
+    },
+    {
+     "average": 3.0,
+     "reports": 104
+    },
+    {
+     "average": 4.6,
+     "reports": 176
+    },
+    {
+     "average": 4.4,
+     "reports": 227
+    },
+    {
+     "average": 4.4,
+     "reports": 289
+    },
+    {
+     "average": 4.7,
+     "reports": 359
+    },
+    {
+     "average": 6.7,
+     "reports": 595
+    },
+    {
+     "average": 8.0,
+     "reports": 593
+    },
+    {
+     "average": 10.2,
+     "reports": 752
+    },
+    {
+     "average": 12.6,
+     "reports": 659
+    }
+   ],
+   "weekend": [
+    {
+     "average": 6.6,
+     "reports": 46
+    },
+    {
+     "average": 4.4,
+     "reports": 82
+    },
+    {
+     "average": 5.9,
+     "reports": 119
+    },
+    {
+     "average": 5.5,
+     "reports": 146
+    },
+    {
+     "average": 7.9,
+     "reports": 195
+    },
+    {
+     "average": 6.6,
+     "reports": 222
+    },
+    {
+     "average": 10.3,
+     "reports": 331
+    },
+    {
+     "average": 12.0,
+     "reports": 301
+    },
+    {
+     "average": 15.2,
+     "reports": 333
+    },
+    {
+     "average": 20.1,
+     "reports": 249
+    }
+   ]
+  },
+  "show_days": {
+   "860": [
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 2
+    },
+    {
+     "typical": null,
+     "days": 2
+    },
+    {
+     "typical": 1.0,
+     "days": 3
+    },
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": null,
+     "days": 1
+    }
+   ],
+   "and-juliet": [
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": 2.0,
+     "days": 3
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": null,
+     "days": 1
+    }
+   ],
+   "buena-vista-social-club": [
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": 7.5,
+     "days": 8
+    },
+    {
+     "typical": 4.0,
+     "days": 15
+    },
+    {
+     "typical": 2.0,
+     "days": 13
+    },
+    {
+     "typical": 2.0,
+     "days": 12
+    },
+    {
+     "typical": 6.5,
+     "days": 20
+    },
+    {
+     "typical": 6.0,
+     "days": 14
+    }
+   ],
+   "chicago": [
+    {
+     "typical": 6.5,
+     "days": 8
+    },
+    {
+     "typical": 6.5,
+     "days": 3
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": 5.0,
+     "days": 8
+    },
+    {
+     "typical": 5.2,
+     "days": 10
+    },
+    {
+     "typical": 3.0,
+     "days": 7
+    },
+    {
+     "typical": 10.5,
+     "days": 10
+    }
+   ],
+   "downstate": [
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 0
+    }
+   ],
+   "great-gatsby": [
+    {
+     "typical": 12.0,
+     "days": 19
+    },
+    {
+     "typical": null,
+     "days": 2
+    },
+    {
+     "typical": 9.0,
+     "days": 14
+    },
+    {
+     "typical": 11.0,
+     "days": 27
+    },
+    {
+     "typical": 9.5,
+     "days": 12
+    },
+    {
+     "typical": 13.0,
+     "days": 24
+    },
+    {
+     "typical": 20.0,
+     "days": 11
+    }
+   ],
+   "hadestown": [
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": null,
+     "days": 2
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": 22.0,
+     "days": 3
+    }
+   ],
+   "harry-potter-and-the-cursed-child": [
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": 2.0,
+     "days": 3
+    },
+    {
+     "typical": 5.0,
+     "days": 3
+    },
+    {
+     "typical": 7.0,
+     "days": 3
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": 7.5,
+     "days": 4
+    }
+   ],
+   "just-in-time": [
+    {
+     "typical": 18.0,
+     "days": 4
+    },
+    {
+     "typical": 8.0,
+     "days": 18
+    },
+    {
+     "typical": 21.5,
+     "days": 24
+    },
+    {
+     "typical": 10.0,
+     "days": 21
+    },
+    {
+     "typical": 15.0,
+     "days": 10
+    },
+    {
+     "typical": 29.0,
+     "days": 17
+    },
+    {
+     "typical": 17.5,
+     "days": 8
+    }
+   ],
+   "lost-boys": [
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": 13.5,
+     "days": 10
+    },
+    {
+     "typical": 15.0,
+     "days": 10
+    },
+    {
+     "typical": 12.0,
+     "days": 9
+    },
+    {
+     "typical": 15.0,
+     "days": 11
+    },
+    {
+     "typical": 18.0,
+     "days": 6
+    },
+    {
+     "typical": null,
+     "days": 2
+    }
+   ],
+   "maybe-happy-ending": [
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": 10.0,
+     "days": 23
+    },
+    {
+     "typical": 14.0,
+     "days": 25
+    },
+    {
+     "typical": 5.5,
+     "days": 14
+    },
+    {
+     "typical": 11.5,
+     "days": 20
+    },
+    {
+     "typical": 20.5,
+     "days": 24
+    },
+    {
+     "typical": 13.0,
+     "days": 10
+    }
+   ],
+   "oh-mary": [
+    {
+     "typical": 20.0,
+     "days": 12
+    },
+    {
+     "typical": 11.0,
+     "days": 20
+    },
+    {
+     "typical": 13.0,
+     "days": 23
+    },
+    {
+     "typical": 14.0,
+     "days": 39
+    },
+    {
+     "typical": 8.2,
+     "days": 28
+    },
+    {
+     "typical": 18.0,
+     "days": 31
+    },
+    {
+     "typical": 12.0,
+     "days": 23
+    }
+   ],
+   "operation-mincemeat": [
+    {
+     "typical": null,
+     "days": 2
+    },
+    {
+     "typical": 2.0,
+     "days": 15
+    },
+    {
+     "typical": 5.0,
+     "days": 31
+    },
+    {
+     "typical": 3.8,
+     "days": 28
+    },
+    {
+     "typical": 5.0,
+     "days": 26
+    },
+    {
+     "typical": 10.0,
+     "days": 29
+    },
+    {
+     "typical": 7.0,
+     "days": 28
+    }
+   ],
+   "outsiders": [
+    {
+     "typical": null,
+     "days": 2
+    },
+    {
+     "typical": 9.0,
+     "days": 27
+    },
+    {
+     "typical": 11.0,
+     "days": 31
+    },
+    {
+     "typical": 13.5,
+     "days": 41
+    },
+    {
+     "typical": 15.0,
+     "days": 28
+    },
+    {
+     "typical": 21.0,
+     "days": 38
+    },
+    {
+     "typical": 14.0,
+     "days": 33
+    }
+   ],
+   "paranormal-activity": [
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 2
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": 16.0,
+     "days": 5
+    },
+    {
+     "typical": null,
+     "days": 1
+    }
+   ],
+   "rocky-horror-show": [
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": 10.0,
+     "days": 7
+    },
+    {
+     "typical": 6.8,
+     "days": 6
+    },
+    {
+     "typical": 12.2,
+     "days": 12
+    },
+    {
+     "typical": 10.0,
+     "days": 15
+    },
+    {
+     "typical": 15.5,
+     "days": 10
+    },
+    {
+     "typical": 11.0,
+     "days": 3
+    }
+   ],
+   "schmigadoon": [
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": 9.0,
+     "days": 10
+    },
+    {
+     "typical": 12.0,
+     "days": 9
+    },
+    {
+     "typical": 7.5,
+     "days": 8
+    },
+    {
+     "typical": 6.0,
+     "days": 9
+    },
+    {
+     "typical": 15.0,
+     "days": 13
+    },
+    {
+     "typical": 10.0,
+     "days": 7
+    }
+   ],
+   "six": [
+    {
+     "typical": 2.5,
+     "days": 3
+    },
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": null,
+     "days": 2
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": 7.5,
+     "days": 3
+    },
+    {
+     "typical": null,
+     "days": 0
+    }
+   ],
+   "stranger-things-the-first-shadow": [
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": 11.0,
+     "days": 12
+    },
+    {
+     "typical": 8.0,
+     "days": 11
+    },
+    {
+     "typical": 3.0,
+     "days": 9
+    },
+    {
+     "typical": 5.0,
+     "days": 12
+    },
+    {
+     "typical": 12.5,
+     "days": 14
+    },
+    {
+     "typical": 16.0,
+     "days": 9
+    }
+   ],
+   "two-strangers-carry-a-cake-across-new-york": [
+    {
+     "typical": null,
+     "days": 2
+    },
+    {
+     "typical": null,
+     "days": 2
+    },
+    {
+     "typical": 4.0,
+     "days": 9
+    },
+    {
+     "typical": 6.0,
+     "days": 3
+    },
+    {
+     "typical": 5.5,
+     "days": 7
+    },
+    {
+     "typical": 13.0,
+     "days": 15
+    },
+    {
+     "typical": 11.0,
+     "days": 6
+    }
+   ],
+   "wanted": [
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 0
+    }
+   ],
+   "wicked": [
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 1
+    },
+    {
+     "typical": null,
+     "days": 0
+    },
+    {
+     "typical": null,
+     "days": 2
+    },
+    {
+     "typical": null,
+     "days": 0
+    }
+   ]
+  },
+  "near_opening_hours": 2.0,
+  "min_days_per_cell": 3,
+  "drivers": [
+   {
+    "name": "How early you arrive",
+    "factor": 1.72
+   },
+   {
+    "name": "Which show",
+    "factor": 1.35
+   },
+   {
+    "name": "Day of the week",
+    "factor": 1.28
+   },
+   {
+    "name": "Seats sold recently",
+    "factor": 1.13
+   },
+   {
+    "name": "Recent line lengths",
+    "factor": 1.09
+   },
+   {
+    "name": "NYC school break",
+    "factor": 1.08
+   },
+   {
+    "name": "Average ticket price",
+    "factor": 1.08
+   },
+   {
+    "name": "Weeks since the first listed week",
+    "factor": 1.08
+   },
+   {
+    "name": "Broadway Week",
+    "factor": 1.03
+   },
+   {
+    "name": "Theater size",
+    "factor": 1.02
+   },
+   {
+    "name": "Month after the Tonys",
+    "factor": 1.01
+   },
+   {
+    "name": "Few recent reports",
+    "factor": 1.01
+   },
+   {
+    "name": "Federal holiday",
+    "factor": 1.0
+   },
+   {
+    "name": "Thanksgiving week",
+    "factor": 1.0
+   },
+   {
+    "name": "Christmas and New Year's",
+    "factor": 1.0
+   },
+   {
+    "name": "Play or musical",
+    "factor": 1.0
+   }
+  ],
+  "predicted_vs_real": {
+   "reports": 1507,
+   "bands": [
+    {
+     "from": 0,
+     "to": 2,
+     "combo": {
+      "real": 2.0,
+      "reports": 66
+     },
+     "lookup": {
+      "real": 2.0,
+      "reports": 167
+     }
+    },
+    {
+     "from": 2,
+     "to": 4,
+     "combo": {
+      "real": 2.0,
+      "reports": 434
+     },
+     "lookup": {
+      "real": 3.0,
+      "reports": 232
+     }
+    },
+    {
+     "from": 4,
+     "to": 6,
+     "combo": {
+      "real": 4.0,
+      "reports": 401
+     },
+     "lookup": {
+      "real": 3.0,
+      "reports": 183
+     }
+    },
+    {
+     "from": 6,
+     "to": 8,
+     "combo": {
+      "real": 7.5,
+      "reports": 226
+     },
+     "lookup": {
+      "real": 5.0,
+      "reports": 192
+     }
+    },
+    {
+     "from": 8,
+     "to": 10,
+     "combo": {
+      "real": 11.0,
+      "reports": 171
+     },
+     "lookup": {
+      "real": 6.0,
+      "reports": 164
+     }
+    },
+    {
+     "from": 10,
+     "to": 12,
+     "combo": {
+      "real": 14.0,
+      "reports": 97
+     },
+     "lookup": {
+      "real": 7.0,
+      "reports": 153
+     }
+    },
+    {
+     "from": 12,
+     "to": 14,
+     "combo": {
+      "real": 16.0,
+      "reports": 37
+     },
+     "lookup": {
+      "real": 10.0,
+      "reports": 131
+     }
+    },
+    {
+     "from": 14,
+     "to": 16,
+     "combo": {
+      "real": 18.0,
+      "reports": 33
+     },
+     "lookup": {
+      "real": 11.5,
+      "reports": 86
+     }
+    },
+    {
+     "from": 16,
+     "to": 18,
+     "combo": {
+      "real": 19.5,
+      "reports": 16
+     },
+     "lookup": {
+      "real": 13.0,
+      "reports": 53
+     }
+    },
+    {
+     "from": 18,
+     "to": 20,
+     "combo": {
+      "real": 24.0,
+      "reports": 10
+     },
+     "lookup": {
+      "real": 11.0,
+      "reports": 30
+     }
+    }
+   ],
+   "correlation": {
+    "combo": 0.57,
+    "lookup": 0.49
+   },
+   "above_top": {
+    "combo": 16,
+    "lookup": 116
+   }
+  },
+  "full_prediction_rule": {
+   "line_reports": 35,
+   "reports_per_week": 2.0
+  }
  }
 }

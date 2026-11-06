@@ -51,7 +51,7 @@ function localToday() {
 }
 function monthName(m) {
   const [y, mo] = m.split("-").map(Number);
-  return new Date(y, mo - 1, 1).toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+  return `${new Date(y, mo - 1, 1).toLocaleDateString("en-US", { month: "short" })} '${String(y).slice(2)}`;
 }
 
 /* Picks live only in this browser. If storage is blocked, picks last until the page reloads. */
@@ -513,7 +513,7 @@ function renderDetails(day, id) {
   if (anyMode) {
     setApp(back, head, h("p", { class: "notice" }, "Check back within 7 days of your date for a prediction. Schedules change, so confirm before you go."),
       h("div", { class: "detail-grid", style: "margin-top:12px" },
-        h("div", { class: "col" }, factsPanel(e), policyPanel(e)), h("div", { class: "col" }, digitalPanel(e))));
+        h("div", { class: "col" }, factsPanel(e), policyPanel(e)), h("div", { class: "col" }, savingsPanel(e), digitalPanel(e))));
     return;
   }
   if (e.group === 1) {
@@ -523,10 +523,11 @@ function renderDetails(day, id) {
       h("h3", {}, "The tickets"),
       e.drivers.tickets.length ? h("ul", { class: "reasons" }, e.drivers.tickets.map((t) => h("li", {}, t))) : h("p", { class: "muted" }, "Nothing stands out from a typical show."),
       h("p", { class: "muted" }, "Compared with an average day across shows. Built from ", String(e.data.line_points), " line reports and ", String(e.data.cutoff_days), " days with ticket information for this show."),
-      h("p", { class: "muted" }, "One prediction per day: most reports don't say matinee or evening."));
+      h("p", { class: "muted" }, "One prediction per day: most reports don't say matinee or evening."),
+      h("p", { class: "muted" }, "Want the full numbers? See ", h("a", { href: "#/nerd-stats" }, "Nerd stats"), "."));
     setApp(back, head, h("div", { class: "detail-grid" },
-      h("div", { class: "col" }, ticketsPanel(e), chancePanel(e)),
-      h("div", { class: "col" }, why, factsPanel(e), digitalPanel(e), policyPanel(e))));
+      h("div", { class: "col" }, ticketsPanel(e), chancePanel(e), linePanel(e)),
+      h("div", { class: "col" }, busiestPanel(e, day), savingsPanel(e), why, factsPanel(e), digitalPanel(e), policyPanel(e))));
     return;
   }
   const note = e.group === 2
@@ -539,22 +540,342 @@ function renderDetails(day, id) {
       h("p", {}, seatsLine(e), "."),
       h("p", { class: "muted" }, "No line to predict. Few reports here doesn't mean low demand."));
   setApp(back, head, h("div", { class: "detail-grid" },
-    h("div", { class: "col" }, note, factsPanel(e), policyPanel(e)), h("div", { class: "col" }, digitalPanel(e))));
+    h("div", { class: "col" }, note, e.group === 2 ? busiestPanel(e, day) : null, factsPanel(e), policyPanel(e)), h("div", { class: "col" }, savingsPanel(e), digitalPanel(e))));
 }
 
-/* ---------- accuracy ---------- */
+/* ---------- plain charts on the show page ---------- */
+const DAY_KEYS = ["M", "T", "W", "Th", "F", "S", "Su"];
+const DAY_SHORT = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const DAY_LONG = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const people = (v) => String(Math.round(v));
+const median = (values) => {
+  const x = [...values].sort((p, q) => p - q);
+  const mid = Math.floor(x.length / 2);
+  return x.length % 2 ? x[mid] : (x[mid - 1] + x[mid]) / 2;
+};
+function niceTicks(max) {
+  const step = max <= 8 ? 2 : max <= 20 ? 5 : max <= 40 ? 10 : 20;
+  const top = Math.max(step, Math.ceil(max / step) * step);
+  const ticks = [];
+  for (let t = 0; t <= top; t += step) ticks.push(t);
+  return { top, ticks };
+}
+function showTip(title, rows, cx, cy) {
+  tooltip.replaceChildren(h("strong", {}, title), ...rows.map((t) => h("div", { class: "tip-row" }, t)));
+  tooltip.hidden = false;
+  const r = tooltip.getBoundingClientRect();
+  tooltip.style.left = `${Math.min(window.innerWidth - r.width - 8, Math.max(8, cx + 12))}px`;
+  tooltip.style.top = `${Math.max(8, cy - r.height - 10)}px`;
+}
+function withTip(el, title, rows) {
+  const move = (ev) => showTip(title, rows, ev.clientX, ev.clientY);
+  el.addEventListener("pointermove", move);
+  el.addEventListener("pointerdown", move);
+  el.addEventListener("pointerleave", () => { tooltip.hidden = true; });
+  return el;
+}
+function legendOf(items) {
+  return h("div", { class: "legend" }, items.map((x) => h("span", {},
+    x.dot ? h("i", { class: `dot ${x.dot}` }) : h("i", { style: `border-color:${x.color}${x.dash ? `;border-top-style:${x.dash}` : ""}` }), x.name)));
+}
+function numbersTable(heads, rows) {
+  return h("details", { class: "numbers" }, h("summary", {}, "See the numbers"),
+    h("div", { class: "table-wrap" }, h("table", {},
+      h("thead", {}, h("tr", {}, heads.map((x) => h("th", {}, x)))),
+      h("tbody", {}, rows.map((r) => h("tr", {}, r.map((c) => h("td", {}, c))))))));
+}
+function barRows(rows, opts = {}) {
+  const max = opts.max ?? Math.max(...rows.map((r) => r.value), 1);
+  const wrap = h("div", { class: "bars" });
+  if (opts.ref !== undefined) wrap.style.setProperty("--ref", `${(opts.ref / max) * 100}%`);
+  for (const r of rows) {
+    const row = h("div", { class: `bar-row tone-${r.tone || "a"}` },
+      h("div", { class: `bar-label${r.showName ? " show-name" : ""}` }, r.label, r.note ? h("small", {}, r.note) : null),
+      h("div", { class: `bar-track${opts.ref !== undefined ? " has-ref" : ""}` }, h("i", { style: `width:${r.value > 0 ? Math.max(1, (r.value / max) * 100) : 0}%` })),
+      h("div", { class: "bar-value" }, r.text));
+    wrap.append(r.tip ? withTip(row, r.tipTitle || r.label, r.tip) : row);
+  }
+  return wrap;
+}
+
+function linePanel(e) {
+  const all = e.chance_by_time;
+  const iArrival = all.findIndex((p) => p.time === e.arrival);
+  const start = Math.max(0, iArrival < 0 ? all.length - 16 : Math.min(all.length - 16, iArrival));
+  const curve = all.slice(start);
+  const at = iArrival >= 0 ? all[iArrival] : null;
+  const { top, ticks } = niceTicks(Math.max(...curve.map((p) => p.line_hi)));
+  const holder = h("div", { class: "chart" });
+  lineChart(holder, {
+    x: curve.map((p) => time12(p.time)),
+    series: [{ name: "People in line", color: "var(--series-1)", values: curve.map((p) => p.line) }],
+    band: { lo: curve.map((p) => p.line_lo), hi: curve.map((p) => p.line_hi), color: "var(--series-1)" },
+    yMax: top, yTicks: ticks, height: 220, labelEvery: 4, yTitle: "People in line",
+    marks: at ? [{ i: iArrival - start, label: `${time12(e.arrival)}: about ${people(at.line)}` }] : [],
+    tipRows: (i) => [`About ${people(curve[i].line)} people`, `Likely ${people(curve[i].line_lo)} to ${people(curve[i].line_hi)}`],
+  });
+  return h("section", { class: "panel" }, h("h2", {}, "How the line builds"),
+    at ? h("p", {}, `If you get there by ${time12(e.arrival)}, expect about ${people(at.line)} people ahead of you (likely ${people(at.line_lo)} to ${people(at.line_hi)}).`) : null,
+    holder,
+    h("p", { class: "muted", style: "margin-top:6px" }, `The shaded band is where we expect the line about 8 times in 10. Box office opens ${time12(e.open_time)}.`));
+}
+
+function busiestPanel(e, day) {
+  const ch = state.data.charts;
+  const cells = ch && ch.show_days[e.show_id];
+  if (!cells) return null;
+  const shown = cells.map((x, i) => ({ ...x, i, dark: Boolean(e.days && !e.days.includes(DAY_KEYS[i])) }));
+  const known = shown.filter((x) => x.typical !== null && !x.dark);
+  if (known.length < 3) return null;
+  const picked = (parseDay(day).getDay() + 6) % 7;
+  const top = Math.max(...known.map((x) => x.typical), 1);
+  const busiest = known.reduce((a, b) => (b.typical > a.typical ? b : a));
+  const bars = shown.map((x) => {
+    const has = x.typical !== null && !x.dark;
+    const tip = x.dark ? "Not playing" : (has ? `About ${people(x.typical)} people, from ${x.days} past days` : `Too few past reports (${x.days} days)`);
+    return withTip(h("div", { class: `day-bar${x.i === picked ? " picked" : ""}` },
+      h("span", { class: "day-val" }, has ? people(x.typical) : "–"),
+      h("span", { class: "day-track" }, h("i", { style: `height:${has ? Math.max(4, (x.typical / top) * 100) : 0}%` })),
+      h("span", { class: "day-name" }, DAY_SHORT[x.i])), DAY_LONG[x.i], [tip]);
+  });
+  return h("section", { class: "panel" }, h("h2", {}, "Which days are busiest"),
+    h("p", {}, `${DAY_LONG[busiest.i]} is usually the longest, at about ${people(busiest.typical)} people.`),
+    h("div", { class: "day-bars", role: "img", "aria-label": shown.map((x) => `${DAY_LONG[x.i]}: ${x.typical !== null && !x.dark ? people(x.typical) : "no number"}`).join(", ") }, bars),
+    h("p", { class: "muted", style: "margin-top:6px" }, `Typical line in the last ${ch.near_opening_hours} hours before the box office opens, from past reports. Gold is the day you picked. A dash means it's not playing or there are too few reports.`));
+}
+
+function savingsPanel(e) {
+  if (!e.price || !e.typical_ticket) return null;
+  const save = e.typical_ticket - e.price;
+  return h("section", { class: "panel" }, h("h2", {}, "What you'd save"),
+    h("p", { class: "statement" }, save > 0 ? ["About ", h("b", {}, money(save)), " less than a typical ticket."] : "Rush isn't cheaper than a typical ticket right now."),
+    barRows([
+      { label: "Rush", note: e.price_note, value: e.price, text: money(e.price), tone: "gold" },
+      { label: "Typical ticket", value: e.typical_ticket, text: money(e.typical_ticket), tone: "gray" },
+    ]),
+    h("p", { class: "muted", style: "margin-top:6px" }, "Typical ticket is the average paid over recent weeks, so it already includes rush and discounts."));
+}
+
+/* ---------- Nerd stats: the full numbers, organized by question ---------- */
 function bestClass(a, b, smallerIsBetter = true) {
   if (a === null || b === null || a === undefined || b === undefined || a === b) return [null, null];
   const aWins = smallerIsBetter ? a < b : a > b;
   return aWins ? ["best", null] : [null, "best"];
 }
-function renderAccuracy() {
+const NS_SECTIONS = [
+  ["ns-summary", "Short version"], ["ns-lines", "How lines behave"], ["ns-data", "The data"],
+  ["ns-model", "The model"], ["ns-tests", "How good is it?"],
+];
+function nsSection(id, title, intro, ...panels) {
+  return h("section", { id, class: "ns-section" }, h("h2", {}, title), intro ? h("p", { class: "lede" }, intro) : null,
+    h("div", { class: "accuracy-grid" }, panels));
+}
+function nsPanel(title, takeaway, ...body) {
+  return h("section", { class: "panel" }, h("h3", {}, title), takeaway ? h("p", {}, takeaway) : null, ...body);
+}
+
+function growthPanel(ch) {
+  const g = ch.line_growth;
+  const labels = g.bands.map((b) => (b.from >= 1 ? `${b.from}h` : `${b.from * 60}m`));
+  const span = (b) => `${b.from} to ${b.to} hours before opening`;
+  const vals = (key) => g[key].map((x) => x.average);
+  const { top, ticks } = niceTicks(Math.max(...vals("weekday"), ...vals("weekend")));
+  const holder = h("div", { class: "chart" });
+  lineChart(holder, {
+    x: labels, height: 250, labelEvery: 2, markers: true, yMax: top, yTicks: ticks,
+    yTitle: "Average people in line", xTitle: "Time before the box office opens",
+    series: [
+      { name: "Weekends", color: "var(--series-1)", values: vals("weekend") },
+      { name: "Weekdays", color: "var(--series-2)", dash: "6 4", values: vals("weekday") },
+    ],
+    tipRows: (i) => [span(g.bands[i]), `Weekends: ${num(g.weekend[i].average, 1)} (${g.weekend[i].reports} reports)`, `Weekdays: ${num(g.weekday[i].average, 1)} (${g.weekday[i].reports} reports)`],
+  });
+  const near = g.bands.findIndex((b) => b.to === 2);
+  const last = g.bands.length - 1;
+  return nsPanel("How fast does the line grow?",
+    `Weekdays go from about ${people(g.weekday[near].average)} people 2 hours before opening to about ${people(g.weekday[last].average)} in the last half hour. Weekends go from about ${people(g.weekend[near].average)} to about ${people(g.weekend[last].average)}.`,
+    legendOf([{ name: "Weekends", color: "var(--series-1)" }, { name: "Weekdays", color: "var(--series-2)", dash: "dashed" }]),
+    holder,
+    h("p", { class: "muted", style: "margin-top:6px" }, "Each day counts once, however many people posted. This is what people reported, so it describes people who post on Reddit."),
+    numbersTable(["Before opening", "Weekends", "Reports", "Weekdays", "Reports"],
+      g.bands.map((b, i) => [`${b.from} to ${b.to} hrs`, num(g.weekend[i].average, 1), String(g.weekend[i].reports), num(g.weekday[i].average, 1), String(g.weekday[i].reports)])));
+}
+
+function heatPanel(ch, entries) {
+  const edges = [5, 10, 15, 20];
+  const heat = (v) => 1 + edges.filter((x) => v >= x).length;
+  const rows = [];
+  const left = [];
+  for (const e of entries.filter((x) => x.group === 1)) {
+    const cells = (ch.show_days[e.show_id] || []).map((x, i) => ({ ...x, i, dark: Boolean(e.days && !e.days.includes(DAY_KEYS[i])) }));
+    const known = cells.filter((x) => x.typical !== null && !x.dark);
+    if (known.length < 3) { left.push(e.name); continue; }
+    rows.push({ e, cells, known, mean: known.reduce((a, x) => a + x.typical, 0) / known.length });
+  }
+  rows.sort((a, b) => b.mean - a.mean);
+  const flat = rows.flatMap((r) => r.known.map((x) => ({ name: r.e.name, ...x })));
+  const hi = flat.reduce((a, b) => (b.typical > a.typical ? b : a));
+  const lo = flat.reduce((a, b) => (b.typical < a.typical ? b : a));
+  const table = h("div", { class: "table-wrap" }, h("table", { class: "heat" },
+    h("thead", {}, h("tr", {}, h("th", {}, "Show"), DAY_KEYS.map((d) => h("th", {}, d)))),
+    h("tbody", {}, rows.map((r) => h("tr", {},
+      h("th", { scope: "row", class: "show-name" }, r.e.name),
+      r.cells.map((x) => {
+        const has = x.typical !== null && !x.dark;
+        const tip = x.dark ? "Not playing" : (has ? `Typically ${people(x.typical)} people, from ${x.days} past days` : `Too few past reports (${x.days} days)`);
+        return withTip(h("td", { class: has ? `heat-${heat(x.typical)}` : "heat-0" }, has ? people(x.typical) : "–"), `${r.e.name}, ${DAY_LONG[x.i]}`, [tip]);
+      }))))));
+  const key = h("div", { class: "heat-key" }, ["Under 5", "5–9", "10–14", "15–19", "20+"].map((t, i) => h("span", {}, h("i", { class: `heat-${i + 1}` }), t)));
+  return nsPanel("Which shows and days are busiest?",
+    `Longest: ${hi.name} on ${DAY_LONG[hi.i]}, about ${people(hi.typical)} people. Shortest: ${lo.name} on ${DAY_LONG[lo.i]}, about ${people(lo.typical)}.`,
+    key, table,
+    h("p", { class: "muted", style: "margin-top:8px" }, `Typical people in line in the last ${ch.near_opening_hours} hours before opening. A dash means it's not playing now or has fewer than ${ch.min_days_per_cell} past days of reports.${left.length ? ` Too few reports to list: ${left.join(", ")}.` : ""}`));
+}
+
+function savingsChart(entries) {
+  const rows = entries.filter((e) => e.group !== 3 && e.price && e.typical_ticket)
+    .map((e) => ({ e, save: e.typical_ticket - e.price })).sort((a, b) => b.save - a.save);
+  if (!rows.length) return null;
+  const max = Math.ceil(Math.max(...rows.map((r) => r.e.typical_ticket)) / 50) * 50;
+  const at = (v) => `${(v / max) * 100}%`;
+  const axis = [];
+  for (let t = 0; t <= max; t += 100) axis.push(h("span", { style: `left:${at(t)}` }, `$${t}`));
+  const list = h("div", { class: "dumbbells" },
+    h("div", { class: "dumb-row dumb-head" }, h("div", {}), h("div", { class: "dumb-axis" }, axis), h("div", { class: "dumb-save" }, "Save")),
+    rows.map(({ e, save }) => withTip(h("div", { class: "dumb-row" },
+      h("div", { class: "bar-label show-name" }, e.name),
+      h("div", { class: "dumb-track" },
+        h("span", { class: "dumb-link", style: `left:${at(Math.min(e.price, e.typical_ticket))};width:${at(Math.abs(save))}` }),
+        h("span", { class: "dumb-dot rush", style: `left:${at(e.price)}` }),
+        h("span", { class: "dumb-dot typical", style: `left:${at(e.typical_ticket)}` })),
+      h("div", { class: "dumb-save" }, money(save))), e.name, [`Rush ${money(e.price)}${e.price_note ? ` (${e.price_note})` : ""}`, `Typical ticket ${money(e.typical_ticket)}`, `Saves ${money(save)}`])));
+  return nsPanel("How much does rush save?",
+    `Across ${rows.length} shows, rush typically costs ${money(median(rows.map((r) => r.e.price)))} against ${money(median(rows.map((r) => r.e.typical_ticket)))} for a typical ticket, about ${money(median(rows.map((r) => r.save)))} less.`,
+    legendOf([{ name: "Rush price", dot: "rush" }, { name: "Typical ticket", dot: "typical" }]),
+    list,
+    h("p", { class: "muted", style: "margin-top:8px" }, "Shows with in-person rush and both prices known. Typical ticket is the average paid over recent weeks, so it already includes rush and discounts. The gap to a regular seat is usually bigger."),
+    numbersTable(["Show", "Rush", "Typical ticket", "Saves"], rows.map(({ e, save }) => [e.name, money(e.price), money(e.typical_ticket), money(save)])));
+}
+
+function funnelPanel(f) {
+  const steps = [
+    ["Rush reports found in those comments", f.all_observations],
+    ["About in-person general rush", f.in_person_general_rush],
+    ["Tied to a Broadway show", f.mapped_to_a_broadway_show],
+    ["Confident enough to use", f.not_low_confidence],
+    ["Clear date, June 2024 or later", f.stated_valid_date_from_june_2024],
+    ["Date close to when it was posted", f.date_within_2_days_before_to_14_days_after_the_comment],
+    ["Date inside the show's run", f.date_inside_the_shows_run],
+    ["Gives both a time and a line count", f.line_points_with_a_time_and_number],
+    ["Before the box office opened", f.line_points_before_opening],
+    ["After removing duplicates", f.line_points_after_dropping_duplicates],
+  ];
+  const rows = steps.map(([label, n], i) => ({
+    label, value: n, text: n.toLocaleString(), tone: i === steps.length - 1 ? "gold" : "a",
+    note: i ? `${(steps[i - 1][1] - n).toLocaleString()} removed` : null,
+  }));
+  return nsPanel("From Reddit comments to usable reports",
+    `We scanned ${f.comments_scanned.toLocaleString()} comments. ${f.all_observations.toLocaleString()} rush reports came out of them, and ${f.line_points_after_dropping_duplicates.toLocaleString()} passed every check to become line reports.`,
+    barRows(rows),
+    h("p", { class: "muted", style: "margin-top:8px" }, `The model also uses ${f.cutoff_show_days.toLocaleString()} show-days with ticket information (${f.cutoff_stated_count} stated counts, the rest only "at least" or "at most") and ${f.outcomes_arrived_before_opening_known_result} attempts with a known result. Reports run from ${dayName(f.first_date, { month: "short", year: "numeric" })} to ${dayName(f.last_date, { month: "short", year: "numeric" })}.`));
+}
+
+function reportsPanel(ch, entries) {
+  const list = entries.filter((e) => e.group !== 3).sort((a, b) => b.line_reports - a.line_reports);
+  const full = list.filter((e) => e.group === 1).length;
+  const rule = ch.full_prediction_rule;
+  return nsPanel("How many reports does each show have?",
+    `${full} of ${list.length} shows with in-person rush get a full prediction. That takes ${rule.line_reports} line reports or ${rule.reports_per_week} reports a week.`,
+    legendOf([{ name: "Full prediction", dot: "bar-a" }, { name: "Not enough reports", dot: "bar-gray" }, { name: `${rule.line_reports} line reports`, color: "var(--ink-2)", dash: "dotted" }]),
+    barRows(list.map((e) => ({
+      label: e.name, showName: true, value: e.line_reports, text: String(e.line_reports), tone: e.group === 1 ? "a" : "gray",
+      tip: [`${e.line_reports} line reports`, `${e.reports_per_week} reports a week`, e.group === 1 ? "Full prediction" : "Not enough reports"],
+    })), { ref: rule.line_reports }),
+    h("p", { class: "muted", style: "margin-top:8px" }, "In the tests, shows with 10 to 34 earlier line reports lost to the lookup table, and shows with 35 or more beat it. That's where the rule comes from."));
+}
+
+function driversPanel(ch) {
+  const rows = ch.drivers;
+  return nsPanel("What moves the line most?",
+    `${rows[0].name} matters most: it typically moves the prediction by ×${rows[0].factor.toFixed(2)}. Next come ${rows[1].name.toLowerCase()} (×${rows[1].factor.toFixed(2)}) and ${rows[2].name.toLowerCase()} (×${rows[2].factor.toFixed(2)}).`,
+    barRows(rows.map((r) => ({ label: r.name, value: Math.log(r.factor), text: `×${r.factor.toFixed(2)}`, tip: [`Typically moves the prediction by ×${r.factor.toFixed(2)}`] }))),
+    h("p", { class: "muted", style: "margin-top:8px" }, "Average push across every report in the line model, up or down. Things that rarely happen, like holidays, look small here even when they matter a lot on the day."));
+}
+
+function methodPanel(a) {
+  const m = state.data.model;
+  return nsPanel("How it's built", null,
+    h("ul", { class: "reasons" },
+      h("li", {}, h("b", {}, "The line: "), `${m.line}, predicting people in line from the time you arrive, the show, the day and recent demand. The line can only grow toward opening, because the model is built that way. Spread comes from a negative binomial fit (${m.line_spread}).`),
+      h("li", {}, h("b", {}, "The tickets: "), `${m.cutoff}, because most reports only say "at least" or "at most" so many tickets. Shows share information, so thin shows lean on the rest.`),
+      h("li", {}, h("b", {}, "The chance: "), `every 15 minutes, the share of ticket scenarios where your place in line still gets a ticket. Each person ahead counts as ${a.per_person} ${a.per_person === 1 ? "ticket" : "tickets"}, the best of the values tried.`),
+      h("li", {}, h("b", {}, "No peeking: "), "inputs are only what's known a week ahead, grosses are at least 9 days old, and each test month trains only on earlier months."),
+      h("li", {}, h("b", {}, "Sampler checks: "), `${m.fit.replace("faster fit: ", "")}. Largest R-hat ${m.cutoff_checks.max_r_hat} (want close to 1), ${m.cutoff_checks.divergences} divergences (want few).`)),
+    m.fallback_used ? h("p", { class: "notice strong" }, "This run used the fallback cutoff, not the Bayesian model.") : null);
+}
+
+function predictedPanel(ch) {
+  const p = ch.predicted_vs_real;
+  if (!p) return null;
+  const { top, ticks } = niceTicks(Math.max(...p.bands.flatMap((b) => [b.combo.real, b.lookup.real, b.to].filter((v) => v !== null))));
+  const holder = h("div", { class: "chart" });
+  lineChart(holder, {
+    x: p.bands.map((b) => `${b.from}–${b.to}`), height: 260, labelEvery: 2, markers: true, yMax: top, yTicks: ticks,
+    yTitle: "Real line (median people)", xTitle: "Predicted people in line",
+    series: [
+      { name: "Model", color: "var(--series-1)", values: p.bands.map((b) => b.combo.real) },
+      { name: "Lookup table", color: "var(--series-2)", dash: "6 4", values: p.bands.map((b) => b.lookup.real) },
+      { name: "Perfect", color: "var(--ink-3)", dash: "2 4", values: p.bands.map((b) => (b.from + b.to) / 2), noMarkers: true },
+    ],
+    tipRows: (i) => {
+      const b = p.bands[i];
+      return [`Model: real line ${b.combo.real ?? "too few"} (${b.combo.reports} reports)`, `Lookup: real line ${b.lookup.real ?? "too few"} (${b.lookup.reports} reports)`];
+    },
+  });
+  const lastBoth = [...p.bands].reverse().find((b) => b.combo.real !== null && b.lookup.real !== null);
+  return nsPanel("When we predict a line, how long is it really?",
+    `Closer to the dotted line is better. When the model predicts ${lastBoth.from}–${lastBoth.to} people, the real line is about ${people(lastBoth.combo.real)}. When the lookup table predicts the same, it's about ${people(lastBoth.lookup.real)}. Correlation with the real line: ${p.correlation.combo} for the model, ${p.correlation.lookup} for the lookup table.`,
+    legendOf([{ name: "Model", color: "var(--series-1)" }, { name: "Lookup table", color: "var(--series-2)", dash: "dashed" }, { name: "Perfect", color: "var(--ink-3)", dash: "dotted" }]),
+    holder,
+    h("p", { class: "muted", style: "margin-top:6px" }, `${p.reports.toLocaleString()} line reports from the test months. Predictions of ${p.bands[p.bands.length - 1].to} or more aren't drawn (${p.above_top.combo} for the model, ${p.above_top.lookup} for the lookup table). Bands with under 10 reports are left out.`),
+    numbersTable(["Predicted", "Model: real", "Reports", "Lookup: real", "Reports"],
+      p.bands.map((b) => [`${b.from}–${b.to}`, b.combo.real ?? "–", String(b.combo.reports), b.lookup.real ?? "–", String(b.lookup.reports)])));
+}
+
+function calibrationPanel(a) {
+  const all = a.calibration_combo;
+  const bins = all.filter((b) => b.attempts >= 5);
+  const label = (b) => `${Math.round(b.from * 100)}–${Math.round(b.to * 100)}%`;
+  const biggest = bins.reduce((x, y) => (y.attempts > x.attempts ? y : x));
+  const worst = bins.reduce((x, y) => (y.share_got - y.mean_chance < x.share_got - x.mean_chance ? y : x));
+  const overconfident = worst.mean_chance - worst.share_got > 0.05;
+  const holder = h("div", { class: "chart" });
+  lineChart(holder, {
+    x: bins.map(label), height: 250, markers: true, yMax: 100, yTicks: [0, 25, 50, 75, 100], ySuffix: "%",
+    yTitle: "Got a ticket", xTitle: "What we said",
+    series: [
+      { name: "What happened", color: "var(--series-1)", values: bins.map((b) => b.share_got * 100) },
+      { name: "If we were perfect", color: "var(--ink-3)", dash: "2 4", values: bins.map((b) => b.mean_chance * 100), noMarkers: true },
+    ],
+    tipRows: (i) => [`We said ${pct(bins[i].mean_chance)} on average`, `${pct(bins[i].share_got)} got a ticket`, `${bins[i].attempts} attempts`],
+  });
+  return nsPanel("When we say a chance, does it come true?",
+    `When we said about ${pct(biggest.mean_chance)}, ${pct(biggest.share_got)} of people got a ticket (${biggest.attempts} attempts).${overconfident ? ` The weak spot: when we said about ${pct(worst.mean_chance)}, only ${pct(worst.share_got)} did (${worst.attempts} attempts).` : ""} Above the dotted line means more people got tickets than we said.`,
+    legendOf([{ name: "What happened", color: "var(--series-1)" }, { name: "If we were perfect", color: "var(--ink-3)", dash: "dotted" }]),
+    holder,
+    h("p", { class: "muted", style: "margin-top:6px" }, "People mostly post their wins, so the real share who got tickets is probably lower than this. Bands with under 5 attempts are in the table but not drawn."),
+    numbersTable(["We said", "On average", "Got a ticket", "Attempts"], all.map((b) => [label(b), pct(b.mean_chance), pct(b.share_got), String(b.attempts)])));
+}
+
+function renderNerdStats() {
   const a = state.data.accuracy;
-  if (!a) {
-    setApp(h("h1", {}, "How accurate have we been?"),
+  const ch = state.data.charts;
+  if (!a || !ch) {
+    setApp(h("h1", {}, "Nerd stats"),
       h("p", { class: "empty" }, "Not available yet: the test on past months hasn't finished, and this page shows only real test results."));
     return;
   }
+  const entries = allShows();
   const lc = a.line_combo, ll = a.line_lookup, tc = a.tickets_combo, tl = a.tickets_lookup;
   const cc = a.chance_combo, cl = a.chance_lookup, cb = a.chance_base_rate;
   const dev = a.months;
@@ -592,12 +913,9 @@ function renderAccuracy() {
   const byMonth = Object.fromEntries(a.windows.map((w) => [w.month, w]));
   const series = (key) => slots.map((m) => (byMonth[m] ? byMonth[m][key] : null));
   const chartTitles = (i) => (byMonth[slots[i]] ? `${byMonth[slots[i]].points} line reports` : "Locked for the final score");
-
   const errorChart = h("div", { class: "chart" });
   const coverChart = h("div", { class: "chart" });
-  const legend = () => h("div", { class: "legend" },
-    h("span", {}, h("i", { style: "border-color:var(--series-1)" }), "Combo"),
-    h("span", {}, h("i", { style: "border-color:var(--series-2);border-top-style:dashed" }), "Lookup table"));
+  const legend = () => legendOf([{ name: "Model", color: "var(--series-1)" }, { name: "Lookup table", color: "var(--series-2)", dash: "dashed" }]);
 
   const beats = [];
   if (lc.mae < ll.mae) beats.push("line length");
@@ -615,61 +933,67 @@ function renderAccuracy() {
     const v = vc[name];
     return h("tr", {}, h("td", {}, name), h("td", {}, String(v.attempts)), h("td", {}, String(v.got)), h("td", {}, v.attempts ? pct(v.share_got) : NOT_AVAILABLE));
   };
+  const jump = h("nav", { class: "ns-nav", "aria-label": "Sections of this page" }, NS_SECTIONS.map(([id, name]) => h("button", {
+    type: "button", class: "chip", onclick: () => document.getElementById(id).scrollIntoView({ block: "start" }),
+  }, name)));
+
   setApp(
-    h("h1", {}, "How accurate have we been?"),
-    h("p", { class: "lede" }, `Each month below was predicted using only earlier days. These are ${dev.length} test months on past reports, not real trips yet.`),
-    h("div", { class: "accuracy-grid" },
-      h("section", { class: "panel" }, h("h2", {}, "Does it beat the simple lookup table?"),
-        h("p", {}, beats.length ? `Better than the lookup table on: ${beats.join(", ")}. ` : "It doesn't beat the lookup table on the main measures. ",
-          loses.length ? `Not better on: ${loses.join(", ")}.` : ""),
-        table,
-        h("p", { class: "muted", style: "margin-top:8px" }, "Gold marks the better of the combo and the lookup table. For ranges, better means closer to the 80% it promises; width isn't marked, because a narrow range that doesn't hold isn't better. Ticket and outcome rows rest on few reports, so small gaps may be luck.")),
-      h("section", { class: "panel" }, h("h2", {}, "The 89% problem"),
-        h("p", {}, `People mostly post their wins. Across ${a.funnel.outcomes_arrived_before_opening_known_result} attempts with a known result, ${pct(a.always_yes_all_attempts, 1)} got a ticket (${pct(a.always_yes_spec)} on a wider count that includes reports without a stated date). On the ${cc.attempts} attempts in these tests, always saying yes is right ${pct(a.always_yes_accuracy, 1)} of the time.`),
-        h("div", { class: "stat-row" },
-          h("div", { class: "stat" }, h("b", {}, pct(cc.accuracy_at_50, 1)), h("span", {}, "combo right at 50%")),
-          h("div", { class: "stat" }, h("b", {}, pct(a.always_yes_accuracy, 1)), h("span", {}, "always saying yes")),
-          h("div", { class: "stat" }, h("b", {}, `${cc.misses_caught_at_50} of ${cc.misses}`), h("span", {}, "misses the combo caught"))),
+    h("h1", {}, "Nerd stats"),
+    h("p", { class: "lede" }, `The numbers behind the predictions. Test results come from ${dev.length} past months, each predicted using only earlier days. None of this has been checked on real trips yet.`),
+    jump,
+    nsSection("ns-summary", "The short version",
+      `Better than the simple lookup table on: ${beats.join(", ") || "none of the main measures"}. Not better on: ${loses.join(", ") || "none of them"}.`,
+      h("section", { class: "panel wide" }, h("div", { class: "stat-row" },
+        h("div", { class: "stat" }, h("b", {}, `${num(lc.mae, 2)} people`), h("span", {}, `average line error (lookup table: ${num(ll.mae, 2)})`)),
+        h("div", { class: "stat" }, h("b", {}, pct(lc.coverage80, 1)), h("span", {}, "of real lines inside the 80% range (goal: 80%)")),
+        h("div", { class: "stat" }, h("b", {}, pct(cc.accuracy_at_50, 1)), h("span", {}, `yes/no right (always saying yes: ${pct(a.always_yes_accuracy, 1)})`)),
+        h("div", { class: "stat" }, h("b", {}, `${cc.misses_caught_at_50} of ${cc.misses}`), h("span", {}, "misses caught at 50%"))))),
+    nsSection("ns-lines", "How rush lines behave", "From real Reddit reports, before any model.",
+      growthPanel(ch), heatPanel(ch, entries), savingsChart(entries)),
+    nsSection("ns-data", "Where the data comes from", null,
+      funnelPanel(a.funnel), reportsPanel(ch, entries)),
+    nsSection("ns-model", "What the model looks at", null,
+      driversPanel(ch), methodPanel(a)),
+    nsSection("ns-tests", "How good is it?", `Test months: ${dev.map(monthName).join(", ")}. ${a.locked.map(monthName).join(", ")} are locked and unscored here, so they can give the final model an honest score.`,
+      nsPanel("Does it beat the simple lookup table?", null, table,
+        h("p", { class: "muted", style: "margin-top:8px" }, "Gold marks the better of the model and the lookup table. For ranges, better means closer to the 80% it promises; width isn't marked, because a narrow range that doesn't hold isn't better. Ticket and outcome rows rest on few reports, so small gaps may be luck.")),
+      predictedPanel(ch), calibrationPanel(a),
+      nsPanel("The 89% problem", `People mostly post their wins. Across ${a.funnel.outcomes_arrived_before_opening_known_result} attempts with a known result, ${pct(a.always_yes_all_attempts, 1)} got a ticket (${pct(a.always_yes_spec)} on a wider count that includes reports without a stated date). On the ${cc.attempts} attempts in these tests, always saying yes is right ${pct(a.always_yes_accuracy, 1)} of the time.`,
         h("p", { class: "muted" }, "Treat this as a rough check: losses are under-reported, so no score here is the true rate."),
-        h("h3", { style: "margin-top:10px" }, "Did the verdicts work out?"),
+        h("h4", {}, "Did the verdicts work out?"),
         h("div", { class: "table-wrap" }, h("table", {},
           h("thead", {}, h("tr", {}, h("th", {}, "Verdict (placeholder)"), h("th", {}, "Attempts"), h("th", {}, "Got a ticket"), h("th", {}, "Share"))),
           h("tbody", {}, vr("GO"), vr("Maybe"), vr("Stay home")))),
         h("p", { class: "muted", style: "margin-top:8px" }, `Scored on the chance at the time each person really arrived, with GO at ${pct(state.data.placeholders.go_at_or_above)} and up and Maybe at ${pct(state.data.placeholders.maybe_at_or_above)} and up.`)),
-      h("section", { class: "panel" }, h("h2", {}, "Line error by test month"),
+      nsPanel("Line error by test month", null,
         h("p", { class: "muted" }, "Average miss on the number of people in line. Lower is better. Gaps are the locked months."), legend(), errorChart),
-      h("section", { class: "panel" }, h("h2", {}, "Did the 80% line range hold?"),
+      nsPanel("Did the 80% line range hold?", null,
         h("p", { class: "muted" }, "Share of real counts inside the range. The goal is 80%, not 100%. Gaps are the locked months."), legend(), coverChart),
-      h("section", { class: "panel" }, h("h2", {}, "Real trips"),
-        live ? null : h("p", { class: "not-available" }, "Not available yet: no predictions have been checked against real rush days or verified reports.")),
-      h("section", { class: "panel" }, h("h2", {}, "What's behind these numbers"),
-        h("p", {}, `${a.funnel.comments_scanned.toLocaleString()} Reddit comments gave ${a.funnel.all_observations.toLocaleString()} observations. After cleaning, the model uses ${a.funnel.line_points_after_dropping_duplicates.toLocaleString()} line reports and ${a.funnel.cutoff_show_days.toLocaleString()} show-days with ticket information, from ${dayName(a.funnel.first_date, { month: "short", year: "numeric" })} to ${dayName(a.funnel.last_date, { month: "short", year: "numeric" })}.`),
-        h("p", {}, `Test months: ${dev.map(monthName).join(", ")}. ${a.locked.map(monthName).join(", ")} are locked and unscored here, so they can give the final model an honest score.`),
-        h("p", {}, `Each person in line is counted as ${a.per_person} ${a.per_person === 1 ? "ticket" : "tickets"}, the best of the values tried. The Bayesian part used a faster fit (${state.data.model.fit.replace("faster fit: ", "")}). Its sampler checks: largest R-hat ${state.data.model.cutoff_checks.max_r_hat} (want close to 1), ${state.data.model.cutoff_checks.divergences} divergences (want few).`),
-        state.data.model.fallback_used ? h("p", { class: "notice strong" }, "This run used the fallback cutoff, not the Bayesian model.") : null)));
+      nsPanel("Real trips", null,
+        live ? null : h("p", { class: "not-available" }, "Not available yet: no predictions have been checked against real rush days or verified reports."))));
 
   const biggestMiss = Math.max(...a.windows.flatMap((w) => [w.line_mae_combo, w.line_mae_lookup]));
   const errorTop = Math.ceil(biggestMiss / 2) * 2;
   lineChart(errorChart, {
     x: slots.map(monthName),
     series: [
-      { name: "Combo", color: "var(--series-1)", values: series("line_mae_combo") },
+      { name: "Model", color: "var(--series-1)", values: series("line_mae_combo") },
       { name: "Lookup table", color: "var(--series-2)", dash: "6 4", values: series("line_mae_lookup") },
     ],
     yMax: errorTop, yTicks: [0, errorTop / 4, errorTop / 2, (3 * errorTop) / 4, errorTop], height: 220, labelEvery: 2, markers: true, ySuffix: "",
     tipRows: (i) => (byMonth[slots[i]]
-      ? [`${num(byMonth[slots[i]].line_mae_combo, 2)} Combo`, `${num(byMonth[slots[i]].line_mae_lookup, 2)} Lookup table`, chartTitles(i)]
+      ? [`${num(byMonth[slots[i]].line_mae_combo, 2)} Model`, `${num(byMonth[slots[i]].line_mae_lookup, 2)} Lookup table`, chartTitles(i)]
       : [chartTitles(i)]),
   });
   lineChart(coverChart, {
     x: slots.map(monthName),
     series: [
-      { name: "Combo", color: "var(--series-1)", values: series("line_cov_combo").map((v) => (v === null ? null : v * 100)) },
+      { name: "Model", color: "var(--series-1)", values: series("line_cov_combo").map((v) => (v === null ? null : v * 100)) },
       { name: "Lookup table", color: "var(--series-2)", dash: "6 4", values: series("line_cov_lookup").map((v) => (v === null ? null : v * 100)) },
     ],
     yMax: 100, yTicks: [0, 25, 50, 80, 100], refLine: { y: 80, label: "Goal: 80%" }, ySuffix: "%", height: 220, labelEvery: 2, markers: true,
     tipRows: (i) => (byMonth[slots[i]]
-      ? [`${pct(byMonth[slots[i]].line_cov_combo)} Combo`, `${pct(byMonth[slots[i]].line_cov_lookup)} Lookup table`, chartTitles(i)]
+      ? [`${pct(byMonth[slots[i]].line_cov_combo)} Model`, `${pct(byMonth[slots[i]].line_cov_lookup)} Lookup table`, chartTitles(i)]
       : [chartTitles(i)]),
   });
 }
@@ -691,7 +1015,7 @@ function drawChart(holder, cfg) {
   if (!holder.isConnected) return;
   const width = Math.max(240, holder.clientWidth || 320);
   const height = cfg.height || 200;
-  const m = { top: 14, right: 12, bottom: 24, left: 40 };
+  const m = { top: cfg.yTitle ? 30 : 14, right: 12, bottom: cfg.xTitle ? 42 : 24, left: 40 };
   const w = width - m.left - m.right, ht = height - m.top - m.bottom;
   const n = cfg.x.length;
   const xPos = (i) => m.left + (n === 1 ? 0 : (i / (n - 1)) * w);
@@ -701,10 +1025,17 @@ function drawChart(holder, cfg) {
     svg.append(s("line", { x1: m.left, x2: width - m.right, y1: yPos(t), y2: yPos(t), stroke: "var(--line)", "stroke-width": 1, opacity: 0.55 }));
     svg.append(s("text", { x: m.left - 6, y: yPos(t) + 4, "text-anchor": "end" }, `${t}${cfg.ySuffix || ""}`));
   }
-  const step = Math.max(cfg.labelEvery || 1, Math.ceil(n / Math.max(3, Math.floor(w / 62))));
+  const step = Math.max(cfg.labelEvery || 1, Math.ceil(n / Math.max(3, Math.floor(w / 84))));
   for (let i = 0; i < n; i += step) {
-    const anchor = i === 0 ? "start" : "middle";
-    svg.append(s("text", { x: xPos(i), y: height - 6, "text-anchor": anchor }, cfg.x[i]));
+    const anchor = i === 0 ? "start" : (i === n - 1 ? "end" : "middle");
+    svg.append(s("text", { x: xPos(i), y: height - (cfg.xTitle ? 24 : 6), "text-anchor": anchor }, cfg.x[i]));
+  }
+  if (cfg.yTitle) svg.append(s("text", { x: 0, y: 12, class: "axis-title" }, cfg.yTitle));
+  if (cfg.xTitle) svg.append(s("text", { x: m.left + w / 2, y: height - 4, "text-anchor": "middle", class: "axis-title" }, cfg.xTitle));
+  if (cfg.band) {
+    const up = cfg.band.hi.map((v, i) => `${i ? "L" : "M"}${xPos(i).toFixed(1)} ${yPos(v).toFixed(1)}`).join("");
+    const down = cfg.band.lo.map((v, i) => `L${xPos(i).toFixed(1)} ${yPos(v).toFixed(1)}`).reverse().join("");
+    svg.append(s("path", { d: `${up}${down}Z`, fill: cfg.band.color, opacity: 0.22, stroke: "none" }));
   }
   if (cfg.refLine) {
     svg.append(s("line", { x1: m.left, x2: width - m.right, y1: yPos(cfg.refLine.y), y2: yPos(cfg.refLine.y), stroke: "var(--ink-3)", "stroke-width": 1, "stroke-dasharray": "2 3" }));
@@ -717,7 +1048,7 @@ function drawChart(holder, cfg) {
       pen = true;
     });
     svg.append(s("path", { d, fill: "none", stroke: ser.color, "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round", "stroke-dasharray": ser.dash || "none" }));
-    if (cfg.markers) {
+    if (cfg.markers && !ser.noMarkers) {
       ser.values.forEach((v, i) => {
         if (v === null || v === undefined) return;
         svg.append(s("circle", { cx: xPos(i), cy: yPos(v), r: 4, fill: ser.color, stroke: "var(--card)", "stroke-width": 2 }));
@@ -871,9 +1202,9 @@ function route() {
   charts.length = 0;
   tooltip.hidden = true;
   const parts = location.hash.replace(/^#\/?/, "").split("/");
-  if (parts[0] === "accuracy") {
-    setNav("accuracy");
-    renderAccuracy();
+  if (parts[0] === "nerd-stats" || parts[0] === "accuracy") {
+    setNav("nerd-stats");
+    renderNerdStats();
   } else if (parts[0] === "show" && parts[1] && parts[2]) {
     setNav("home");
     renderDetails(parts[1], decodeURIComponent(parts[2]));

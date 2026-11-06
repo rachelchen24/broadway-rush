@@ -38,7 +38,7 @@ Compared against the project on 2026-11-05.
 |---|---|---|---|
 | Data Preprocessing | 8 | Strong: source rules check, new columns, extraction tested on held-out comments, grosses from two sites agreeing within 0.018% | Show why Reddit reports can be trusted. Make a clear cleaning funnel: 139,584 comments → 18,412 observations → the rows the model uses. |
 | Data Processing | 10 | Not built. The plan fits: bounds for one-sided labels, tests in time order | Build the model. Show the bias and overfitting checks, including the score against the lookup table and the 89% "always yes". Explain the step that joins the combo's two parts. |
-| Visualization | 7 | No charts exist; the spec plans only one (§2.6) | Make charts of how lines grow by time, chance vs arrival time, predicted vs actual, and what drives line length. |
+| Visualization | 7 | Built 2026-11-06: plain charts on show pages, full ones on Nerd stats (§2.6) | ~~Make charts of how lines grow by time, chance vs arrival time, predicted vs actual, and what drives line length.~~ Decide whether to use screenshots or image files in the slides. |
 | Presentation | 10 | Not on the schedule | Make slides, set aside rehearsal time, plan audience interaction, and get good audio. |
 | Results | 7 | The question is clear, but there's no working site or real-world check yet | Get a working demo and do real rush runs. Explain the bigger point: rush costs about $45, against average tickets of $148–$200 at shows like The Outsiders and Just in Time. |
 | Creativity | 8 | Strong: unusual topic, AI-extracted labels from Reddit, predicting when to show up | Say this clearly in the presentation. |
@@ -134,17 +134,25 @@ All of this goes in the predictions file, so the site still reads only that file
 - **Width: at least 7/8 of the screen** at every screen size (changed 2026-11-06). It was a centered column capped at 1040 pixels, which looks like half the screen on a big monitor. Tiles use the extra room by adding columns, so lines of text don't stretch too long.
 - **Purple theme** (deep purple), with text in **glowing / illuminated light colors** (neon-marquee feel). ~~A lighter purple background with dark text and no dark mode~~ was tried on 2026-11-06, and I changed it back to dark the same night.
 - **Worth-it bar on dark:** it has a light outline, so the black end still shows.
-- **Fonts (chosen 2026-11-06; not on the site yet):** Bebas Neue for the logo, headings, show names and big numbers (like the chance %). Poppins for everything else: body text, labels and buttons. Both are free on Google Fonts. Bebas Neue only has capital letters, so show names appear in all caps.
+- **Fonts (chosen and on the site 2026-11-06):** Bebas Neue for the logo, headings, show names and big numbers (like the chance %). Poppins for everything else: body text, labels and buttons. Both are free on Google Fonts. Bebas Neue only has capital letters, so show names appear in all caps.
 - **Worth-it bar: black → gray → gold** (~~red → purple → blue~~, changed 2026-11-05). Black = stay home, gray = Maybe, gold = GO.
 
 ### 2.5 Report button
 - A **floating button on the side** with a **form icon**, labeled **"Report rush availability"**.
 - Opens the report form (§3.10).
 
-### 2.6 Accuracy page ("How accurate have we been?")
+### 2.6 Nerd stats page (~~Accuracy page, "How accurate have we been?"~~; renamed and expanded 2026-11-06)
 - Public page tracking predictions vs. verified outcomes over time.
 - Shows the results table (§5.3), e.g. "our 80% ranges contained the real number 78% of the time" and "GO verdicts worked out 8 out of 10 times," plus a chart of accuracy over time.
 - Great for the portfolio, and tells family and friends whether to trust it.
+- **Organized by question, with jump buttons that stay on screen (built 2026-11-06):**
+  - **The short version:** four headline numbers.
+  - **How rush lines behave:** how fast the line grows, a show-by-day grid, and how much rush saves.
+  - **Where the data comes from:** the cleaning funnel and reports per show.
+  - **What the model looks at:** what moves the line most, and how it's built.
+  - **How good it is:** the scoreboard, predicted vs. real line, chance vs. what happened, the 89% problem and verdicts, error and range by month, and real trips.
+- **Show pages get the plain versions (built 2026-11-06):** how the line builds that morning, which days are busiest for that show, and what you'd save. Any day mode shows only the savings, because the other two come too close to the weekday numbers §9 question 23 holds back.
+- **Every number comes from the predictions file.** The chart numbers are counted from the model tables and the finished test by `src/broadway_rush/model/site_charts.py`.
 
 ### 2.7 Shows with no data
 - **Skip a show if there's genuinely no data** (no reports, no prices, no grosses). It just isn't shown for now.
@@ -658,7 +666,8 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 - **"Enough data" rule changed (2026-11-06, my decision):** a full prediction needs **35+ line reports OR 2+ daily-thread reports per running week.** Claude picked 35 from the tests: shows with 10–34 line reports before the test month lost to the lookup table (80% range held 75%), and shows with 35+ beat it (86–92%). Any cutoff from 23 to 81 picks the same shows today.
 - **Daily data reaches the site by one command (2026-11-06):** `broadway_rush.sync` (§6.2). The site now runs Nov 7–13 from the Nov 6 snapshot. Whether the schedule fires on its own is still unconfirmed: only manual runs have saved anything so far.
 - **Build order:** 1 Reddit → CSV ✅ · 2 labels + Haiku pilot ✅ · 3 full extraction ✅ · 4 grosses + rush policies + show catalog ✅ · 6 snapshot scrapers (moved up because ticket data has no history; TKTS + Ticketmaster built 2026-10-22, daily job working 2026-11-05) · 5 first model (simple combo) + results table · 7 website · final model (leveled-up combo). Don't skip ahead without asking.
-- **Accuracy page:** yes (§2.6).
+- **Accuracy page:** yes, now called Nerd stats (§2.6).
+- **Charts (2026-11-06, my picks):** line growth, show-by-day grid, predicted vs. real, what drives the line, chance vs. what happened, cleaning funnel, rush savings, reports per show. Plain ones go on show pages, and everything else goes on Nerd stats (§2.6).
 - **Docs:** `SPEC.md` (this file), `process.md` (what was built and how, kept up to date during coding), `interview-notes.md` (private talking points, **git-ignored**), `claude-notes.md` (Claude's working notes between sessions, **git-ignored**).
 
 ## 9. Open questions

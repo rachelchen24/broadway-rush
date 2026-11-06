@@ -21,6 +21,7 @@ from broadway_rush.catalog import norm
 from broadway_rush.model import cutoff as cutoff_model
 from broadway_rush.model import join
 from broadway_rush.model import line as line_model
+from broadway_rush.model import site_charts
 from broadway_rush.model.backtest import GO, GRID, LOCKED, MAYBE
 from broadway_rush.model.table import (
     CUTOFF_FEATURES, FALLBACK_OPENING, LINE_FEATURES, PROCESSED, RAW, ROOT, Features, clean_text, load_policies,
@@ -431,6 +432,8 @@ def build(per_person: float, tag: str):
         "has_show_facts": bool(facts),
         "days": days,
         "accuracy": accuracy_block(tag, funnel, timings),
+        "charts": {**site_charts.build(t["line"], lm, tag, {e["show_id"] for es in days.values() for e in es}),
+                   "full_prediction_rule": {"line_reports": MIN_LINE_REPORTS, "reports_per_week": MIN_REPORTS_PER_WEEK}},
     }
     timings["whole_predictions_run_seconds"] = round(time.time() - started, 1)
     OUT.parent.mkdir(parents=True, exist_ok=True)
