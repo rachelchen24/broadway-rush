@@ -1056,3 +1056,31 @@ Still open: only manual runs have saved anything. Rachel says the Actions list s
 The watch on the data repo ended at 18:44 UTC (1:44 pm ET), about half an hour past its planned stop. A fresh check then still showed `61821ee`, Rachel's button press, as the newest commit. That's 1 hour 37 minutes after the 17:07 UTC scheduled time, so three scheduled runs in a row have saved nothing: 23:07 UTC Nov 5, 12:07 UTC Nov 6 and 17:07 UTC Nov 6. Two of the watch's checks failed with "Could not resolve host", so the network dropped briefly, which doesn't affect this result.
 
 I still can't tell whether the runs never started or started and saved nothing. That depends on the third run in the Actions list, which I've asked Rachel about. Next scheduled run: 23:07 UTC (6:07 pm ET).
+
+---
+
+## 2026-11-06 14:26 ET — Daily job: a Ticketmaster-only snapshot appeared
+
+Rechecked at 2:26 pm ET. Commit `c43f4a5` reached the data repo at 19:09 UTC (2:09 pm ET), after my 18:44 UTC check, with one Ticketmaster file and no TKTS board. That's a new clue, because a manual run does both scrapers.
+
+So it's one of two things. It could be the 12:07 UTC scheduled run starting 7 hours late, since only that schedule runs Ticketmaster alone. That would mean the schedule fires but can't be trusted on time. Or it could be a manual run where the TKTS step failed, since the job still saves what it got. The Actions list shows which: a row says Scheduled or Manually run, and has a green check or a red X. Asked Rachel to read that row.
+
+Also checked from here, and none of these is the cause: the job file is on GitHub's default branch (`master`), it matches local, and all three cron lines are there. I did not copy this snapshot into `data/raw`. Its schedule date is the same as the predictions, so the site wouldn't change.
+
+---
+
+## 2026-11-06 14:32 ET — Daily job: why data went missing, and backup run times
+
+Rachel reports all 4 runs in the Actions list are green. The data repo has only 3 job saves, so one green run saved nothing. I still can't read the logs, so this is reasoning from the evidence, not a confirmed cause.
+
+What the evidence points to:
+1. GitHub starts scheduled runs late. The 2:09 pm snapshot has Ticketmaster and no TKTS. A green manual run would have saved both, and the board had shows in all 2 of the snapshots we have from that hour. So it's most likely the 7:07 am run, about 7 hours late. That assumes nobody pressed the button then, which I've asked Rachel.
+2. A late TKTS run can find an empty board. Across the 44 snapshots since January 2026, by ET hour: 18 of 18 had shows from 12:00 to 6:59 pm, 1 of 16 before 11 am, and 1 of 7 from 10 pm to midnight. Almost nothing was sampled from 7 to 10 pm. `scrape_live` then logs a warning, saves nothing, and the run stays green. That's the likeliest story for the fourth run, probably the 6:07 pm run on Nov 5. GitHub's status page shows an incident covering Actions from 6:36 to 7:20 pm ET that evening.
+
+No code in the job was broken, and one day isn't much evidence. GitHub also listed Actions incidents on Nov 4 and Nov 5, so this may have been a bad stretch.
+
+Choice I made: backup times, not skip logic. Ticketmaster now also runs at 9:07 am, and TKTS at 2:07 and 4:07 pm. That's up to 6 runs a day instead of 3, and up to about 1.2 MB a day in the data repo. I left out "skip if today's already saved" because extra snapshots do no harm and it would be more code to get wrong. I also didn't use an outside timer, because that needs an account and a token, which is Rachel's decision if backups aren't enough.
+
+Also changed `sync` to warn when TKTS goes quiet, not only Ticketmaster, because a changed page layout would look the same as an empty board: green runs and no data.
+
+Checks: the file parses as YAML (PyYAML installed to my scratchpad only, not the project). I evaluated the `if:` lines for all 6 times and the button: each scheduled run does exactly one source, and the button does both. `sync` ran for real and copied the 2:09 pm snapshot, and the predictions stayed as they were because the schedule date matched. Copy tests still pass 10 of 10. None of this tests GitHub's timing. That only shows after Rachel pushes, and it takes a real day to judge. Success means a day with at least 1 Ticketmaster and 1 TKTS snapshot and no button press.

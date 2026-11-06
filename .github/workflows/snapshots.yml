@@ -5,9 +5,14 @@ name: Ticket snapshots
 on:
   schedule:
     # Times are UTC: Eastern is 5 hours behind in winter, 4 in summer. If you change a time, change it in the
-    # "if:" lines below too. Minute 7 because GitHub's start of the hour is busiest, and runs can start late.
+    # "if:" lines below too. Minute 7 because GitHub's start of the hour is busiest.
+    # GitHub can start scheduled runs hours late or drop them, so each source has backup times. The TKTS board is
+    # usually empty late at night and in the morning, and a run that finds it empty saves nothing but still shows green.
     - cron: "7 12 * * *"  # Ticketmaster: 7:07 am EST / 8:07 am EDT
+    - cron: "7 14 * * *"  # Ticketmaster backup: 9:07 am EST / 10:07 am EDT
     - cron: "7 17 * * *"  # TKTS: 12:07 pm EST / 1:07 pm EDT
+    - cron: "7 19 * * *"  # TKTS backup: 2:07 pm EST / 3:07 pm EDT
+    - cron: "7 21 * * *"  # TKTS backup: 4:07 pm EST / 5:07 pm EDT
     - cron: "7 23 * * *"  # TKTS: 6:07 pm EST / 7:07 pm EDT
   workflow_dispatch:      # the "Run workflow" button on the Actions tab; runs both scrapers
 
@@ -46,14 +51,14 @@ jobs:
         run: pip install -e .
 
       - name: Ticketmaster snapshot
-        if: ${{ github.event_name == 'workflow_dispatch' || github.event.schedule == '7 12 * * *' }}
+        if: ${{ github.event_name == 'workflow_dispatch' || github.event.schedule == '7 12 * * *' || github.event.schedule == '7 14 * * *' }}
         timeout-minutes: 10
         env:
           TICKETMASTER_API_KEY: ${{ secrets.TICKETMASTER_API_KEY }}
         run: python -m broadway_rush.scrapers.ticketmaster snapshot
 
       - name: TKTS snapshot
-        if: ${{ !cancelled() && steps.install.outcome == 'success' && (github.event_name == 'workflow_dispatch' || github.event.schedule != '7 12 * * *') }}
+        if: ${{ !cancelled() && steps.install.outcome == 'success' && (github.event_name == 'workflow_dispatch' || (github.event.schedule != '7 12 * * *' && github.event.schedule != '7 14 * * *')) }}
         timeout-minutes: 10
         run: python -m broadway_rush.scrapers.tkts live
 

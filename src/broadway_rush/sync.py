@@ -58,8 +58,8 @@ def out_of_date(csv: Path, cache: Path, pattern: str) -> bool:
     return any(f.stat().st_mtime > built for f in cache.glob(pattern))
 
 
-def latest_schedule() -> datetime:
-    stamps = [f.name.split(".")[0] for f in ticketmaster.CACHE.glob("*.json*")]
+def latest_snapshot(cache: Path, pattern: str) -> datetime:
+    stamps = [f.name.split(".")[0].partition("-")[0] for f in cache.glob(pattern)]
     return datetime.strptime(max(stamps), "%Y%m%d%H%M%S").replace(tzinfo=timezone.utc)
 
 
@@ -83,12 +83,15 @@ def main():
         if out_of_date(csv, module.CACHE, pattern):
             module.write_all()
 
-    latest = latest_schedule()
-    print(f"Newest Ticketmaster snapshot: {latest.astimezone(ET):%b %d, %I:%M %p} ET")
-    hours_old = (datetime.now(timezone.utc) - latest).total_seconds() / 3600
-    if hours_old > LATE_HOURS:
-        print(f"Warning: that's {hours_old:.0f} hours old, so the daily job may have missed runs. Check Actions.")
+    # A run that finds an empty TKTS board saves nothing but still shows green, so this is how a long gap gets noticed
+    for module, pattern, _ in SOURCES:
+        newest = latest_snapshot(module.CACHE, pattern)
+        print(f"Newest {module.CACHE.name} snapshot: {newest.astimezone(ET):%b %d, %I:%M %p} ET")
+        hours_old = (datetime.now(timezone.utc) - newest).total_seconds() / 3600
+        if hours_old > LATE_HOURS:
+            print(f"Warning: that's {hours_old:.0f} hours old, so the daily job may be missing data. Check Actions.")
 
+    latest = latest_snapshot(ticketmaster.CACHE, "*.json*")
     if args.no_predict:
         return
     if not args.predict and schedule_in_predictions() >= latest.date().isoformat():
