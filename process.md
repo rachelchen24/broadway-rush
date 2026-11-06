@@ -1084,3 +1084,75 @@ Choice I made: backup times, not skip logic. Ticketmaster now also runs at 9:07 
 Also changed `sync` to warn when TKTS goes quiet, not only Ticketmaster, because a changed page layout would look the same as an empty board: green runs and no data.
 
 Checks: the file parses as YAML (PyYAML installed to my scratchpad only, not the project). I evaluated the `if:` lines for all 6 times and the button: each scheduled run does exactly one source, and the button does both. `sync` ran for real and copied the 2:09 pm snapshot, and the predictions stayed as they were because the schedule date matched. Copy tests still pass 10 of 10. None of this tests GitHub's timing. That only shows after Rachel pushes, and it takes a real day to judge. Success means a day with at least 1 Ticketmaster and 1 TKTS snapshot and no button press.
+
+---
+
+## 2026-11-06 14:36 ET — Daily job: backup times pushed; limited-data numbers pulled
+
+Rachel pushed the backup times as `029db5a` at 2:34 pm ET, and local and GitHub match. Rachel remembers pressing the button only around noon, though not for certain. That fits the 12:02 pm run, so the 2:09 pm snapshot was most likely the 7:07 am scheduled run starting late. The real test is a day with at least 1 Ticketmaster and 1 TKTS snapshot and no button press. Not checked yet.
+
+Moved on to the limited-data shows (SPEC 9, questions 20 and 26). Pulled these read-only numbers to start the talk, with nothing built. Across the 6 shows there are only 3 recorded outcomes, so nothing can be tested on them directly. The site says "Limited data, probably easy" on all 6, including Hadestown at 95% seats sold and It's a Wonderful Life, which has no reports or grosses at all.
+
+Rough TKTS counts, matched by show name, Broadway section, on the 20 days with a board since January 2026: Six 19, & Juliet 17, Hadestown 14, Downstate 2, It's a Wonderful Life 2, Wicked 0. For comparison, Hamilton and The Lion King show 0 and most of the well-reported shows 11 to 18, so it does separate shows. Whether it says anything about rush lines hasn't been tested.
+
+---
+
+## 2026-11-06 14:37 ET — Limited-data shows parked for later
+
+Rachel decided the limited-data work is for later and asked for it on the list. Added my three ideas to SPEC 9, question 26, marked as not decided: new wording, a standing-room message, and a rough label tested by hiding well-reported shows. Nothing built. The site still says "Limited data, probably easy" on all 6 shows until this is decided, and I told Rachel so.
+
+Next on my suggested order is the charts, worth 7 rubric points. Asked Rachel for a go before starting.
+
+---
+
+## 2026-11-06 14:39 ET — Can the model get better, or do we wait for data?
+
+Rachel asked. Checked with a read-only look at the first version's test results and data counts. Nothing retrained or changed, and the 3 locked months weren't touched.
+
+Waiting won't help much. At the Aug-Oct pace, the 17 days to Nov 23 add about 90 line rows (1.5% of 6,060), 6 ticket show-days (0.8% of 762) and 5 outcomes (0.8% of 669).
+
+Where the model is weak, on the 9 test months:
+- Tickets: the combo's middle estimate is 18 against a stated 6 on the 33 stated counts. People may mention a count more often when it's small, so this overstates the gap by some unknown amount.
+- Telling hits from misses: given one attempt that got a ticket and one that missed, the combo ranks them correctly 60% of the time and the lookup 64%. 9 of the 16 misses were rated GO, and 6 of the 16 were at one show, Just in Time.
+- The line is stronger, and its largest errors come in the last hour before the box office opens (combo 6.56 people, lookup 8.20).
+
+Added one idea to SPEC 5.2c: a last step that adjusts the chance using real got-or-missed reports. Recommended the ticket upgrades and that step first, after the charts. None of this is tested yet, and level-ups still need Rachel's go.
+
+---
+
+## 2026-11-06 14:41 ET — Spec: show search; font sets shown (no code)
+
+**Did:** added a search box to SPEC §2.2a and §8 at Rachel's request: find shows as you type, by name, nickname or theater. Showed Rachel six font sets on a sample tile in the site's current colors, using sample numbers. No code and no site changes from this chat.
+
+**Why:** Rachel wants to find a show directly, and finds the current fonts ugly.
+
+**Result:** the font sets are Poster (Bebas Neue + Barlow), Playbill (Playfair Display + Source Sans 3), Art deco marquee (Limelight + Work Sans), Ticket stub (Alfa Slab One + IBM Plex), Modern elegant (DM Serif Display + DM Sans), and Neon sign (Monoton for the logo + Poppins). I recommended Poster, because long show names fit and its numbers read well. Nothing goes in the spec until Rachel picks.
+
+**My choices, for Rachel to check:** search covers nicknames and theaters as well as show names. If a match isn't playing on the picked date, the page says so and offers Any day.
+
+**Next:** Rachel picks a font set, then I write it into SPEC §2.4.
+
+---
+
+## 2026-11-06 14:45 ET — Spec: fonts chosen (no code)
+
+**Did:** Rachel chose the Poster set for headings and the Neon sign set for body. The first inline preview didn't work for Rachel, so I saved one to `C:\Users\rache\Downloads\broadway-rush-fonts.html`, opened it in Rachel's browser, and published a private copy as an artifact. Wrote the choice into SPEC §2.4 and §8, and closed §9 question 22. The site wasn't changed.
+
+**Result:** Bebas Neue for headings and Poppins for body.
+
+**My choices, for Rachel to check:**
+- The logo, show names and big numbers count as headings, so they use Bebas Neue.
+- Monoton, the Neon sign set's logo font, isn't used.
+- Bebas Neue only has capital letters, so show names appear in all caps.
+
+**Not checked:** I couldn't view the preview page myself, and Rachel hasn't seen these two fonts together, because the preview shows them in separate sets.
+
+**Next:** the build chat applies the fonts when Rachel asks.
+
+---
+
+## 2026-11-06 14:51 ET — Charts: Rachel picked 8, build on hold
+
+Rachel asked to see the chart ideas and choose before anything was built. Picked 8: line growth over time, show-by-day grid, predicted vs. actual, what drives the line, chance vs. what happened, cleaning funnel, rush savings, and reports per show. Not picked: seats sold vs. line, line vs. tickets, and the model vs. lookup scoreboard.
+
+Where they go isn't decided (site, slide images or both). Rachel asked me to hold off until another prompt arrives, so nothing is built.
