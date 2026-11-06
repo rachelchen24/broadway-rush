@@ -775,3 +775,17 @@ Twelve months would take about 11 minutes. That's scaled up, not run, because 3 
 **Not done, as instructed:** no commits, deploys, accounts, API money or new scrapes by me. No level-ups, cast news or comparison rows. The report form and Refresh + PIN are screens only.
 
 **Next, for Rachel to decide:** which level-ups to do first, real GO and Maybe thresholds, the verdict's fixed comparison, the wording for standing-room shows (new SPEC §9 question 20). Charts and the presentation still aren't on the schedule, and they're worth 17 of the 50 points.
+
+---
+
+## 2026-11-06 01:27 ET — Chicago gets a full prediction; a flaw in the "enough data" rule
+
+**Did:** Rachel asked "can you show chicago on there?" It was already listed, in the second section with no numbers, because it has 0.98 reports a week against the §8 cutoff of 2. **My reading: she wants its full prediction.** I added a one-show exception (`ALWAYS_FULL` in `predict.py`, one line to undo), rewrote the predictions file and reran the click-through: **106 of 106 checks passed, 0 page errors.** Fit unchanged (R-hat 1.004).
+
+**Result:** Chicago now shows a full prediction on the 6 days it plays in the file; it isn't on Ticketmaster for Nov 11. Friday Nov 6: ranked 10 of 15, 79% if you arrive at 9:00, get there by 8:45, 3 to 41 tickets.
+
+**How much to trust it:** 81 line reports and 11 days with ticket information, but **0 stated counts,** so its ticket number comes only from "at least" and "at most" labels. In the 9 test months its line error was 4.58 against 4.38 for the lookup table, on 22 points, so about the same. It had no outcomes or stated counts in those months, so its chance of a ticket wasn't tested at all.
+
+**Found while checking:** the "enough data" rule (reports per running week, my choice of how to measure it) favors brand-new shows. **Wanted gets a full prediction from 3 line reports and 0 ticket days, and 860 from 9 and 0.** Both carry the Low confidence badge, but those numbers rest mostly on what's typical across shows. Chicago had far more data and got none. I didn't change the rule: it's in §8 and it's Rachel's call. Added as SPEC §9 question 21.
+
+**Also from Rachel:** she finds the fonts ugly and will deal with that later. No change made.

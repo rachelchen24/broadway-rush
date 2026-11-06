@@ -32,6 +32,7 @@ OUT = ROOT / "web" / "data" / "predictions.json"
 TARGET_CHANCE = 0.80  # placeholder: the arrival time is the latest time that still reaches this
 LEVELS = list(range(50, 100, 5))
 MIN_RATE = 2.0  # SPEC 8: daily-thread reports per running week, for "enough data"
+ALWAYS_FULL = {"chicago"}  # Rachel's request, 2026-11-06: under 2 a week, but 81 line reports and 11 ticket days
 RECENT_DAYS = 30
 RECENT_ROWS = 3
 THIN_LINE_POINTS = 35  # fewer line points than this gets the Low confidence badge
@@ -241,7 +242,7 @@ def build(per_person: float, tag: str):
         by_reports = n_recent >= RECENT_ROWS and general is None
         in_person = general is not None or sro is not None or by_reports
         show_rate = float(rate.get(sid, 0.0)) if sid else 0.0
-        group = 3 if not in_person else (1 if show_rate >= MIN_RATE else 2)
+        group = 3 if not in_person else (1 if show_rate >= MIN_RATE or sid in ALWAYS_FULL else 2)
         gr = latest_gross.loc[sid] if sid and sid in latest_gross.index else None
         price, price_note = None, None
         source = "policy" if general or sro else ("reports" if by_reports else "none")
