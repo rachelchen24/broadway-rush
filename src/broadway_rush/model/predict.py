@@ -205,7 +205,7 @@ def accuracy_block(tag: str, funnel: dict, timings: dict) -> dict | None:
         "chance_combo": p["chance_combo"], "chance_lookup": p["chance_lookup"],
         "chance_base_rate": p["chance_base_rate"], "always_yes_accuracy": p["always_yes_accuracy"],
         "always_yes_all_attempts": funnel["outcomes_share_got_a_ticket"],
-        "always_yes_spec": 0.89,
+        "always_yes_spec": funnel["attempts_wider_share_got"],
         "verdict_combo": p["verdict_combo"], "calibration_combo": p["calibration_combo"],
         "funnel": funnel, "timings": timings,
         "live_results": None,  # nothing has been checked against real days yet

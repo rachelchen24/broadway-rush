@@ -1255,3 +1255,52 @@ Submitted the check of all 10,396 comments with reports: estimate $1.14.
 More data, from the already approved Arctic Shift archive: Reddit refreshed through today (+50 comments), and added fan subreddits r/Hadestown, r/wicked, r/SixTheMusical, r/andjuliet, r/hamiltonmusical, r/TheOutsidersMusical, r/BroadwayTickets and r/theatre, because the limited-data shows barely appear in the daily threads.
 
 Not yet known: whether any of this makes the model better. The test will compare new and old on the same test reports, because cleaning the test answers would otherwise flatter the score.
+
+---
+
+## 2026-11-06 19:28 ET — Data cleaning, part 2: the checked data barely moved the model's scores
+
+Checked all 10,396 comments with reports for $1.16. Results: 10,339 reports kept, 4,457 fixed or filled, 3,596 dropped (1,641 quoted from the parent, 835 not a report, 460 other, 353 vague, 227 questions, 45 hypothetical, 28 plans, 7 jokes). Project spend $2.85.
+
+I read random samples myself; these are my reads, not human-reviewed labels. About 23 of 24 sampled drops looked right. The main finding is that the first pass had been copying the parent's numbers into replies ("How were your seats?" became a line count). Fixes also caught invented show names (BOOP became Bells Are Ringing, HK became Hadestown, lost boys became Peter Pan Goes Wrong) and morning times read as evening. Two bad habits got guards: shifting stated dates and filling blank times with the posting time.
+
+Free rule added: a report can't describe a time later than when it was posted, so "16:45" posted at 9:30 that morning is 4:45 am. It fixed 42 reports.
+
+Also fixed a mistake of mine. I told Rachel the Oh, Mary! Mar 4 line of 79 looked like a bad report. The comments say "around 80th in line! $5 tickets secured" and "They had 165 $5 tickets", so it's real: a special $5 day. The checker kept it. This is why reports must not be deleted for looking surprising.
+
+Data after the check and nickname fallback: line reports 6,060 to 6,618, ticket show-days 762 to 948, attempts with a known result 669 to 865, share who got a ticket 87.3% to 85.7%. A bug in my collect step crashed partway, so I removed its 20 partial ledger rows and 195 partial results before re-collecting; the spend is counted once.
+
+Test on the same 9 months, tag `clean1`. It took 1 hour 54 minutes against 8.4 minutes before, and I piped its output so its progress was hidden, repeating an earlier mistake. Compared on identical test reports, so cleaned answers can't flatter it:
+- Line error: 4.74 to 4.69 on 1,408 shared reports (lookup 5.87 to 5.85). Within 3 people: 55.5% to 55.0%. Range held: 86.6% to 86.5%.
+- Stated tickets: 11.72 to 11.93 on 29 shared counts (lookup 6.34 to 5.38).
+- Chance: Brier 0.090 to 0.091, ranking 0.598 to 0.580 on 127 shared attempts (11 misses).
+
+As each test scored itself, on its own rows: arrival-time error 102 to 93 minutes (lookup 95 to 101), so the model now beats the lookup on arrival time. These are different rows, so that's weaker evidence. The test now has 182 attempts and 20 misses, up from 138 and 16.
+
+Plain conclusion: cleaning made the data more correct and larger, but it didn't make the model meaningfully more accurate. The model's misses aren't mainly caused by label noise. Keeping the cleaned data anyway, because it's more truthful and no score got meaningfully worse.
+
+r/theatre stalled (about 1,000 posts in 70 minutes, low yield), so I dropped it. Stopping the wrapper left its python process running. My attempt to stop that process was blocked by the permission system, so I asked Rachel to stop it.
+
+---
+
+## 2026-11-06 21:47 ET — Data cleaning, part 3: added sources, final test, site updated
+
+Added sources: seven show-fan subreddits and BroadwayWorld's forum (47 rush threads, 232 posts, found through its public sitemap because the search page is disallowed). Registered in `registry/sources.csv` before fetching threads. Talkin' Broadway's All That Chat is skipped: bot protection. The overlapping fetches left about 6,000 duplicate comment rows, which I removed. My stop command on the scan left its child process running and a second fetch started when it ended, which is where the duplicates came from.
+
+New first-pass and check runs cost $0.07 for 3,266 comments, of which only 75 held any report. Sample of 1,000 comments the pre-filter skipped: 9 had anything, 4 of those general rush with a number, and the examples I read looked mostly false. The filter stands; reading all 91,000 would cost about $2.60 for mostly junk. Project spend $2.95, which is $1.46 of the $5 approved.
+
+Not gathered: Reddit before June 2024. It exists in the archive but needs grosses and calendar backfilled too, and the results below suggest little gain. Rachel can overrule this.
+
+Final test, tag `more1`, 56 minutes, progress visible this time. Added data: +66 line reports, +8 ticket show-days, +7 attempts, on top of cleaning. Hadestown 15 to 22 line reports, 860 9 to 17; no show changed prediction group.
+
+Compared with the first test on identical reports: line error 4.74 to 4.69 (lookup 5.87 to 5.84), within 3 people 55.4% both, 80% range held 86.6% to 86.1%; stated tickets 11.72 to 11.50 (lookup 6.34 to 5.38); Brier 0.090 both, ranking 0.598 to 0.578 on 127 attempts with 11 misses. Compared with `clean1`, nothing moved: the added sources did nothing measurable.
+
+On its own reports (1,711 line reports, 42 stated counts, 182 attempts, 20 misses): line 4.71 vs. lookup 5.96; arrival 96 vs. 100 minutes, a win it didn't have before; tickets 15.8 vs. 8.5; right at 50% 87.9% vs. always yes 89.0%; Brier 0.105 vs. 0.093.
+
+Decision: use this data. It's more truthful and larger, and no score got meaningfully worse. The ranking drop is about 2 points on 11 misses, which is within noise but is the one number to watch.
+
+Site regenerated with `predict --backtest more1`. Compared with the file before cleaning, on 94 show-days: chance moved 3.0 points on average and 11.2 at most, arrival moved 13 minutes on average and 60 at most, and 4 verdicts changed (Chicago on Nov 7 and 9 and The Lost Boys on Nov 7 to Maybe; Operation Mincemeat on Nov 11 to GO). The line spread went from 1.40 to 1.81. Cutoff fit passed its checks: R-hat 1.012, ESS 497, 0 divergences, and it now takes about 8 minutes.
+
+Two stale hard-coded numbers replaced with values from the data: "139,584 comments" (now 152,801 comments and forum posts) and "89%" (the wider count is now 87.1% of 1,493). The panel is renamed "The always-yes problem". File versions bumped to `20261106e`. Click-through 263 of 263, 0 page errors.
+
+The stay-awake hold had never worked: `0x80000001` fails a cast in PowerShell on every call. Fixed with `[uint32]2147483649`, confirmed from its return value, and stopped now that the run is done.

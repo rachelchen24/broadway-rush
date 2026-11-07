@@ -759,7 +759,7 @@ function savingsChart(entries) {
 
 function funnelPanel(f) {
   const steps = [
-    ["Rush reports found in those comments", f.all_observations],
+    ["Rush reports after the AI check", f.all_observations],
     ["About in-person general rush", f.in_person_general_rush],
     ["Tied to a Broadway show", f.mapped_to_a_broadway_show],
     ["Confident enough to use", f.not_low_confidence],
@@ -775,7 +775,7 @@ function funnelPanel(f) {
     note: i ? `${(steps[i - 1][1] - n).toLocaleString()} removed` : null,
   }));
   return nsPanel("From Reddit comments to usable reports",
-    `We scanned ${f.comments_scanned.toLocaleString()} comments. ${f.all_observations.toLocaleString()} rush reports came out of them, and ${f.line_points_after_dropping_duplicates.toLocaleString()} passed every check to become line reports.`,
+    `We scanned ${f.comments_scanned.toLocaleString()} Reddit comments and forum posts. A first AI pass and a second one that checked its work left ${f.all_observations.toLocaleString()} rush reports, and ${f.line_points_after_dropping_duplicates.toLocaleString()} passed every check to become line reports.`,
     barRows(rows),
     h("p", { class: "muted", style: "margin-top:8px" }, `The model also uses ${f.cutoff_show_days.toLocaleString()} show-days with ticket information (${f.cutoff_stated_count} stated counts, the rest only "at least" or "at most") and ${f.outcomes_arrived_before_opening_known_result} attempts with a known result. Reports run from ${dayName(f.first_date, { month: "short", year: "numeric" })} to ${dayName(f.last_date, { month: "short", year: "numeric" })}.`));
 }
@@ -1191,7 +1191,7 @@ function renderNerdStats() {
       nsPanel("Does it beat the simple lookup table?", null, table,
         h("p", { class: "muted", style: "margin-top:8px" }, "Gold marks the better of the model and the lookup table. For ranges, better means closer to the 80% it promises; width isn't marked, because a narrow range that doesn't hold isn't better. Ticket and outcome rows rest on few reports, so small gaps may be luck.")),
       predictedPanel(ch), calibrationPanel(a),
-      nsPanel("The 89% problem", `People mostly post their wins. Across ${a.funnel.outcomes_arrived_before_opening_known_result} attempts with a known result, ${pct(a.always_yes_all_attempts, 1)} got a ticket (${pct(a.always_yes_spec)} on a wider count that includes reports without a stated date). On the ${cc.attempts} attempts in these tests, always saying yes is right ${pct(a.always_yes_accuracy, 1)} of the time.`,
+      nsPanel("The always-yes problem", `People mostly post their wins. Across ${a.funnel.outcomes_arrived_before_opening_known_result} attempts with a known result, ${pct(a.always_yes_all_attempts, 1)} got a ticket (${pct(a.always_yes_spec, 1)} of ${a.funnel.attempts_wider_count.toLocaleString()} on a wider count that includes reports without a stated date). On the ${cc.attempts} attempts in these tests, always saying yes is right ${pct(a.always_yes_accuracy, 1)} of the time.`,
         h("p", { class: "muted" }, "Treat this as a rough check: losses are under-reported, so no score here is the true rate."),
         h("h4", {}, "Did the verdicts work out?"),
         h("div", { class: "table-wrap" }, h("table", {},

@@ -1,36 +1,36 @@
 show,reports,show_id,how
-"Oh, Mary!",729,oh-mary,name
+"Oh, Mary!",731,oh-mary,name
 Just in Time,699,just-in-time,name
-Maybe Happy Ending,695,maybe-happy-ending,name
-Death Becomes Her,633,death-becomes-her,name
-The Outsiders,574,outsiders,name
-The Great Gatsby,429,great-gatsby,name
+Maybe Happy Ending,696,maybe-happy-ending,name
+Death Becomes Her,641,death-becomes-her,name
+The Outsiders,578,outsiders,name
+The Great Gatsby,436,great-gatsby,name
 Operation Mincemeat,421,operation-mincemeat,name
-Sunset Boulevard,388,sunset-boulevard,name
+Sunset Boulevard,389,sunset-boulevard,name
 Outsiders,353,outsiders,name
-Gypsy,327,gypsy,name
+Gypsy,332,gypsy,name
 John Proctor is the Villain,327,john-proctor-is-the-villain,name
-The Rocky Horror Show,304,rocky-horror-show,name
+The Rocky Horror Show,305,rocky-horror-show,name
 Chess,303,chess,name
 Buena Vista Social Club,264,buena-vista-social-club,name
-Oh Mary,248,oh-mary,name
+Oh Mary,249,oh-mary,name
 The Picture of Dorian Gray,215,picture-of-dorian-gray,name
 Death of a Salesman,213,death-of-a-salesman,name
 Mincemeat,208,operation-mincemeat,name
-Just In Time,193,just-in-time,name
+Just In Time,194,just-in-time,name
+Stereophonic,189,stereophonic,name
 Romeo + Juliet,186,romeo-and-juliet,name
 Schmigadoon,185,schmigadoon,name
-Stereophonic,183,stereophonic,name
 Stranger Things,175,stranger-things-the-first-shadow,name
-Chicago,173,chicago,name
+Chicago,172,chicago,name
 Every Brilliant Thing,166,every-brilliant-thing,name
 The Lost Boys,156,lost-boys,name
 Suffs,149,suffs,name
+Hadestown,149,hadestown,name
 Cats,138,cats-the-jellicle-ball,name
 Hell's Kitchen,136,hells-kitchen,name
-Titanique,127,titanique,name
 Lost Boys,127,lost-boys,name
-Hadestown,126,hadestown,name
+Titanique,127,titanique,name
 Giant,125,giant,name
 Dead Outlaw,113,dead-outlaw,name
 Purpose,108,purpose,name
@@ -38,7 +38,7 @@ Smash,103,smash,name
 Mamma Mia!,100,mamma-mia,name
 Schmigadoon!,97,schmigadoon,name
 Art,94,art,name
-The Notebook,84,notebook,name
+The Notebook,85,notebook,name
 Proof,83,proof,name
 Oh Mary!,83,oh-mary,name
 Boop!,82,boop,name
@@ -59,11 +59,12 @@ Paranormal Activity,43,paranormal-activity,name
 Six,42,six,name
 Sunset Blvd.,42,sunset-boulevard,name
 Sunset Blvd,41,sunset-boulevard,name
+Hamilton,39,hamilton,name
 Harry Potter and the Cursed Child,39,harry-potter-and-the-cursed-child,name
 Once Upon a Mattress,38,once-upon-a-mattress,name
-Boop! The Musical,37,boop,name
 Back to the Future,37,back-to-the-future,name
-Cabaret,35,cabaret,name
+Boop! The Musical,37,boop,name
+Cabaret,36,cabaret,name
 "Oh, Mary",34,oh-mary,name
 The Last Five Years,33,last-five-years,name
 Beetlejuice,32,beetlejuice,name
@@ -71,7 +72,6 @@ Liberation,31,liberation,name
 Just in Time!,30,just-in-time,name
 Romeo and Juliet,29,romeo-and-juliet,name
 Beaches,28,beaches,name
-Hamilton,28,hamilton,name
 Dog Day Afternoon,27,dog-day-afternoon,name
 Fear of 13,27,fear-of-13,name
 Just In Time!,27,just-in-time,name
@@ -84,7 +84,7 @@ Shakespeare in the Park,21,-,not_broadway
 The Phantom of the Opera,20,-,not_broadway
 The Roommate,20,roommate,name
 The Hills of California,18,hills-of-california,name
-Wicked,17,wicked,name
+Wicked,18,wicked,name
 Sexual Misconduct of the Middle Classes,16,-,not_broadway
 Two Strangers (Carry Me Home),16,two-strangers-carry-a-cake-across-new-york,name
 The Wiz,15,wiz,name
@@ -106,13 +106,13 @@ Merrily We Roll Along,11,merrily-we-roll-along,name
 Boop,11,boop,name
 English,11,english,name
 The 25th Annual Putnam County Spelling Bee,10,-,not_broadway
-Fallen Angels,10,fallen-angels,name
+Wanted,10,wanted,name
 Gatsby,10,great-gatsby,name
-Rocky Horror Show,10,rocky-horror-show,name
+Fallen Angels,10,fallen-angels,name
 Billy Crystal,10,860,name
-Job,9,job,name
-Wanted,9,wanted,name
+Rocky Horror Show,10,rocky-horror-show,name
 Yellow Face,9,yellow-face,name
+Job,9,job,name
 Two Strangers (Carry Me Back),9,two-strangers-carry-a-cake-across-new-york,name
 Heathers,8,-,not_broadway
 Moulin Rouge! The Musical,8,moulin-rouge,name
@@ -123,7 +123,7 @@ Call Me Izzy,7,,outside_run:call-me-izzy
 The Book of Mormon,7,book-of-mormon,name
 The Winter's Tale,7,,unmatched
 The Rocky Horror Picture Show,6,rocky-horror-show,name
-Happy Ending,6,,unmatched
+Happy Ending,6,maybe-happy-ending,name
 "Goodnight, Good Luck",6,good-night-and-good-luck,fuzzy
 Every Beautiful Thing,6,every-brilliant-thing,name
 Creditors,6,-,not_broadway
@@ -205,7 +205,7 @@ Angry Alan,2,,unmatched
 Gatz,2,,unmatched
 Gigi,2,-,not_broadway
 Two Strangers (Carry a Pocketful of Hope),2,two-strangers-carry-a-cake-across-new-york,name
-At Purpose,2,,unmatched
+At Purpose,2,purpose,name
 BOOP! THE MUSICAL,2,boop,name
 BVSC,2,buena-vista-social-club,name
 Back to the Future: The Musical,2,back-to-the-future,name
@@ -232,7 +232,7 @@ The Dan Savage Spelling Bee,2,,unmatched
 Mary,2,oh-mary,name+date
 Mary Jane,2,,name
 Little Shop of Horrors,2,,unmatched
-Billy Crystal: 700 Sundays,2,,unmatched
+Billy Crystal: 700 Sundays,2,860,name
 Billy Crystal 860,2,860,name
 Sterophonic,2,stereophonic,fuzzy
 Jesus Christ Superstar,2,-,not_broadway
@@ -247,12 +247,12 @@ Mother Russia,2,,unmatched
 Shuffle Along,2,,unmatched
 Come and Gone,2,joe-turners-come-and-gone,name
 Dear Evan Hansen,2,-,not_broadway
-Dorian,2,,unmatched
+Dorian,2,picture-of-dorian-gray,name
 Degenerates,2,,unmatched
 Oklahoma!,2,-,not_broadway
 SUFFS,2,suffs,name
-Salesman,2,,unmatched
-Real Women,2,,unmatched
+Salesman,2,death-of-a-salesman,name
+Real Women,2,real-women-have-curves,name
 SIX,2,six,name
 every brilliant thing,2,every-brilliant-thing,name
 Prima Facie,2,,unmatched
@@ -273,7 +273,7 @@ Vanya,1,,unmatched
 Very Popular Idea That Was Vetoed,1,,unmatched
 illinoise,1,illinoise,name
 "oh, mary!",1,oh-mary,name
-tl5y,1,,unmatched
+tl5y,1,last-five-years,name
 Operation Minecraft,1,operation-mincemeat,name
 Out Town,1,,unmatched
 Parade,1,,unmatched
@@ -285,7 +285,7 @@ Pirate Queen,1,,unmatched
 Ponyboy,1,,unmatched
 Prince F****t,1,,unmatched
 Brownsville,1,,unmatched
-Buena Vista,1,,unmatched
+Buena Vista,1,buena-vista-social-club,name
 Bueno Vista Social Club,1,buena-vista-social-club,fuzzy
 CHESS,1,chess,name
 Cat,1,,unmatched
@@ -299,7 +299,7 @@ Death Of A Salesman,1,death-of-a-salesman,name
 Dilaria,1,,unmatched
 Dorian Grey,1,picture-of-dorian-gray,name
 Once Upon A Mattress,1,once-upon-a-mattress,name
-Operation Mice,1,,unmatched
+Operation Mice,1,operation-mincemeat,name
 Operation Mincemeat 2,1,operation-mincemeat,fuzzy
 Redwoods,1,redwood,fuzzy
 Ring Words Hot Cuts,1,,unmatched
@@ -385,7 +385,7 @@ The Lost Boy,1,lost-boys,fuzzy
 The Pirates! A Musical Adventure,1,pirates-the-penzance,name
 The Real Women Have Curves,1,,outside_run:real-women-have-curves
 The Rockettes Christmas Spectacular,1,,unmatched
-The Stranger,1,,unmatched
+The Stranger,1,stranger-things-the-first-shadow,name
 The Two Strangers,1,two-strangers-carry-a-cake-across-new-york,name
 The Welkin,1,,unmatched
 Every Brilliant Things,1,every-brilliant-thing,fuzzy

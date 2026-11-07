@@ -32,7 +32,7 @@ BOT_NON_DAILY = re.compile(r"availability list", re.IGNORECASE)  # bot posts tha
 MAX_TITLE_DATE_DRIFT = 3  # days between title date and post date before we distrust the title
 # Show-fan subreddits added 2026-11-06: they hold reports for shows the daily threads rarely cover (Hadestown, Six)
 SUBREDDITS = ["Broadway", "musicals", "AskNYC", "nyc", "Hadestown", "wicked", "SixTheMusical", "andjuliet",
-              "hamiltonmusical", "TheOutsidersMusical", "BroadwayTickets", "theatre"]
+              "hamiltonmusical", "TheOutsidersMusical", "BroadwayTickets"]
 KEYWORDS = ["rush", "lottery", "standing room", "SRO", "digital rush", "TodayTix", "box office", "line"]
 # In these general NYC subs most keyword hits aren't theater ("rush hour", "the 7 line"); only
 # fetch comments when the post looks theater-related. Posts are kept either way.

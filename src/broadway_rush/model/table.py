@@ -297,8 +297,19 @@ def tickets_bounds(cut: pd.DataFrame, per_person: float) -> pd.DataFrame:
     return out
 
 
+def wider_attempts(funnel: dict):
+    """Every in-person attempt with an arrival time and a known result, including reports with no usable date."""
+    r = pd.read_csv(PROCESSED / "reports.csv", low_memory=False)
+    a = r[(r.rush_type == "general") & r.show_id.notna() & (r.show_id != "-") & (r.kind == "attempt")
+          & r.arrival_time.notna() & r.outcome.isin(FAILED | {"got_rush"})]
+    funnel["attempts_wider_count"] = len(a)
+    funnel["attempts_wider_share_got"] = round(float((a.outcome == "got_rush").mean()), 4)
+
+
 def build():
-    funnel: dict = {"comments_scanned": 139584}
+    scanned = pd.read_csv(RAW / "comments.csv", usecols=["comment_id"], dtype=str).comment_id.nunique()
+    funnel: dict = {"comments_scanned": int(scanned)}
+    wider_attempts(funnel)
     shows = pd.read_csv(PROCESSED / "shows.csv")
     policies = load_policies(shows)
     opening = opening_lookup(policies)

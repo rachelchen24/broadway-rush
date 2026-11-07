@@ -150,7 +150,7 @@ All of this goes in the predictions file, so the site still reads only that file
   - **How rush lines behave:** how fast the line grows, a show-by-day grid, and how much rush saves.
   - **Where the data comes from:** the cleaning funnel and reports per show.
   - **What the model looks at:** what moves the line most, and how it's built.
-  - **How good it is:** the scoreboard, predicted vs. real line, chance vs. what happened, the 89% problem and verdicts, error and range by month, and real trips.
+  - **How good it is:** the scoreboard, predicted vs. real line, chance vs. what happened, the always-yes problem and verdicts, error and range by month, and real trips.
   - **Model vs. ground truth (added 2026-11-06, my request):** every test result next to what was reported: 1,507 line reports, 33 stated ticket counts and 138 attempts, each with a switch between the model and the lookup table, plus a table to look up any result by show or month, biggest miss first. Ground truth here means Reddit reports, so it isn't verified. Numbers only, with no usernames or comment text.
 - **Show pages get the plain versions (built 2026-11-06):** how the line builds that morning, which days are busiest for that show, and what you'd save. Any day mode shows only the savings, because the other two come too close to the weekday numbers §9 question 23 holds back.
 - **Every number comes from the predictions file.** The chart numbers are counted from the model tables and the finished test by `src/broadway_rush/model/site_charts.py`.
@@ -190,7 +190,8 @@ A dataset of **every show playing and every performance** for the next 7 days, p
 - **Ongoing:** re-scrape **weekly** (changed 2026-11-02), then extract the new comments and retrain (§6.1).
 
 ### 3.1b Other testimony (June 2024+)
-- **BroadwayWorld forums:** long-running per-show rush and lottery threads. Public HTML, so scrape gently.
+- **BroadwayWorld forums (built 2026-11-06):** threads found through the public sitemap, because the search page is disallowed. 47 rush threads and 232 posts since June 2024 (`scrapers/bww_forum.py`). Few posts, but public and allowed.
+- **Show-fan subreddits (added 2026-11-06):** r/Hadestown, r/wicked, r/SixTheMusical, r/andjuliet, r/hamiltonmusical, r/TheOutsidersMusical and r/BroadwayTickets, through the same archive. r/theatre stalled and was dropped. Talkin' Broadway's All That Chat is skipped: it's behind bot protection.
 - **TikTok / Instagram / X:** lots of "I got rush" content, but most ToS forbid scraping. Use official APIs only, or skip.
 
 ### 3.2 Primary seller availability ⚠️ no history exists
@@ -525,6 +526,8 @@ Report a table that makes it easy to show how the model works and how well it do
 | *Ticket-data ablation:* with vs. without TKTS + Ticketmaster features | | | | | | | decides whether ticket data and the Refresh button stay (§6.2) |
 
 Also include: a **feature-importance / ablation table** (what happens to accuracy when you remove prices, NYC context, cast changes, etc.), dataset size (reports, shows, date range), and a one-paragraph plain-English "how it works."
+
+**After data cleaning (2026-11-06, test tag `more1`; the site now uses this).** The table below is still the first test (`n1.0`). Scored on identical test reports, so cleaned answers can't flatter it: line error 4.74 to 4.69 people (1,407 reports), stated-ticket error 11.72 to 11.50 (29 counts), Brier 0.090 to 0.090 and ranking 0.598 to 0.578 (127 attempts). On each test's own reports, which now number 1,711 line reports, 42 stated counts and 182 attempts with 20 misses: line error 4.71 vs. the lookup's 5.96, 80% line range held 85.5%, arrival-time error 96 vs. 100 minutes (the model now wins this), ticket error 15.8 vs. 8.5, right at 50% 87.9% vs. always yes 89.0%, Brier 0.105 vs. 0.093. Cleaning made the data more correct and larger, but not the model much more accurate. Wider always-yes count: 87.1% of 1,493 attempts (~~89% of 1,133~~, before cleaning).
 
 First two rows and "always say yes": real results, 9 test months (33 stated counts, 138 attempts, 1,507 line points), measured 2026-11-06. Verdict accuracy here is yes/no at 50%. The other rows aren't built.
 

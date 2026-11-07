@@ -8,7 +8,7 @@ The daily job saves to the private repo broadway-rush-data, cloned next to this 
 data/raw here, so nothing new reaches them until this runs. It sends no requests to any ticket site, and never
 overwrites or deletes a file already here.
 
-Updating predictions refits the combo with the same settings and the same reports, which takes 2 to 4 minutes. Only
+Updating predictions refits the combo with the same settings and the same reports, which takes about 8 minutes on the cleaned data. Only
 the Ticketmaster schedule changes what the site shows: the model doesn't use TKTS yet, so those files are just kept.
 """
 
@@ -29,7 +29,7 @@ DATA_REPO = ROOT.parent / "broadway-rush-data"
 PREDICTIONS = ROOT / "web" / "data" / "predictions.json"
 SOURCES = [(tkts, "*.html*", tkts.TKTS_CSV), (ticketmaster, "*.json*", ticketmaster.EVENTS_CSV)]
 ET = ZoneInfo("America/New_York")
-PER_PERSON, BACKTEST = 1.0, "n1.0"  # the settings behind the site's current numbers
+PER_PERSON, BACKTEST = 1.0, "more1"  # the settings behind the site's current numbers
 LATE_HOURS = 30  # the job saves a Ticketmaster snapshot every morning, so older than this means runs were missed
 
 
@@ -101,7 +101,7 @@ def main():
         from broadway_rush.model.predict import build
     except ImportError:
         sys.exit('Predictions need the model packages: .venv\\Scripts\\python -m pip install -e ".[model]"')
-    print("Updating predictions (2 to 4 minutes)...", flush=True)
+    print("Updating predictions (about 8 minutes)...", flush=True)
     build(PER_PERSON, BACKTEST)
 
 
