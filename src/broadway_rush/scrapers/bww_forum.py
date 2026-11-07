@@ -37,7 +37,9 @@ SINCE = "2024-06-01"
 DELAY = 5.0
 ET = ZoneInfo("America/New_York")
 NAME_RE = re.compile(r"(?:^|[-_])(rush|rushing|rushed|rushes|standing-room|sro|box-office|in-person-line|line)(?:$|[-_])", re.I)
-SKIP_RE = re.compile(r"august-rush|gold-rush|rush-hour|rush-limbaugh|geoffrey-rush|sugar-rush|the-line(?:$|-)", re.I)
+SKIP_RE = re.compile(r"august-rush|gold-rush|rush-hour|rush-limbaugh|geoffrey-rush|sugar-rush|the-line(?:$|-)|chorus-line|"
+                     r"security-line|wild-party|buyer-got|lottery-winner|line-up|lineup|bottom-line|tag-line|story-line|"
+                     r"caryl-churchill|top-line", re.I)
 MAX_PAGES = 12
 COMMENT_COLS = ["comment_id", "post_id", "parent_id", "author", "created_utc", "created_et", "score", "body", "subreddit",
                 "thread_title", "thread_date", "source"]
@@ -123,6 +125,8 @@ def parse():
     comments, posts = [], []
     for t in targets:
         slug = t["url"].rsplit("/", 1)[1]
+        if SKIP_RE.search(slug):
+            continue
         post_id = "bww_" + slug[:80]
         title, n = "", 0
         for page in range(1, MAX_PAGES + 1):
