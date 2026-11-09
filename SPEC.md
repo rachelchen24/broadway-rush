@@ -1,6 +1,6 @@
 # Broadway Rush — Spec (draft)
 
-> Status (2026-11-05): build steps 1–4 are built (Reddit scrape → labeled extraction pilot → full extraction into `data/processed/reports.csv` → grosses, rush policies + history, show catalog). Step 6 was moved up: the TKTS and Ticketmaster snapshot scrapers are built, and the daily GitHub Actions job works (manual run succeeded 2026-11-05; ~~first scheduled run still to confirm~~ scheduled runs confirmed 2026-11-07). Calendar, weather and NYC permitted events were added 2026-11-05. **Updated 2026-11-06: a first model (step 5) and a first website (step 7) are built and run locally, not deployed.** The simple combo beats the lookup table on line length but not on ticket counts or the chance of a ticket (§5.2a, §5.3). The report form and Refresh + PIN are screens only, not connected. Level-ups, cast news and comparison rows aren't built. What was built, and how, is in `process.md`. ~~Struck~~ text was replaced; anything not marked built is still a plan.
+> Status (2026-11-05): build steps 1–4 are built (Reddit scrape → labeled extraction pilot → full extraction into `data/processed/reports.csv` → grosses, rush policies + history, show catalog). Step 6 was moved up: the TKTS and Ticketmaster snapshot scrapers are built, and the daily GitHub Actions job works (manual run succeeded 2026-11-05; ~~first scheduled run still to confirm~~ scheduled runs confirmed 2026-11-07). Calendar, weather and NYC permitted events were added 2026-11-05. **Updated 2026-11-06: a first model (step 5) and a first website (step 7) are built and run locally, not deployed.** The simple combo beats the lookup table on line length but not on ticket counts or the chance of a ticket (§5.2a, §5.3). The report form and Refresh + PIN are screens only, not connected. **Added 2026-11-08:** the This week view (§2.2b), local only. Level-ups, cast news and comparison rows aren't built. What was built, and how, is in `process.md`. ~~Struck~~ text was replaced; anything not marked built is still a plan.
 > Standalone project: nothing is reused from previous projects.
 
 ## 1. Concept
@@ -50,7 +50,7 @@ Also to do:
 ## 2. User flow & UI
 
 ### 2.1 Flow
-1. **Pick a day** (any of the next 7), or **Any day** when planning further ahead (§2.2a). No time yet.
+1. **Pick a day** (any of the next 7), **This week** to find the best day (§2.2b), or **Any day** when planning further ahead (§2.2a). No time yet.
 2. See **every show playing that day as tiles**, ranked **top to bottom by likelihood of getting rush**.
 3. *(Optional)* check the shows you're interested in to filter or pin them. Predictions are precomputed by the weekly job (§6.1), so this is instant and there's **no need for a 5-show limit**. Refresh (§6.3) re-checks ticket data for all shows at once in seconds, so it doesn't need a limit either.
    *(Optional)* filter and re-sort the tiles (§2.2a).
@@ -79,7 +79,7 @@ Also to do:
 - A show Playbill doesn't list, but with 3+ in-person reports in 30 days, gets `In person (reported)`.
 - Other deals (The Friday Forty, $30 Under 30, Ponyboy Seat, Military Tickets) stay in the details view, with no filter.
 
-**Search (added 2026-11-06; not built).** A search box above the tiles finds shows as you type, by show name, nickname ("Mincemeat", from `registry/show_aliases.csv`) or theater. It works together with the filters and in Any day mode. If a matching show isn't playing on the picked date, the page says so instead of showing nothing, and offers Any day.
+**Search (added 2026-11-06; not built).** A search box above the tiles finds shows as you type, by show name, nickname ("Mincemeat", from `registry/show_aliases.csv`) or theater. It works together with the filters, in Any day mode and in the This week view (§2.2b). If a matching show isn't playing on the picked date, the page says so instead of showing nothing, and offers Any day.
 
 **Filters.** Within a filter, any selected option counts. Across filters, a show has to match all of them. Everything runs in the browser, so it's instant. More filters can be added the same way.
 | Filter | Options | Data | Status |
@@ -96,6 +96,7 @@ While a filter is on, shows with an unknown value are hidden, and the page says 
 
 **Days showing and the date picker do different jobs.**
 - **Date picker:** a specific date in the next 7 days, with predictions. Days showing is greyed out here, because the date already decides.
+- **This week + Days showing:** means "days I can go". Only those days are compared (§2.2b).
 - **Any day + Days showing:** for planning weeks ahead ("what plays on Tuesdays?"). Tiles show facts only: rush types, rush price, typical ticket price, runtime, stars, play or musical, how full. They show no chance or arrival time, because predictions stop at 7 days (§1). In their place: "Check back within 7 days of your date."
 - **Schedules change:** a show could close before someone's date, and closing news isn't built yet (§3.12), so Any day mode says to confirm before going.
 
@@ -115,6 +116,30 @@ While a filter is on, shows with an unknown value are hidden, and the page says 
 **"__% full" becomes "__% seats sold".** The tile says "92% seats sold last week", from the latest grosses week, rounded to a whole number. It names the week once the data is more than 2 weeks old ("92% seats sold, week ending Nov 1"). Standing room can push the figure just past 100%, so it's capped at 100%.
 
 All of this goes in the predictions file, so the site still reads only that file (§5.2a).
+
+### 2.2b This week view (added and built 2026-11-08, my request; local only, not deployed)
+**For someone who wants to rush a show this week but hasn't picked a day:** which day gives me the best shot? Not everyone decides the night before.
+
+- **Where:** a **This week** button in the day picker, next to the 7 dates and Any day. It covers the same 7 days as the picker (today and the next 6), because predictions stop at 7 days (§1). There's no "next week": a later week is Any day mode, with facts only (§9, question 23).
+- **Days are compared by arrival time (decided 2026-11-08):** the latest time you can get there and still probably get a ticket (§5.2a). A later time means an easier day. The chance shown is the same number as in the day view, so one show on one day never shows two different chances.
+- **Sunday mark:** box offices open at noon on Sundays and at 10 am on other days, so Sunday times run about 2 hours later. Every Sunday time gets an asterisk, with a note: "* Box office opens at noon on Sundays (10 am other days)." Sunday tiles in the day view get the same mark. If a show ever opens at another unusual time, that day gets the same mark with its own time.
+- **Day strip at the top:** the 7 days in date order. Each shows how many of the shows that pass the filters have a prediction that day, and how many of those are GO ("14 of 15 GO"). The day with the most GO shows is marked (ties are all marked). Tapping a day opens that day's normal view.
+- **One tile per show, not one per show-day.** A list of every show-day would put the same show at the top several times, because the show matters more than the day. Each tile shows:
+  - the show's **best day**: its latest arrival time and that day's chance ("Best day: Tue Nov 10 · get there by 9:00 · 78%"). Days with the same time count as tied ("Best days: Tue, Thu or Fri", in date order, with a chance range if they differ). If every day is tied: "Every day about the same: Any day it plays" ("Any of your days" when Days showing is on) (placeholder, §9 question 28).
+  - a row of all 7 days with each one's arrival time, colored like the worth-it bar, and "Dark" on days it doesn't play.
+- **Sorting:** Latest arrival time by default, using each show's best day. Tap it again for earliest first (§2.2a). The other sorts work as in the day view. Best chance uses each show's best day.
+- **Filters and search work as usual.** Searching for one show turns the page into "which day for this show?". **Days showing** means "days I can go" here: only those days are compared, in the strip and on the tiles. That covers fitting rush around a schedule.
+- **Limited-data and lottery-only shows** go below, as in the day view, with the days they play and no chance.
+- **Today** counts until that show's box office opens, then greys out (by the viewer's own clock, like the rest of the site).
+- **Show pages** opened from this view have a back link to it.
+- **Matinee vs evening:** one chance per show-day, as everywhere else (§5.2).
+- **No model change:** the predictions file already holds each show-day's arrival time, chance and box office opening time.
+
+**Why a mark, and what it will show (checked 2026-11-08 on the Nov 8–14 predictions, the 16 shows with a full prediction).**
+- Every Sunday opening in the file is noon, and every other day's is 10 am.
+- By latest arrival time, Sunday is the best day for 14 of 16 shows. Operation Mincemeat ties Sunday, Tuesday and Thursday, and Wanted doesn't play Sundays. So the mark will sit on most best days, and the note is what explains it.
+- Also tried: comparing every day at the same head start, 1 hour before that day's opening. That flips the answer: Sunday is the best day for none of the 16, and Saturday or Sunday is the hardest day for all of them (Oh, Mary! 68% on Sunday vs. 78% on Tuesday). I kept arrival time, because it's the number people act on, and the mark tells them why Sunday's times are later.
+- **Rubric:** Results asks whether the work supports meaningful decisions (§1.1). This view answers the question people actually plan around.
 
 ### 2.3 Details view
 > We're **__%** confident there will be **__ ± __** rush tickets at **$__**.
@@ -651,11 +676,12 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 - **Stack so far:** Python 3.14 venv, package in `src/broadway_rush/`, data in `data/` (`raw/` and `labels/` git-ignored, though `hand_labels.xlsx` and `sample_manifest.csv` were committed before that rule), source registry in `registry/sources.csv`. **Website deploys on Vercel** (2026-11-02). Rachel handles all git commits.
 - **Repo (2026-11-02):** private on GitHub for now; probably **public when the project is done**, so interviewers can see it. Before then, remove Reddit comment text and usernames from what's committed (§7, §9). Private notes stay git-ignored.
 - **Tile search, filters and sorting (2026-11-06):** a search box finds shows by name, nickname or theater. Tiles show rush types. Filters: rush type, days showing, runtime, high-profile stars, play or musical. Sorts: best chance, latest arrival, rush price, typical ticket price, runtime. Days showing and runtime are looked up online. The site says "__% seats sold" instead of "__% full" (§2.2a). Built 2026-11-06, except the stars filter, which needs cast news.
+- **This week view (2026-11-08, my request):** a This week button shows which of the next 7 days is best: a day strip on top, then one tile per show with its best day and every day's arrival time. Days are compared by arrival time, latest first (tap again for earliest). Box offices open at noon on Sundays and 10 am on other days, so Sunday times get an asterisk and a note, in both views (§2.2b). Built 2026-11-08, ahead of the Nov 11–16 website slot, at my go; local only.
 - **Model (2026-11-05):** the combo (trees for the line, Bayesian for the cutoff) for both the first and final models, because it's more fun to talk about. The first version stays simple, to see the whole site working; the final version is a leveled-up combo (§5.2, §5.2a, §5.2c). Not started.
 - **Deadline and scope (2026-11-05):** data project competition entry. ~~Due 2026-11-17.~~ **Complete by 2026-11-23, turn in 2026-11-24, present 2026-12-07** (corrected by me the same day). Between turn-in and the presentation, only small tweaks and improvements, **no model changes**. Everything stays in: cast + closing news, NYC permitted events, Refresh + PIN, report form + email approval, weekly automatic job, digital rush predictions. Cutting these was proposed and rejected. Core first (data, model, site), so a delay only moves an add-on. Schedule (stretched to the new dates by Claude, not yet reviewed by me):
   - **Nov 5–7:** data: catch-up, calendar, weather, NYC permitted events, cast + closing news.
   - **Nov 8–10:** first model: the simple combo and the lookup table to beat, with rolling tests.
-  - **Nov 11–16:** website on that model: day picker, tiles, details, accuracy page; filters, sorting and plain wording (§2.2a); then report form + email approval, Refresh + PIN.
+  - **Nov 11–16:** website on that model: day picker, tiles, details, accuracy page; filters, sorting and plain wording (§2.2a); This week view (§2.2b); then report form + email approval, Refresh + PIN.
   - **Nov 17–19:** final model: level up the combo, refit, digital rush, comparison rows, results and with/without tables.
   - **Nov 20:** weekly automatic job and a full end-to-end test.
   - **Nov 21–22:** repo cleanup, README, competition write-up.
@@ -693,7 +719,7 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 13. **Competition rules:** ~~what are judges scoring?~~ Rubric received 2026-11-05 (§1.1). Still unknown: what has to be turned in on Nov 24 (public repo, live site, write-up?), whether this is solo or a team (the rubric asks whether all team members spoke equally), and whether the presentation is live or recorded (the rubric scores audio quality).
 14. **Refresh by the deadline:** there will only be about 18 days of daily snapshots by Nov 23 (about 32 by the Dec 7 presentation, after the model is frozen), so the with/without test in §6.2 can't settle whether ticket data helps. Proposal: keep Refresh for the competition. It shows today's TKTS board and sale status, and changes a prediction only if the model has evidence for it, using the 118 archived TKTS days. The §6.2 rule about dropping Refresh waits until there's enough data.
 15. **Thin shows, the spec disagrees with itself:** §2.7 and §5.1 say they get a low-confidence prediction; §8 says in-person shows with little data get no number ("limited data, probably easy"). Decide after the backtest shows whether thin-show ranges are honest.
-16. **Verdict and ranking:** what fixed comparison should they use (§5)? For example, the chance if I arrive at 9:00. **The first model uses that as a placeholder.** On Sundays 9:00 is three hours before a noon opening, so Sundays look better.
+16. **Verdict and ranking:** what fixed comparison should they use (§5)? For example, the chance if I arrive at 9:00. **The first model uses that as a placeholder.** On Sundays 9:00 is three hours before a noon opening, so Sundays look better. **This week view (decided 2026-11-08, §2.2b):** days are compared by arrival time, and Sunday times are marked because box offices open at noon. The same mark goes on Sunday tiles here. The day view's 9:00 comparison is unchanged and still a placeholder.
 17. **Comparison rows:** keep the NB GLM, Bayesian hierarchical and LightGBM rows in the results table as lighter fits (the default, about 1 extra day), or show only the lookup table and the combo?
 18. **Cast + closing news:** waiting on my go-ahead (§3.12). The model can start without it, because cast features can be added later.
 19. **After the Nov 24 freeze:** does weekly retraining on new data continue? Assumed yes (§8): it's the same model on new data, and it lets the accuracy page build up real results for the presentation.
@@ -709,4 +735,5 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
     - **A rough label:** "usually easy" or "usually busy", with no percentage, from things that don't need rush reports: seats sold, typical ticket price, days on TKTS, how much Reddit talks about the show, and cast news once collected. Test: hide each of the 16 well-reported shows in turn and check whether the label predicts its real lines. If it doesn't beat treating every show the same, keep the neutral wording.
     - **Downstate** may not need any of this: it's at 1.5 reports a week, and 2 gives it a full prediction.
 27. **Just in Time's days:** §2.2a's example says it doesn't play Monday or Wednesday. Playbill's schedule (Wednesday in all 8 weeks) and Ticketmaster both show it playing Wednesdays, dark Monday only. The site follows the data. Was the example about something else?
+28. **This week view, tie rule (§2.2b):** days with the same arrival time count as tied (placeholder). Times are on a 15-minute grid. On Nov 8–14 this gives 14 of 16 shows a single best day (Sunday); Operation Mincemeat ties Sunday, Tuesday and Thursday, and Wanted ties all 5 days it plays. A wider window (say, within 15 minutes) would name more ties.
 - ~~Confirm Ticketmaster Discovery API free-tier limits.~~ Done 2026-10-22: 5,000 calls/day, 5 per second.

@@ -1312,3 +1312,25 @@ The daily job passed its test on Nov 7: with no button press (Rachel confirmed),
 Ran `broadway_rush.sync`: 5 new snapshots copied in, predictions refit in 7 minutes (R-hat 1.012, ESS 497, 0 divergences, phi 1.81), site now Nov 8–14. Nov 9 has 4 performances because it's a Monday. Click-through 263 of 263, 0 page errors.
 
 Rachel put model upgrades on hold to wait for more data. Note for when they restart: the daily job collects ticket snapshots, which the model doesn't use yet; new rush reports only come from refreshing Reddit, which is by hand until the weekly job. Upgrades were scheduled for Nov 17–19 anyway.
+
+## 2026-11-08 ET — Spec: This week view (no code)
+
+Rachel asked for a way to pick a week and see which day is best, because people often plan a rush for "sometime this week", not for tomorrow. Added as SPEC §2.2b: a This week button covering the same 7 days as the date picker, a day strip on top, and one tile per show with its best day and every day's arrival time. Days showing means "days I can go" in this view. It's planned for the Nov 11–16 website slot. Nothing is built.
+
+Checked the comparison on the Nov 8–14 predictions file before writing it down (16 shows with a full prediction). At the day view's 9:00, Sunday is the best day for 14 of 16 shows, because Sunday box offices open at noon and 9:00 is a 3-hour head start. At 1 hour before each day's opening, Sunday is best for none of them, and Saturday or Sunday is the hardest day for all 16. I first wrote the week view to compare at 1 hour before opening. Rachel decided instead to keep arrival time ("get there by"), sorted latest or earliest, and to mark Sunday times with an asterisk and a note that box offices open at noon (10 am on other days), in both views. By arrival time, Sunday is the best day for 14 of 16 shows, so the mark will show on most best days. Days with the same arrival time count as tied (placeholder, Q28).
+
+It's a site-only change: the predictions file already holds each show-day's arrival time, chance and opening time. No API money spent.
+
+## 2026-11-08 ET — Built the This week view (site only)
+
+At Rachel's go, built SPEC §2.2b ahead of the Nov 11–16 website slot. All in `web/app.js` and `web/styles.css`; no model or predictions change. File versions bumped to `20261108c`.
+
+- **This week** button in the day picker (route `#/week`). A strip of the 7 days shows how many shows with a prediction are GO each day, and marks the day with the most.
+- One tile per show: its best day (latest "get there by" time), that day's chance and verdict, and a row of all 7 days' times colored by verdict. Days with the same time are tied and listed in date order. Each day in the row links to that show page, which links back to the week.
+- Sorted by latest arrival by default; tap again for earliest. Days showing works here as "days I can go". Shows without a number sit below, with the days they play this week.
+- Sunday mark: any time on a day whose box office doesn't open at 10 AM gets a gold asterisk, plus a note under the picker: "Box office opens at noon on Sundays (10:00 AM other days), so Sunday times run about 2 hours later." Also on Sunday tiles in the normal day view.
+- Today greys out once a show's box office has opened. It was after noon on Sunday when I tested, so today is greyed out for every show right now, and Thursday and Friday tie for the most GO shows (15 each).
+
+Tested in the in-app browser at phone (375 wide) and desktop (1440) widths: no sideways scrolling, no text spilling out of a box, no console errors. Also checked filters, both sort directions, the back link, and that the normal day view, Any day, show pages and Nerd stats still load. With a simulated 8 AM clock, Sunday was the best day for most shows with "11:45 AM*", as expected. One fix along the way: "TODAY*" didn't fit the strip on a phone, so the strip now shows "SUN" with "Today" in place of the date.
+
+Added `.claude/launch.json` (config `site`, port 8017) so the in-app browser can serve `web/`; port 8000 was already taken by another process. No API money spent.

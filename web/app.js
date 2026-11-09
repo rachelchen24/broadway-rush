@@ -4,6 +4,7 @@
 const state = {
   data: null, picksOnly: false, paint: null, filtersOpen: null,
   sort: { key: "chance", reversed: false },
+  weekSort: { key: "arrival", reversed: false }, // This week view: latest arrival first (SPEC 2.2b)
   filters: { rush: new Set(), type: new Set(), days: new Set(), runtime: new Set() },
 };
 const app = document.getElementById("app");
@@ -85,6 +86,27 @@ const SORTS = [
   { key: "runtime", label: "Runtime", needsFacts: true, value: (e) => e.runtime_minutes, bigFirst: false },
 ];
 
+/* Box offices open at 10 AM most days and at noon on Sundays (SPEC 2.2b). A time on a day that opens at any other
+   hour gets an asterisk, because it runs later (or earlier) than the other days' times. */
+const NORMAL_OPEN = "10:00";
+const dayIndex = (d) => (parseDay(d).getDay() + 6) % 7; // Monday 0 ... Sunday 6, matching DAY_KEYS
+const opensUnusual = (e) => !!e.open_time && e.open_time !== NORMAL_OPEN;
+function openMark(e) {
+  return opensUnusual(e) ? h("span", { class: "open-mark", title: `Box office opens at ${time12(e.open_time)} this day` }, "*") : null;
+}
+function markedTime(e, t) {
+  return [time12(t), openMark(e)];
+}
+function openNote(pairs) {
+  const marked = pairs.filter(([, e]) => opensUnusual(e));
+  if (!marked.length) return null;
+  const sundayNoon = marked.filter(([d, e]) => dayIndex(d) === 6 && e.open_time === "12:00").length;
+  const parts = [];
+  if (sundayNoon) parts.push("Box office opens at noon on Sundays (10:00 AM other days), so Sunday times run about 2 hours later.");
+  if (sundayNoon < marked.length) parts.push(`${sundayNoon ? "Other marked days" : "Marked days"} open at a different time: see the show page.`);
+  return h("p", { class: "open-note" }, h("span", { class: "open-mark" }, "*"), " ", parts.join(" "));
+}
+
 function verdictChip(v) {
   return h("span", { class: `verdict verdict-${v.split(" ")[0]}` }, v);
 }
@@ -162,13 +184,15 @@ function otherOffers(e) {
   if (p.other && p.other.length) return "No in-person rush. Other deals in the details.";
   return "No in-person rush, lottery or online rush listed.";
 }
-function tile(day, e, anyMode) {
-  const href = `#/show/${day}/${encodeURIComponent(e.show_id)}`;
-  const head = h("div", { class: "tile-top" },
+function tileHead(e, href) {
+  return h("div", { class: "tile-top" },
     h("div", { class: "tile-name" },
       h("a", { class: "tile-link", href }, e.name),
       h("span", { class: "theater" }, e.theater)),
     priceBlock(e));
+}
+function tile(day, e, anyMode, from = "") {
+  const head = tileHead(e, `#/show/${day}/${encodeURIComponent(e.show_id)}${from}`);
   if (anyMode) {
     return h("article", { class: "tile" }, head, rushLabels(e),
       h("div", { class: "seats" }, seatsLine(e)), factsLine(e, true),
@@ -179,7 +203,7 @@ function tile(day, e, anyMode) {
     return h("article", { class: "tile" }, head, rushLabels(e), worthBar(e),
       h("div", { class: "stats" },
         h("span", { class: "chance" }, pct(e.chance_9am), " ", h("small", {}, "chance at 9:00 AM")),
-        h("span", { class: "arrival" }, `Get there by ${time12(e.arrival)}`)),
+        h("span", { class: "arrival" }, "Get there by ", markedTime(e, e.arrival))),
       h("div", { class: "seats" }, seatsLine(e)), factsLine(e, false),
       badges(e), pickBox(e));
   }
@@ -194,6 +218,134 @@ function tile(day, e, anyMode) {
     h("div", { class: "simple-line" }, otherOffers(e)),
     h("div", { class: "seats" }, seatsLine(e)), factsLine(e, false),
     badges(e), pickBox(e));
+}
+
+/* ---------- This week view (SPEC 2.2b): which of the next 7 days is best, per show ---------- */
+const shortTime = (t) => time12(t).replace(/ [AP]M$/, "");
+function nowMinutes() {
+  const n = new Date();
+  return n.getHours() * 60 + n.getMinutes();
+}
+// Today counts until that show's box office opens, then greys out.
+const isPastToday = (date, e) => date === localToday() && nowMinutes() >= minutesOf(e.open_time || NORMAL_OPEN);
+const hasNumber = (e) => e.group === 1 && !!e.arrival && e.chance_9am !== null && e.chance_9am !== undefined;
+function joinOr(words) {
+  if (words.length <= 1) return words.join("");
+  return `${words.slice(0, -1).join(", ")} or ${words[words.length - 1]}`;
+}
+// One item per show, built from every day it plays in the 7 days. The show's facts come from its first day in its best group.
+function weekShows(dates) {
+  const byShow = new Map();
+  for (const date of dates) {
+    for (const e of state.data.days[date] || []) {
+      if (!byShow.has(e.show_id)) byShow.set(e.show_id, []);
+      byShow.get(e.show_id).push({ date, e });
+    }
+  }
+  return [...byShow.values()].map((weekDays) => {
+    const group = Math.min(...weekDays.map((x) => x.e.group));
+    const first = weekDays.find((x) => x.e.group === group);
+    return { ...first.e, group, firstDate: first.date, weekDays, best: null };
+  });
+}
+// Best day = the latest arrival time among the days that count. Days with the same time are tied (placeholder, SPEC 9 Q28).
+function weekBest(item, allowed) {
+  const usable = item.weekDays.filter(({ date, e }) => allowed(date) && hasNumber(e) && !isPastToday(date, e));
+  if (!usable.length) return null;
+  const minutes = Math.max(...usable.map((x) => minutesOf(x.e.arrival)));
+  const top = usable.filter((x) => minutesOf(x.e.arrival) === minutes);
+  top.sort((a, b) => b.e.chance_9am - a.e.chance_9am || a.date.localeCompare(b.date));
+  const chances = top.map((x) => x.e.chance_9am);
+  return {
+    top, minutes, date: top[0].date, entry: top[0].e,
+    chance: Math.max(...chances), chanceLo: Math.min(...chances),
+    every: usable.length > 1 && top.length === usable.length,
+  };
+}
+const weekDayName = (d) => (d === localToday() ? "Today" : DAY_SHORT[dayIndex(d)]);
+function weekRow(item, dates, allowed) {
+  const bestDates = new Set((item.best ? item.best.top : []).map((x) => x.date));
+  const cell = (d, cls, label, value, tip) => h("span", { class: `week-cell ${cls}`, title: tip, role: "listitem", "aria-label": `${label}: ${tip}` },
+    h("span", { class: "week-cell-day" }, label), h("span", { class: "week-cell-val" }, value));
+  return h("div", { class: "week-row", role: "list", "aria-label": "Get there by, each day this week" },
+    dates.map((d) => {
+      const label = weekDayName(d);
+      const x = item.weekDays.find((w) => w.date === d);
+      if (!x) return cell(d, "dark", label, "Dark", "not playing");
+      if (!allowed(d)) return cell(d, "off", label, "–", "not one of your days");
+      if (!hasNumber(x.e)) return cell(d, "off", label, "–", "no prediction this day");
+      if (isPastToday(d, x.e)) return cell(d, "off", label, "–", "the box office has already opened");
+      const e = x.e;
+      const tip = `get there by ${time12(e.arrival)}, ${pct(e.chance_9am)} chance at 9:00 AM, ${e.verdict}${opensUnusual(e) ? `. Box office opens ${time12(e.open_time)}` : ""}${bestDates.has(d) ? ". Best day" : ""}`;
+      return h("a", {
+        class: `week-cell tone-${e.verdict.split(" ")[0]}${bestDates.has(d) ? " best" : ""}`, role: "listitem",
+        href: `#/show/${d}/${encodeURIComponent(item.show_id)}/week`, title: tip, "aria-label": `${dayName(d, { weekday: "long", month: "short", day: "numeric" })}: ${tip}`,
+      }, h("span", { class: "week-cell-day" }, label), h("span", { class: "week-cell-val" }, shortTime(e.arrival), openMark(e)));
+    }));
+}
+function weekTile(item, dates, allowed) {
+  const b = item.best;
+  const href = `#/show/${b ? b.date : item.firstDate}/${encodeURIComponent(item.show_id)}/week`;
+  if (!b) {
+    return h("article", { class: "tile" }, tileHead(item, href), rushLabels(item),
+      h("div", { class: "simple-line" }, "No prediction left on your days this week."),
+      weekRow(item, dates, allowed), h("div", { class: "seats" }, seatsLine(item)), factsLine(item, false), badges(item), pickBox(item));
+  }
+  const tied = [...b.top].sort((p, q) => p.date.localeCompare(q.date));
+  const when = b.every
+    ? (state.filters.days.size ? "Any of your days" : "Any day it plays")
+    : tied.length === 1 ? dayName(tied[0].date, { weekday: "short", month: "short", day: "numeric" })
+      : joinOr(tied.map((x) => weekDayName(x.date)));
+  const chanceText = pct(b.chance) === pct(b.chanceLo) ? pct(b.chance) : `${pct(b.chanceLo)}–${pct(b.chance)}`;
+  const anyMarked = b.top.find((x) => opensUnusual(x.e));
+  return h("article", { class: "tile" }, tileHead(item, href), rushLabels(item),
+    h("div", { class: "best-day" },
+      h("span", { class: "best-label" }, b.every ? "Every day about the same" : (b.top.length > 1 ? "Best days" : "Best day")),
+      h("span", { class: "best-when" }, when)),
+    worthBar(b.entry),
+    h("div", { class: "stats" },
+      h("span", { class: "chance" }, chanceText, " ", h("small", {}, "chance at 9:00 AM")),
+      h("span", { class: "arrival" }, "Get there by ", time12(b.entry.arrival), anyMarked ? openMark(anyMarked.e) : null)),
+    weekRow(item, dates, allowed),
+    h("div", { class: "seats" }, seatsLine(item)), factsLine(item, false), badges(item), pickBox(item));
+}
+// Shows without a number in the week view: the day view's tile, plus the days they play this week.
+function weekOtherTile(item) {
+  const t = tile(item.firstDate, item, false, "/week");
+  const playing = item.weekDays.map((x) => weekDayName(x.date));
+  t.insertBefore(h("div", { class: "simple-line" }, `Playing this week: ${playing.join(", ")}.`), t.querySelector(".seats"));
+  return t;
+}
+function weekStrip(items, dates, allowed) {
+  const cells = dates.map((d) => {
+    let shows = 0, go = 0, marked = null, open = 0;
+    for (const it of items) {
+      const x = it.weekDays.find((w) => w.date === d);
+      if (!x || !hasNumber(x.e)) continue;
+      if (isPastToday(d, x.e)) { open += 1; continue; }
+      shows += 1;
+      if (x.e.verdict === "GO") go += 1;
+      if (!marked && opensUnusual(x.e)) marked = x.e;
+    }
+    return { d, shows, go, marked, off: !allowed(d), past: !shows && open > 0 };
+  });
+  const bestGo = Math.max(0, ...cells.filter((c) => !c.off && c.shows).map((c) => c.go));
+  return h("div", { class: "week-strip", role: "list", "aria-label": "How many shows are GO each day" },
+    cells.map((c) => {
+      const isBest = bestGo > 0 && !c.off && c.shows && c.go === bestGo;
+      const value = c.off || c.past || !c.shows ? "–" : String(c.go);
+      const sub = c.off ? "not your day" : c.past ? "already open" : c.shows ? `of ${c.shows} GO` : "no numbers";
+      const tip = c.off ? "not one of your days" : c.past ? "box offices have already opened" : c.shows
+        ? `${c.go} of ${c.shows} shows with a prediction are GO${isBest ? ". Best day" : ""}` : "no shows with a prediction";
+      return h("a", {
+        class: `strip-day${isBest ? " best" : ""}${c.off || c.past ? " off" : ""}`, href: `#/day/${c.d}`, role: "listitem",
+        title: tip, "aria-label": `${dayName(c.d, { weekday: "long", month: "short", day: "numeric" })}: ${tip}`,
+      },
+        h("b", {}, DAY_SHORT[dayIndex(c.d)], c.marked ? openMark(c.marked) : null),
+        h("span", { class: "strip-date" }, c.d === localToday() ? "Today" : dayName(c.d, { month: "short", day: "numeric" })),
+        h("span", { class: "strip-num" }, value),
+        h("small", {}, sub));
+    }));
 }
 
 /* ---------- filters and sorting: everything runs in the browser from the predictions file ---------- */
@@ -218,10 +370,14 @@ function hiddenForUnknown(entries, anyMode) {
   if (f.runtime.size) add(entries.filter((e) => e.runtime_minutes === null || e.runtime_minutes === undefined).length, "runtime");
   return notes;
 }
-function activeSort(anyMode) {
-  const wanted = SORTS.find((x) => x.key === state.sort.key);
+function activeSort(anyMode, weekMode) {
+  const current = weekMode ? state.weekSort : state.sort;
+  const wanted = SORTS.find((x) => x.key === current.key);
   if (anyMode && wanted.needsDate) return { spec: SORTS.find((x) => x.key === "price"), reversed: false };
-  return { spec: wanted, reversed: state.sort.reversed };
+  // In the week view, Best chance and Latest arrival use each show's best day.
+  if (weekMode && wanted.key === "chance") return { spec: { ...wanted, value: (e) => (e.best ? e.best.chance : null) }, reversed: current.reversed };
+  if (weekMode && wanted.key === "arrival") return { spec: { ...wanted, value: (e) => (e.best ? e.best.minutes : null) }, reversed: current.reversed };
+  return { spec: wanted, reversed: current.reversed };
 }
 function sortEntries(list, spec, reversed) {
   const known = [], unknown = [];
@@ -270,14 +426,21 @@ function renderHome(selected) {
     return;
   }
   const anyMode = selected === "any";
-  const day = anyMode ? "any" : (selected && dates.includes(selected) ? selected : dates[0]);
-  const entries = anyMode ? allShows() : data.days[day];
+  const weekMode = selected === "week";
+  const day = anyMode ? "any" : weekMode ? "week" : (selected && dates.includes(selected) ? selected : dates[0]);
+  const entries = anyMode ? allShows() : weekMode ? weekShows(dates) : data.days[day];
+  // Week view: Days showing means "days I can go", so only those days are compared.
+  const allowed = (d) => !state.filters.days.size || state.filters.days.has(DAY_KEYS[dayIndex(d)]);
 
   const picker = h("div", { class: "day-picker", role: "group", "aria-label": "Pick a day" },
     dates.map((d) => h("button", {
       type: "button", class: "day-chip", "aria-pressed": d === day ? "true" : "false",
       onclick: () => { location.hash = `#/day/${d}`; },
     }, h("b", {}, d === today ? "Today" : dayName(d, { weekday: "short" })), h("span", {}, dayName(d, { month: "short", day: "numeric" })))),
+    h("button", {
+      type: "button", class: "day-chip", "aria-pressed": weekMode ? "true" : "false",
+      onclick: () => { location.hash = "#/week"; },
+    }, h("b", {}, "This week"), h("span", {}, "Best day")),
     h("button", {
       type: "button", class: "day-chip", "aria-pressed": anyMode ? "true" : "false",
       onclick: () => { location.hash = "#/any"; },
@@ -291,9 +454,9 @@ function renderHome(selected) {
         type: "button", class: "chip", disabled: off, "data-sort": x.key,
         title: off ? "Not available in Any day: predictions stop at 7 days" : null,
         onclick: () => {
-          const current = activeSort(anyMode);
-          if (current.spec.key === x.key) state.sort = { key: x.key, reversed: !current.reversed };
-          else state.sort = { key: x.key, reversed: false };
+          const current = activeSort(anyMode, weekMode);
+          const next = current.spec.key === x.key ? { key: x.key, reversed: !current.reversed } : { key: x.key, reversed: false };
+          if (weekMode) state.weekSort = next; else state.sort = next;
           state.paint();
         },
       }, x.label);
@@ -304,7 +467,9 @@ function renderHome(selected) {
     chipRow("Play or musical", TYPE_OPTIONS, state.filters.type),
   ];
   if (data.has_show_facts) {
-    filterRows.push(chipRow("Days showing", DAY_OPTIONS, state.filters.days, anyMode ? {} : { disabled: true, note: "Pick Any day to use this: a date already decides." }));
+    filterRows.push(chipRow("Days showing", DAY_OPTIONS, state.filters.days, anyMode ? {}
+      : weekMode ? { note: "Days you can go: only these are compared." }
+        : { disabled: true, note: "Pick This week or Any day to use this: a date already decides." }));
     filterRows.push(chipRow("Runtime", RUNTIME_OPTIONS, state.filters.runtime));
   }
   if (state.filtersOpen === null) state.filtersOpen = window.matchMedia("(min-width: 700px)").matches;
@@ -317,10 +482,13 @@ function renderHome(selected) {
     h("span", { id: "pick-count" }, ""));
   const resultLine = h("div", { class: "result-line", role: "status" });
   const results = h("div", {});
+  const stripHolder = h("div", { class: "strip-holder" });
 
   state.paint = () => {
-    const visible = entries.filter((e) => matchesFilters(e, anyMode) && (!state.picksOnly || picks.has(e.show_id)));
-    const { spec, reversed } = activeSort(anyMode);
+    const visible = entries.filter((e) => matchesFilters(e, anyMode) && (!state.picksOnly || picks.has(e.show_id))
+      && (!weekMode || e.weekDays.some((x) => allowed(x.date))));
+    if (weekMode) for (const e of entries) e.best = e.group === 1 ? weekBest(e, allowed) : null;
+    const { spec, reversed } = activeSort(anyMode, weekMode);
     document.getElementById("pick-count").textContent = `Only my picks (${picks.size})`;
     sortRow.querySelectorAll("[data-sort]").forEach((b) => {
       const on = b.dataset.sort === spec.key;
@@ -343,13 +511,15 @@ function renderHome(selected) {
         },
       }, "Clear all")] : []));
 
-    const grid = (list) => h("div", { class: "tiles" }, list.map((e) => tile(day, e, anyMode)));
+    const tileFor = (e) => (weekMode ? (e.group === 1 ? weekTile(e, dates, allowed) : weekOtherTile(e)) : tile(day, e, anyMode));
+    const grid = (list) => h("div", { class: weekMode ? "tiles week-tiles" : "tiles" }, list.map(tileFor));
     const sections = [];
+    if (weekMode) stripHolder.replaceChildren(h("h2", { class: "strip-title" }, "Shows that are GO, by day"), weekStrip(visible, dates, allowed));
     if (!visible.length) {
       sections.push(h("p", { class: "empty" }, state.picksOnly && !anyFilterOn()
         ? "None of your picks are here. Turn off \"Only my picks\" to see every show."
         : "No shows match. Try turning off a filter."));
-    } else if (!anyMode && spec.key === "chance") {
+    } else if (!anyMode && (spec.key === "chance" || (weekMode && spec.key === "arrival"))) {
       // The default view keeps the three show groups (SPEC 8). Shows without a number stay at the bottom.
       const groups = [1, 2, 3].map((g) => visible.filter((e) => e.group === g));
       if (groups[0].length) sections.push(h("section", {}, h("h2", { class: "group-title" }, "Full predictions"), grid(sortEntries(groups[0], spec, reversed))));
@@ -369,13 +539,20 @@ function renderHome(selected) {
     results.replaceChildren(...sections);
   };
 
+  const pairs = weekMode
+    ? entries.flatMap((it) => it.weekDays.filter((x) => hasNumber(x.e)).map((x) => [x.date, x.e]))
+    : anyMode ? [] : entries.filter(hasNumber).map((e) => [day, e]);
   setApp(
-    h("h1", {}, anyMode ? "What's playing when you can go?" : "Is rush worth it this morning?"),
+    h("h1", {}, anyMode ? "What's playing when you can go?" : weekMode ? "Which day should you go?" : "Is rush worth it this morning?"),
     h("p", { class: "lede" }, anyMode
       ? "Planning further ahead: show facts only, with no chance or arrival time."
-      : "Pick a day. Shows are ranked by your chance of a ticket if you arrive at 9:00 AM."),
+      : weekMode
+        ? "Each show's best day this week: the latest you can get there and still probably get a ticket. Tap a day to see all its shows."
+        : "Pick a day. Shows are ranked by your chance of a ticket if you arrive at 9:00 AM."),
     stale ? h("p", { class: "notice" }, "These predictions are out of date: every day in the file has passed.") : null,
     picker,
+    weekMode ? stripHolder : null,
+    openNote(pairs),
     anyMode ? h("p", { class: "notice" }, "Predictions stop 7 days out, so these tiles don't have any. Schedules change and a show could close before your date, so confirm before you go.") : null,
     h("div", { class: "controls" }, sortRow, filterBox,
       h("div", { class: "control-row" }, picksToggle), resultLine),
@@ -490,11 +667,11 @@ function factsPanel(e) {
     e.facts_source ? h("p", { class: "muted" }, `Runtime and days: ${e.facts_source}.`) : null);
 }
 
-function renderDetails(day, id) {
+function renderDetails(day, id, fromWeek) {
   const anyMode = day === "any";
   const entries = anyMode ? allShows() : (state.data.days[day] || []);
   const e = entries.find((x) => x.show_id === id);
-  const backHref = anyMode ? "#/any" : `#/day/${day}`;
+  const backHref = anyMode ? "#/any" : fromWeek ? "#/week" : `#/day/${day}`;
   if (!e) {
     setApp(h("a", { class: "back", href: "#/" }, "← Back to shows"), h("p", { class: "empty" }, "That show isn't on the schedule for this day."));
     return;
@@ -1441,10 +1618,10 @@ function route() {
     renderNerdStats();
   } else if (parts[0] === "show" && parts[1] && parts[2]) {
     setNav("home");
-    renderDetails(parts[1], decodeURIComponent(parts[2]));
+    renderDetails(parts[1], decodeURIComponent(parts[2]), parts[3] === "week");
   } else {
     setNav("home");
-    renderHome(parts[0] === "any" ? "any" : (parts[0] === "day" ? parts[1] : null));
+    renderHome(parts[0] === "any" || parts[0] === "week" ? parts[0] : (parts[0] === "day" ? parts[1] : null));
   }
   window.scrollTo(0, 0);
 }

@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "site",
+      "runtimeExecutable": ".venv\\Scripts\\python.exe",
+      "runtimeArgs": ["-m", "http.server", "8017", "--bind", "127.0.0.1", "--directory", "web"],
+      "port": 8017,
+      "autoPort": false
+    }
+  ]
+}

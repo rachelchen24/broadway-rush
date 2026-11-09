@@ -143,6 +143,47 @@ main:focus { outline: none; }
 .seats { color: var(--ink-2); font-size: .88rem; font-weight: 600; }
 .check-back { color: var(--ink-2); font-size: .88rem; font-style: italic; }
 
+/* Unusual box office opening (noon on Sundays): asterisk on the time, note under the picker (SPEC 2.2b) */
+.open-mark { color: var(--gold); font-weight: 700; margin-left: 1px; }
+.open-note { color: var(--ink-2); font-size: .86rem; margin: 0 0 10px; max-width: none; }
+.open-note .open-mark { margin: 0; }
+
+/* This week view (SPEC 2.2b) */
+.strip-holder { margin: 2px 0 6px; }
+.strip-title { font-size: 1.3rem; margin: 4px 0 6px; }
+.week-strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin-bottom: 8px; }
+.strip-day {
+  display: grid; justify-items: center; gap: 1px; padding: 7px 2px 8px; border-radius: 12px; text-decoration: none; text-align: center; min-width: 0;
+  background: var(--bg-2); color: var(--ink-2); border: 1px solid var(--line); line-height: 1.15;
+}
+.strip-day:hover { border-color: var(--ink-3); }
+.strip-day b { font-size: .74rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink); }
+.strip-date { font-size: .74rem; color: var(--ink-3); }
+.strip-num { font-family: var(--font-display); font-size: 1.9rem; line-height: 1; color: var(--ink); margin-top: 2px; }
+.strip-day small { font-size: .68rem; color: var(--ink-3); }
+.strip-day.best { background: var(--card-2); border-color: var(--gold); box-shadow: 0 0 12px rgba(244, 197, 66, .4); }
+.strip-day.best .strip-num { color: var(--warm); text-shadow: 0 0 10px rgba(244, 197, 66, .55); }
+.strip-day.off { opacity: .55; }
+.tiles.week-tiles { grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); }
+.best-day { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
+.best-label { font-size: .74rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-3); }
+.best-when { font-weight: 600; color: var(--warm); }
+.week-row { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+.week-cell {
+  display: grid; justify-items: center; gap: 1px; padding: 4px 0 5px; border-radius: 7px; text-decoration: none; min-width: 0;
+  font-variant-numeric: tabular-nums; line-height: 1.15; border: 1px solid transparent;
+}
+.week-cell-day { font-size: .66rem; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; }
+.week-cell-val { font-size: .74rem; font-weight: 600; white-space: nowrap; }
+.week-cell.dark, .week-cell.off { color: var(--ink-3); background: var(--bg-2); }
+.week-cell.dark .week-cell-val, .week-cell.off .week-cell-val { font-weight: 400; }
+.week-cell.tone-GO { background: var(--gold); color: var(--on-gold); }
+.week-cell.tone-Maybe { background: var(--gray); color: var(--black); }
+.week-cell.tone-Stay { background: var(--black); color: #fff; border-color: #cdbfe3; }
+.week-cell .open-mark { color: inherit; }
+.week-cell.best { outline: 2px solid var(--glow); outline-offset: 1px; box-shadow: 0 0 10px rgba(233, 216, 255, .6); }
+a.week-cell:hover { filter: brightness(1.12); }
+
 /* Worth-it bar: black to gray to gold, with a light outline so the black end shows on the dark purple */
 .worth { display: flex; align-items: center; gap: 10px; }
 .worth-track {
