@@ -1304,3 +1304,11 @@ Site regenerated with `predict --backtest more1`. Compared with the file before 
 Two stale hard-coded numbers replaced with values from the data: "139,584 comments" (now 152,801 comments and forum posts) and "89%" (the wider count is now 87.1% of 1,493). The panel is renamed "The always-yes problem". File versions bumped to `20261106e`. Click-through 263 of 263, 0 page errors.
 
 The stay-awake hold had never worked: `0x80000001` fails a cast in PowerShell on every call. Fixed with `[uint32]2147483649`, confirmed from its return value, and stopped now that the run is done.
+
+## 2026-11-08 ET — Daily job confirmed; model upgrades on hold
+
+The daily job passed its test on Nov 7: with no button press (Rachel confirmed), it saved Ticketmaster at 12:40 and 1:35 pm ET and TKTS at 3:48, 5:41 and 7:29 pm ET. GitHub started the 7:07 and 9:07 am runs about 5 hours late, which doesn't matter because the schedule doesn't change during the day. One TKTS slot saved nothing (skipped by GitHub or an empty board; the Actions log is private).
+
+Ran `broadway_rush.sync`: 5 new snapshots copied in, predictions refit in 7 minutes (R-hat 1.012, ESS 497, 0 divergences, phi 1.81), site now Nov 8–14. Nov 9 has 4 performances because it's a Monday. Click-through 263 of 263, 0 page errors.
+
+Rachel put model upgrades on hold to wait for more data. Note for when they restart: the daily job collects ticket snapshots, which the model doesn't use yet; new rush reports only come from refreshing Reddit, which is by hand until the weekly job. Upgrades were scheduled for Nov 17–19 anyway.
