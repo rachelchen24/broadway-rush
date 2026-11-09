@@ -1,4 +1,4 @@
-# Daily ticket snapshots (SPEC section 6.2): Ticketmaster in the morning, TKTS around noon and in the evening.
+# Daily ticket snapshots (SPEC section 6.2): Ticketmaster in the morning, TKTS through the day.
 # Files go to the private repo broadway-rush-data, checked out at data/raw, which is where the scrapers write.
 name: Ticket snapshots
 
@@ -8,8 +8,12 @@ on:
     # "if:" lines below too. Minute 7 because GitHub's start of the hour is busiest.
     # GitHub can start scheduled runs hours late or drop them, so each source has backup times. The TKTS board is
     # usually empty late at night and in the morning, and a run that finds it empty saves nothing but still shows green.
+    # Nov 7-8, 2026, TKTS runs started 3.5 to 4 hours late, and on Nov 8 the 4:07 and 6:07 pm runs saved nothing.
+    # The 8:07 and 10:07 am runs were added so that, at those delays, they land around noon and 2 pm instead.
     - cron: "7 12 * * *"  # Ticketmaster: 7:07 am EST / 8:07 am EDT
     - cron: "7 14 * * *"  # Ticketmaster backup: 9:07 am EST / 10:07 am EDT
+    - cron: "7 13 * * *"  # TKTS early: 8:07 am EST / 9:07 am EDT (board is usually empty if this starts on time)
+    - cron: "7 15 * * *"  # TKTS early: 10:07 am EST / 11:07 am EDT
     - cron: "7 17 * * *"  # TKTS: 12:07 pm EST / 1:07 pm EDT
     - cron: "7 19 * * *"  # TKTS backup: 2:07 pm EST / 3:07 pm EDT
     - cron: "7 21 * * *"  # TKTS backup: 4:07 pm EST / 5:07 pm EDT
