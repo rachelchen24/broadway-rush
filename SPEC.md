@@ -1,6 +1,6 @@
 # Broadway Rush — Spec (draft)
 
-> Status (2026-11-05): build steps 1–4 are built (Reddit scrape → labeled extraction pilot → full extraction into `data/processed/reports.csv` → grosses, rush policies + history, show catalog). Step 6 was moved up: the TKTS and Ticketmaster snapshot scrapers are built, and the daily GitHub Actions job works (manual run succeeded 2026-11-05; ~~first scheduled run still to confirm~~ scheduled runs confirmed 2026-11-07). Calendar, weather and NYC permitted events were added 2026-11-05. **Updated 2026-11-06: a first model (step 5) and a first website (step 7) are built and run locally, not deployed.** The simple combo beats the lookup table on line length but not on ticket counts or the chance of a ticket (§5.2a, §5.3). The report form and Refresh + PIN are screens only, not connected. **Added 2026-11-08:** the This week view (§2.2b), local only. Level-ups, cast news and comparison rows aren't built. What was built, and how, is in `process.md`. ~~Struck~~ text was replaced; anything not marked built is still a plan.
+> Status (2026-11-05): build steps 1–4 are built (Reddit scrape → labeled extraction pilot → full extraction into `data/processed/reports.csv` → grosses, rush policies + history, show catalog). Step 6 was moved up: the TKTS and Ticketmaster snapshot scrapers are built, and the daily GitHub Actions job works (manual run succeeded 2026-11-05; ~~first scheduled run still to confirm~~ scheduled runs confirmed 2026-11-07). Calendar, weather and NYC permitted events were added 2026-11-05. **Updated 2026-11-06: a first model (step 5) and a first website (step 7) are built and run locally, not deployed.** The simple combo beats the lookup table on line length but not on ticket counts or the chance of a ticket (§5.2a, §5.3). The report form and Refresh + PIN are screens only, not connected. **Added 2026-11-08:** the This week view (§2.2b), local only. Level-ups, cast news and comparison rows aren't built. **🆕 Added 2026-11-11: four website changes are decided and waiting to be built, all listed in §2.8 (build queue):** Montserrat Black header font, theater name opens Google Maps, typical ticket price next to the rush price, links to digital lottery and digital rush sites. §10 (new) lists ideas outside this project's scope. What was built, and how, is in `process.md`. ~~Struck~~ text was replaced; anything not marked built is still a plan.
 > Standalone project: nothing is reused from previous projects.
 
 ## 1. Concept
@@ -58,11 +58,14 @@ Also to do:
 
 ### 2.2 Tile (one per show)
 - Show name (+ theater, small)
+  - 🆕 The theater name becomes a link to Google Maps (added 2026-11-11, not built yet: §2.8 N2).
+- 🆕 Typical ticket price next to the rush price, crossed out, with the saving (added 2026-11-11, not built yet: §2.8 N3).
 - **Rush types offered** as small labels: `In person`, `Online`, `Student` and so on (§2.2a)
 - **Rush price** (e.g. $49.50; per show, §3.4)
 - **Worth-it bar** + verdict word (GO / Maybe / Stay home)
 - Chance of getting a ticket (e.g. "72%")
 - Recommended arrival time ("Get there by 9:20")
+- 🆕 High-profile star label with the star's name, for example `★ Aaron Tveit` (added 2026-11-11, not built yet: §2.8 N5; rule in §2.2a).
 - Small badges: `Digital rush 9 AM`, `Star leaving Sunday`, `Low confidence`, `Prices way above usual`
 - **__% seats sold** ("92% seats sold last week"), in place of "__% full" (§2.2a)
 
@@ -87,7 +90,7 @@ Also to do:
 | Rush type | In person, Online, Student, Lottery, Standing room | Rush policies (§3.4) | Have it |
 | Days showing | M, T, W, Th, F, S, Su | Which weekdays the show plays (for example, Just in Time doesn't play Monday or Wednesday; see §9 question 27) | Built: 8 weeks of Playbill's weekly schedule |
 | Runtime | Under 90 min, 90 min–2 hrs, 2–2.5 hrs, Over 2.5 hrs | Playbill's show pages | Built: 34 of 35 shows |
-| High-profile stars | Has a high-profile star | Hand-kept list (below) | Not collected; needs cast news (§3.12) |
+| High-profile stars | Has a high-profile star | `registry/stars.csv`, by Wikipedia page views (below) | Rule decided 2026-11-11; not collected (§2.8 N5) |
 | Play or musical | Play, Musical | Show catalog (§3.0) | Have it |
 
 **Days showing and runtime are simple show facts.** Claude looks them up once per show into a hand-kept file, `registry/show_facts.csv` (show, days, runtime, source, date checked, plus a review flag and note), and I review it. **Done 2026-11-06:** days come from Playbill's weekly schedule page over 8 weeks, using past copies on the Internet Archive, because one week can mislead (Election Day week had several shows swapping Tuesday for Monday). Ticketmaster is only a cross-check: where it disagrees, the row is flagged. 6 of 35 rows are flagged for me. The date picker's performance times still come from Ticketmaster (§3.0).
@@ -100,7 +103,14 @@ While a filter is on, shows with an unknown value are hidden, and the page says 
 - **Any day + Days showing:** for planning weeks ahead ("what plays on Tuesdays?"). Tiles show facts only: rush types, rush price, typical ticket price, runtime, stars, play or musical, how full. They show no chance or arrival time, because predictions stop at 7 days (§1). In their place: "Check back within 7 days of your date."
 - **Schedules change:** a show could close before someone's date, and closing news isn't built yet (§3.12), so Any day mode says to confirm before going.
 
-**High-profile stars.** A show counts if a current principal is billed above the title, or has won a Tony, Oscar, Emmy or Grammy. Claude pre-fills `registry/stars.csv` (show, person, start date, end date, reason) and I review it. The dates make a star drop off when they leave. The same list drives the `Star leaving Sunday` badge and the model's star features (§3.12).
+**High-profile stars (rule decided 2026-11-11; not collected or built yet: §2.8 N5).** ~~A show counts if a current principal is billed above the title, or has won a Tony, Oscar, Emmy or Grammy.~~ Replaced: awards counted too many stage regulars, and billing missed celebrity replacements in long-running shows.
+- **The rule: a high-profile star is a current principal who was already famous before joining the show, measured by Wikipedia page views.** Their Wikipedia page's typical monthly views, over the 12 months before their casting was announced, must pass a cutoff. Using the months before the announcement keeps the show's own buzz out of the number.
+- **Typical = the median month,** so one news spike doesn't make someone a star. If the announcement date isn't known, use the 12 months ending 3 months before their first performance.
+- **The cutoff is mine to pick, from the data.** Claude pulls the number for every current principal and shows me the ranked list; I choose where stars start. Check: Aaron Tveit in Moulin Rouge has to land above the line. No Wikipedia page means not a star.
+- **I can override anyone by hand,** either way, with a one-line reason.
+- **Source:** Wikimedia's official page-views service: free, no key, daily numbers back to July 2015, people only (bots filtered out). Add it to `registry/sources.csv` before the first fetch.
+- **Kept in `registry/stars.csv`,** pre-filled by Claude and reviewed by me, one row per person per stint: show, person, role, exact Wikipedia page title, date the casting was announced, first performance, last performance (blank while open-ended), date the last performance was announced, monthly views, the 12-month window used, star yes/no, override, reason, source, date checked. The dates make a star drop off the site when they leave, and stop the model's tests from using a departure before it was public.
+- **Used for (my decision 2026-11-11):** a label on the tile with the star's name, the "Has a high-profile star" filter, the `Star leaving Sunday` badge, and the model's star inputs (§3.12). Stars raise demand and ticket prices, most of all when their run is almost over.
 
 **Sorting.** Tap the same sort again to reverse it. Unknown values always go last.
 | Sort | Shown first | Data | Notes |
@@ -160,6 +170,7 @@ All of this goes in the predictions file, so the site still reads only that file
 - **Purple theme** (deep purple), with text in **glowing / illuminated light colors** (neon-marquee feel). ~~A lighter purple background with dark text and no dark mode~~ was tried on 2026-11-06, and I changed it back to dark the same night.
 - **Worth-it bar on dark:** it has a light outline, so the black end still shows.
 - **Fonts (chosen and on the site 2026-11-06):** Bebas Neue for the logo, headings, show names and big numbers (like the chance %). Poppins for everything else: body text, labels and buttons. Both are free on Google Fonts. Bebas Neue only has capital letters, so show names appear in all caps.
+  - 🆕 **Changing (decided 2026-11-11, not built yet: §2.8 N1):** Bebas Neue is too narrow. Montserrat Black, all caps, replaces it. Poppins stays.
 - **Worth-it bar: black → gray → gold** (~~red → purple → blue~~, changed 2026-11-05). Black = stay home, gray = Maybe, gold = GO.
 
 ### 2.5 Report button
@@ -183,6 +194,70 @@ All of this goes in the predictions file, so the site still reads only that file
 ### 2.7 Shows with no data
 - **Skip a show if there's genuinely no data** (no reports, no prices, no grosses). It just isn't shown for now.
 - Shows with *some* data (e.g. prices + grosses but no Reddit reports) still get a prediction, labeled `Low confidence` (§5.1).
+
+### 2.8 🆕 Build queue: decided, not built yet (started 2026-11-11)
+**This is the one place to look for new website work.** Everything here is decided by me and ready to build; none of it is on the site yet. All four are site-only changes (`web/index.html`, `web/styles.css`, `web/app.js`): no model, data or scraper changes, except N4's last-resort lookup, which isn't needed today. When an item is built, mark it ✅ with the date here, and update the older section it points to.
+
+| # | Item | Added | Status |
+|---|---|---|---|
+| N1 | Header font: Montserrat Black replaces Bebas Neue | 2026-11-11 | 📝 not built |
+| N2 | Theater name opens Google Maps | 2026-11-11 | 📝 not built |
+| N3 | Typical ticket price shown next to the rush price | 2026-11-11 | 📝 not built |
+| N4 | Links to each show's digital lottery and digital rush (site link, app mention) | 2026-11-11 | 📝 not built |
+
+**N1. Header font: Montserrat Black (replaces Bebas Neue in §2.4)**
+- Why: Bebas Neue's letters are too narrow. I picked Montserrat Black from 15 wider options on 2026-11-11.
+- What: everything that uses the display font today (logo, headings, show names, prices, the chance %, other big numbers) switches to **Montserrat, weight 900, all caps**. Poppins stays for everything else.
+- How:
+  - In `web/index.html`, swap `Bebas+Neue` for `Montserrat:wght@900` in the Google Fonts link.
+  - In `web/styles.css`, change `--font-display` to Montserrat with a wide, heavy fallback (for example `"Arial Black"`), never plain Arial.
+  - Bebas Neue only has capitals, so nothing set uppercase before. Montserrat has lowercase, so every display-font rule now needs `text-transform: uppercase`.
+  - Every display-font rule hard-codes `font-weight: 400` (a Bebas rule). Change them all to 900, or the browser shows thin Montserrat.
+  - Set letter-spacing to 0 on those rules; the extra spacing was for Bebas.
+  - Montserrat is much wider, so size the display text down (start around 15–20% smaller) until long show names like "Buena Vista Social Club" and the tile's price and chance still fit at phone width without overflowing.
+  - Change `?v=` on both files in `web/index.html`.
+  - Delete `web/font-preview.html` (the temporary page I picked from).
+- Done when: no Bebas Neue is left anywhere, nothing overflows a tile at phone or desktop width, and the Nerd stats and show pages look right too.
+
+**N2. Theater name opens Google Maps**
+- Why: to see how far the theater is from you.
+- What: the theater name is a link, on tiles (§2.2), in the This week view (§2.2b) and in the details view (§2.3). It opens Google Maps **directions to the theater** in a new tab. Maps fills in your location itself, so the site never asks for or stores where you are.
+- How: link to `https://www.google.com/maps/dir/?api=1&destination=` plus the URL-encoded theater name followed by ", New York, NY" (use the street address instead if the predictions file has one). `target="_blank"` with `rel="noopener"`.
+- Tapping the theater name opens Maps only; tapping anywhere else on the tile still opens the details. No link when the theater is unknown.
+- Done when: every theater name on the three views opens the right theater in Maps, and the link is reachable by keyboard.
+
+**N3. Typical ticket price next to the rush price**
+- Why: so the rusher sees they're getting a deal without opening the details.
+- What: wherever the rush price shows on a tile (day view, This week view, Any day), show the typical ticket price right beside it, crossed out, with the saving. Example: **$45** rush · ~~$148~~ typical · save about $103.
+- The number is `typical_ticket`, already in the predictions file and already used by the "what you'd save" panel on show pages (`savingsPanel` in `web/app.js`). Reuse its math and wording so the tile and the panel always agree.
+- Keep it honest: typical ticket is the average paid over recent weeks, which already includes rush and discounted tickets, so the real saving against a full-price seat is bigger. Say this in a tooltip or small note on the tile, as the show page already does.
+- Leave the comparison out (rush price alone) when the show has no typical price, no rush price, or rush isn't cheaper.
+- The tile's facts line already says "Typical ticket $__"; remove it there so the price doesn't appear twice. The "Typical ticket price" sort (§2.2a) stays.
+- Done when: every tile with both prices shows the pair and the saving, the numbers match the show page's savings panel, and nothing wraps badly at phone width (check after N1, since the font changes the widths).
+
+**N4. Links to each show's digital lottery and digital rush**
+- Why: for shows with a digital lottery or digital rush, get from the site to the page (or app) where you enter or buy in one tap.
+- What: where a show has a digital lottery, the site links to where you enter it, opening in a new tab:
+  - **Tile:** the `Lottery` rush-type label becomes the link.
+  - **Details view:** the "Digital lottery" row in the policy panel gets an "Enter the lottery" link.
+  - **Lottery-only shows** (group 3, §8) get the same link, since the lottery is the main thing they offer.
+- The address is already in the predictions file: `policy.lottery.where`, from Playbill's policy list (§3.4). On the Nov 5 list, 22 of 25 lotteries have one: rush.telecharge.com (13), lottery.broadwaydirect.com (6), LuckySeat.com, HamiltonMusical.com and TodayTix (1 each); 3 are blank.
+- The values are messy, so clean them in `web/app.js`: take the first web address in the text, add `https://` when it's missing, and link only if what's left is a plain web address. Examples: `Lottery.BroadwayDirect.com/Show/The-Lion-King` has no `https://`, and `HamiltonMusical.com or download the Hamilton App.` is a sentence (link HamiltonMusical.com, keep the rest as text). When no step below finds an address, show the lottery as now, with no link. Never guess an address.
+- **Every lottery gets a link, not only the ones with a tidy address (added 2026-11-11, my request).** Fill the gaps in this order, and stop at the first that works:
+  1. `policy.lottery.where`, as above.
+  2. `policy.lottery.how`. The 3 lotteries with a blank `where` on Nov 5 all have the address there: Aladdin (`AladdinTheMusical.com/lottery`), The Book of Mormon and Other Desert Cities (both on luckyseat.com). So today this covers 25 of 25 with no scraping.
+  3. Other lottery-style offers that Playbill lists under a different name, in `policy.other` (for example Harry Potter's "The Friday Forty"): link them the same way when they carry an address.
+  4. Only if a show has a lottery and none of the above gives an address: look it up once on the show's official website and save it by hand, with the source and date, in new columns of `registry/show_facts.csv` (`lottery_url`, `lottery_url_source`), the same way days and runtime were collected (§2.2a). `predict.py` passes it through to the predictions file. Check `registry/sources.csv` before fetching anything, and never log in or get around bot protection. This is the only part that isn't site-only, and it isn't needed today.
+- Run the address check each time the policy list updates, and list any lottery left without a link, so a new show doesn't quietly go without one.
+- **Digital rush gets the same treatment (confirmed 2026-11-11, my request): link the site, or mention the app.**
+  - On the Nov 5 list all 10 digital rushes have an address in `policy.digital.where`: todaytix.com (6) and rush.telecharge.com (4). Clean and link it the same way as lotteries, with the same `how` fallback.
+  - **Tile:** the `Online` rush-type label becomes the link. **Details view:** the digital rush section (§2.3) gets a link, for example "Open TodayTix".
+  - **Mention the app when there is one:** TodayTix rush is bought in the TodayTix app, so next to the link say "or in the TodayTix app". Take the app's name from the policy text (`how`, for example "Available through the TodayTix app"); don't invent one for sites that have no app, such as Telecharge.
+  - If a digital rush ever has no address but the text names an app, show the app mention alone, with no link.
+- Links only. Lotteries stay out of the predictions (§3.5), and the site never enters one or fetches those pages.
+- Done when: every show with a lottery or digital rush links to the right page from the tile and the details view, TodayTix rushes also mention the app, the 3 with a blank `where` link through `how`, and no link is broken or points at a sentence.
+
+Build N1 first: it changes text widths, and N2 and N3 both add text to the tile.
 
 ## 3. Data sources
 
@@ -325,6 +400,13 @@ Before any site is scraped, record it in a registry: `site, data type, has offic
 - **Track:** principals **joining / leaving**, **limited-run stars**, a beloved cast member's final weeks, opening / press nights, closing announcements, understudy-heavy days.
 - **How:** scrape Playbill and BroadwayWorld casting news; LLM-extract `{show, person, event type, start date, end date}`. Show official sites and socials for "final performances" posts. Reddit comments for "X was out today".
 - **Features:** `star_in_limited_run`, `days_until_star_leaves`, `principal_change_this_week`, `days_until_closing`.
+- **Star inputs (decided 2026-11-11, not built: §2.8 N5).** "Star" follows the Wikipedia page-views rule in §2.2a, from `registry/stars.csv`:
+  - `has_star`: a high-profile star is in the show on that date.
+  - `star_views`: how famous the show's biggest current star is (their monthly page views, on a log scale), so a household name counts for more than someone just over the cutoff.
+  - `days_until_star_leaves` and `star_final_weeks` (last 2 weeks of their run): my expectation is that lines and prices climb most when a star's run is almost over.
+  - Each is computed only from what was public on the prediction date. A departure counts from the day it was announced, not before.
+  - **Needs history to test.** The model can only learn a star effect from past star runs, so `stars.csv` has to cover June 2024 on (for example Aaron Tveit in Moulin Rouge), not only today's casts. There may be too few star runs with enough rush reports to measure it. Report it as a with/without row in the results table (§5.3) whichever way it comes out, and keep the tile label and filter even if the model inputs don't help.
+  - Average ticket price is already a model input (§3.3), so some of a star's effect may already show up through prices. The with/without row measures what stars add on top.
 
 ## 4. Labels — what we're predicting
 
@@ -677,6 +759,7 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 - **Repo (2026-11-02):** private on GitHub for now; probably **public when the project is done**, so interviewers can see it. Before then, remove Reddit comment text and usernames from what's committed (§7, §9). Private notes stay git-ignored.
 - **Tile search, filters and sorting (2026-11-06):** a search box finds shows by name, nickname or theater. Tiles show rush types. Filters: rush type, days showing, runtime, high-profile stars, play or musical. Sorts: best chance, latest arrival, rush price, typical ticket price, runtime. Days showing and runtime are looked up online. The site says "__% seats sold" instead of "__% full" (§2.2a). Built 2026-11-06, except the stars filter, which needs cast news.
 - **This week view (2026-11-08, my request):** a This week button shows which of the next 7 days is best: a day strip on top, then one tile per show with its best day and every day's arrival time. Days are compared by arrival time, latest first (tap again for earliest). Box offices open at noon on Sundays and 10 am on other days, so Sunday times get an asterisk and a note, in both views (§2.2b). Built 2026-11-08, ahead of the Nov 11–16 website slot, at my go; local only.
+- **Build queue (2026-11-11, my requests, none built yet; details in §2.8):** N1 header font changes from Bebas Neue to Montserrat Black, all caps, because Bebas is too narrow. N2 clicking the theater name opens Google Maps directions to that theater in a new tab, so you can see how far it is from you; the site doesn't ask for your location. N3 the typical ticket price shows next to the rush price, crossed out, with the saving, so the deal is obvious. N4 shows with a digital lottery or digital rush link to the page where you enter or buy, and mention the app when there is one. Also added §10, ideas outside this project's scope.
 - **Model (2026-11-05):** the combo (trees for the line, Bayesian for the cutoff) for both the first and final models, because it's more fun to talk about. The first version stays simple, to see the whole site working; the final version is a leveled-up combo (§5.2, §5.2a, §5.2c). Not started.
 - **Deadline and scope (2026-11-05):** data project competition entry. ~~Due 2026-11-17.~~ **Complete by 2026-11-23, turn in 2026-11-24, present 2026-12-07** (corrected by me the same day). Between turn-in and the presentation, only small tweaks and improvements, **no model changes**. Everything stays in: cast + closing news, NYC permitted events, Refresh + PIN, report form + email approval, weekly automatic job, digital rush predictions. Cutting these was proposed and rejected. Core first (data, model, site), so a delay only moves an add-on. Schedule (stretched to the new dates by Claude, not yet reviewed by me):
   - **Nov 5–7:** data: catch-up, calendar, weather, NYC permitted events, cast + closing news.
@@ -737,3 +820,12 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 27. **Just in Time's days:** §2.2a's example says it doesn't play Monday or Wednesday. Playbill's schedule (Wednesday in all 8 weeks) and Ticketmaster both show it playing Wednesdays, dark Monday only. The site follows the data. Was the example about something else?
 28. **This week view, tie rule (§2.2b):** days with the same arrival time count as tied (placeholder). Times are on a 15-minute grid. On Nov 8–14 this gives 14 of 16 shows a single best day (Sunday); Operation Mincemeat ties Sunday, Tuesday and Thursday, and Wanted ties all 5 days it plays. A wider window (say, within 15 minutes) would name more ties.
 - ~~Confirm Ticketmaster Discovery API free-tier limits.~~ Done 2026-10-22: 5,000 calls/day, 5 per second.
+
+## 10. Extrapolation opportunities (outside this project's scope)
+
+Ideas for where this could go next. **None of these are planned, scheduled or to be built for the competition.** They're here so they aren't lost, and as "what I'd do next" material for the presentation. Don't build anything from this section without a new decision from me.
+
+1. **An agent that enters digital lotteries for you (added 2026-11-11).** The site already knows which shows have a lottery and where to enter (§2.8 N4). An agent could enter the ones you pick each day, with your details, and tell you when you win.
+   - Why it's out of scope: this project predicts in-person rush. Lotteries are luck, not lines, and they were left out of the predictions from the start (§3.5).
+   - What would have to be settled first: lottery sites generally allow one entry per person and may ban automated entries in their terms, so the first step is reading each site's rules (Telecharge, Broadway Direct, Lucky Seat, TodayTix). This project's rule is legal sources only, with no logging in and no getting around bot protection (§3.11), and that rule would apply here too. It would also mean storing people's names, emails and maybe payment details, which this site deliberately avoids (no sign-in, §8).
+   - A version that stays inside the rules: a daily reminder with one-tap links to every lottery you follow, so you still enter each one yourself.

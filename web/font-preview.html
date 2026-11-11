@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Header font options</title>
+  <!-- Temporary page for picking a header font. Not linked from the site; delete once a font is chosen. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Archivo:wdth,wght@125,900&family=Bebas+Neue&family=Bowlby+One&family=Bungee&family=Dela+Gothic+One&family=Krona+One&family=League+Spartan:wght@800&family=Lilita+One&family=Montserrat:wght@900&family=Poppins:wght@400;800&family=Rubik+Mono+One&family=Russo+One&family=Staatliches&family=Unbounded:wght@800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    main { padding-bottom: 60px; }
+    .intro { color: var(--ink-2); margin: 6px 0 18px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(430px, 1fr)); gap: 16px; }
+    .opt { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; overflow: hidden; }
+    .opt.current { border-color: var(--gold); }
+    .label { font: 600 .8rem/1.3 var(--font-body); color: var(--ink-3); letter-spacing: .04em; margin-bottom: 12px; }
+    .label b { color: var(--gold); font-size: 1rem; margin-right: 6px; }
+    .d { font-family: var(--f); font-weight: var(--w, 400); text-transform: uppercase; letter-spacing: var(--ls, .02em); line-height: 1.1; }
+    .logo { font-size: 2.1rem; color: var(--warm); text-shadow: 0 0 6px rgba(244, 197, 66, .9), 0 0 20px rgba(244, 197, 66, .55); white-space: nowrap; }
+    .head { font-size: 1.75rem; color: var(--ink); text-shadow: 0 0 10px rgba(233, 216, 255, .35); margin-top: 14px; }
+    .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+    .show { font-size: 1.6rem; color: var(--ink); }
+    .num { font-size: 2.2rem; color: var(--ink); text-shadow: 0 0 10px rgba(233, 216, 255, .45); white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1 style="margin-top:20px">Header font options</h1>
+    <p class="intro">Same sizes as the live site, so wide fonts look big here; a wide pick would be sized down a little. Ordered from a bit wider than now to very wide.</p>
+    <div class="grid" id="grid"></div>
+  </main>
+  <script>
+    const fonts = [
+      ["Bebas Neue (now)", "'Bebas Neue'", 400, ".04em", "current"],
+      ["Staatliches", "Staatliches", 400],
+      ["Anton", "Anton", 400],
+      ["League Spartan", "'League Spartan'", 800, "0"],
+      ["Lilita One", "'Lilita One'", 400],
+      ["Russo One", "'Russo One'", 400],
+      ["Poppins Extra Bold", "Poppins", 800, "0"],
+      ["Montserrat Black", "Montserrat", 900, "0"],
+      ["Archivo Black", "'Archivo Black'", 400, "0"],
+      ["Bowlby One", "'Bowlby One'", 400, "0"],
+      ["Bungee", "Bungee", 400, "0"],
+      ["Dela Gothic One", "'Dela Gothic One'", 400, "0"],
+      ["Archivo Expanded Black", "Archivo", 900, "0", "", "font-stretch:125%"],
+      ["Rubik Mono One", "'Rubik Mono One'", 400, "0"],
+      ["Unbounded", "Unbounded", 800, "0"],
+      ["Krona One", "'Krona One'", 400, "0"],
+    ];
+    document.getElementById("grid").innerHTML = fonts.map(([name, f, w, ls, cls, extra], i) => `
+      <div class="opt ${cls || ""}" style="--f:${f},sans-serif;--w:${w};--ls:${ls || ".02em"};${extra || ""}">
+        <div class="label"><b>${i === 0 ? "•" : i}</b>${name}</div>
+        <div class="d logo">Broadway Rush</div>
+        <div class="d head">Best bets for Saturday</div>
+        <div class="row"><span class="d show">Hadestown</span><span class="d num">86% &nbsp;$47</span></div>
+      </div>`).join("");
+  </script>
+</body>
+</html>

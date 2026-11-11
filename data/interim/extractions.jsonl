@@ -57995,3 +57995,241 @@
 {"comment_id": "nvcazad", "observations": [], "batch": "msgbatch_0155yME97ErbnWDUrLGrE5ym", "model": "claude-haiku-5-5"}
 {"comment_id": "lrflbhn", "observations": [], "batch": "msgbatch_0155yME97ErbnWDUrLGrE5ym", "model": "claude-haiku-5-5"}
 {"comment_id": "pdc5ks5", "observations": [], "batch": "msgbatch_0155yME97ErbnWDUrLGrE5ym", "model": "claude-haiku-5-5"}
+{"comment_id": "19s8panfxrp0j", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sctbf17dawy", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sahbmmfavc5", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfayeoz808w", "observations": [{"kind": "line_count", "show_text": "Galileo", "show": "Galileo", "perf_date": "2026-11-10", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "07:15", "count": 5, "count_qual": "exact"}, {"kind": "line_count", "show_text": "Galileo", "show": "Galileo", "perf_date": "2026-11-10", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "08:00", "count": 10, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19s8ke90klzph", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scwdv43lv2a", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc79ucpx34y", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdufnrgx85h", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scogmeylqis", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sbdfwvwt1lv", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sd5810aywlc", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scxpsbgz8u9", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sgh6i3hdrsz", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19satayeyqrmp", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sg1ktodrp36", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sbqivp4zblw", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sb46pemhmcj", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdz7nfmexlw", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scw1prdm682", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sa1vtzo0gis", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfauv3rfmf9", "observations": [{"kind": "line_count", "show_text": "Oh Mary", "show": "Oh Mary", "perf_date": "2026-11-10", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "07:15", "count": 5, "count_qual": "exact"}, {"kind": "line_count", "show_text": "Oh Mary", "show": "Oh Mary", "perf_date": "2026-11-10", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "06:55", "count": 1, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19senmvku2sgz", "observations": [{"kind": "attempt", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "arrival_time": "04:45", "line_position": 13, "outcome": "unknown"}, {"kind": "supply", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "stated_count": 100, "stated_qual": "total", "sro_offered": "no"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfekt90b2ww", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scxoms7rddu", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19s98sn8abx6o", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc242zatusi", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sb0bapshfmt", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scoku8z5vuq", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sb4anzh37pe", "observations": [{"kind": "supply", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "low", "needs_context": false, "stated_qual": "remaining", "sro_offered": "no"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sg4jckavlgh", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdz66uyulr4", "observations": [{"kind": "attempt", "show_text": "Dolly", "show": "Hello, Dolly!", "perf_date": "2026-11-09", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": true, "line_position": 120, "outcome": "full_price_only"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc3vibqxgdf", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sffrizfrps2", "observations": [{"kind": "line_count", "perf_date": "2026-11-10", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": true, "time": "09:05", "count": 17, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sgibzq9dr0g", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19se3d9uvj7gi", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfh82nnsabo", "observations": [{"kind": "line_count", "show_text": "Galileo", "show": "Galileo", "perf_date": "2026-11-10", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "09:37", "count": 14, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sgelm4be15v", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdpkaucmaow", "observations": [{"kind": "line_count", "show_text": "Dolly", "show": "Hello, Dolly!", "perf_date": "2026-11-09", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": true, "time": "07:30", "count": 100, "count_qual": "at_least"}, {"kind": "line_count", "show_text": "Dolly", "show": "Hello, Dolly!", "perf_date": "2026-11-09", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": true, "time": "08:00", "count": 150, "count_qual": "at_least"}, {"kind": "attempt", "show_text": "Dolly", "show": "Hello, Dolly!", "perf_date": "2026-11-09", "perf": "unknown", "rush_type": "general", "secondhand": true, "confidence": "low", "needs_context": true, "arrival_time": "02:30", "line_position": 1, "outcome": "unknown"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdvpbd47m2s", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sa1ddja41ph", "observations": [{"kind": "line_count", "show_text": "Rocky Horror Show", "show": "The Rocky Horror Show", "perf_date": "2026-11-07", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "08:25", "count": 7, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19se5reinu7b4", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc6tm4y3jfp", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scgix3s5m3o", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sauz1erps3l", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdlsaoat7vn", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sgh95609blu", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfxx1apue9v", "observations": [{"kind": "attempt", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "arrival_time": "09:40", "line_position": 3, "outcome": "unknown"}, {"kind": "line_count", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "time": "10:00", "count": 9, "count_qual": "approx"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdxzhglwg91", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfdz5o8mgzl", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19se424nbm200", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scunrbqwtj9", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sgjm55sbtol", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scpyzdikvph", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfvm5s444g2", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sg0j6jals9s", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sd9uu1xk9s5", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sg0zyqbosbo", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scop5acj81v", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc2kpyhjqqo", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sbz5xeqhfd0", "observations": [{"kind": "line_count", "show_text": "Two Strangers", "show": "Two Strangers (Carry Me Back to Old Virginia)", "perf_date": "2026-11-08", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "time": "10:30", "count": 14, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdioor324qp", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc8xyu1h2dg", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sduqzn3jlpg", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdth3doog4i", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19see7u6p71c5", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sco9cldzx4x", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scss1870uwy", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19se5ast99bi9", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc5m2l2saub", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sg6u4uol469", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scoj6r4h85c", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfn8j9b96yr", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdlopsef5ep", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sex71tzp01w", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sbz85u1jhts", "observations": [{"kind": "line_count", "show_text": "Mincemeat", "show": "Mincemeat", "perf_date": "2026-11-08", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "10:30", "count": 5, "count_qual": "exact"}, {"kind": "line_count", "show_text": "Outsiders", "show": "The Outsiders", "perf_date": "2026-11-08", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "10:30", "count": 7, "count_qual": "exact"}, {"kind": "line_count", "show_text": "Billy. Crustal", "show": "Billy & Crustal", "perf_date": "2026-11-08", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "time": "10:30", "count": 2, "count_qual": "exact"}, {"kind": "line_count", "show_text": "BVSC", "show": "Bright Star", "perf_date": "2026-11-08", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "low", "needs_context": false, "time": "10:30", "count": 4, "count_qual": "exact"}, {"kind": "line_count", "show_text": "Downstate", "show": "Downstate", "perf_date": "2026-11-08", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "10:30", "count": 2, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sgdxm3n9y77", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdy69zl1ym9", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sav4djft2m9", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc7687u3uhs", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sb7fcn6wvhg", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdwh36x31j6", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19seoy6hobptx", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfxipgppimd", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scgzme506rl", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sct8bzt40as", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sctqrm5qdfm", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfznl5v0gv9", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19seh23sc496r", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfgzsfnp281", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sduox53be76", "observations": [{"kind": "supply", "show_text": "Downstate", "show": "Downstate", "perf_date": "2026-11-09", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "11:40", "stated_qual": "remaining"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19se2ipgic4gy", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scqjtpg26wz", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scwdfr0c8sg", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfai8m79gaq", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc6u9aq7ehv", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc6z0i2x2xv", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdqd0nli9vn", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sg03v8d4d45", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sctocygaop1", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfr0lrtd1fl", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scswy18aef6", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc2nxas0tib", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc92brzao0y", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19se9uqf67zwk", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc0qmj12jfn", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scnn785uha8", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc1np7ndt0h", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scxpoz847lu", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scpbcrkcebp", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19s9ytemvyoio", "observations": [{"kind": "line_count", "show_text": "lost boys", "show": "Lost Boys", "perf_date": "2026-11-07", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": true, "time": "07:29", "count": 18, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdvto0uyj5u", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sa04shjn60z", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sg6iw4i3t5v", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sa0ack8vc82", "observations": [{"kind": "attempt", "show_text": "Two Strangers", "show": "Two Strangers", "perf_date": "2026-11-07", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "arrival_time": "08:00", "line_position": 2, "outcome": "unknown"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19saqhq3k9vhe", "observations": [{"kind": "attempt", "perf_date": "2026-11-07", "perf": "matinee", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "arrival_time": "08:15", "line_position": 3, "outcome": "got_rush", "seat": "front row"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sasas6y5in8", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scxbc2rag79", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19s8qttk7kpcz", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdimqc8lkld", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19s9xn2figalf", "observations": [{"kind": "line_count", "show_text": "Mincemeat", "show": "Operation Mincemeat", "perf_date": "2026-11-07", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "07:00", "count": 0, "count_qual": "exact"}, {"kind": "line_count", "show_text": "Outsiders", "show": "The Outsiders", "perf_date": "2026-11-07", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "07:00", "count": 6, "count_qual": "exact"}, {"kind": "line_count", "show_text": "BVSC", "show": "Buena Vista Social Club", "perf_date": "2026-11-07", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "07:00", "count": 0, "count_qual": "exact"}, {"kind": "line_count", "show_text": "O Mary", "show": "Oh, Mary!", "perf_date": "2026-11-07", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "07:00", "count": 9, "count_qual": "exact"}, {"kind": "attempt", "show_text": "O Mary", "show": "Oh, Mary!", "perf_date": "2026-11-07", "perf": "unknown", "rush_type": "general", "secondhand": true, "confidence": "medium", "needs_context": false, "arrival_time": "06:00", "line_position": 1, "outcome": "unknown"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sa49aetsjok", "observations": [{"kind": "line_count", "show_text": "Schmigadoon", "show": "Schmigadoon!", "perf_date": "2026-11-07", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "09:30", "count": 12, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19senl3qu8mn9", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sg1z0hg0jtv", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfwx1yjo03o", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19se4gwcp1402", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sge3671gtsx", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sawr4edgv37", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scwtrax9z7o", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sggs0l8aov7", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc18igz7w74", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sb0ym6rrotd", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19s96zc5wc43k", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scbzd3mj83n", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19saak1d61hj4", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sg0gqh6ytoi", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfb2voq4mrl", "observations": [{"kind": "line_count", "show_text": "Oh Mary", "show": "Oh, Mary!", "perf_date": "2026-11-10", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": true, "time": "07:20", "count": 7, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sbygxgiya69", "observations": [{"kind": "line_count", "show_text": "Schmigadoon", "show": "Schmigadoon!", "perf_date": "2026-11-08", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "10:15", "count": 4, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdrltxho5k3", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sa679eiapdt", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc41ic1bsps", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sap9222fvur", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scvuu25lif6", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfg8vemzs9v", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfgyq7um7s5", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdbacuz10g2", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sa676rh5rt0", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sac9l0s7bxc", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfhjyggr2o3", "observations": [{"kind": "attempt", "show_text": "JIT", "show": "Joseph and the Amazing Technicolor Dreamcoat", "perf_date": "2026-11-10", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "arrival_time": "08:00", "line_position": 3, "outcome": "unknown", "cast_note": "Nic Christopher's first show"}, {"kind": "line_count", "show_text": "JIT", "show": "Joseph and the Amazing Technicolor Dreamcoat", "perf_date": "2026-11-10", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "time": "09:45", "count": 8, "count_qual": "exact", "cast_note": "Nic Christopher's first show"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc4164e7k1s", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19seiotmkrp1g", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfesawnov6q", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc276xqzs4h", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc4i9flik2p", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sb0lp14pwmb", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19se5o7iemyrp", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc8dhe64arn", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scfhuf9at5x", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scoxz6dca69", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfz4tcqh6f7", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19s9zkkr1cyp1", "observations": [{"kind": "line_count", "show_text": "O Mary", "perf_date": "2026-11-07", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "07:45", "count": 18, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sg0r1zd2d7p", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc38et6igqr", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scftir3g4jn", "observations": [{"kind": "attempt", "show_text": "MHE", "show": "Maybe Happy Ending", "perf_date": "2026-11-08", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "seat": "orch D7", "outcome": "got_rush"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdmnqq575b8", "observations": [{"kind": "line_count", "show_text": "Dolly", "show": "Hello, Dolly!", "perf_date": "2026-11-09", "perf": "unknown", "rush_type": "general", "secondhand": true, "confidence": "high", "needs_context": true, "time": "07:30", "count": 100, "count_qual": "at_least"}, {"kind": "line_count", "show_text": "Dolly", "show": "Hello, Dolly!", "perf_date": "2026-11-09", "perf": "unknown", "rush_type": "general", "secondhand": true, "confidence": "high", "needs_context": true, "time": "08:00", "count": 150, "count_qual": "at_least"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sa7a0ycbshs", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sa0akuv85b5", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19s8kgyf8ketg", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdwxo4psbr9", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc2bjb1wz6p", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19se6r2xbiiyr", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfkmxz21h43", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scp2peyyr5u", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfhllqb044j", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdp9k2a4dtu", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sg1g3pp8nz6", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scsdlk6qrgg", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdea2iek03k", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sa82trml0gy", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sh4umah915u", "observations": [{"kind": "line_count", "show_text": "Mincemeat", "show": "Mincemeat", "perf_date": "2026-11-11", "perf": "evening", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "07:30", "count": 1, "count_qual": "exact"}, {"kind": "line_count", "show_text": "Outsiders", "show": "Outsiders", "perf_date": "2026-11-11", "perf": "evening", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "07:30", "count": 2, "count_qual": "exact"}, {"kind": "line_count", "show_text": "Inter Alia", "show": "Inter Alia", "perf_date": "2026-11-11", "perf": "evening", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "07:30", "count": 4, "count_qual": "exact"}, {"kind": "line_count", "show_text": "BC 860", "perf_date": "2026-11-11", "perf": "evening", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "time": "07:30", "count": 0, "count_qual": "exact"}, {"kind": "line_count", "show_text": "Buena", "perf_date": "2026-11-11", "perf": "evening", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "time": "07:30", "count": 0, "count_qual": "exact"}, {"kind": "line_count", "show_text": "Downstate", "show": "Downstate", "perf_date": "2026-11-11", "perf": "evening", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "07:30", "count": 0, "count_qual": "exact"}, {"kind": "line_count", "show_text": "Galileo", "show": "Galileo", "perf_date": "2026-11-11", "perf": "evening", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "07:30", "count": 0, "count_qual": "exact"}, {"kind": "line_count", "show_text": "Mary", "perf_date": "2026-11-11", "perf": "evening", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "time": "07:30", "count": 5, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sgegk93a3qb", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdhi1wt42o5", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scwp7k4eb2b", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc7cef4xrlw", "observations": [{"kind": "attempt", "show_text": "MHE", "show": "Maybe Happy Ending", "perf_date": "2026-11-08", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": true, "arrival_time": "12:35", "line_position": 0, "outcome": "got_rush", "seat": "full view orch"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc73smrj0qt", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scinhlt3ikk", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfvumj9nj9f", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19s9xzwzr1rc5", "observations": [{"kind": "line_count", "show_text": "lost boys", "show": "Lost Boys", "perf_date": "2026-11-07", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "07:11", "count": 12, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scxv5siuqgz", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sae18mhywww", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19seicsg16b9h", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdrl4htnd7k", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sax0zoossbk", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdb92219pq9", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sbx7i4uav40", "observations": [{"kind": "line_count", "show_text": "Outsiders", "show": "Outsiders", "perf_date": "2026-11-08", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "09:45", "count": 5, "count_qual": "exact"}, {"kind": "line_count", "show_text": "Mincemeat", "show": "Mincemeat", "perf_date": "2026-11-08", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "09:45", "count": 2, "count_qual": "exact"}, {"kind": "line_count", "show_text": "Mincemeat", "show": "Mincemeat", "perf_date": "2026-11-08", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "08:05", "count": 1, "count_qual": "exact"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19se522tp8tc2", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sadgdupvspu", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sg24evl1mck", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19s8irku5s005", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc65037q0bp", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scsu5mwpitf", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sgflq3miwrm", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sejg5c5z729", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19s8qt4fflqhv", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sbcrv8mkmv7", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19s9g0vpkoy84", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc1tk4czsww", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sb0r5tp82v9", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdzs1292y74", "observations": [{"kind": "attempt", "perf_date": "2026-11-06", "perf": "unknown", "rush_type": "general", "secondhand": true, "confidence": "low", "needs_context": false, "arrival_time": "07:00", "line_position": 0, "outcome": "sold_out_before_me"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sb43slmly01", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sa5spf0l537", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19se4w62gu2df", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sd0tf1nb3wl", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc32uqnj83o", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sab4roi5moy", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sg476z2ziw5", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scpamw7yb29", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sa6pr9udnhg", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfj70rfnupv", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfh01t5pw4j", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scbofsdcmio", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scqj6s9lqpw", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sa6ccjhay01", "observations": [{"kind": "line_count", "show_text": "Wanted", "show": "Wanted", "perf_date": "2026-11-07", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "10:18", "count": 10, "count_qual": "exact"}, {"kind": "supply", "show_text": "Wanted", "show": "Wanted", "perf_date": "2026-11-07", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "time": "10:18", "stated_qual": "remaining"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scbs3x1qvj7", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scc7b0mdsf8", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19s8jon9q7o85", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sa5k01met0j", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sfet5dylc1v", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdih0hjkzyb", "observations": [{"kind": "supply", "show_text": "Stranger Things 5", "perf_date": "2026-11-08", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "high", "needs_context": false, "time": "12:15", "stated_qual": "remaining"}, {"kind": "attempt", "show_text": "Stranger Things 5", "perf_date": "2026-11-08", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "window_time": "12:15", "outcome": "got_rush"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sccpo9nh0df", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc8xymiiom9", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19s9gjfuyxpvk", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc5jsn2opwi", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc3aie15ttw", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19scxjv6td8xv", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sdl388x5t43", "observations": [{"kind": "line_count", "show_text": "Dolly", "show": "Hello, Dolly!", "perf_date": "2026-11-09", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "time": "07:30", "count": 100, "count_qual": "at_least"}, {"kind": "line_count", "show_text": "Dolly", "show": "Hello, Dolly!", "perf_date": "2026-11-09", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "medium", "needs_context": false, "time": "08:00", "count": 150, "count_qual": "at_least"}, {"kind": "attempt", "show_text": "Dolly", "show": "Hello, Dolly!", "perf_date": "2026-11-09", "perf": "unknown", "rush_type": "general", "secondhand": false, "confidence": "low", "needs_context": false, "arrival_time": "02:30", "line_position": 1, "outcome": "unknown"}], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19sc5rctqdkio", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19seuv74g7vcw", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
+{"comment_id": "19senggunqb9g", "observations": [], "batch": "msgbatch_01AvS9NGww1boutCXsmiU4VJ", "model": "claude-haiku-5-5"}
