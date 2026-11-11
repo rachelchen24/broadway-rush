@@ -1,6 +1,6 @@
 # Broadway Rush — Spec (draft)
 
-> Status (2026-11-05): build steps 1–4 are built (Reddit scrape → labeled extraction pilot → full extraction into `data/processed/reports.csv` → grosses, rush policies + history, show catalog). Step 6 was moved up: the TKTS and Ticketmaster snapshot scrapers are built, and the daily GitHub Actions job works (manual run succeeded 2026-11-05; ~~first scheduled run still to confirm~~ scheduled runs confirmed 2026-11-07). Calendar, weather and NYC permitted events were added 2026-11-05. **Updated 2026-11-06: a first model (step 5) and a first website (step 7) are built and run locally, not deployed.** The simple combo beats the lookup table on line length but not on ticket counts or the chance of a ticket (§5.2a, §5.3). The report form and Refresh + PIN are screens only, not connected. **Added 2026-11-08:** the This week view (§2.2b), local only. Level-ups, cast news and comparison rows aren't built. **🆕 Added 2026-11-11: four website changes are decided and waiting to be built, all listed in §2.8 (build queue):** Montserrat Black header font, theater name opens Google Maps, typical ticket price next to the rush price, links to digital lottery and digital rush sites. §10 (new) lists ideas outside this project's scope. What was built, and how, is in `process.md`. ~~Struck~~ text was replaced; anything not marked built is still a plan.
+> Status (2026-11-05): build steps 1–4 are built (Reddit scrape → labeled extraction pilot → full extraction into `data/processed/reports.csv` → grosses, rush policies + history, show catalog). Step 6 was moved up: the TKTS and Ticketmaster snapshot scrapers are built, and the daily GitHub Actions job works (manual run succeeded 2026-11-05; ~~first scheduled run still to confirm~~ scheduled runs confirmed 2026-11-07). Calendar, weather and NYC permitted events were added 2026-11-05. **Updated 2026-11-06: a first model (step 5) and a first website (step 7) are built and run locally, not deployed.** The simple combo beats the lookup table on line length but not on ticket counts or the chance of a ticket (§5.2a, §5.3). The report form and Refresh + PIN are screens only, not connected. **Added 2026-11-08:** the This week view (§2.2b), local only. Level-ups, cast news and comparison rows aren't built. **🆕 Added 2026-11-11: six items are decided and waiting to be built, all listed in §2.8 (build queue):** Montserrat Black header font, theater name opens Google Maps, typical ticket price next to the rush price, links to digital lottery and digital rush sites, high-profile stars (rule decided, cutoff still to pick), and NYC hotel occupancy as a tourist gauge (source not found yet). §10 (new) lists ideas outside this project's scope. What was built, and how, is in `process.md`. ~~Struck~~ text was replaced; anything not marked built is still a plan.
 > Standalone project: nothing is reused from previous projects.
 
 ## 1. Concept
@@ -107,6 +107,23 @@ While a filter is on, shows with an unknown value are hidden, and the page says 
 - **The rule: a high-profile star is a current principal who was already famous before joining the show, measured by Wikipedia page views.** Their Wikipedia page's typical monthly views, over the 12 months before their casting was announced, must pass a cutoff. Using the months before the announcement keeps the show's own buzz out of the number.
 - **Typical = the median month,** so one news spike doesn't make someone a star. If the announcement date isn't known, use the 12 months ending 3 months before their first performance.
 - **The cutoff is mine to pick, from the data.** Claude pulls the number for every current principal and shows me the ranked list; I choose where stars start. Check: Aaron Tveit in Moulin Rouge has to land above the line. No Wikipedia page means not a star.
+- **Cutoff: 20,000 median monthly views (my decision 2026-11-11).** What I want: someone who'd make you go to a show you'd never heard of, just because they're in it (like Jeremy Jordan). Eva Noblezada and Reeve Carney must pass; Megan Hilty and Helen J. Shen shouldn't (I only knew them after they were on the poster). 20,000 does all four. **Confirmed after seeing the people just below the line:** I know about half of them, but I wouldn't go to a show just to see them, so they rightly don't count.
+  - **Near the line, from a second look at 42 more performers (2026-11-11, same window as below):** just above: Tituss Burgess 22k, Brian d'Arcy James 21k. Just below: Norbert Leo Butz 17k, Alex Brightman 16k, Ramin Karimloo 16k, Patrick Page 14k, Santino Fontana 14k, Kelli O'Hara 11k. Also above: Jordan Fisher 34k, Phillipa Soo 40k, Corbin Bleu 39k, Michael Urie 42k, Andrew Barth Feldman 40k, Christian Borle 29k, Annaleigh Ashford 28k, Laura Benanti 49k, Darren Criss 56k, Ben Platt 59k, Leslie Odom Jr. 57k, Bernadette Peters 60k, Josh Groban 75k, Nicole Scherzinger 188k.
+  - **Megan Hilty sits at 19,613, right on the line.** She fails at 20,000 as I want, but only by 400. People that close to the line get flagged in `stars.csv` for me to look at.
+  - **Check once the real window is used:** these numbers cover Jan 2023 to Oct 2026, including time in their shows. The real rule uses the 12 months before casting was announced, which may move people. Eva Noblezada (28k) and Reeve Carney (24k) clear 20,000 by a small margin, so if either drops under it in the real window, mark them as hand overrides rather than moving the cutoff.
+- **First look at the numbers (2026-11-11), used to pick the cutoff.** 48 hand-picked performers, median monthly views from January 2023 to October 2026. This is not the final window (it includes their time in the show), and it's not the real cast list.
+
+  | Median monthly views | Who |
+  |---|---|
+  | 250,000+ | Keanu Reeves 557k, Robert Downey Jr. 291k, Jake Gyllenhaal 290k, George Clooney 289k, Denzel Washington 285k, Hugh Jackman 261k |
+  | 100,000–250,000 | Rachel Zegler 202k, Kieran Culkin 168k, Nick Jonas 165k, Mia Farrow 152k, Bob Odenkirk 138k, Jonathan Groff 126k, Sadie Sink 122k, Idina Menzel 103k, Kristin Chenoweth 100k, Bill Burr 100k |
+  | 50,000–100,000 | Tom Felton 94k, Adam Lambert 93k, Sutton Foster 86k, Sarah Snook 83k, Betty Gilpin 72k, Lea Michele 64k, Kit Connor 60k, Patti LuPone 52k |
+  | 15,000–50,000 | Aaron Tveit 37k, Michelle Williams (singer) 37k, Audra McDonald 35k, Jeremy Jordan 34k, Jinkx Monsoon 32k, Eva Noblezada 28k, Cole Escola 24k, Reeve Carney 24k, Tituss Burgess 22k, Megan Hilty 20k |
+  | Under 15,000 | Helen J. Shen 11k, Tom Francis 10k, Shoshana Bean 8k, Gracie Lawrence 8k, Adrienne Warren 7k, Christopher Sieber 5k, Jennifer Simard 5k, Jasmine Amy Rogers 5k, Jak Malone 5k, Nicholas Christopher 4k, Joy Woods 4k, Andrew Durand 4k, Jordan Litz 2k, Lencia Kebede 1k |
+
+  - ~~**Cutoff options from Claude:**~~ (replaced by my 20,000 pick above) 15,000 (recommended: it sits in the widest gap, between Megan Hilty at 20k and Helen J. Shen at 11k, so few people are borderline, and Aaron Tveit clears it easily); 30,000 (Tveit, Audra McDonald and Jeremy Jordan only just pass; Eva Noblezada and Reeve Carney don't); 50,000 (household names only; Aaron Tveit fails, so it breaks my check).
+  - **Why the "before they joined" window matters:** Cole Escola's lowest month was 3,200 and highest 603,000. Oh, Mary! made them famous, so they weren't a star when it opened. Sadie Sink's last 12 months run at 276k against 122k overall.
+  - Brody Grant and Sky Lakota-Lynch have no Wikipedia page, so they count as not stars. 5 lookups were refused for going too fast (Nicole Scherzinger, Darren Criss, Jordan Fisher, Natasha Hodgson, Jessica Vosk) and were not retried.
 - **I can override anyone by hand,** either way, with a one-line reason.
 - **Source:** Wikimedia's official page-views service: free, no key, daily numbers back to July 2015, people only (bots filtered out). Add it to `registry/sources.csv` before the first fetch.
 - **Kept in `registry/stars.csv`,** pre-filled by Claude and reviewed by me, one row per person per stint: show, person, role, exact Wikipedia page title, date the casting was announced, first performance, last performance (blank while open-ended), date the last performance was announced, monthly views, the 12-month window used, star yes/no, override, reason, source, date checked. The dates make a star drop off the site when they leave, and stop the model's tests from using a departure before it was public.
@@ -196,7 +213,7 @@ All of this goes in the predictions file, so the site still reads only that file
 - Shows with *some* data (e.g. prices + grosses but no Reddit reports) still get a prediction, labeled `Low confidence` (§5.1).
 
 ### 2.8 🆕 Build queue: decided, not built yet (started 2026-11-11)
-**This is the one place to look for new website work.** Everything here is decided by me and ready to build; none of it is on the site yet. All four are site-only changes (`web/index.html`, `web/styles.css`, `web/app.js`): no model, data or scraper changes, except N4's last-resort lookup, which isn't needed today. When an item is built, mark it ✅ with the date here, and update the older section it points to.
+**This is the one place to look for new website work.** Everything here is decided by me and ready to build, apart from the waits marked in the table; none of it is on the site yet. N1–N4 are site-only changes (`web/index.html`, `web/styles.css`, `web/app.js`): no model, data or scraper changes, except N4's last-resort lookup, which isn't needed today. When an item is built, mark it ✅ with the date here, and update the older section it points to.
 
 | # | Item | Added | Status |
 |---|---|---|---|
@@ -204,6 +221,10 @@ All of this goes in the predictions file, so the site still reads only that file
 | N2 | Theater name opens Google Maps | 2026-11-11 | 📝 not built |
 | N3 | Typical ticket price shown next to the rush price | 2026-11-11 | 📝 not built |
 | N4 | Links to each show's digital lottery and digital rush (site link, app mention) | 2026-11-11 | 📝 not built |
+| N5 | High-profile stars: collect the list, label and filter on the site, model inputs | 2026-11-11 | 📝 not built; cutoff picked: 20,000 |
+| N6 | NYC hotel occupancy as a tourist gauge for the model | 2026-11-11 | 📝 not built; source not found yet |
+
+N1–N4 are website work. **N5 and N6 are data and model work**: they need new data collected first, and their model parts belong to the final-model slot (Nov 17–19).
 
 **N1. Header font: Montserrat Black (replaces Bebas Neue in §2.4)**
 - Why: Bebas Neue's letters are too narrow. I picked Montserrat Black from 15 wider options on 2026-11-11.
@@ -257,7 +278,53 @@ All of this goes in the predictions file, so the site still reads only that file
 - Links only. Lotteries stay out of the predictions (§3.5), and the site never enters one or fetches those pages.
 - Done when: every show with a lottery or digital rush links to the right page from the tile and the details view, TodayTix rushes also mention the app, the 3 with a blank `where` link through `how`, and no link is broken or points at a sentence.
 
-Build N1 first: it changes text widths, and N2 and N3 both add text to the tile.
+**N5. High-profile stars**
+- Why: stars raise demand and ticket prices (Aaron Tveit in Moulin Rouge), most of all when their run is almost over. I want them labeled on the site and in the model.
+- The rule is decided and written in §2.2a: fame before joining, measured by Wikipedia page views, with my cutoff and hand overrides. The model inputs are in §3.12.
+- Steps, in order. **Stop after step 2 and wait for me:**
+  1. Add Wikimedia's page-views service to `registry/sources.csv`. List the principals of every show now running, from sources the registry already allows. Playbill pages go through a script that keeps only the facts and are never sent to an AI model.
+  2. Pull each principal's monthly page views (3 seconds or more apart) and fill `registry/stars.csv` (columns in §2.2a). Mark star yes/no with the 20,000 cutoff, flag anyone within 15% of it, and give me the ranked list so I can mark overrides.
+  3. Site: `predict.py` passes each show's current stars to the predictions file. **The show page gets a star section (my request 2026-11-11).** I suggested "Key appeals"; Claude's working title is **"The draw"** (others: "Why people go", "Who's in it"). It lists each high-profile star with their role, when they joined, and their last performance once announced ("Final performance January 4"), with a "leaving soon" highlight in the last 14 days. It can also hold other draws the site already knows, such as an announced closing date. No star and nothing else to say means no section. Tiles get a `★ Name` label, the "Has a high-profile star" filter (§2.2a) is switched on, and the `Star leaving Sunday` badge shows when a last performance within 14 days has been announced.
+  4. History, for the model: add star runs back to June 2024, including shows that have closed, with the dates their casting and departures were announced.
+  5. Model (final-model slot, Nov 17–19): add the star inputs from §3.12 and report a with/without row in the results table (§5.3).
+- Steps 1–3 work without 4–5, so the label and filter can ship first.
+- Keeping it current: the weekly job (§6.1) re-checks casts, and cast news (§3.12) supplies joining and leaving dates once it's collected. Until then, dates are filled by hand.
+- Done when: every running show's principals are in `stars.csv` with their views, my cutoff is recorded in the file's notes and in §8, the tile label, filter and badge work, and the results table has the with/without stars row.
+
+**N6. NYC hotel occupancy as a tourist gauge**
+- Why: fuller hotels mean more tourists, and more tourists mean more Broadway demand, both tickets bought ahead and rush lines. The calendar (§3.6) only knows the dates of holidays and school breaks; this would measure how busy the city really is.
+- **"If we can get it": finding a legal source is step 1, and nothing is confirmed yet.** Places to check, none verified:
+  - NYC Tourism + Conventions' published tourism statistics (already listed in §3.9).
+  - City or state government reports that publish hotel occupancy, and NYC Open Data, including hotel room occupancy tax collections as a stand-in.
+  - The industry's standard numbers come from a paid data company (STR, part of CoStar). Don't scrape or copy those from behind a paywall; a figure quoted in a public government report is fine to use from that report.
+- What the source has to offer: NYC-wide occupancy (the share of hotel rooms filled), monthly or better, weekly if it exists, from June 2024 to now. Add it to `registry/sources.csv` with its terms before fetching.
+- Two things to design around:
+  - **It's published late.** Occupancy for a month comes out weeks afterwards, so a prediction for next Saturday can't use that week's real number. The input has to be something known in advance: the same week or month last year, and the latest published month against the same month a year earlier (is the city running busier or quieter than usual?).
+  - **It may repeat what the model already knows.** Season, holidays and weekly grosses (seats sold, §3.3) already track tourist season. So this goes in as a with/without row in the results table (§5.3), and stays only if it helps.
+- Proposed inputs: `hotel_occ_same_period_last_year`, `hotel_occ_latest_vs_last_year`.
+- **Past data is fine (my decision 2026-11-11): learn the pattern from history.** From past years, work out which weeks of the year, and which parts of a month, have the most tourists and the highest Broadway attendance, and give the model that as a "how busy is this time of year usually" number: `tourist_season_index` and `attendance_season_index`.
+  - The attendance half needs no new source: weekly attendance is already in the grosses files (127 weeks, §3.3), and Playbill's grosses go back to 1985, so more years can be added for a steadier pattern (leave out the 2020–21 shutdown).
+  - Weekly numbers can't show which days within a week are busy; the day-of-week and holiday inputs (§3.6) already cover that.
+  - Build each index only from years before the date being predicted, so the tests don't peek.
+  - This part can be built even if no hotel source turns up.
+- If no legal source with history exists, write that down here and in §8 and drop it; don't replace it with a guess.
+- Done when: either the source is in the registry, the numbers are in `data/raw/` and joined to the model table, and the results table has the with/without row; or this item is marked "no legal source" with what was checked.
+
+Build N1 first: it changes text widths, and N2, N3 and N5's star label all add text to the tile.
+
+#### Things to scrape or collect for the build queue (listed 2026-11-11; nothing fetched yet except the first look in C3)
+Check `registry/sources.csv` before each one, and add a row for anything new. Same rules as always: no logging in, no getting around bot protection, polite gaps between requests.
+
+| # | What | For | Where from | Status |
+|---|---|---|---|---|
+| C1 | Current principal cast of every running show: person, role | N5 | Playbill production pages. 47 are already saved in `data/raw/playbill/show_pages/` from the runtime lookup on Nov 6; check whether they hold the cast before fetching again. Official show sites as a cross-check | Not started |
+| C2 | Star runs since June 2024, including closed shows: who joined and left, and the dates each was announced | N5 model inputs, `Star leaving` badge | Cast news (§3.12): Playbill and BroadwayWorld casting articles | Not started; cast news is still waiting on my go |
+| C3 | Monthly Wikipedia page views for every principal from C1 and C2 | N5 cutoff and `star_views` | Wikimedia's page-views service (in the registry since 2026-11-11) | First look only: 48 hand-picked people. One request a second got refused 5 times, so go slower (3 seconds or more) |
+| C4 | NYC hotel occupancy history, June 2024 on, further back if possible | N6 | Not found yet; places to check are in N6 | Not started |
+| C5 | More years of weekly Broadway attendance, for the seasonal pattern | N6 | Playbill grosses, already an approved source (back to 1985); 127 weeks are already saved | Not started |
+| C6 | A lottery's web address, only when the policy list has none | N4 | The show's official site | Not needed today (25 of 25 covered) |
+
+**To decide before C1 and C2 feed the model:** Playbill's site says its pages aren't for AI training (`ai-train=no`), and the registry row for its show pages says those facts are for site filters, not model inputs. Who is in a cast is a plain fact that many sites publish, but star inputs would put it into the model. Options: take cast facts from official show sites and news instead, or decide that plain facts are fine as they were for grosses, and write the reason in the registry. Mine to decide; the tile label, filter and star section don't depend on it.
 
 ## 3. Data sources
 
@@ -359,6 +426,7 @@ There's **no single site that lists everything** happening in NYC, so combine se
 - **Features:** `major_event_midtown_today`, `msg_event_tonight`, `javits_convention_today`, `tourism_index_month`.
 - **Built 2026-11-05:** `scrapers/nyc_events.py` → `data/processed/nyc_events_daily.csv` (full street closures and parades in the theater district, parades and races in Manhattan), and the hand-kept list in `registry/calendar_events.csv`. Raw counts mislead: ~157k of 212k Manhattan rows are sports permits, and parade grandstands are listed three weeks early. **Unknown, not zero:** Sept–Oct 2026 and anything over a month ahead aren't published yet, and July 3–7, 2026 can't be told apart from a lull; these days have `permits_complete = 0` and blank counts.
 - **Not built:** Ticketmaster NYC events, SeatGeek, Javits, nyctourism.com.
+- 🆕 **Hotel occupancy as a tourist gauge (added 2026-11-11, my idea; not built, source not found yet: §2.8 N6).** How full NYC's hotels are says how many tourists are in town. In tourist-heavy seasons Broadway demand goes up, both for tickets bought ahead and for rush lines. This is the real number behind `tourism_index_month` above.
 
 ### 3.10 User-submitted reports (verified) 🆕
 **Entry:** the floating "Report rush availability" button (§2.5).
@@ -760,6 +828,8 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 - **Tile search, filters and sorting (2026-11-06):** a search box finds shows by name, nickname or theater. Tiles show rush types. Filters: rush type, days showing, runtime, high-profile stars, play or musical. Sorts: best chance, latest arrival, rush price, typical ticket price, runtime. Days showing and runtime are looked up online. The site says "__% seats sold" instead of "__% full" (§2.2a). Built 2026-11-06, except the stars filter, which needs cast news.
 - **This week view (2026-11-08, my request):** a This week button shows which of the next 7 days is best: a day strip on top, then one tile per show with its best day and every day's arrival time. Days are compared by arrival time, latest first (tap again for earliest). Box offices open at noon on Sundays and 10 am on other days, so Sunday times get an asterisk and a note, in both views (§2.2b). Built 2026-11-08, ahead of the Nov 11–16 website slot, at my go; local only.
 - **Build queue (2026-11-11, my requests, none built yet; details in §2.8):** N1 header font changes from Bebas Neue to Montserrat Black, all caps, because Bebas is too narrow. N2 clicking the theater name opens Google Maps directions to that theater in a new tab, so you can see how far it is from you; the site doesn't ask for your location. N3 the typical ticket price shows next to the rush price, crossed out, with the saving, so the deal is obvious. N4 shows with a digital lottery or digital rush link to the page where you enter or buy, and mention the app when there is one. Also added §10, ideas outside this project's scope.
+- **High-profile star rule (2026-11-11, my decision; replaces Claude's placeholder of above-the-title billing or a major award):** a star is a current principal whose Wikipedia page passed a monthly view count in the 12 months before their casting was announced. Claude ranks everyone, I pick the cutoff and can override by hand. **Cutoff picked the same day: 20,000 median monthly views**, so Jeremy Jordan, Eva Noblezada and Reeve Carney count, and Megan Hilty and Helen J. Shen don't. Stars get a label on the tile, the filter, the `Star leaving` badge, and model inputs, because stars raise demand and prices, most of all near the end of their run (§2.2a, §3.12, §2.8 N5). Not collected or built.
+- **Hotel occupancy (2026-11-11, my idea):** if a legal source exists, use NYC hotel occupancy as a measure of how many tourists are in town, since tourist season raises demand for both tickets bought ahead and rush. No source confirmed yet; tested as a with/without row and kept only if it helps (§3.9, §2.8 N6).
 - **Model (2026-11-05):** the combo (trees for the line, Bayesian for the cutoff) for both the first and final models, because it's more fun to talk about. The first version stays simple, to see the whole site working; the final version is a leveled-up combo (§5.2, §5.2a, §5.2c). Not started.
 - **Deadline and scope (2026-11-05):** data project competition entry. ~~Due 2026-11-17.~~ **Complete by 2026-11-23, turn in 2026-11-24, present 2026-12-07** (corrected by me the same day). Between turn-in and the presentation, only small tweaks and improvements, **no model changes**. Everything stays in: cast + closing news, NYC permitted events, Refresh + PIN, report form + email approval, weekly automatic job, digital rush predictions. Cutting these was proposed and rejected. Core first (data, model, site), so a delay only moves an add-on. Schedule (stretched to the new dates by Claude, not yet reviewed by me):
   - **Nov 5–7:** data: catch-up, calendar, weather, NYC permitted events, cast + closing news.
@@ -811,7 +881,7 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 22. ~~**Fonts:** I don't like them. Fix later.~~ Decided 2026-11-06: Bebas Neue + Poppins (§2.4).
 23. **Any day mode, later dates:** should a tile show a rough number for the weekday ("Usually on Tuesdays: get there by 8:40")? Default no, because §1 limits predictions to the next 7 days and calls anything further extrapolation.
 24. ~~**Real dates further ahead:** the weekly job could pull Ticketmaster's schedule about 5 weeks out.~~ Dropped 2026-11-06: days showing comes from show websites (§2.2a).
-25. **Filter choices to review (§2.2a):** the high-profile star rule, the runtime bands, and whether Lottery and Standing room belong in the rush-type filter, since they aren't rush. Also from the build: a standing-room price counts as the rush price when a show has nothing else (Hadestown $39, Six $49), and Hadestown gets `In person (reported)` as well as `Standing room`.
+25. **Filter choices to review (§2.2a):** ~~the high-profile star rule~~ (decided 2026-11-11: Wikipedia page views, §2.2a; cutoff picked: 20,000 median monthly views, §2.2a), the runtime bands, and whether Lottery and Standing room belong in the rush-type filter, since they aren't rush. Also from the build: a standing-room price counts as the rush price when a show has nothing else (Hadestown $39, Six $49), and Hadestown gets `In person (reported)` as well as `Standing room`.
 26. **Limited-data shows (parked 2026-11-06, to figure out later):** look at other features for them. Nothing built, and the site still says "Limited data, probably easy" on all 6 until this is decided. Only 3 recorded outcomes exist across the 6, so nothing can be tested on them directly. Ideas from Claude, not decided:
     - **Wording:** replace "probably easy" with "Not enough reports to predict". It's on Hadestown at 95% seats sold and on It's a Wonderful Life, which has no reports or grosses.
     - **Standing room:** it sells only when a show sells out, so for a show where it's the only in-person option (Six, 60% seats sold), the question is whether the show sells out at all, not how long the line is.
