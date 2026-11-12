@@ -20,7 +20,7 @@
   --warn-bg: #4a3200;
   --warn-ink: #ffe29a;
   --warn-line: #8a6500;
-  --series-1: #b98a0c;
+  --series-1: #f0b829; /* brightened 2026-11-12 (was #b98a0c) */
   --series-2: #2f9fc0;
   --series-2-light: #6fc6de;
   --radius: 14px;
@@ -302,8 +302,20 @@ details summary { cursor: pointer; color: var(--ink-2); min-height: 32px; paddin
 .ns-nav .chip { flex: 0 0 auto; }
 .ns-section { margin-top: 26px; scroll-margin-top: 58px; }
 .ns-section > .lede { margin-bottom: 0; }
-.ns-section .accuracy-grid { display: block; columns: 520px; column-gap: 12px; }
-.ns-section .accuracy-grid > .panel { break-inside: avoid; margin-bottom: 12px; }
+.ns-section .accuracy-grid { display: flex; flex-direction: column; align-items: stretch; gap: 8px; margin-top: 10px; max-width: 900px; }
+/* FAQ-style charts (2026-11-12): one closed question per row; click to open. */
+.faq { padding: 0; }
+.faq > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; min-height: 48px; }
+.faq > summary::-webkit-details-marker { display: none; }
+.faq > summary h3 { margin: 0; font-size: 1rem; }
+.faq > summary::after { content: "+"; font: 400 1.5rem/1 var(--font-body); color: var(--gold); flex: 0 0 auto; }
+.faq > summary::after { transition: transform .15s; }
+.faq[open] > summary::after { transform: rotate(45deg); }
+.faq > summary:hover { background: var(--card-2); border-radius: var(--radius); }
+.faq[open] > summary:hover { border-radius: var(--radius) var(--radius) 0 0; }
+.faq > summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: var(--radius); }
+.faq-body { padding: 0 16px 16px; max-width: 900px; }
+.ns-section .accuracy-grid > .panel { margin-bottom: 0; }
 .ns-section .accuracy-grid > .panel.wide { column-span: all; }
 
 /* Bars made of plain elements */
@@ -433,3 +445,21 @@ fieldset.field { border: 0; margin: 0; padding: 0; }
   .worth-track { background: Canvas; border-color: CanvasText; }
   .worth-marker { background: Highlight; }
 }
+
+/* Cleaning funnel, slide style (2026-11-12): centered gold bars to scale, number inside, what was cut on the right. */
+.funnel { display: grid; gap: 10px; margin-top: 10px; }
+.funnel-row { display: grid; grid-template-columns: minmax(0, 30%) minmax(0, 1fr) minmax(0, 30%); gap: 14px; align-items: center; }
+.funnel-label { text-align: right; font-size: .88rem; color: var(--ink-2); line-height: 1.25; }
+.funnel-track { display: flex; justify-content: center; }
+.funnel-bar { height: 34px; border-radius: 6px; background: linear-gradient(180deg, #ffe07a, var(--gold)); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(244, 197, 66, .35); min-width: 4.2em; }
+.funnel-bar span { font: 900 1rem/1 var(--font-display); color: var(--on-gold); white-space: nowrap; }
+.funnel-cut { font-size: .78rem; color: var(--ink-3); line-height: 1.3; }
+.funnel-cut b { color: var(--ink-2); font-weight: 600; }
+.funnel-row.final .funnel-bar { height: 42px; box-shadow: 0 0 10px rgba(244, 197, 66, .9), 0 0 26px rgba(244, 197, 66, .5); }
+.funnel-row.final .funnel-label { color: var(--warm); font-weight: 600; }
+@media (max-width: 640px) {
+  .funnel-row { grid-template-columns: 1fr; gap: 4px; }
+  .funnel-label { text-align: left; }
+  .funnel-track { justify-content: flex-start; }
+}
+.no-data { margin-top: 18px; font-size: .84rem; }

@@ -236,6 +236,7 @@ All of this goes in the predictions file, so the site still reads only that file
 | N9 | Measure how much each input affects the outcome, chart it on Nerd stats, then cut the weak ones | 2026-11-11 | 📝 not built |
 | N10 | Special-deal flag on the site (not in the model) | 2026-11-11 | ✅ built 2026-11-11 (local) for the 4 deals on the policy list; dated deals file is empty |
 | N11 | NYU calendar, one model input (~~six schools, four inputs~~) | 2026-11-11 | 🔶 input built 2026-11-11 from the calendar I pasted (`nyu_session`: 0 break, 1 classes, 2 finals, 3 free and in town: one-day holidays and the 3 days before a term, my call 2026-11-11; summer counts as a break); not tested yet (N9, Nov 17–19) |
+| N12 | Nerd stats visual upgrade: 8 charts in the cleaning-funnel slide's marquee style (picked 2026-11-12, list below) | 2026-11-12 | 📝 not built, waiting for my go |
 
 N1–N4 and N10 are website work. **N5–N9 are data and model work**: their model parts belong to the final-model slot (Nov 17–19). N8 also changes the site.
 
@@ -407,6 +408,17 @@ After all the new inputs are in, measure each one's role and remove the ones tha
 | 3 | Needs cast news or slower collection | **Star history first: required, my top priority** (final weeks, days until leaving, limited run, cast changes: 4), days until closing (1), TKTS: on the board, discount, how often on the board (3; still collecting daily), NYU calendar (1) |
 
 27 new inputs, about 47 in total with today's 20. **Ticket model limit:** at most about 6–8 inputs, each either helping on the line side first or with a clear reason to change ticket supply (two-show days is the obvious one).
+
+**N12. Nerd stats visual upgrade (picked 2026-11-12)**
+- Why: the plain charts look generic; I want the look of `docs/slides/cleaning-funnel.html` (marquee bulbs, glowing gold, one bold headline that states the point). Charts and presentation are 17 of 50 rubric points (§1.1).
+- Upgrades to charts already there: (a) the cleaning funnel from the slide, bulbs and gold funnel, replacing the plain one; (b) reports per show as little marquee signs, lit bulbs = reports; (c) line growth as a queue of people figures outside a box office door, 3 am to 10 am; (d) the show-by-day grid as a light board, busier = brighter gold.
+- New: (e) a calendar heatmap of every day since June 2024 colored by line length, with callouts (Tonys, Thanksgiving, the Jan 2026 blizzard, World Cup); (f) a theater district map (hand-drawn SVG of the streets, each theater a glowing dot sized by the day's line and colored GO / Maybe / Stay, click opens the show); (g) a star cast board: when high-profile stars joined and left, with the show's line underneath; (h) a morning race: animated bars of every show's predicted line from 3 am to 10 am, re-sorting as they grow.
+- Not picked: 100 mornings, why-this-day waterfall, report card as ticket stubs, Reddit activity timeline, weather, rush clock, final-weeks bump, seasons and tourists.
+- **Nerd stats is FAQ-style (my request 2026-11-12, ✅ built):** every chart is a closed question; click to open. Section headings, jump buttons and the short-version scores stay visible. So many charts don't bombard the viewer. I'm reviewing which current charts to scratch before the new ones are built.
+- **Changes 2026-11-12 (my review of the current charts):** "How much does rush save?" removed from Nerd stats (not substantial). "Which shows and days are busiest?" moved to the top of the page and starts open. The cleaning funnel is rebuilt like my slide (6 steps, centered gold bars to scale, numbers inside): item (a) ✅. Chart yellow brightened (`--series-1` #b98a0c → #f0b829). The Key appeals footnote about the 20,000-views rule is removed from show pages.
+- **No-data shows (my decision 2026-11-12):** a show with in-person rush but 0–6 line reports gets no tile on any home view and no bar in "How many reports does each show have?". Each place lists them in one quiet line at the bottom: "No data for: …". Today that's Downstate, It's a Wonderful Life, Wanted and Wicked. Shows with no in-person rush line (lottery-only, like Hamilton) keep their tiles.
+- **Still to decide (me, later):** the bottom half of Nerd stats ("How good is it?" and "Model vs. ground truth") doesn't make sense to me yet: Claude explains each chart better or we cut them.
+- Same rules as the other charts: numbers come only from the predictions file, readable at phone width, text contrast checked, and a plain table or text for screen readers.
 
 **Not adding (my decision 2026-11-11):** the deal size (typical ticket minus rush price), subway disruptions, and rush policy changes.
 

@@ -233,8 +233,7 @@ function keyAppealsPanel(e, day) {
         ].filter(Boolean).join(" · ")),
         soon ? h("p", { class: "appeal-soon" }, "Leaving soon: expect bigger crowds in the last weeks.") : null);
     }),
-    closing ? h("p", {}, `The show closes ${dayName(closing, { month: "long", day: "numeric", year: "numeric" })}.`) : null,
-    h("p", { class: "muted" }, "A high-profile star was already famous before joining: their Wikipedia page drew 20,000+ views a month in the year before. Cast from Playbill."));
+    closing ? h("p", {}, `The show closes ${dayName(closing, { month: "long", day: "numeric", year: "numeric" })}.`) : null);
 }
 
 /* ---------- Special deals (SPEC 2.8 N10): flagged on the site, never in the model ---------- */
@@ -581,6 +580,10 @@ function chipRow(name, options, set, opts = {}) {
 }
 
 /* ---------- home ---------- */
+const NO_DATA_MAX_REPORTS = 6;
+const noData = (e) => e.group !== 3 && (e.line_reports ?? 0) <= NO_DATA_MAX_REPORTS;
+const noDataLine = (list) => (list.length
+  ? h("p", { class: "muted no-data" }, `No data for: ${list.map((e) => e.name).sort((a, b) => a.localeCompare(b)).join(", ")}.`) : null);
 function allShows() {
   const seen = new Map();
   for (const d of Object.keys(state.data.days).sort()) {
@@ -602,7 +605,10 @@ function renderHome(selected) {
   const anyMode = selected === "any";
   const weekMode = selected === "week";
   const day = anyMode ? "any" : weekMode ? "week" : (selected && dates.includes(selected) ? selected : dates[0]);
-  const entries = anyMode ? allShows() : weekMode ? weekShows(dates) : data.days[day];
+  // Shows with in-person rush but 0-6 line reports get no tile, only a name in the "No data for" line (Rachel 2026-11-12).
+  const allEntries = anyMode ? allShows() : weekMode ? weekShows(dates) : data.days[day];
+  const noDataShows = allEntries.filter(noData);
+  const entries = allEntries.filter((e) => !noData(e));
   // Week view: Days showing means "days I can go", so only those days are compared.
   const allowed = (d) => !state.filters.days.size || state.filters.days.has(DAY_KEYS[dayIndex(d)]);
 
@@ -724,7 +730,7 @@ function renderHome(selected) {
     } else {
       sections.push(...grouped(visible, null, "h2"));
     }
-    results.replaceChildren(...sections);
+    results.replaceChildren(...sections, noDataLine(noDataShows) || "");
   };
 
   const pairs = weekMode
@@ -1036,15 +1042,24 @@ function bestClass(a, b, smallerIsBetter = true) {
   return aWins ? ["best", null] : [null, "best"];
 }
 const NS_SECTIONS = [
-  ["ns-summary", "Short version"], ["ns-lines", "How lines behave"], ["ns-data", "The data"],
+  ["ns-lines", "How lines behave"], ["ns-summary", "Short version"], ["ns-data", "The data"],
   ["ns-model", "The model"], ["ns-tests", "How good is it?"], ["ns-truth", "Model vs. ground truth"],
 ];
 function nsSection(id, title, intro, ...panels) {
   return h("section", { id, class: "ns-section" }, h("h2", {}, title), intro ? h("p", { class: "lede" }, intro) : null,
     h("div", { class: "accuracy-grid" }, panels));
 }
+// Each chart is a closed FAQ-style question (Rachel 2026-11-12: don't bombard the viewer). Charts drawn while closed
+// have no width, so they're redrawn when opened.
 function nsPanel(title, takeaway, ...body) {
-  return h("section", { class: "panel" }, h("h3", {}, title), takeaway ? h("p", {}, takeaway) : null, ...body);
+  return h("details", { class: "panel faq", ontoggle: (ev) => { if (ev.target.open) redrawIn(ev.target); } },
+    h("summary", {}, h("h3", {}, title)),
+    h("div", { class: "faq-body" }, takeaway ? h("p", {}, takeaway) : null, ...body));
+}
+// "Which shows and days are busiest?" starts open at the top (Rachel 2026-11-12).
+function openPanel(panel) { panel.open = true; requestAnimationFrame(() => redrawIn(panel)); return panel; }
+function redrawIn(el) {
+  charts.filter((c) => el.contains(c.holder)).forEach((c) => (c.cfg.draw || drawChart)(c.holder, c.cfg));
 }
 
 function growthPanel(ch) {
@@ -1105,56 +1120,29 @@ function heatPanel(ch, entries) {
     h("p", { class: "muted", style: "margin-top:8px" }, `Typical people in line in the last ${ch.near_opening_hours} hours before opening. A dash means it's not playing now or has fewer than ${ch.min_days_per_cell} past days of reports.${left.length ? ` Too few reports to list: ${left.join(", ")}.` : ""}`));
 }
 
-function savingsChart(entries) {
-  const rows = entries.filter((e) => e.group !== 3 && e.price && e.typical_ticket)
-    .map((e) => ({ e, save: e.typical_ticket - e.price })).sort((a, b) => b.save - a.save);
-  if (!rows.length) return null;
-  const max = Math.ceil(Math.max(...rows.map((r) => r.e.typical_ticket)) / 50) * 50;
-  const at = (v) => `${(v / max) * 100}%`;
-  const axis = [];
-  for (let t = 0; t <= max; t += 100) axis.push(h("span", { style: `left:${at(t)}` }, `$${t}`));
-  const list = h("div", { class: "dumbbells" },
-    h("div", { class: "dumb-row dumb-head" }, h("div", {}), h("div", { class: "dumb-axis" }, axis), h("div", { class: "dumb-save" }, "Save")),
-    rows.map(({ e, save }) => withTip(h("div", { class: "dumb-row" },
-      h("div", { class: "bar-label show-name" }, e.name),
-      h("div", { class: "dumb-track" },
-        h("span", { class: "dumb-link", style: `left:${at(Math.min(e.price, e.typical_ticket))};width:${at(Math.abs(save))}` }),
-        h("span", { class: "dumb-dot rush", style: `left:${at(e.price)}` }),
-        h("span", { class: "dumb-dot typical", style: `left:${at(e.typical_ticket)}` })),
-      h("div", { class: "dumb-save" }, money(save))), e.name, [`Rush ${money(e.price)}${e.price_note ? ` (${e.price_note})` : ""}`, `Typical ticket ${money(e.typical_ticket)}`, `Saves ${money(save)}`])));
-  return nsPanel("How much does rush save?",
-    `Across ${rows.length} shows, rush typically costs ${money(median(rows.map((r) => r.e.price)))} against ${money(median(rows.map((r) => r.e.typical_ticket)))} for a typical ticket, about ${money(median(rows.map((r) => r.save)))} less.`,
-    legendOf([{ name: "Rush price", dot: "rush" }, { name: "Typical ticket", dot: "typical" }]),
-    list,
-    h("p", { class: "muted", style: "margin-top:8px" }, "Shows with in-person rush and both prices known. Typical ticket is the average paid over recent weeks, so it already includes rush and discounts. The gap to a regular seat is usually bigger."),
-    numbersTable(["Show", "Rush", "Typical ticket", "Saves"], rows.map(({ e, save }) => [e.name, money(e.price), money(e.typical_ticket), money(save)])));
-}
-
 function funnelPanel(f) {
   const steps = [
-    ["Rush reports after the AI check", f.all_observations],
-    ["About in-person general rush", f.in_person_general_rush],
-    ["Tied to a Broadway show", f.mapped_to_a_broadway_show],
-    ["Confident enough to use", f.not_low_confidence],
-    ["Clear date, June 2024 or later", f.stated_valid_date_from_june_2024],
-    ["Date close to when it was posted", f.date_within_2_days_before_to_14_days_after_the_comment],
-    ["Date inside the show's run", f.date_inside_the_shows_run],
-    ["Gives both a time and a line count", f.line_points_with_a_time_and_number],
-    ["Before the box office opened", f.line_points_before_opening],
-    ["After removing duplicates", f.line_points_after_dropping_duplicates],
+    ["Reports pulled out", f.all_observations, null],
+    ["In-person general rush", f.in_person_general_rush, "lottery, digital, standing room, student"],
+    ["Matched to a Broadway show", f.mapped_to_a_broadway_show, "off-Broadway, tours, show unclear"],
+    ["AI was confident", f.not_low_confidence, "low confidence"],
+    ["Date checks out", f.date_inside_the_shows_run, "no date, wrong year, outside the run"],
+    ["Line counts for the model", f.line_points_after_dropping_duplicates, "no time or count, after opening, duplicates"],
   ];
-  const rows = steps.map(([label, n], i) => ({
-    label, value: n, text: n.toLocaleString(), tone: i === steps.length - 1 ? "gold" : "a",
-    note: i ? `${(steps[i - 1][1] - n).toLocaleString()} removed` : null,
-  }));
+  const max = steps[0][1];
+  const funnel = h("div", { class: "funnel", role: "list" }, steps.map(([label, n, why], i) => h("div", { class: `funnel-row${i === steps.length - 1 ? " final" : ""}`, role: "listitem" },
+    h("div", { class: "funnel-label" }, label),
+    h("div", { class: "funnel-track" }, h("div", { class: "funnel-bar", style: `width:${(n / max) * 100}%` }, h("span", {}, n.toLocaleString()))),
+    h("div", { class: "funnel-cut" }, why ? [h("b", {}, `−${(steps[i - 1][1] - n).toLocaleString()}`), ` ${why}`] : `from ${f.comments_scanned.toLocaleString()} comments scanned`))));
   return nsPanel("From Reddit comments to usable reports",
-    `We scanned ${f.comments_scanned.toLocaleString()} Reddit comments and forum posts. A first AI pass and a second one that checked its work left ${f.all_observations.toLocaleString()} rush reports, and ${f.line_points_after_dropping_duplicates.toLocaleString()} passed every check to become line reports.`,
-    barRows(rows),
+    `We scanned ${f.comments_scanned.toLocaleString()} Reddit comments and forum posts. An AI pulled out ${f.all_observations.toLocaleString()} rush reports, and ${f.line_points_after_dropping_duplicates.toLocaleString()} passed every check to become line reports.`,
+    funnel,
     h("p", { class: "muted", style: "margin-top:8px" }, `The model also uses ${f.cutoff_show_days.toLocaleString()} show-days with ticket information (${f.cutoff_stated_count} stated counts, the rest only "at least" or "at most") and ${f.outcomes_arrived_before_opening_known_result} attempts with a known result. Reports run from ${dayName(f.first_date, { month: "short", year: "numeric" })} to ${dayName(f.last_date, { month: "short", year: "numeric" })}.`));
 }
 
 function reportsPanel(ch, entries) {
-  const list = entries.filter((e) => e.group !== 3).sort((a, b) => b.line_reports - a.line_reports);
+  const list = entries.filter((e) => e.group !== 3 && !noData(e)).sort((a, b) => b.line_reports - a.line_reports);
+  const none = entries.filter(noData);
   const full = list.filter((e) => e.group === 1).length;
   const rule = ch.full_prediction_rule;
   return nsPanel("How many reports does each show have?",
@@ -1164,7 +1152,8 @@ function reportsPanel(ch, entries) {
       label: e.name, showName: true, value: e.line_reports, text: String(e.line_reports), tone: e.group === 1 ? "a" : "gray",
       tip: [`${e.line_reports} line reports`, `${e.reports_per_week} reports a week`, e.group === 1 ? "Full prediction" : "Not enough reports"],
     })), { ref: rule.line_reports }),
-    h("p", { class: "muted", style: "margin-top:8px" }, "In the tests, shows with 10 to 34 earlier line reports lost to the lookup table, and shows with 35 or more beat it. That's where the rule comes from."));
+    h("p", { class: "muted", style: "margin-top:8px" }, "In the tests, shows with 10 to 34 earlier line reports lost to the lookup table, and shows with 35 or more beat it. That's where the rule comes from."),
+    noDataLine(none));
 }
 
 function driversPanel(ch) {
@@ -1460,7 +1449,7 @@ function truthBrowser(r) {
       shown.length < list.length ? h("button", { type: "button", class: "link-button browse-more", onclick: () => { view.limit += 25; paint(); } }, `Show ${Math.min(25, list.length - shown.length)} more`) : null);
   };
   paint();
-  return h("section", { class: "panel wide" }, h("h3", {}, "Look up any test result"),
+  return nsPanel("Look up any test result", null,
     h("p", {}, "Every prediction next to what was really reported. Pick a show or month, or start with the biggest misses."),
     h("p", { class: "muted" }, "The small numbers under the model's prediction are its 80% range. Miss is how far the model was from what was reported. A big miss can mean the model was wrong or the report was: these come from Reddit comments and aren't verified."), body);
 }
@@ -1547,6 +1536,8 @@ function renderNerdStats() {
     h("h1", { class: "sentence" }, "Nerd stats"),
     h("p", { class: "lede" }, `The numbers behind the predictions. Test results come from ${dev.length} past months, each predicted using only earlier days. None of this has been checked on real trips yet.`),
     jump,
+    nsSection("ns-lines", "How rush lines behave", "From real Reddit reports, before any model.",
+      openPanel(heatPanel(ch, entries)), growthPanel(ch)),
     nsSection("ns-summary", "The short version",
       `Better than the simple lookup table on: ${beats.join(", ") || "none of the main measures"}. Not better on: ${loses.join(", ") || "none of them"}.`,
       h("section", { class: "panel wide" }, h("div", { class: "stat-row" },
@@ -1554,8 +1545,6 @@ function renderNerdStats() {
         h("div", { class: "stat" }, h("b", {}, pct(lc.coverage80, 1)), h("span", {}, "of real lines inside the 80% range (goal: 80%)")),
         h("div", { class: "stat" }, h("b", {}, pct(cc.accuracy_at_50, 1)), h("span", {}, `yes/no right (always saying yes: ${pct(a.always_yes_accuracy, 1)})`)),
         h("div", { class: "stat" }, h("b", {}, `${cc.misses_caught_at_50} of ${cc.misses}`), h("span", {}, "misses caught at 50%"))))),
-    nsSection("ns-lines", "How rush lines behave", "From real Reddit reports, before any model.",
-      growthPanel(ch), heatPanel(ch, entries), savingsChart(entries)),
     nsSection("ns-data", "Where the data comes from", null,
       funnelPanel(a.funnel), reportsPanel(ch, entries)),
     nsSection("ns-model", "What the model looks at", null,
