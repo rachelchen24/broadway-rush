@@ -1396,3 +1396,10 @@ Same scheduled run. Every source was checked in `registry/sources.csv` first (ro
 ## 2026-11-11 23:00 ET — Stars list: Rachel's first overrides
 
 Rachel marked Reece Weaver (Chicago) as a star by override (she typed `yes` in `last_performance`; moved to `override`). Anthony Santos (Buena Vista Social Club, "Bodyguard") was counted only because Wikipedia redirects "Anthony Santos" to Romeo Santos, the bachata singer: marked not counted, and redirects to a differently named page are now never counted. Result: 31 stars by the 20,000 rule plus 1 override. Rachel left the other near-line rows to the rule. The site's star parts stay off until she says go.
+
+
+## 2026-11-11 23:30 ET — Stars switched on (N5 step 3)
+
+Rachel said the list is good to go. `site_extras.STARS_REVIEWED = True`, then `python -m broadway_rush.model.site_extras` patched `web/data/predictions.json` (no refit; predictions unchanged). **32 stars in 19 shows** reach the site (31 by the 20,000 rule + Reece Weaver by override); `has_stars` is true, so the "Has a high-profile star" filter shows. Offers without a link: 0. The star label, filter, `Star leaving` badge and Key appeals were tested at phone and desktop width earlier today, so no new screenshots.
+
+**Next:** the star-history full run (approved: one pass, $2.50 cap). New `star_history.py full`: fetches the remaining candidate articles from BroadwayWorld (5 s apart, cached ones skipped), then sends every article plus the 112 cached Wikipedia cast sections to the batch service at half price, after checking a cost estimate against the cap. Output `data/interim/casting_extractions.jsonl`, review sheet `data/labels/casting_review.csv`.

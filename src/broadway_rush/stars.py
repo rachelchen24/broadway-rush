@@ -82,10 +82,20 @@ def true_first_weeks(shows: pd.DataFrame) -> dict:
     return out
 
 
-def window_for(status: str, first_week: str | None) -> tuple[str, str, str]:
+def window_for(status: str, first_week: str | None, announced: str = "", first_perf: str = "") -> tuple[str, str, str]:
     """The rule (SPEC 2.2a): 12 months before casting was announced; unknown, so 12 months ending 3 months before the
-    first performance. For an original cast member that's the show's first preview. A replacement's first
-    performance isn't known until cast news is read (C2), so the last 12 months stand in, flagged as provisional."""
+    first performance. For an original cast member that's the show's first preview. A replacement's dates come from
+    cast news (C2, `star_history stints`); without them the last 12 months stand in, flagged as provisional.
+    Originals keep the first-preview window Rachel reviewed (2026-11-11)."""
+    if status != "original":
+        if announced:
+            end = pd.Period(announced[:7], freq="M") - 1
+            if end - 11 >= pd.Period("2015-07", freq="M"):
+                return str(end - 11), str(end), "12 months before casting was announced (cast news)"
+        if first_perf:
+            end = pd.Period(first_perf[:7], freq="M") - 3
+            if end - 11 >= pd.Period("2015-07", freq="M"):
+                return str(end - 11), str(end), "12 months ending 3 months before first performance (cast news)"
     if status == "original" and first_week:
         first = pd.Period(first_week, freq="M")
         if first - 15 >= pd.Period("2015-07", freq="M"):
@@ -105,7 +115,7 @@ def rescore():
     fw = true_first_weeks(shows)
     df = pd.read_csv(OUT, dtype=str, keep_default_na=False)
     for i, r in df.iterrows():
-        w_start, w_end, rule = window_for(r.cast_status, fw.get(r.show_id))
+        w_start, w_end, rule = window_for(r.cast_status, fw.get(r.show_id), r.casting_announced, r.first_performance)
         df.loc[i, ["window_start", "window_end", "window_rule"]] = [w_start, w_end, rule]
         if not r.wiki_title:
             continue

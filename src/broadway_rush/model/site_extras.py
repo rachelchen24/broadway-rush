@@ -26,9 +26,8 @@ FACTS = ROOT / "registry" / "show_facts.csv"
 DEAL_COLUMNS = ["show_id", "name", "detail", "price", "start", "end", "url", "source", "date_checked", "note"]
 TWO_SHOW_VALUES = {"both at opening", "separately", "unknown"}
 STARS = ROOT / "registry" / "stars.csv"
-# Rachel reviews the ranked list and marks overrides before the site shows any star (SPEC 2.8 N5 step 2). Flip this
-# to True only after she has; until then no star reaches the predictions file.
-STARS_REVIEWED = False
+# Rachel reviewed the ranked list and marked overrides (SPEC 2.8 N5 step 2); she said go on 2026-11-11.
+STARS_REVIEWED = True
 # Same rule as cleanUrl in web/app.js: the first web address in the text, or nothing. Never a guess.
 URL_RE = re.compile(r"((?:https?://)?(?:[a-z0-9-]+\.)+(?:com|org|net|nyc|co|us|io|info|show|theater|theatre)"
                     r"(?:/[^\s,;\"'()<>]*)?)", re.I)

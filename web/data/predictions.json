@@ -693,7 +693,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Corbin Bleu",
+      "role": "Nick Carraway",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "China Anne McClain",
+      "role": "Daisy Buchanan",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "schmigadoon",
@@ -2012,7 +2025,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Gina Torres",
+      "role": "Omara",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "downstate",
@@ -2343,7 +2363,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Thomas Sadoski",
+      "role": "Andy",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Liza Col\u00f3n-Zayas",
+      "role": "Ivy",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ivy Wolk",
+      "role": "Effie",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "outsiders",
@@ -3058,7 +3097,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Billy Crystal",
+      "role": "Performer",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "maybe-happy-ending",
@@ -3746,7 +3792,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Matthew Morrison",
+      "role": "Bobby Darin",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ariana Madix",
+      "role": "Connie Francis",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "paranormal-activity",
@@ -4418,7 +4477,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Reece Weaver",
+      "role": "Roxie Hart",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "lost-boys",
@@ -5422,7 +5488,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bowen Yang",
+      "role": "Mary Todd Lincoln",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "rocky-horror-show",
@@ -5758,7 +5831,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Margaret Cho",
+      "role": "Narrator",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "and-juliet",
@@ -5841,7 +5921,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Aly Michalka",
+      "role": "Anne",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "hadestown",
@@ -5907,7 +5994,14 @@
     "two_show_rush": "separately",
     "two_show_rush_note": "No in-person rush. Standing room goes on sale at 12 PM for matinees and 5 PM for evenings (Playbill's policy list), so it's sold separately",
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Jasmin Savoy Brown",
+      "role": "Eurydice",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "its-a-wonderful-life-a-live-radio-play",
@@ -6203,7 +6297,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bradley Whitford",
+      "role": "LtCol Nathan R. Jessep",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Tom Blyth",
+      "role": "LTJG Daniel Kaffee",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "aladdin",
@@ -6261,7 +6368,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Sherri Shepherd",
+      "role": "Genie",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "hamilton",
@@ -6319,7 +6433,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Christopher Jackson",
+      "role": "George Washington",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "harry-potter-and-the-cursed-child",
@@ -6378,7 +6499,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tom Felton",
+      "role": "Draco Malfoy",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "here-there-are-blueberries",
@@ -6578,7 +6706,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tom Hiddleston",
+      "role": "Benedick",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Hayley Atwell",
+      "role": "Beatrice",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Mason Alexander Park",
+      "role": "Margaret",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "other-desert-cities",
@@ -6653,7 +6800,38 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Julia Louis-Dreyfus",
+      "role": "Polly Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Joe Keery",
+      "role": "Trip Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ed Harris",
+      "role": "Lyman Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Allison Janney",
+      "role": "Silda Grauman",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Lily Rabe",
+      "role": "Brooke Wyeth",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "school-girls-or-the-african-mean-girls-play",
@@ -6720,7 +6898,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tony Goldwyn",
+      "role": "Voice of American TV Host",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "book-of-mormon",
@@ -6844,7 +7029,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "David Patrick Kelly",
+      "role": "The Old Actor (Henry)",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "imaginary-invalid",
@@ -6909,7 +7101,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bill Irwin",
+      "role": "Argan",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Dylan Baker",
+      "role": "Beralde",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Rachel Bloom",
+      "role": "Toinette",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "lion-king",
@@ -7632,7 +7843,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Corbin Bleu",
+      "role": "Nick Carraway",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "China Anne McClain",
+      "role": "Daisy Buchanan",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "schmigadoon",
@@ -8301,7 +8525,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Gina Torres",
+      "role": "Omara",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "wanted",
@@ -9642,7 +9873,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Thomas Sadoski",
+      "role": "Andy",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Liza Col\u00f3n-Zayas",
+      "role": "Ivy",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ivy Wolk",
+      "role": "Effie",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "maybe-happy-ending",
@@ -10689,7 +10939,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Billy Crystal",
+      "role": "Performer",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "chicago",
@@ -11024,7 +11281,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Reece Weaver",
+      "role": "Roxie Hart",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "just-in-time",
@@ -11351,7 +11615,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Matthew Morrison",
+      "role": "Bobby Darin",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ariana Madix",
+      "role": "Connie Francis",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "paranormal-activity",
@@ -12358,7 +12635,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bowen Yang",
+      "role": "Mary Todd Lincoln",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "and-juliet",
@@ -12441,7 +12725,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Aly Michalka",
+      "role": "Anne",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "hadestown",
@@ -12507,7 +12798,14 @@
     "two_show_rush": "separately",
     "two_show_rush_note": "No in-person rush. Standing room goes on sale at 12 PM for matinees and 5 PM for evenings (Playbill's policy list), so it's sold separately",
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Jasmin Savoy Brown",
+      "role": "Eurydice",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "its-a-wonderful-life-a-live-radio-play",
@@ -12803,7 +13101,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bradley Whitford",
+      "role": "LtCol Nathan R. Jessep",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Tom Blyth",
+      "role": "LTJG Daniel Kaffee",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "aladdin",
@@ -12861,7 +13172,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Sherri Shepherd",
+      "role": "Genie",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "hamilton",
@@ -12919,7 +13237,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Christopher Jackson",
+      "role": "George Washington",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "harry-potter-and-the-cursed-child",
@@ -12978,7 +13303,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tom Felton",
+      "role": "Draco Malfoy",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "here-there-are-blueberries",
@@ -13177,7 +13509,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tom Hiddleston",
+      "role": "Benedick",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Hayley Atwell",
+      "role": "Beatrice",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Mason Alexander Park",
+      "role": "Margaret",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "other-desert-cities",
@@ -13252,7 +13603,38 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Julia Louis-Dreyfus",
+      "role": "Polly Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Joe Keery",
+      "role": "Trip Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ed Harris",
+      "role": "Lyman Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Allison Janney",
+      "role": "Silda Grauman",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Lily Rabe",
+      "role": "Brooke Wyeth",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "school-girls-or-the-african-mean-girls-play",
@@ -13319,7 +13701,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tony Goldwyn",
+      "role": "Voice of American TV Host",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "book-of-mormon",
@@ -13443,7 +13832,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "David Patrick Kelly",
+      "role": "The Old Actor (Henry)",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "imaginary-invalid",
@@ -13508,7 +13904,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bill Irwin",
+      "role": "Argan",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Dylan Baker",
+      "role": "Beralde",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Rachel Bloom",
+      "role": "Toinette",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "lion-king",
@@ -13912,7 +14327,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Corbin Bleu",
+      "role": "Nick Carraway",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "China Anne McClain",
+      "role": "Daisy Buchanan",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "two-strangers-carry-a-cake-across-new-york",
@@ -14901,7 +15329,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Gina Torres",
+      "role": "Omara",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "stranger-things-the-first-shadow",
@@ -15889,7 +16324,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Thomas Sadoski",
+      "role": "Andy",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Liza Col\u00f3n-Zayas",
+      "role": "Ivy",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ivy Wolk",
+      "role": "Effie",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "outsiders",
@@ -16966,7 +17420,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Billy Crystal",
+      "role": "Performer",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "chicago",
@@ -17302,7 +17763,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Reece Weaver",
+      "role": "Roxie Hart",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "just-in-time",
@@ -17630,7 +18098,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Matthew Morrison",
+      "role": "Bobby Darin",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ariana Madix",
+      "role": "Connie Francis",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "lost-boys",
@@ -18976,7 +19457,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bowen Yang",
+      "role": "Mary Todd Lincoln",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "rocky-horror-show",
@@ -19312,7 +19800,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Margaret Cho",
+      "role": "Narrator",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "and-juliet",
@@ -19396,7 +19891,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Aly Michalka",
+      "role": "Anne",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "hadestown",
@@ -19463,7 +19965,14 @@
     "two_show_rush": "separately",
     "two_show_rush_note": "No in-person rush. Standing room goes on sale at 12 PM for matinees and 5 PM for evenings (Playbill's policy list), so it's sold separately",
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Jasmin Savoy Brown",
+      "role": "Eurydice",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "its-a-wonderful-life-a-live-radio-play",
@@ -19762,7 +20271,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bradley Whitford",
+      "role": "LtCol Nathan R. Jessep",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Tom Blyth",
+      "role": "LTJG Daniel Kaffee",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "aladdin",
@@ -19821,7 +20343,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Sherri Shepherd",
+      "role": "Genie",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "hamilton",
@@ -19880,7 +20409,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Christopher Jackson",
+      "role": "George Washington",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "harry-potter-and-the-cursed-child",
@@ -19940,7 +20476,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tom Felton",
+      "role": "Draco Malfoy",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "here-there-are-blueberries",
@@ -20142,7 +20685,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tom Hiddleston",
+      "role": "Benedick",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Hayley Atwell",
+      "role": "Beatrice",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Mason Alexander Park",
+      "role": "Margaret",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "other-desert-cities",
@@ -20218,7 +20780,38 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Julia Louis-Dreyfus",
+      "role": "Polly Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Joe Keery",
+      "role": "Trip Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ed Harris",
+      "role": "Lyman Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Allison Janney",
+      "role": "Silda Grauman",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Lily Rabe",
+      "role": "Brooke Wyeth",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "school-girls-or-the-african-mean-girls-play",
@@ -20286,7 +20879,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tony Goldwyn",
+      "role": "Voice of American TV Host",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "book-of-mormon",
@@ -20412,7 +21012,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "David Patrick Kelly",
+      "role": "The Old Actor (Henry)",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "imaginary-invalid",
@@ -20477,7 +21084,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bill Irwin",
+      "role": "Argan",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Dylan Baker",
+      "role": "Beralde",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Rachel Bloom",
+      "role": "Toinette",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "lion-king",
@@ -20881,7 +21507,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Corbin Bleu",
+      "role": "Nick Carraway",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "China Anne McClain",
+      "role": "Daisy Buchanan",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "two-strangers-carry-a-cake-across-new-york",
@@ -22192,7 +22831,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Gina Torres",
+      "role": "Omara",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "wanted",
@@ -23598,7 +24244,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Billy Crystal",
+      "role": "Performer",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "paranormal-activity",
@@ -24607,7 +25260,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Reece Weaver",
+      "role": "Roxie Hart",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "just-in-time",
@@ -24934,7 +25594,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Matthew Morrison",
+      "role": "Bobby Darin",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ariana Madix",
+      "role": "Connie Francis",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "operation-mincemeat",
@@ -25606,7 +26279,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bowen Yang",
+      "role": "Mary Todd Lincoln",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "rocky-horror-show",
@@ -25942,7 +26622,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Margaret Cho",
+      "role": "Narrator",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "and-juliet",
@@ -26026,7 +26713,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Aly Michalka",
+      "role": "Anne",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "hadestown",
@@ -26092,7 +26786,14 @@
     "two_show_rush": "separately",
     "two_show_rush_note": "No in-person rush. Standing room goes on sale at 12 PM for matinees and 5 PM for evenings (Playbill's policy list), so it's sold separately",
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Jasmin Savoy Brown",
+      "role": "Eurydice",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "its-a-wonderful-life-a-live-radio-play",
@@ -26391,7 +27092,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bradley Whitford",
+      "role": "LtCol Nathan R. Jessep",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Tom Blyth",
+      "role": "LTJG Daniel Kaffee",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "aladdin",
@@ -26450,7 +27164,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Sherri Shepherd",
+      "role": "Genie",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "hamilton",
@@ -26508,7 +27229,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Christopher Jackson",
+      "role": "George Washington",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "harry-potter-and-the-cursed-child",
@@ -26567,7 +27295,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tom Felton",
+      "role": "Draco Malfoy",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "here-there-are-blueberries",
@@ -26766,7 +27501,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tom Hiddleston",
+      "role": "Benedick",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Hayley Atwell",
+      "role": "Beatrice",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Mason Alexander Park",
+      "role": "Margaret",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "other-desert-cities",
@@ -26841,7 +27595,38 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Julia Louis-Dreyfus",
+      "role": "Polly Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Joe Keery",
+      "role": "Trip Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ed Harris",
+      "role": "Lyman Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Allison Janney",
+      "role": "Silda Grauman",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Lily Rabe",
+      "role": "Brooke Wyeth",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "school-girls-or-the-african-mean-girls-play",
@@ -26908,7 +27693,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tony Goldwyn",
+      "role": "Voice of American TV Host",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "book-of-mormon",
@@ -27033,7 +27825,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "David Patrick Kelly",
+      "role": "The Old Actor (Henry)",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "imaginary-invalid",
@@ -27098,7 +27897,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bill Irwin",
+      "role": "Argan",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Dylan Baker",
+      "role": "Beralde",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Rachel Bloom",
+      "role": "Toinette",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "lion-king",
@@ -27502,7 +28320,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Corbin Bleu",
+      "role": "Nick Carraway",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "China Anne McClain",
+      "role": "Daisy Buchanan",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "downstate",
@@ -27832,7 +28663,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Thomas Sadoski",
+      "role": "Andy",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Liza Col\u00f3n-Zayas",
+      "role": "Ivy",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ivy Wolk",
+      "role": "Effie",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "chicago",
@@ -28167,7 +29017,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Reece Weaver",
+      "role": "Roxie Hart",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "six",
@@ -29965,7 +30822,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Gina Torres",
+      "role": "Omara",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "downstate",
@@ -30295,7 +31159,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Thomas Sadoski",
+      "role": "Andy",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Liza Col\u00f3n-Zayas",
+      "role": "Ivy",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ivy Wolk",
+      "role": "Effie",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "outsiders",
@@ -31369,7 +32252,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Billy Crystal",
+      "role": "Performer",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "lost-boys",
@@ -32367,7 +33257,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Matthew Morrison",
+      "role": "Bobby Darin",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ariana Madix",
+      "role": "Connie Francis",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "chicago",
@@ -32702,7 +33605,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Reece Weaver",
+      "role": "Roxie Hart",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "operation-mincemeat",
@@ -33372,7 +34282,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bowen Yang",
+      "role": "Mary Todd Lincoln",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "rocky-horror-show",
@@ -33708,7 +34625,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Margaret Cho",
+      "role": "Narrator",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "and-juliet",
@@ -33791,7 +34715,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Aly Michalka",
+      "role": "Anne",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "hadestown",
@@ -33857,7 +34788,14 @@
     "two_show_rush": "separately",
     "two_show_rush_note": "No in-person rush. Standing room goes on sale at 12 PM for matinees and 5 PM for evenings (Playbill's policy list), so it's sold separately",
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Jasmin Savoy Brown",
+      "role": "Eurydice",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "its-a-wonderful-life-a-live-radio-play",
@@ -34079,7 +35017,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bradley Whitford",
+      "role": "LtCol Nathan R. Jessep",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Tom Blyth",
+      "role": "LTJG Daniel Kaffee",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "aladdin",
@@ -34137,7 +35088,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Sherri Shepherd",
+      "role": "Genie",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "hamilton",
@@ -34195,7 +35153,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Christopher Jackson",
+      "role": "George Washington",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "harry-potter-and-the-cursed-child",
@@ -34254,7 +35219,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tom Felton",
+      "role": "Draco Malfoy",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "mj",
@@ -34370,7 +35342,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tom Hiddleston",
+      "role": "Benedick",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Hayley Atwell",
+      "role": "Beatrice",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Mason Alexander Park",
+      "role": "Margaret",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "other-desert-cities",
@@ -34445,7 +35436,38 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Julia Louis-Dreyfus",
+      "role": "Polly Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Joe Keery",
+      "role": "Trip Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ed Harris",
+      "role": "Lyman Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Allison Janney",
+      "role": "Silda Grauman",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Lily Rabe",
+      "role": "Brooke Wyeth",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "book-of-mormon",
@@ -34585,7 +35607,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bill Irwin",
+      "role": "Argan",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Dylan Baker",
+      "role": "Beralde",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Rachel Bloom",
+      "role": "Toinette",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "lion-king",
@@ -34988,7 +36029,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Corbin Bleu",
+      "role": "Nick Carraway",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "China Anne McClain",
+      "role": "Daisy Buchanan",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "two-strangers-carry-a-cake-across-new-york",
@@ -36631,7 +37685,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Gina Torres",
+      "role": "Omara",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "maybe-happy-ending",
@@ -37706,7 +38767,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Billy Crystal",
+      "role": "Performer",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "just-in-time",
@@ -38033,7 +39101,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Matthew Morrison",
+      "role": "Bobby Darin",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ariana Madix",
+      "role": "Connie Francis",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "paranormal-activity",
@@ -39375,7 +40456,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bowen Yang",
+      "role": "Mary Todd Lincoln",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "rocky-horror-show",
@@ -39710,7 +40798,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Margaret Cho",
+      "role": "Narrator",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "and-juliet",
@@ -39793,7 +40888,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Aly Michalka",
+      "role": "Anne",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "hadestown",
@@ -39860,7 +40962,14 @@
     "two_show_rush": "separately",
     "two_show_rush_note": "No in-person rush. Standing room goes on sale at 12 PM for matinees and 5 PM for evenings (Playbill's policy list), so it's sold separately",
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Jasmin Savoy Brown",
+      "role": "Eurydice",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "six",
@@ -40074,7 +41183,20 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bradley Whitford",
+      "role": "LtCol Nathan R. Jessep",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Tom Blyth",
+      "role": "LTJG Daniel Kaffee",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "aladdin",
@@ -40132,7 +41254,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Sherri Shepherd",
+      "role": "Genie",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "hamilton",
@@ -40190,7 +41319,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Christopher Jackson",
+      "role": "George Washington",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "harry-potter-and-the-cursed-child",
@@ -40250,7 +41386,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tom Felton",
+      "role": "Draco Malfoy",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "here-there-are-blueberries",
@@ -40451,7 +41594,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Tom Hiddleston",
+      "role": "Benedick",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Hayley Atwell",
+      "role": "Beatrice",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Mason Alexander Park",
+      "role": "Margaret",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "other-desert-cities",
@@ -40527,7 +41689,38 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Julia Louis-Dreyfus",
+      "role": "Polly Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Joe Keery",
+      "role": "Trip Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ed Harris",
+      "role": "Lyman Wyeth",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Allison Janney",
+      "role": "Silda Grauman",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Lily Rabe",
+      "role": "Brooke Wyeth",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "book-of-mormon",
@@ -40652,7 +41845,14 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "David Patrick Kelly",
+      "role": "The Old Actor (Henry)",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "imaginary-invalid",
@@ -40717,7 +41917,26 @@
     "two_show_rush": "unknown",
     "two_show_rush_note": null,
     "lottery_url": null,
-    "stars": []
+    "stars": [
+     {
+      "name": "Bill Irwin",
+      "role": "Argan",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Dylan Baker",
+      "role": "Beralde",
+      "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Rachel Bloom",
+      "role": "Toinette",
+      "joined": null,
+      "last_performance": null
+     }
+    ]
    },
    {
     "show_id": "lion-king",
@@ -61089,5 +62308,5 @@
    "reports_per_week": 2.0
   }
  },
- "has_stars": false
+ "has_stars": true
 }

@@ -227,11 +227,11 @@ def test():
     write_review()
 
 
-def write_review():
+def write_review(src: Path = TEST_OUT, dest: Path = REVIEW):
     """One row per extracted change (or one row per article with none), for Rachel to review."""
     import json
     rows = []
-    for line in TEST_OUT.read_text(encoding="utf-8").splitlines():
+    for line in src.read_text(encoding="utf-8").splitlines():
         a = json.loads(line)
         if not a["changes"]:
             rows.append({"date": a["date"], "headline": a["headline"], "url": a["url"], "person": "", "role": "",
@@ -244,13 +244,235 @@ def write_review():
                          **{k: c.get(k, "") for k in ["person", "role", "show", "change", "first_performance",
                                                       "last_performance", "is_limited", "certain", "note"]},
                          "flag": flag})
-    REVIEW.parent.mkdir(parents=True, exist_ok=True)
+    dest.parent.mkdir(parents=True, exist_ok=True)
     df = pd.DataFrame(rows)
     for col in ["claude_prefill", "rachel_ok", "rachel_fix"]:
         df[col] = ""
-    df.to_csv(REVIEW, index=False)
-    log.info("wrote %s: %d rows from %d articles, %d flagged", REVIEW.name, len(df), df.url.nunique(),
+    df.to_csv(dest, index=False)
+    log.info("wrote %s: %d rows from %d articles, %d flagged", dest.name, len(df), df.url.nunique(),
              (df.flag == "check").sum())
+
+
+# ---------- Full run (approved by Rachel 2026-11-11: one pass, batch service, $2.50 star-history cap) ----------
+FULL_OUT = ROOT / "data" / "interim" / "casting_extractions.jsonl"
+FULL_REVIEW = ROOT / "data" / "labels" / "casting_review.csv"
+BATCH_ID = ROOT / "data" / "interim" / "casting_batch_id.txt"
+BATCH_DISCOUNT = 0.5
+WIKI_SYSTEM = """You read the cast sections of one English Wikipedia article about a stage show (wikitext).
+List the Broadway performers' runs it states, using the same JSON as below.
+""" + SYSTEM.split("\n", 1)[1].replace(
+    "- Use the article's publication date (given) to fill a missing year.",
+    "- Only runs with a stated date or year from 2024 on. Skip the original cast unless it opened in 2024 or later.\n"
+    "- Wikitext links look like [[Name]] or [[Page|Name]]: use the shown name.")
+
+
+def _path(url: str) -> Path:
+    return ARTICLES / f"{url.rsplit('/', 1)[1][:150]}.txt"
+
+
+def _usd(u, discount=1.0) -> float:
+    return discount * (u.input_tokens * PRICE["input"] + (u.cache_creation_input_tokens or 0) * PRICE["cache_write"]
+                       + (u.cache_read_input_tokens or 0) * PRICE["cache_read"] + u.output_tokens * PRICE["output"])
+
+
+def _parse(text: str):
+    import json
+    m = re.search(r"\{.*\}", text, re.S)
+    try:
+        return json.loads(m.group(0))["changes"] if m else None
+    except (ValueError, KeyError):
+        return None
+
+
+def fetch_all():
+    """Every candidate article that passes the headline filter, 5 s apart; cached ones are skipped (resumable)."""
+    cand = pd.read_csv(CANDIDATES)
+    cand = cand[[clean_slug_ok(u.rsplit("/", 1)[1]) for u in cand.url]]
+    todo = [u for u in cand.url if not _path(u).exists()]
+    log.info("%d candidates, %d to fetch (about %d min)", len(cand), len(todo), len(todo) * 5.5 // 60)
+    ARTICLES.mkdir(parents=True, exist_ok=True)
+    s = requests.Session()
+    s.headers["User-Agent"] = USER_AGENT
+    bad = 0
+    for i, url in enumerate(todo, 1):
+        time.sleep(5)
+        try:
+            resp = s.get(url, timeout=60)
+        except requests.RequestException as e:
+            log.warning("%s for %s", type(e).__name__, url)
+            bad += 1
+            continue
+        if resp.status_code != 200:
+            log.warning("HTTP %s for %s", resp.status_code, url)
+            bad += 1
+            if resp.status_code in (403, 429):
+                log.warning("refused: stopping fetches here (re-run later to resume)")
+                break
+            continue
+        _path(url).write_text(article_text(resp.text), encoding="utf-8")
+        if i % 50 == 0:
+            log.info("fetched %d of %d", i, len(todo))
+    log.info("fetch done: %d failed", bad)
+    return cand
+
+
+def full():
+    import json
+    import anthropic
+    from dotenv import load_dotenv
+    load_dotenv(ROOT / ".env")
+    client = anthropic.Anthropic(max_retries=4)
+    stop_at = SPENT_BEFORE_STAR_HISTORY + STAR_HISTORY_CAP
+    if not BATCH_ID.exists():
+        cand = fetch_all()
+        reqs, meta = [], {}
+        for i, r in enumerate(cand.itertuples()):
+            text = _path(r.url).read_text(encoding="utf-8").strip() if _path(r.url).exists() else ""
+            if not text:
+                continue
+            cid = f"a{i:05d}"
+            meta[cid] = {"source": "broadwayworld", "url": r.url, "date": r.date, "headline": r.headline,
+                         "show_hint": r.show_ids.split(";")[0]}
+            reqs.append((cid, SYSTEM, f"Published: {r.date}\nHeadline: {r.headline}\n\n{text}"))
+        for i, line in enumerate(WIKI_SECTIONS.read_text(encoding="utf-8").splitlines()):
+            w = json.loads(line)
+            if not w["text"].strip():
+                continue
+            cid = f"w{i:04d}"
+            meta[cid] = {"source": "wikipedia", "url": f"https://en.wikipedia.org/wiki/{w['wiki_title']}",
+                         "date": "", "headline": w["wiki_title"], "show_hint": w["show_id"]}
+            reqs.append((cid, WIKI_SYSTEM, f"Article: {w['wiki_title']}\n\n{w['text'][:24000]}"))
+        # Rough upper estimate before spending: 3.5 characters a token, 900 system tokens, 400 out, no caching
+        est = BATCH_DISCOUNT * sum((len(sy) + len(u)) / 3.5 * PRICE["input"] + 400 * PRICE["output"] for _, sy, u in reqs)
+        log.info("%d requests, estimated $%.3f; spent %.4f, stop at %.2f", len(reqs), est, spent_total(), stop_at)
+        if spent_total() + est >= stop_at:
+            log.warning("stopping: the estimate would pass the $%.2f star-history cap", STAR_HISTORY_CAP)
+            return
+        (FULL_OUT.parent / "casting_batch_meta.json").write_text(json.dumps(meta), encoding="utf-8")
+        batch = client.messages.batches.create(requests=[{"custom_id": cid, "params": {
+            "model": MODEL, "max_tokens": 4000,
+            "system": [{"type": "text", "text": sy, "cache_control": {"type": "ephemeral"}}],
+            "messages": [{"role": "user", "content": u}],
+            "thinking": {"type": "disabled"}, "output_config": {"effort": "low"}}} for cid, sy, u in reqs])
+        BATCH_ID.write_text(batch.id, encoding="utf-8")
+        log.info("submitted batch %s", batch.id)
+    bid = BATCH_ID.read_text(encoding="utf-8").strip()
+    meta = json.loads((FULL_OUT.parent / "casting_batch_meta.json").read_text(encoding="utf-8"))
+    while (b := client.messages.batches.retrieve(bid)).processing_status != "ended":
+        log.info("batch %s: %s", bid, b.request_counts)
+        time.sleep(60)
+    import csv
+    from datetime import datetime
+    run_usd, failed, out = 0.0, 0, []
+    with LEDGER.open("a", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        for res in client.messages.batches.results(bid):
+            if res.result.type != "succeeded":
+                failed += 1
+                continue
+            msg = res.result.message
+            usd = _usd(msg.usage, BATCH_DISCOUNT)
+            run_usd += usd
+            w.writerow([datetime.now().isoformat(timespec="seconds"), "star_history_full", MODEL, 1,
+                        msg.usage.input_tokens, msg.usage.cache_creation_input_tokens or 0,
+                        msg.usage.cache_read_input_tokens or 0, msg.usage.output_tokens, f"{usd:.6f}"])
+            text = "".join(bl.text for bl in msg.content if bl.type == "text").strip()
+            changes = _parse(text)
+            out.append({**meta[res.custom_id], "id": res.custom_id, "changes": changes,
+                        "raw": None if changes is not None else text})
+    FULL_OUT.write_text("\n".join(json.dumps(x) for x in sorted(out, key=lambda x: x["id"])), encoding="utf-8")
+    BATCH_ID.rename(BATCH_ID.with_suffix(".done.txt"))
+    log.info("full run: %d results, %d failed, $%.4f; project total $%.4f", len(out), failed, run_usd, spent_total())
+    write_review(FULL_OUT, FULL_REVIEW)
+
+
+# ---------- Stints: one row per person per show, from the extractions ----------
+STINTS = ROOT / "data" / "interim" / "star_stints.csv"
+SHOW_ENDS = ROOT / "data" / "interim" / "show_end_dates.csv"
+STARTS = {"joins", "returns", "cast_announced", "limited_run"}
+ENDS = {"leaves", "extends", "limited_run"}
+
+
+def person_key(name: str) -> str:
+    import unicodedata
+    s = unicodedata.normalize("NFKD", str(name)).encode("ascii", "ignore").decode().lower()
+    return " ".join(re.sub(r"[^a-z ]", "", re.sub(r"[-.]", " ", s)).split())
+
+
+def stints(src: Path = FULL_OUT):
+    """Join and leave dates per person per show (all shows, closed ones too) -> star_stints.csv; production end
+    dates from show extensions -> show_end_dates.csv; blank date columns in registry/stars.csv filled from it
+    (Rachel's edits are never overwritten)."""
+    import json
+    from broadway_rush.catalog import lookup, name_keys
+    shows = pd.read_csv(ROOT / "data" / "processed" / "shows.csv")
+    keys = name_keys(shows)
+    last_week = shows.set_index("show_id").last_week.to_dict()
+    rows, ends, unmatched = [], [], 0
+    for line in src.read_text(encoding="utf-8").splitlines():
+        a = json.loads(line)
+        for c in a["changes"] or []:
+            ids, _ = lookup(c.get("show", ""), keys)
+            if not ids:
+                unmatched += 1
+                continue
+            # Revivals share a name: the article's own show first, else the production that ran latest
+            sid = a["show_hint"] if a["show_hint"] in ids else max(ids, key=lambda s: str(last_week.get(s, "")))
+            ch = c.get("change", "")
+            if ch == "show_extends" or not c.get("person"):
+                if ch == "show_extends" and c.get("last_performance"):
+                    ends.append({"show_id": sid, "last_performance": c["last_performance"], "announced": a["date"],
+                                 "url": a["url"]})
+                continue
+            rows.append({"show_id": sid, "person": c["person"], "key": person_key(c["person"]),
+                         "role": c.get("role", ""), "change": ch, "first": c.get("first_performance", "") or "",
+                         "last": c.get("last_performance", "") or "", "announced": a["date"] or "",
+                         "source": a.get("source", "broadwayworld"), "certain": bool(c.get("certain")),
+                         "url": a["url"]})
+    ch = pd.DataFrame(rows)
+    out = []
+    for (sid, key), g in ch.groupby(["show_id", "key"]):
+        st, en = g[g.change.isin(STARTS)], g[g.change.isin(ENDS) & (g["last"] != "")]
+        firsts = st[st["first"] != ""]["first"]
+        news = st[(st.announced != "")]
+        last_row = en.sort_values(["last", "announced"]).iloc[-1] if len(en) else None
+        out.append({"show_id": sid, "person": g.person.iloc[0], "key": key,
+                    "role": next((r for r in g.role if r), ""),
+                    "casting_announced": news.announced.min() if len(news) else "",
+                    "first_performance": firsts.min() if len(firsts) else "",
+                    "last_performance": last_row["last"] if last_row is not None else "",
+                    "last_announced": last_row["announced"] if last_row is not None else "",
+                    "is_limited": bool((g.change == "limited_run").any()),
+                    "uncertain": not g.certain.all(), "n_sources": g.url.nunique(),
+                    "sources": ";".join(sorted(g.url.unique()))[:2000]})
+    out = pd.DataFrame(out).sort_values(["show_id", "first_performance", "person"])
+    out.to_csv(STINTS, index=False)
+    e = pd.DataFrame(ends, columns=["show_id", "last_performance", "announced", "url"])
+    if len(e):
+        e = e.sort_values(["show_id", "announced", "last_performance"]).groupby("show_id").tail(1)
+    e.to_csv(SHOW_ENDS, index=False)
+    log.info("%d changes (%d unmatched shows) -> %d stints in %d shows; %d with a join date, %d with a leave date; "
+             "%d show end dates", len(ch), unmatched, len(out), out.show_id.nunique(),
+             (out.first_performance != "").sum(), (out.last_performance != "").sum(), len(e))
+    # Fill the stars list's blank dates
+    stars_path = ROOT / "registry" / "stars.csv"
+    s = pd.read_csv(stars_path, dtype=str, keep_default_na=False)
+    by = {(r.show_id, r.key): r for r in out.itertuples()}
+    filled = 0
+    for i, r in s.iterrows():
+        m = by.get((r.show_id, person_key(r.person)))
+        if m is None:
+            continue
+        for col in ["casting_announced", "first_performance", "last_performance", "last_announced"]:
+            v = getattr(m, col)
+            if not r[col] and isinstance(v, str) and v:
+                s.loc[i, col] = v
+                filled += 1
+        if "casting news" not in r.source:
+            s.loc[i, "source"] = r.source + "; casting news (BroadwayWorld, Wikipedia), read by Claude Haiku"
+    s.to_csv(stars_path, index=False)
+    log.info("stars.csv: %d dates filled for %d of %d people", filled,
+             sum((r.show_id, person_key(r.person)) in by for r in s.itertuples()), len(s))
 
 
 # ---------- Wikipedia cast and replacement sections (C2's first source) ----------
@@ -293,14 +515,18 @@ def wiki():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("step", choices=["candidates", "test", "review", "wiki"])
-    a = ap.parse_args()
+    ap.add_argument("step", choices=["candidates", "test", "review", "wiki", "full", "stints"])
+    a, _ = ap.parse_known_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s", datefmt="%H:%M:%S",
                         handlers=[logging.StreamHandler(sys.stdout)])
     if a.step == "candidates":
         candidates()
     elif a.step == "test":
         test()
+    elif a.step == "stints":
+        stints(TEST_OUT if "--test" in sys.argv else FULL_OUT)
+    elif a.step == "full":
+        full()
     elif a.step == "wiki":
         wiki()
     else:
