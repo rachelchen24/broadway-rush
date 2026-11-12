@@ -59,14 +59,20 @@ Also to do:
 ### 2.2 Tile (one per show)
 - Show name (+ theater, small)
   - The theater name is a link to Google Maps directions (added 2026-11-11, ✅ built 2026-11-11: §2.8 N2).
-- Typical ticket price next to the rush price, crossed out, with the saving (added 2026-11-11, ✅ built 2026-11-11: §2.8 N3).
+- ~~Typical ticket price next to the rush price, crossed out, with the saving (§2.8 N3).~~ **Removed 2026-11-12 (my decision): no typical ticket price on tiles at all.** It made the site look like a discount shopping site. The show page keeps it.
 - `2 shows today: 2 pm & 8 pm` on two-show days, and a `Special deal` badge when the policy list has one (✅ built 2026-11-11: §2.8 N8, N10).
 - **Rush types offered** as small labels: `In person`, `Online`, `Student` and so on (§2.2a)
 - **Rush price** (e.g. $49.50; per show, §3.4)
 - **Worth-it bar** + verdict word (GO / Maybe / Stay home)
 - Chance of getting a ticket (e.g. "72%")
 - Recommended arrival time ("Get there by 9:20")
-- 🆕 High-profile star label with the star's name, for example `★ Aaron Tveit` (added 2026-11-11, not built yet: §2.8 N5; rule in §2.2a).
+- **Colors lightened a step (my request 2026-11-12):** background and tiles are lighter purples, still a dark theme; text contrast checked.
+- **Filters simplified (my decision 2026-11-12):** Days showing works on every view, including a single date (keeps shows that play on the picked weekdays); its "Pick This week or Any day" note is gone. The 2-show day filter is removed. Show time (Matinee / Evening) has no note and no Matinee/Evening sections: neither picked = all shows; one picked = only shows with that showtime; both picked = only shows playing twice that day. In This week, a show counts if it matches on one of your days. Any day has no Show time row.
+- **Page headlines in sentence case (my decision 2026-11-12):** "Is rush worth it this morning?" and "Nerd stats", not all caps. Show names stay in caps.
+- **Typical ticket price sort removed (my decision 2026-11-12).** Sorts: best chance, latest arrival, rush price, runtime.
+- **Favorites (my request 2026-11-12, ✅ built):** the tile's "Interested" checkbox is now a star button (☆, gold ★ once favorited), and "Only my picks" is now a "★ Show favorites (N)" filter button that shows just the favorited shows. Favorites stay in that browser only, and earlier picks carry over.
+- 📝 **Later: make the site look less "vibe-coded"** (my request 2026-11-12). I don't know exactly what that means yet; Claude to propose concrete options.
+- ~~High-profile star label with the star's name on the tile.~~ **Removed 2026-11-12 (my decision):** stars are a trait of the show, shown on the show page ("Key appeals"), not on tiles, and not a filter.
 - Small badges: `Digital rush 9 AM`, `Star leaving Sunday`, `Low confidence`, `Prices way above usual`
 - **__% seats sold** ("92% seats sold last week"), in place of "__% full" (§2.2a)
 
@@ -101,7 +107,7 @@ While a filter is on, shows with an unknown value are hidden, and the page says 
 **Days showing and the date picker do different jobs.**
 - **Date picker:** a specific date in the next 7 days, with predictions. Days showing is greyed out here, because the date already decides.
 - **This week + Days showing:** means "days I can go". Only those days are compared (§2.2b).
-- **Any day + Days showing:** for planning weeks ahead ("what plays on Tuesdays?"). Tiles show facts only: rush types, rush price, typical ticket price, runtime, stars, play or musical, how full. They show no chance or arrival time, because predictions stop at 7 days (§1). In their place: "Check back within 7 days of your date."
+- **Any day + Days showing:** for planning weeks ahead ("what plays on Tuesdays?"). Tiles show facts only: rush types, rush price, runtime, play or musical, how full. They show no chance or arrival time, because predictions stop at 7 days (§1). In their place: "Check back within 7 days of your date."
 - **Schedules change:** a show could close before someone's date, and closing news isn't built yet (§3.12), so Any day mode says to confirm before going.
 
 **High-profile stars (rule decided 2026-11-11; not collected or built yet: §2.8 N5).** ~~A show counts if a current principal is billed above the title, or has won a Tony, Oscar, Emmy or Grammy.~~ Replaced: awards counted too many stage regulars, and billing missed celebrity replacements in long-running shows.
@@ -128,7 +134,7 @@ While a filter is on, shows with an unknown value are hidden, and the page says 
 - **I can override anyone by hand,** either way, with a one-line reason.
 - **Source:** Wikimedia's official page-views service: free, no key, daily numbers back to July 2015, people only (bots filtered out). Add it to `registry/sources.csv` before the first fetch.
 - **Kept in `registry/stars.csv`,** pre-filled by Claude and reviewed by me, one row per person per stint: show, person, role, exact Wikipedia page title, date the casting was announced, first performance, last performance (blank while open-ended), date the last performance was announced, monthly views, the 12-month window used, star yes/no, override, reason, source, date checked. The dates make a star drop off the site when they leave, and stop the model's tests from using a departure before it was public.
-- **Used for (my decision 2026-11-11):** a label on the tile with the star's name, the "Has a high-profile star" filter, the `Star leaving Sunday` badge, and the model's star inputs (§3.12). Stars raise demand and ticket prices, most of all when their run is almost over.
+- **Used for (my decision 2026-11-11, changed 2026-11-12):** the show page's "Key appeals" section (which also gives each star's final performance) and the model's star inputs (§3.12). ~~Tile label, filter and `Star leaving` badge~~ removed 2026-11-12: nothing about stars on tiles. Stars raise demand and ticket prices, most of all when their run is almost over.
 
 **Sorting.** Tap the same sort again to reverse it. Unknown values always go last.
 | Sort | Shown first | Data | Notes |
@@ -968,7 +974,8 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 - **Charts (2026-11-06, my picks):** line growth, show-by-day grid, predicted vs. real, what drives the line, chance vs. what happened, cleaning funnel, rush savings, reports per show. Plain ones go on show pages, and everything else goes on Nerd stats (§2.6).
 - **Build queue, scheduled run of 2026-11-11 (Claude's choices while I was away; mine to review, §2.8 and `process.md`):**
   - **Matinee = a performance starting before 5 PM.** Matinee and Evening sections appear only when a 2-show day is on screen; inside each, the three show groups stay. Matinee / Evening is a day-view filter only.
-  - **Typical price stays in the facts line** only when the tile can't show the crossed-out comparison.
+  - ~~Typical price stays in the facts line~~ No typical price on tiles (2026-11-12).
+  - **One tile per show by default (my decision 2026-11-12).** A 2-show day shows one tile with "2 shows today: 2 pm & 8 pm". Matinee or Evening alone filters to that showtime; picking both splits the day into Matinee and Evening sections, where a 2-show show appears in both.
   - **Dated special deals** go in `registry/special_deals.csv`; standing deals come from the policy list.
   - **Show Wikipedia titles** live in `registry/show_wiki_titles.csv`, not `shows.csv` (which `catalog build` rewrites).
   - **Current cast for stars = the first cast list on each cached Playbill page** (the current cast), principals only. Stars' windows: originals use the 12 months ending 3 months before the show's first preview; replacements use the last 12 months, marked provisional until cast news gives their join date. A Wikipedia page that doesn't describe a performer is never counted.

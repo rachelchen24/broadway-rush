@@ -5,7 +5,7 @@ const state = {
   data: null, picksOnly: false, paint: null, filtersOpen: null,
   sort: { key: "chance", reversed: false },
   weekSort: { key: "arrival", reversed: false }, // This week view: latest arrival first (SPEC 2.2b)
-  filters: { rush: new Set(), type: new Set(), days: new Set(), runtime: new Set(), two: new Set(), showtime: new Set(), star: new Set() },
+  filters: { rush: new Set(), type: new Set(), days: new Set(), runtime: new Set(), showtime: new Set() },
 };
 const app = document.getElementById("app");
 const footer = document.getElementById("footer");
@@ -82,7 +82,6 @@ const SORTS = [
   { key: "chance", label: "Best chance", needsDate: true, value: (e) => e.chance_9am, bigFirst: true },
   { key: "arrival", label: "Latest arrival", needsDate: true, value: (e) => (e.arrival ? minutesOf(e.arrival) : null), bigFirst: true },
   { key: "price", label: "Rush price", value: (e) => e.price, bigFirst: false },
-  { key: "typical", label: "Typical ticket price", value: (e) => e.typical_ticket, bigFirst: false },
   { key: "runtime", label: "Runtime", needsFacts: true, value: (e) => e.runtime_minutes, bigFirst: false },
 ];
 
@@ -123,18 +122,7 @@ function priceBlock(e) {
     if (e.group === 3) return null; // no rush price to show
     return h("div", { class: "price" }, h("small", {}, "price not listed"));
   }
-  const save = savingOf(e);
-  return h("div", { class: "price" }, money(e.price), e.price_note ? h("small", {}, e.price_note) : null,
-    save === null ? null : h("small", {
-      class: "vs-typical", tabindex: "0",
-      title: "Typical ticket is the average paid over recent weeks, so it already includes rush and discounts. Against a full-price seat you'd save more.",
-    }, h("s", { "aria-label": `typical ticket ${money(e.typical_ticket)}` }, money(e.typical_ticket)), " typical", h("span", { class: "save" }, `save about ${money(save)}`)));
-}
-// Same math as the show page's "What you'd save" panel (SPEC 2.8 N3). Null when there's nothing honest to compare.
-function savingOf(e) {
-  if (!e.price || !e.typical_ticket) return null;
-  const save = e.typical_ticket - e.price;
-  return save > 0 ? save : null;
+  return h("div", { class: "price" }, money(e.price), e.price_note ? h("small", {}, e.price_note) : null);
 }
 function badges(e) {
   const list = [...(e.badges || [])];
@@ -227,20 +215,6 @@ function starsOn(e, day) {
   const d = !day || day === "any" || day === "week" ? localToday() : day;
   return (e.stars || []).filter((x) => (!x.joined || x.joined <= d) && (!x.last_performance || x.last_performance >= d));
 }
-function starLabels(e, day) {
-  const list = starsOn(e, day);
-  if (!list.length) return null;
-  return h("div", { class: "badges" }, list.map((x) => h("span", { class: "star-label", title: x.role ? `${x.name} as ${x.role}` : x.name }, "★ ", x.name)));
-}
-function starLeavingBadge(e, day) {
-  const d = !day || day === "any" || day === "week" ? localToday() : day;
-  const leaving = starsOn(e, day).filter((x) => x.last_performance && dayDiff(d, x.last_performance) <= LEAVING_SOON_DAYS);
-  if (!leaving.length) return null;
-  const x = leaving.sort((a, b) => a.last_performance.localeCompare(b.last_performance))[0];
-  const gap = dayDiff(d, x.last_performance);
-  const when = gap === 0 ? "today" : gap < 7 ? DAY_LONG[dayIndex(x.last_performance)] : dayName(x.last_performance, { month: "short", day: "numeric" });
-  return h("div", { class: "badges" }, h("span", { class: "badge leaving", title: `${x.name}'s final performance: ${dayName(x.last_performance, { weekday: "long", month: "long", day: "numeric" })}` }, `Star leaving ${when}`));
-}
 // "Key appeals" on the show page (Rachel's name, 2026-11-11): each star with role, when they joined and their final
 // performance once announced, highlighted in the last 14 days; plus an announced closing date. Nothing to say, no section.
 function keyAppealsPanel(e, day) {
@@ -325,30 +299,27 @@ function seatsLine(e) {
 function runtimeText(e) {
   return e.runtime_text || null;
 }
-function typicalText(e) {
-  if (e.typical_ticket === null || e.typical_ticket === undefined) return "Typical ticket price not available";
-  return `Typical ticket ${money(e.typical_ticket)}`;
-}
 function factsLine(e, anyMode) {
-  // The typical price sits next to the rush price when both are known (N3), so it isn't repeated here.
+  // No typical ticket price on tiles (Rachel 2026-11-12): it read like a discount site. It stays on the show page.
   const parts = [e.show_type || "Play or musical not available"];
-  if (savingOf(e) === null) parts.push(typicalText(e));
   if (state.data.has_show_facts) {
     parts.splice(1, 0, runtimeText(e) || "Runtime not available");
     if (anyMode) parts.push(e.days ? `Plays ${e.days.join(" ")}` : "Days not available");
   }
   return h("div", { class: "facts-line" }, parts.join(" · "));
 }
+// Favorite star (Rachel 2026-11-12, replaced the "Interested" checkbox). Same browser-only list as before, so old picks carry over.
 function pickBox(e) {
-  const box = h("input", {
-    type: "checkbox", checked: picks.has(e.show_id),
-    onchange: (ev) => {
-      if (ev.target.checked) picks.add(e.show_id); else picks.delete(e.show_id);
+  const on = picks.has(e.show_id);
+  return h("button", {
+    type: "button", class: "fav", "aria-pressed": String(on),
+    "aria-label": `${on ? "Remove" : "Add"} ${e.name || e.show_id} ${on ? "from" : "to"} favorites`, title: on ? "Favorited" : "Favorite",
+    onclick: () => {
+      if (picks.has(e.show_id)) picks.delete(e.show_id); else picks.add(e.show_id);
       savePicks();
       if (state.paint) state.paint();
     },
-  });
-  return h("label", { class: "pick" }, box, "Interested");
+  }, on ? "★" : "☆");
 }
 function policyLine(e) {
   const p = e.policy || {};
@@ -377,33 +348,32 @@ function tileHead(e, href) {
 // showtime: "matinee" or "evening" inside a Matinee or Evening section or filter, so the tile names that performance.
 function tile(day, e, anyMode, from = "", showtime = null) {
   const head = tileHead(e, `#/show/${day}/${encodeURIComponent(e.show_id)}${from}`);
-  const starsRow = starLabels(e, day);
   if (anyMode) {
-    return h("article", { class: "tile" }, head, rushLabels(e), starsRow,
+    return h("article", { class: "tile" }, head, rushLabels(e),
       h("div", { class: "seats" }, seatsLine(e)), factsLine(e, true),
       h("div", { class: "check-back" }, "Check back within 7 days of your date."),
-      starLeavingBadge(e, day), dealBadge(e, day), pickBox(e));
+      dealBadge(e, day), pickBox(e));
   }
   const perfLine = showtime ? (twoShows(e) ? [showtimeLine(e, showtime), twoShowLine(e)] : showtimeLine(e, showtime)) : twoShowLine(e);
   if (e.group === 1) {
-    return h("article", { class: "tile" }, head, rushLabels(e), starsRow, perfLine, worthBar(e),
+    return h("article", { class: "tile" }, head, rushLabels(e), perfLine, worthBar(e),
       h("div", { class: "stats" },
         h("span", { class: "chance" }, pct(e.chance_9am), " ", h("small", {}, "chance at 9:00 AM")),
         h("span", { class: "arrival" }, "Get there by ", markedTime(e, e.arrival))),
       h("div", { class: "seats" }, seatsLine(e)), factsLine(e, false),
-      badges(e), starLeavingBadge(e, day), dealBadge(e, day), pickBox(e));
+      badges(e), dealBadge(e, day), pickBox(e));
   }
   if (e.group === 2) {
-    return h("article", { class: "tile" }, head, rushLabels(e), starsRow, perfLine,
+    return h("article", { class: "tile" }, head, rushLabels(e), perfLine,
       h("div", { class: "simple-line" }, h("b", {}, "Limited data, probably easy.")),
       h("div", { class: "simple-line" }, policyLine(e)),
       h("div", { class: "seats" }, seatsLine(e)), factsLine(e, false),
-      badges(e), starLeavingBadge(e, day), dealBadge(e, day), pickBox(e));
+      badges(e), dealBadge(e, day), pickBox(e));
   }
-  return h("article", { class: "tile" }, head, rushLabels(e), starsRow, perfLine,
+  return h("article", { class: "tile" }, head, rushLabels(e), perfLine,
     h("div", { class: "simple-line" }, otherOffers(e)),
     h("div", { class: "seats" }, seatsLine(e)), factsLine(e, false),
-    badges(e), starLeavingBadge(e, day), dealBadge(e, day), pickBox(e));
+    badges(e), dealBadge(e, day), pickBox(e));
 }
 
 /* ---------- This week view (SPEC 2.2b): which of the next 7 days is best, per show ---------- */
@@ -493,8 +463,8 @@ function weekTile(item, dates, allowed) {
     h("div", { class: "stats" },
       h("span", { class: "chance" }, chanceText, " ", h("small", {}, "chance at 9:00 AM")),
       h("span", { class: "arrival" }, "Get there by ", time12(b.entry.arrival), anyMarked ? openMark(anyMarked.e) : null)),
-    weekRow(item, dates, allowed), weekTwoShowLine(item, allowed), starLabels(item, "week"),
-    h("div", { class: "seats" }, seatsLine(item)), factsLine(item, false), badges(item), starLeavingBadge(item, "week"), dealBadge(item, "week"), pickBox(item));
+    weekRow(item, dates, allowed), weekTwoShowLine(item, allowed),
+    h("div", { class: "seats" }, seatsLine(item)), factsLine(item, false), badges(item), dealBadge(item, "week"), pickBox(item));
 }
 // "2 shows: Wed & Sat (2 pm & 8 pm)" in the This week view (SPEC 2.8 N8)
 function weekTwoShowLine(item, allowed) {
@@ -549,25 +519,28 @@ function weekStrip(items, dates, allowed) {
 const anyFilterOn = () => Object.values(state.filters).some((f) => f.size);
 function matchesFilters(e, anyMode, weekMode = false, allowed = () => true) {
   const f = state.filters;
-  // 2-show day (SPEC 2.8 N8). In the This week view: plays twice on at least one of your days.
-  if (!anyMode && f.two.size && !(weekMode ? e.weekDays.some((x) => allowed(x.date) && twoShows(x.e)) : twoShows(e))) return false;
-  if (!anyMode && !weekMode && f.showtime.size && ![...f.showtime].some((w) => hasShowtime(e, w))) return false;
+  // Show time (Rachel 2026-11-12): one picked = has that showtime; both = plays matinee AND evening; neither = all.
+  // In the This week view it's enough on one of your days.
+  if (!anyMode && f.showtime.size) {
+    const ok = (x) => [...f.showtime].every((w) => hasShowtime(x, w));
+    if (!(weekMode ? e.weekDays.some((x) => allowed(x.date) && ok(x.e)) : ok(e))) return false;
+  }
   if (f.rush.size && !(e.rush_labels || []).some((l) => f.rush.has(l.startsWith("In person") ? "In person" : l))) return false;
   if (f.type.size && !(e.show_type && f.type.has(e.show_type))) return false;
-  if (f.star.size && !starsOn(e, null).length) return false;
-  if (anyMode && f.days.size && !(e.days && e.days.some((d) => f.days.has(d)))) return false;
+  // Days showing works on every view (Rachel 2026-11-12). This week uses it to pick which days count (allowed).
+  if (!weekMode && f.days.size && !(e.days && e.days.some((d) => f.days.has(d)))) return false;
   if (f.runtime.size) {
     if (e.runtime_minutes === null || e.runtime_minutes === undefined) return false;
     if (!RUNTIME_OPTIONS.some((o) => f.runtime.has(o.key) && o.test(e.runtime_minutes))) return false;
   }
   return true;
 }
-function hiddenForUnknown(entries, anyMode) {
+function hiddenForUnknown(entries, anyMode, weekMode = false) {
   const f = state.filters;
   const notes = [];
   const add = (n, what) => { if (n) notes.push(`${n} ${n === 1 ? "show" : "shows"} hidden: ${what} not known`); };
   if (f.type.size) add(entries.filter((e) => !e.show_type).length, "play or musical");
-  if (anyMode && f.days.size) add(entries.filter((e) => !e.days).length, "days showing");
+  if (!weekMode && f.days.size) add(entries.filter((e) => !e.days).length, "days showing");
   if (f.runtime.size) add(entries.filter((e) => e.runtime_minutes === null || e.runtime_minutes === undefined).length, "runtime");
   return notes;
 }
@@ -667,49 +640,32 @@ function renderHome(selected) {
     chipRow("Rush type", RUSH_OPTIONS, state.filters.rush),
     chipRow("Play or musical", TYPE_OPTIONS, state.filters.type),
   ];
-  if (data.has_stars) filterRows.push(chipRow("High-profile stars", [{ key: "star", label: "Has a high-profile star" }], state.filters.star));
   if (data.has_show_facts) {
-    filterRows.push(chipRow("Days showing", DAY_OPTIONS, state.filters.days, anyMode ? {}
-      : weekMode ? { note: "Days you can go: only these are compared." }
-        : { disabled: true, note: "Pick This week or Any day to use this: a date already decides." }));
+    filterRows.push(chipRow("Days showing", DAY_OPTIONS, state.filters.days));
     filterRows.push(chipRow("Runtime", RUNTIME_OPTIONS, state.filters.runtime));
   }
-  // 2-show days (SPEC 2.8 N8): Matinee and Evening appear only while the tiles on screen include a 2-show day.
-  filterRows.push(chipRow("2-show day", [{ key: "two", label: "2-show day" }], state.filters.two, anyMode
-    ? { disabled: true, note: "Pick a date or This week: Any day has no performance times." }
-    : weekMode ? { note: "Shows that play twice on at least one of your days." } : {}));
-  const showtimeRow = weekMode || anyMode ? null
-    : chipRow("Show time", [{ key: "matinee", label: "Matinee" }, { key: "evening", label: "Evening" }], state.filters.showtime,
-      { note: "Matinee starts before 5 PM. One prediction covers the whole day's rush." });
-  if (showtimeRow) filterRows.push(showtimeRow);
-  if (anyMode || weekMode) state.filters.showtime.clear();
+  // Show time (SPEC 2.8 N8, changed 2026-11-12): no 2-show-day filter; Any day has no performance times, so no row there.
+  if (!anyMode) filterRows.push(chipRow("Show time", [{ key: "matinee", label: "Matinee" }, { key: "evening", label: "Evening" }], state.filters.showtime));
+  else state.filters.showtime.clear();
   if (state.filtersOpen === null) state.filtersOpen = window.matchMedia("(min-width: 700px)").matches;
   const filterSummary = h("summary", {}, "Filters");
   const filterBox = h("details", { class: "filters", open: state.filtersOpen, ontoggle: (ev) => { state.filtersOpen = ev.target.open; } },
     filterSummary, h("div", { class: "filter-body" }, filterRows));
 
-  const picksToggle = h("label", { class: "toggle" },
-    h("input", { type: "checkbox", checked: state.picksOnly, onchange: (ev) => { state.picksOnly = ev.target.checked; state.paint(); } }),
-    h("span", { id: "pick-count" }, ""));
+  const picksToggle = h("button", {
+    type: "button", class: "chip fav-filter", id: "pick-count", "aria-pressed": String(state.picksOnly),
+    onclick: (ev) => { state.picksOnly = !state.picksOnly; ev.currentTarget.setAttribute("aria-pressed", String(state.picksOnly)); state.paint(); },
+  }, "");
   const resultLine = h("div", { class: "result-line", role: "status" });
   const results = h("div", {});
   const stripHolder = h("div", { class: "strip-holder" });
 
   state.paint = () => {
-    // Matinee and Evening show only when a 2-show day is among the tiles that pass the other filters.
-    if (showtimeRow) {
-      const saved = new Set(state.filters.showtime);
-      state.filters.showtime.clear();
-      const anyTwo = entries.some((e) => matchesFilters(e, anyMode, weekMode, allowed) && (!state.picksOnly || picks.has(e.show_id)) && twoShows(e));
-      showtimeRow.hidden = !anyTwo;
-      if (anyTwo) saved.forEach((x) => state.filters.showtime.add(x));
-      else showtimeRow.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-pressed", "false"));
-    }
     const visible = entries.filter((e) => matchesFilters(e, anyMode, weekMode, allowed) && (!state.picksOnly || picks.has(e.show_id))
       && (!weekMode || e.weekDays.some((x) => allowed(x.date))));
     if (weekMode) for (const e of entries) e.best = e.group === 1 ? weekBest(e, allowed) : null;
     const { spec, reversed } = activeSort(anyMode, weekMode);
-    document.getElementById("pick-count").textContent = `Only my picks (${picks.size})`;
+    document.getElementById("pick-count").textContent = `★ Show favorites (${picks.size})`;
     sortRow.querySelectorAll("[data-sort]").forEach((b) => {
       const on = b.dataset.sort === spec.key;
       b.setAttribute("aria-pressed", on ? "true" : "false");
@@ -718,7 +674,7 @@ function renderHome(selected) {
     });
     const active = Object.values(state.filters).reduce((n, f) => n + f.size, 0);
     filterSummary.textContent = active ? `Filters (${active} on)` : "Filters";
-    const notes = hiddenForUnknown(entries, anyMode);
+    const notes = hiddenForUnknown(entries, anyMode, weekMode);
     resultLine.replaceChildren(
       h("b", {}, `${visible.length} of ${entries.length} shows`),
       ...notes.map((n) => h("span", {}, n)),
@@ -761,24 +717,10 @@ function renderHome(selected) {
     const dayView = !anyMode && !weekMode;
     if (!visible.length) {
       sections.push(h("p", { class: "empty" }, state.picksOnly && !anyFilterOn()
-        ? "None of your picks are here. Turn off \"Only my picks\" to see every show."
+        ? "None of your favorites are here. Tap the ☆ on a show to favorite it, or turn off \"Show favorites\" to see every show."
         : "No shows match. Try turning off a filter."));
     } else if (dayView && picked.length === 1) {
       sections.push(...grouped(visible, picked[0], "h2"));
-    } else if (dayView && !picked.length && visible.some(twoShows)) {
-      // 2-show days on screen and no Matinee or Evening picked: split the day. A 2-show show appears in both.
-      const parts = [
-        ["matinee", "Matinee", visible.filter((e) => hasShowtime(e, "matinee"))],
-        ["evening", "Evening", visible.filter((e) => hasShowtime(e, "evening"))],
-        [null, "Time not confirmed", visible.filter((e) => !perfsOf(e).length)],
-      ];
-      for (const [key, title, list] of parts) {
-        if (!list.length) continue;
-        sections.push(h("section", { class: "showtime-section" }, h("h2", { class: "showtime-title" }, title,
-          h("span", { class: "showtime-count" }, ` ${list.length} ${list.length === 1 ? "show" : "shows"}`)),
-        key === "matinee" ? h("p", { class: "group-note" }, "Starts before 5 PM. Shows that play twice are in both sections, and one prediction covers the whole day's rush.") : null,
-        ...grouped(list, key, "h3")));
-      }
     } else {
       sections.push(...grouped(visible, null, "h2"));
     }
@@ -789,7 +731,7 @@ function renderHome(selected) {
     ? entries.flatMap((it) => it.weekDays.filter((x) => hasNumber(x.e)).map((x) => [x.date, x.e]))
     : anyMode ? [] : entries.filter(hasNumber).map((e) => [day, e]);
   setApp(
-    h("h1", {}, anyMode ? "What's playing when you can go?" : weekMode ? "Which day should you go?" : "Is rush worth it this morning?"),
+    h("h1", { class: "sentence" }, anyMode ? "What's playing when you can go?" : weekMode ? "Which day should you go?" : "Is rush worth it this morning?"),
     h("p", { class: "lede" }, anyMode
       ? "Planning further ahead: show facts only, with no chance or arrival time."
       : weekMode
@@ -1535,7 +1477,7 @@ function renderNerdStats() {
   const a = state.data.accuracy;
   const ch = state.data.charts;
   if (!a || !ch) {
-    setApp(h("h1", {}, "Nerd stats"),
+    setApp(h("h1", { class: "sentence" }, "Nerd stats"),
       h("p", { class: "empty" }, "Not available yet: the test on past months hasn't finished, and this page shows only real test results."));
     return;
   }
@@ -1602,7 +1544,7 @@ function renderNerdStats() {
   }, name)));
 
   setApp(
-    h("h1", {}, "Nerd stats"),
+    h("h1", { class: "sentence" }, "Nerd stats"),
     h("p", { class: "lede" }, `The numbers behind the predictions. Test results come from ${dev.length} past months, each predicted using only earlier days. None of this has been checked on real trips yet.`),
     jump,
     nsSection("ns-summary", "The short version",
