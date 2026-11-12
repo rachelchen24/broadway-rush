@@ -1392,3 +1392,7 @@ Same scheduled run. Every source was checked in `registry/sources.csv` first (ro
 - **Dated special deals (C7):** Playbill news can't be read by AI (`ai-train=no`); the deals file is empty and Hamilton's deal is a question for Rachel.
 - **Model work (N9 tests, retraining, comparison, Nerd stats charts):** scheduled Nov 17–19, and Rachel asked to be asked before long runs and before refreshing Reddit. None of the new inputs is in `LINE_FEATURES` or `CUTOFF_FEATURES` yet, so today's model and site numbers are unchanged; `model_line.csv` etc. weren't rebuilt.
 
+
+## 2026-11-11 23:00 ET — Stars list: Rachel's first overrides
+
+Rachel marked Reece Weaver (Chicago) as a star by override (she typed `yes` in `last_performance`; moved to `override`). Anthony Santos (Buena Vista Social Club, "Bodyguard") was counted only because Wikipedia redirects "Anthony Santos" to Romeo Santos, the bachata singer: marked not counted, and redirects to a differently named page are now never counted. Result: 31 stars by the 20,000 rule plus 1 override. Rachel left the other near-line rows to the rule. The site's star parts stay off until she says go.

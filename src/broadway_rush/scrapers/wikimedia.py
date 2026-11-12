@@ -76,7 +76,9 @@ def resolve(client: Client, names: list[str]) -> dict:
             t = norm.get(n, n)
             t = red.get(t, t)
             p = pages.get(t, {})
-            out[n] = {"title": t if p and not p.get("missing") else "", "description": p.get("description", ""),
+            # A redirect to a differently named page ("Anthony Santos" -> "Romeo Santos") is usually someone else
+            out[n] = {"redirected": t != norm.get(n, n),
+                      "title": t if p and not p.get("missing") else "", "description": p.get("description", ""),
                       "disambiguation": "disambiguation" in (p.get("pageprops") or {}), "missing": bool(p.get("missing"))}
     return out
 

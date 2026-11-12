@@ -164,7 +164,8 @@ def main():
     for n in names:
         f = found[n]
         ok = (f["title"] and not f["disambiguation"] and wikimedia.PERFORMER_RE.search(f["description"] or "")
-              and not wikimedia.NOT_A_PERSON_RE.search(f["description"] or ""))
+              and not wikimedia.NOT_A_PERSON_RE.search(f["description"] or "")
+              and not (f.get("redirected") and f["title"].split(" (")[0].lower() != n.lower()))
         if ok:
             match[n] = (f["title"], f["description"], "")
             continue

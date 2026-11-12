@@ -228,7 +228,7 @@ All of this goes in the predictions file, so the site still reads only that file
 | N7 | New model inputs: show buzz (Wikipedia), shows playing that day, show stage | 2026-11-11 | 🔶 data collected and inputs built 2026-11-11 (show buzz views for 112 shows, shows playing, previews and days since opening); closing dates need cast news; not tested yet |
 | N8 | Two-show days: in the model, and on the site | 2026-11-11 | ✅ site built 2026-11-11 (local); model input `two_shows_today` built 2026-11-11, not tested yet (N9, Nov 17–19) |
 | N9 | Measure how much each input affects the outcome, chart it on Nerd stats, then cut the weak ones | 2026-11-11 | 📝 not built |
-| N10 | Special-deal flag on the site (not in the model) | 2026-11-11 | ✅ built 2026-11-11 (local) for the 4 deals on the policy list; dated deals file is empty (Hamilton: question for me) |
+| N10 | Special-deal flag on the site (not in the model) | 2026-11-11 | ✅ built 2026-11-11 (local) for the 4 deals on the policy list; dated deals file is empty |
 | N11 | NYU calendar, one model input (~~six schools, four inputs~~) | 2026-11-11 | 📝 not built; tier 3. NYU's calendar site failed certificate checks and nyu.edu blocks Anthropic's crawlers by name (question for me) |
 
 N1–N4 and N10 are website work. **N5–N9 are data and model work**: their model parts belong to the final-model slot (Nov 17–19). N8 also changes the site.
@@ -377,7 +377,7 @@ After all the new inputs are in, measure each one's role and remove the ones tha
 
 **N10. Special-deal flag on the site, not in the model (my decision 2026-11-11)**
 - **Special days are out of the model.** $5 ticket days, anniversaries and similar deals are too rare to train on. ~~A special-day input as a possible model upgrade~~ is dropped.
-- **Instead, flag them on the site:** a badge on the tile and a line in the details view, for example `Special deal today`, with what the deal is and a link. Hamilton has one now.
+- **Instead, flag them on the site:** a badge on the tile and a line in the details view, for example `Special deal today`, with what the deal is and a link. ~~Hamilton has one now.~~ (ignore, my call 2026-11-11)
 - **Source:** first check Playbill's rush policy article, which already lists some special offers as their own rows ("The Friday Forty", "$30 Under 30", "Ponyboy Seat"). Then Playbill news (scrape list C7). The predictions stay as they are on those days; the site just says the day may be busier or cheaper than predicted.
 - Done when: every deal on the current policy list shows on its show's tiles and details, with dates where known.
 
@@ -972,7 +972,7 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
   - **Dated special deals** go in `registry/special_deals.csv`; standing deals come from the policy list.
   - **Show Wikipedia titles** live in `registry/show_wiki_titles.csv`, not `shows.csv` (which `catalog build` rewrites).
   - **Current cast for stars = the first cast list on each cached Playbill page** (the current cast), principals only. Stars' windows: originals use the 12 months ending 3 months before the show's first preview; replacements use the last 12 months, marked provisional until cast news gives their join date. A Wikipedia page that doesn't describe a performer is never counted.
-  - **Times Square foot traffic and the NYU calendar are on hold, not dropped** (terms and site access: questions 29–30).
+  - **Times Square foot traffic and the NYU calendar are on hold, not dropped** (terms and site access: questions 29–30). NYU: I'll supply the dates myself (2026-11-11).
   - **Star history test:** one Haiku pass on 50 BroadwayWorld articles cost $0.018; the full run waits for my review of the sheet.
 - **Docs:** `SPEC.md` (this file), `process.md` (what was built and how, kept up to date during coding), `interview-notes.md` (private talking points, **git-ignored**), `claude-notes.md` (Claude's working notes between sessions, **git-ignored**).
 
@@ -1012,7 +1012,7 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 28. **This week view, tie rule (§2.2b):** days with the same arrival time count as tied (placeholder). Times are on a 15-minute grid. On Nov 8–14 this gives 14 of 16 shows a single best day (Sunday); Operation Mincemeat ties Sunday, Tuesday and Thursday, and Wanted ties all 5 days it plays. A wider window (say, within 15 minutes) would name more ties.
 29. **Times Square foot traffic:** the Alliance's terms say personal, noncommercial use and no derivative works. Use the monthly reports anyway, send the drafted request (it asks permission too), or skip it? Nothing downloaded.
 30. **NYU calendar:** nyu.edu blocks Anthropic's crawlers by name and bulletins.nyu.edu failed certificate checks here. Paste the dates, allow one fetch with a facts-only script, or skip it?
-31. **Hamilton's special deal (N10):** no dated Hamilton deal is on the policy list or found by search. What is it?
+31. ~~**Hamilton's special deal (N10):** no dated Hamilton deal is on the policy list or found by search. What is it?~~ Dropped 2026-11-11: I said to ignore it.
 32. **Stars (N5):** review the 32 stars and 8 near the line in `registry/stars.csv` (column `override`, with a one-line `reason`), then I switch the site parts on. 11 of the 32 are replacements with provisional numbers. The show titles in `registry/show_wiki_titles.csv` also need a check.
 33. **Star history (C2):** review `data/labels/casting_test_review.csv`, then a go for the full run (about $0.35, one pass).
 - ~~Confirm Ticketmaster Discovery API free-tier limits.~~ Done 2026-10-22: 5,000 calls/day, 5 per second.
