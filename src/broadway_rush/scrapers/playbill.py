@@ -4,6 +4,8 @@ Phases (each is resumable; raw HTML is cached so re-parsing never re-downloads):
     py -m broadway_rush.scrapers.playbill grosses    # every week since June 2024 -> data/raw/grosses_playbill.csv
     py -m broadway_rush.scrapers.playbill policies   # today's policy article -> data/raw/policies_playbill.csv
     py -m broadway_rush.scrapers.playbill policies-history  # monthly Internet Archive copies since June 2024
+    py -m broadway_rush.scrapers.playbill grosses-history   # earlier weeks (2014 to May 2024) for the season pattern
+    py -m broadway_rush.scrapers.playbill schedule-history  # weekly schedule, one archived copy per week since June 2024
     py -m broadway_rush.scrapers.playbill parse      # re-parse cached HTML only (no requests)
 """
 
@@ -33,6 +35,12 @@ RAW = ROOT / "data" / "raw"
 CACHE = RAW / "playbill"
 GROSSES_CSV = RAW / "grosses_playbill.csv"
 POLICIES_CSV = RAW / "policies_playbill.csv"
+HISTORY_START = "2014-01-05"  # first week-ending Sunday of 2014 (SPEC 2.8 C5)
+SHUTDOWN = ("2020-03-15", "2021-09-05")  # no Broadway performances: skipped
+GROSSES_HISTORY_CSV = RAW / "grosses_history_playbill.csv"
+SCHEDULE_URL = "https://playbill.com/article/weekly-schedule-of-current-broadway-shows"
+SCHEDULE_CSV = RAW / "schedule_playbill.csv"
+SCHEDULE_COLS = ["capture_date", "date", "show", "perfs", "times"]
 
 GROSS_COLS = ["week_ending", "production_id", "show", "theater", "gross", "potential_gross", "diff_gross",
               "avg_ticket", "top_ticket", "seats_sold", "seats_in_theatre", "perfs", "previews",
@@ -112,6 +120,32 @@ def scrape_grosses(client: PoliteClient):
         if i % 10 == 0 or i == len(todo):
             log.info("%d/%d weeks fetched (last %s: %d shows)", i, len(todo), w, n)
     write_grosses()
+
+
+def scrape_grosses_history(client: PoliteClient):
+    """Earlier weeks of grosses, HISTORY_START up to START_WEEK, for the attendance season pattern (SPEC 2.8 N6, C5).
+    Kept in their own folder and CSV, so the model tables built from grosses_playbill.csv don't change.
+    The 2020-21 shutdown weeks have no table and are skipped (not cached)."""
+    folder = CACHE / "grosses_history"
+    folder.mkdir(parents=True, exist_ok=True)
+    weeks = sorted(w for w in set(re.findall(r"grosses\?week=(\d{4}-\d{2}-\d{2})", client.get_text(GROSSES_URL)))
+                   if HISTORY_START <= w < START_WEEK)
+    todo = [w for w in weeks if not (folder / f"{w}.html").exists() and not (SHUTDOWN[0] <= w <= SHUTDOWN[1])]
+    log.info("%d earlier weeks (%s to %s), %d to fetch", len(weeks), weeks[0], weeks[-1], len(todo))
+    for i, w in enumerate(todo, 1):
+        html = client.get_text(GROSSES_URL, {"week": w})
+        n = len(parse_grosses(html, w))
+        if n == 0:
+            log.warning("week %s: no table rows, not cached", w)
+            continue
+        (folder / f"{w}.html").write_text(html, encoding="utf-8")
+        if i % 25 == 0 or i == len(todo):
+            log.info("%d/%d weeks fetched (last %s: %d shows)", i, len(todo), w, n)
+    rows = []
+    for f in sorted(folder.glob("*.html")):
+        rows += parse_grosses(f.read_text(encoding="utf-8"), f.stem)
+    write_csv(GROSSES_HISTORY_CSV, GROSS_COLS, rows)
+    log.info("wrote %s: %d rows, %d weeks", GROSSES_HISTORY_CSV.name, len(rows), len({r["week_ending"] for r in rows}))
 
 
 def write_grosses():
@@ -221,6 +255,81 @@ def scrape_policy_history(client: PoliteClient):
     write_policies()
 
 
+def scrape_schedule_history(client: PoliteClient):
+    """Past copies of Playbill's "Weekly Schedule of Current Broadway Shows" from the Internet Archive (SPEC 2.8 N8:
+    two-show days for the model). One capture per ISO week since June 2024, the latest capture in that week."""
+    folder = CACHE / "schedule"
+    folder.mkdir(parents=True, exist_ok=True)
+    rows = client.get_json(WAYBACK_CDX, {"url": SCHEDULE_URL.split("://", 1)[1], "from": START_WEEK[:7].replace("-", ""),
+                                         "output": "json", "filter": "statuscode:200", "collapse": "timestamp:8"})
+    caps = [dict(zip(rows[0], r)) for r in rows[1:]]
+    by_week = {}
+    for c in caps:
+        by_week[date.fromisoformat(ts_date(c["timestamp"])).isocalendar()[:2]] = c
+    todo = [c for c in by_week.values() if not (folder / f"{ts_date(c['timestamp'])}.html").exists()]
+    log.info("%d captures, %d weeks, %d to fetch", len(caps), len(by_week), len(todo))
+    for c in todo:
+        html = client.get_text(f"{WAYBACK_WEB}/{c['timestamp']}id_/{c['original']}")
+        (folder / f"{ts_date(c['timestamp'])}.html").write_text(html, encoding="utf-8")
+        log.info("%s: %d show-days", ts_date(c["timestamp"]), len(parse_schedule(html, ts_date(c["timestamp"]))))
+    write_schedule()
+
+
+MONTHS = {m: i for i, m in enumerate(["january", "february", "march", "april", "may", "june", "july", "august",
+                                      "september", "october", "november", "december"], 1)}
+DAY_HEAD_RE = re.compile(r"([A-Za-z]+)\.?\s+(\d{1,2})\s*$")
+TIME_RE = re.compile(r"\d{1,2}(?::\d\d)?\s*(?:am|pm)|noon")
+
+
+def parse_schedule(html: str, capture: str) -> list[dict]:
+    """The schedule table: a header row of days ("Mon. October 26") and one row per show ("DARK" or "2pm, 8pm").
+    Keeps only the facts: show, date, number of performances and their times."""
+    soup = BeautifulSoup(html, "html.parser")
+    out = []
+    cap = date.fromisoformat(capture)
+    for table in soup.find_all("table"):
+        trs = table.find_all("tr")
+        if not trs:
+            continue
+        head = [td.get_text(" ", strip=True) for td in trs[0].find_all(["td", "th"])]
+        days = []
+        for h in head[1:]:
+            m = DAY_HEAD_RE.search(h)
+            month = MONTHS.get(m[1].lower()) if m else None
+            if not month:
+                days.append(None)
+                continue
+            year = cap.year + (1 if month == 1 and cap.month == 12 else -1 if month == 12 and cap.month == 1 else 0)
+            days.append(date(year, month, int(m[2])))
+        if not any(days):
+            continue
+        for tr in trs[1:]:
+            cells = [td.get_text(" ", strip=True) for td in tr.find_all(["td", "th"])]
+            if len(cells) < 2 or not cells[0]:
+                continue
+            for d, cell in zip(days, cells[1:]):
+                if d is None:
+                    continue
+                times = TIME_RE.findall(cell.lower())
+                out.append({"capture_date": capture, "date": d.isoformat(), "show": cells[0], "perfs": len(times),
+                            "times": " ".join(t.replace(" ", "") for t in times)})
+    return out
+
+
+def write_schedule():
+    rows = []
+    for f in sorted((CACHE / "schedule").glob("*.html")):
+        rows += parse_schedule(f.read_text(encoding="utf-8"), f.stem)
+    # The same date can appear in two captures (a page updated mid-week): keep the latest capture's version.
+    latest = {}
+    for r in rows:
+        latest[(r["date"], r["show"])] = r
+    rows = sorted(latest.values(), key=lambda r: (r["date"], r["show"]))
+    write_csv(SCHEDULE_CSV, SCHEDULE_COLS, rows)
+    log.info("wrote %s: %d show-days, %d dates, %d with two shows", SCHEDULE_CSV.name, len(rows),
+             len({r["date"] for r in rows}), sum(r["perfs"] >= 2 for r in rows))
+
+
 def ts_date(ts: str) -> str:
     return f"{ts[:4]}-{ts[4:6]}-{ts[6:8]}"
 
@@ -261,7 +370,7 @@ def read_cached(path: Path) -> str:
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("phase", choices=["grosses", "policies", "policies-history", "parse"])
+    ap.add_argument("phase", choices=["grosses", "policies", "policies-history", "schedule-history", "grosses-history", "parse"])
     args = ap.parse_args()
     CACHE.mkdir(parents=True, exist_ok=True)
     logging.basicConfig(
@@ -276,6 +385,11 @@ def main():
     elif args.phase == "policies-history":
         client.min_interval = 5.0
         scrape_policy_history(client)
+    elif args.phase == "grosses-history":
+        scrape_grosses_history(client)
+    elif args.phase == "schedule-history":
+        client.min_interval = 5.0
+        scrape_schedule_history(client)
     else:
         write_grosses()
         write_policies()

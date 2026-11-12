@@ -22,6 +22,7 @@ from broadway_rush.model import cutoff as cutoff_model
 from broadway_rush.model import join
 from broadway_rush.model import line as line_model
 from broadway_rush.model import site_charts
+from broadway_rush.model import site_extras
 from broadway_rush.model.backtest import GO, GRID, LOCKED, MAYBE
 from broadway_rush.model.table import (
     CUTOFF_FEATURES, FALLBACK_OPENING, LINE_FEATURES, PROCESSED, RAW, ROOT, Features, clean_text, load_policies,
@@ -239,6 +240,7 @@ def build(per_person: float, tag: str):
     latest_gross = gross.sort_values("week_ending").groupby("show_id").tail(1).set_index("show_id")
     typical = typical_prices(gross)
     facts = load_facts()
+    extras = site_extras.Extras()  # dated deals, 2-show-day rush, saved lottery links (SPEC 2.8 N4, N8, N10)
     latest_policy_date = policies.snapshot_date.max()
     current = policies[policies.snapshot_date == latest_policy_date]
     shows_by_id = shows.set_index("show_id")
@@ -325,6 +327,7 @@ def build(per_person: float, tag: str):
             "seats_sold_week": None if gr is None else gr.week_ending,
             "badges": [],
         }
+        base.update(extras(base["show_id"]))
         if digital:
             base["digital"] = {"opens": digital["time"], "price": digital["price"], "how": digital["how"],
                                "where": digital["where"], "sellout_minutes": None}
@@ -367,7 +370,9 @@ def build(per_person: float, tag: str):
         ones = [e for e in entries if e["group"] == 1]
         if ones:
             ids = [e["show_id"] for e in ones]
-            base = feats.build(pd.DataFrame({"show_id": ids, "date": day}))
+            live = pd.DataFrame({"show_id": ids, "date": day, "perfs": [len(e["performances"]) for e in ones]})
+            live = live[[e["schedule_known"] for e in ones]]  # Ticketmaster's schedule beats the archive (SPEC 2.8 N8)
+            base = feats.build(pd.DataFrame({"show_id": ids, "date": day}), schedule_override=live)
             # Seeded per day, so a day's numbers don't shift just because an earlier day left the file
             tick = cm.draws(base, np.random.default_rng([11, int(d.replace("-", ""))]))
             for i, e in enumerate(ones):
@@ -430,6 +435,7 @@ def build(per_person: float, tag: str):
         "data_through": {"reports": str(reports_through.date()), "policies": latest_policy_date,
                          "grosses_week": gross.week_ending.max(), "schedule": sched.snapshot_utc.iloc[0][:10]},
         "has_show_facts": bool(facts),
+        "has_stars": bool(extras.stars),  # only after Rachel reviews registry/stars.csv (site_extras.STARS_REVIEWED)
         "days": days,
         "accuracy": accuracy_block(tag, funnel, timings),
         "charts": {**site_charts.build(t["line"], lm, tag, {e["show_id"] for es in days.values() for e in es}, shows),
@@ -439,6 +445,8 @@ def build(per_person: float, tag: str):
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(out, indent=1), encoding="utf-8")
     print("wrote", OUT, "days", len(days), {d: len(v) for d, v in days.items()}, "in", timings["whole_predictions_run_seconds"], "s")
+    for gap in site_extras.link_check(days):
+        print("no link (SPEC 2.8 N4):", gap)
     for e in days[dates[0]]:
         print(e["group"], e["name"][:30].ljust(30), e.get("verdict", ""), e.get("chance_9am", ""), e.get("arrival", ""),
               (e.get("tickets") or {}).get("levels", {}).get("80"), e["price"], e["rush_source"], e["badges"])

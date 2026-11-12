@@ -1,6 +1,6 @@
 # Broadway Rush — Spec (draft)
 
-> Status (2026-11-05): build steps 1–4 are built (Reddit scrape → labeled extraction pilot → full extraction into `data/processed/reports.csv` → grosses, rush policies + history, show catalog). Step 6 was moved up: the TKTS and Ticketmaster snapshot scrapers are built, and the daily GitHub Actions job works (manual run succeeded 2026-11-05; ~~first scheduled run still to confirm~~ scheduled runs confirmed 2026-11-07). Calendar, weather and NYC permitted events were added 2026-11-05. **Updated 2026-11-06: a first model (step 5) and a first website (step 7) are built and run locally, not deployed.** The simple combo beats the lookup table on line length but not on ticket counts or the chance of a ticket (§5.2a, §5.3). The report form and Refresh + PIN are screens only, not connected. **Added 2026-11-08:** the This week view (§2.2b), local only. Level-ups, cast news and comparison rows aren't built. **🆕 Added 2026-11-11: six items are decided and waiting to be built, all listed in §2.8 (build queue):** Montserrat Black header font, theater name opens Google Maps, typical ticket price next to the rush price, links to digital lottery and digital rush sites, high-profile stars (rule decided, cutoff still to pick), and NYC hotel occupancy as a tourist gauge (source not found yet). Then N7–N10: show buzz, shows playing, show stage, two-show days, measuring and cutting inputs, and a special-deal flag. N11 is the NYU calendar as one input. The three-tier order for all new model inputs is just above the "Not adding" line in §2.8. §10 (new) lists ideas outside this project's scope. What was built, and how, is in `process.md`. ~~Struck~~ text was replaced; anything not marked built is still a plan.
+> Status (2026-11-05): build steps 1–4 are built (Reddit scrape → labeled extraction pilot → full extraction into `data/processed/reports.csv` → grosses, rush policies + history, show catalog). Step 6 was moved up: the TKTS and Ticketmaster snapshot scrapers are built, and the daily GitHub Actions job works (manual run succeeded 2026-11-05; ~~first scheduled run still to confirm~~ scheduled runs confirmed 2026-11-07). Calendar, weather and NYC permitted events were added 2026-11-05. **Updated 2026-11-06: a first model (step 5) and a first website (step 7) are built and run locally, not deployed.** The simple combo beats the lookup table on line length but not on ticket counts or the chance of a ticket (§5.2a, §5.3). The report form and Refresh + PIN are screens only, not connected. **Added 2026-11-08:** the This week view (§2.2b), local only. Level-ups, cast news and comparison rows aren't built. **🆕 Added 2026-11-11: six items are decided and waiting to be built, all listed in §2.8 (build queue):** Montserrat Black header font, theater name opens Google Maps, typical ticket price next to the rush price, links to digital lottery and digital rush sites, high-profile stars (rule decided, cutoff still to pick), and NYC hotel occupancy as a tourist gauge (source not found yet). Then N7–N10: show buzz, shows playing, show stage, two-show days, measuring and cutting inputs, and a special-deal flag. N11 is the NYU calendar as one input. The three-tier order for all new model inputs is just above the "Not adding" line in §2.8. §10 (new) lists ideas outside this project's scope. **Updated 2026-11-11 (scheduled run, local only):** N1–N4, N10 and the site half of N8 are built; the new inputs' data is collected (two-show days, shows playing, show stage, Midtown subway riders, attendance history, show buzz) and their model inputs are built but not tested; the stars list (32 at 20,000) and the 50-article star-history test wait for my review; Times Square foot traffic and the NYU calendar are questions for me (§9, 29–33); model work hasn't started (Nov 17–19). What was built, and how, is in `process.md`. ~~Struck~~ text was replaced; anything not marked built is still a plan.
 > Standalone project: nothing is reused from previous projects.
 
 ## 1. Concept
@@ -58,8 +58,9 @@ Also to do:
 
 ### 2.2 Tile (one per show)
 - Show name (+ theater, small)
-  - 🆕 The theater name becomes a link to Google Maps (added 2026-11-11, not built yet: §2.8 N2).
-- 🆕 Typical ticket price next to the rush price, crossed out, with the saving (added 2026-11-11, not built yet: §2.8 N3).
+  - The theater name is a link to Google Maps directions (added 2026-11-11, ✅ built 2026-11-11: §2.8 N2).
+- Typical ticket price next to the rush price, crossed out, with the saving (added 2026-11-11, ✅ built 2026-11-11: §2.8 N3).
+- `2 shows today: 2 pm & 8 pm` on two-show days, and a `Special deal` badge when the policy list has one (✅ built 2026-11-11: §2.8 N8, N10).
 - **Rush types offered** as small labels: `In person`, `Online`, `Student` and so on (§2.2a)
 - **Rush price** (e.g. $49.50; per show, §3.4)
 - **Worth-it bar** + verdict word (GO / Maybe / Stay home)
@@ -186,8 +187,8 @@ All of this goes in the predictions file, so the site still reads only that file
 - **Width: at least 7/8 of the screen** at every screen size (changed 2026-11-06). It was a centered column capped at 1040 pixels, which looks like half the screen on a big monitor. Tiles use the extra room by adding columns, so lines of text don't stretch too long.
 - **Purple theme** (deep purple), with text in **glowing / illuminated light colors** (neon-marquee feel). ~~A lighter purple background with dark text and no dark mode~~ was tried on 2026-11-06, and I changed it back to dark the same night.
 - **Worth-it bar on dark:** it has a light outline, so the black end still shows.
-- **Fonts (chosen and on the site 2026-11-06):** Bebas Neue for the logo, headings, show names and big numbers (like the chance %). Poppins for everything else: body text, labels and buttons. Both are free on Google Fonts. Bebas Neue only has capital letters, so show names appear in all caps.
-  - 🆕 **Changing (decided 2026-11-11, not built yet: §2.8 N1):** Bebas Neue is too narrow. Montserrat Black, all caps, replaces it. Poppins stays.
+- **Fonts (chosen and on the site 2026-11-06; display font replaced 2026-11-11, below):** ~~Bebas Neue~~ Montserrat Black for the logo, headings, show names and big numbers (like the chance %). Poppins for everything else: body text, labels and buttons. Both are free on Google Fonts. Bebas Neue only has capital letters, so show names appear in all caps.
+  - **Changed (decided 2026-11-11, ✅ built 2026-11-11: §2.8 N1):** Bebas Neue is too narrow. Montserrat Black (weight 900), all caps, replaced it everywhere; display sizes are about 20% smaller. Poppins stays.
 - **Worth-it bar: black → gray → gold** (~~red → purple → blue~~, changed 2026-11-05). Black = stay home, gray = Maybe, gold = GO.
 
 ### 2.5 Report button
@@ -218,17 +219,17 @@ All of this goes in the predictions file, so the site still reads only that file
 
 | # | Item | Added | Status |
 |---|---|---|---|
-| N1 | Header font: Montserrat Black replaces Bebas Neue | 2026-11-11 | 📝 not built |
-| N2 | Theater name opens Google Maps | 2026-11-11 | 📝 not built |
-| N3 | Typical ticket price shown next to the rush price | 2026-11-11 | 📝 not built |
-| N4 | Links to each show's digital lottery and digital rush (site link, app mention) | 2026-11-11 | 📝 not built |
-| N5 | High-profile stars: collect the list, label and filter on the site, model inputs | 2026-11-11 | 📝 not built; cutoff picked: 20,000 |
-| N6 | Tourist traffic for the model: Times Square foot traffic (I ask the Alliance for daily counts) and Midtown subway riders, both; airport passengers as a spare (hotel occupancy has no public monthly data) | 2026-11-11 | 📝 not built; sources found, not fetched. First among the new inputs |
-| N7 | New model inputs: show buzz (Wikipedia), shows playing that day, show stage | 2026-11-11 | 📝 not built |
-| N8 | Two-show days: in the model, and on the site | 2026-11-11 | 📝 not built; site details are Claude's proposal |
+| N1 | Header font: Montserrat Black replaces Bebas Neue | 2026-11-11 | ✅ built 2026-11-11 (local) |
+| N2 | Theater name opens Google Maps | 2026-11-11 | ✅ built 2026-11-11 (local) |
+| N3 | Typical ticket price shown next to the rush price | 2026-11-11 | ✅ built 2026-11-11 (local) |
+| N4 | Links to each show's digital lottery and digital rush (site link, app mention) | 2026-11-11 | ✅ built 2026-11-11 (local): 25 of 25 lotteries, 10 of 10 online rushes link |
+| N5 | High-profile stars: collect the list, label and filter on the site, model inputs | 2026-11-11 | 🔶 steps 1–2 done 2026-11-11: 32 stars at 20,000, 8 near the line, in `registry/stars.csv`, **waiting for my overrides**; site parts (label, filter, badge, Key appeals) built but switched off until then; history (step 4) tested on 50 articles, full run waits for my review |
+| N6 | Tourist traffic for the model: Times Square foot traffic (I ask the Alliance for daily counts) and Midtown subway riders, both; airport passengers as a spare (hotel occupancy has no public monthly data) | 2026-11-11 | 🔶 subway riders collected 2026-11-11 (daily, Jan 2022 to Oct 29, 2026) and the four inputs built; Times Square foot traffic on hold (the Alliance's terms: personal, noncommercial use; I decide, and the request I send can ask); not tested yet |
+| N7 | New model inputs: show buzz (Wikipedia), shows playing that day, show stage | 2026-11-11 | 🔶 data collected and inputs built 2026-11-11 (show buzz views for 112 shows, shows playing, previews and days since opening); closing dates need cast news; not tested yet |
+| N8 | Two-show days: in the model, and on the site | 2026-11-11 | ✅ site built 2026-11-11 (local); model input `two_shows_today` built 2026-11-11, not tested yet (N9, Nov 17–19) |
 | N9 | Measure how much each input affects the outcome, chart it on Nerd stats, then cut the weak ones | 2026-11-11 | 📝 not built |
-| N10 | Special-deal flag on the site (not in the model) | 2026-11-11 | 📝 not built |
-| N11 | NYU calendar, one model input (~~six schools, four inputs~~) | 2026-11-11 | 📝 not built; tier 3 |
+| N10 | Special-deal flag on the site (not in the model) | 2026-11-11 | ✅ built 2026-11-11 (local) for the 4 deals on the policy list; dated deals file is empty (Hamilton: question for me) |
+| N11 | NYU calendar, one model input (~~six schools, four inputs~~) | 2026-11-11 | 📝 not built; tier 3. NYU's calendar site failed certificate checks and nyu.edu blocks Anthropic's crawlers by name (question for me) |
 
 N1–N4 and N10 are website work. **N5–N9 are data and model work**: their model parts belong to the final-model slot (Nov 17–19). N8 also changes the site.
 
@@ -405,22 +406,22 @@ After all the new inputs are in, measure each one's role and remove the ones tha
 
 Build N1 first: it changes text widths, and N2, N3 and N5's star label all add text to the tile.
 
-#### Things to scrape or collect for the build queue (listed 2026-11-11; nothing fetched yet except the first look in C3)
+#### Things to scrape or collect for the build queue (listed 2026-11-11; collected 2026-11-11 where marked)
 Check `registry/sources.csv` before each one, and add a row for anything new. Same rules as always: no logging in, no getting around bot protection, polite gaps between requests.
 
 | # | What | For | Where from | Status |
 |---|---|---|---|---|
-| C1 | Current principal cast of every running show: person, role | N5 | For the site: Playbill production pages. For the model: Wikipedia and official show sites. 47 are already saved in `data/raw/playbill/show_pages/` from the runtime lookup on Nov 6; check whether they hold the cast before fetching again. Official show sites as a cross-check | Not started |
-| C2 | Star runs since June 2024, including closed shows: who joined and left, and the dates each was announced | N5 model inputs, "What's a star worth?", `Star leaving` badge | Wikipedia show articles first, then BroadwayWorld casting news and official show sites (not Playbill, see below). About $0.30–$3 of AI reading, which I approve first | Not started. Required (my decision 2026-11-11); cast news itself is still waiting on my go |
-| C3 | Monthly Wikipedia page views for every principal from C1 and C2 | N5 cutoff and `star_views` | Wikimedia's page-views service (in the registry since 2026-11-11) | First look only: 48 hand-picked people. One request a second got refused 5 times, so go slower (3 seconds or more) |
-| C4 | Tourist traffic: Times Square Alliance pedestrian counts (monthly reports; daily counts by request, which I send) and MTA hourly riders at the Midtown stations (2017 on), both; Port Authority monthly airport passengers as a spare | N6 | data.ny.gov open data API; panynj.gov reports; timessquarenyc.org reports. Hotel occupancy: no public monthly source | Sources found 2026-11-11, not fetched |
-| C5 | More years of weekly Broadway attendance, for the seasonal pattern | N6 | Playbill grosses, already an approved source (back to 1985); 127 weeks are already saved | Not started |
+| C1 | Current principal cast of every running show: person, role | N5 | For the site: Playbill production pages. For the model: Wikipedia and official show sites. 47 are already saved in `data/raw/playbill/show_pages/` from the runtime lookup on Nov 6; check whether they hold the cast before fetching again. Official show sites as a cross-check | ✅ 2026-11-11 for the site: 445 current principals in 33 shows, from the Playbill pages cached Nov 6 (no new requests). Model-side casts come with C2 |
+| C2 | Star runs since June 2024, including closed shows: who joined and left, and the dates each was announced | N5 model inputs, "What's a star worth?", `Star leaving` badge | Wikipedia show articles first, then BroadwayWorld casting news and official show sites (not Playbill, see below). About $0.30–$3 of AI reading, which I approve first | 🔶 started 2026-11-11: 976 casting headlines from BroadwayWorld's sitemaps; 50-article AI test done ($0.018), review sheet `data/labels/casting_test_review.csv` waiting for me; Wikipedia cast sections cached for 112 shows (not read yet). Full run projected about $0.35 |
+| C3 | Monthly Wikipedia page views for every principal from C1 and C2 | N5 cutoff and `star_views` | Wikimedia's page-views service (in the registry since 2026-11-11) | ✅ 2026-11-11 for current principals: 149 of 445 have a page; monthly views cached |
+| C4 | Tourist traffic: Times Square Alliance pedestrian counts (monthly reports; daily counts by request, which I send) and MTA hourly riders at the Midtown stations (2017 on), both; Port Authority monthly airport passengers as a spare | N6 | data.ny.gov open data API; panynj.gov reports; timessquarenyc.org reports. Hotel occupancy: no public monthly source | 🔶 MTA collected 2026-11-11 (`data/raw/mta_midtown_daily.csv`); Times Square on hold (terms), request drafted in my Downloads; airport passengers not fetched (spare) |
+| C5 | More years of weekly Broadway attendance, for the seasonal pattern | N6 | Playbill grosses, already an approved source (back to 1985); 127 weeks are already saved | ✅ 2026-11-11: 465 more weeks, Jan 2014 to May 2024 (`data/raw/grosses_history_playbill.csv`) |
 | C6 | A lottery's web address, only when the policy list has none | N4 | The show's official site | Not needed today (25 of 25 covered) |
-| C7 | Special deals: what, which show, which dates | N10 | Playbill's rush policy article first (already scraped), then Playbill news | Not started |
-| C8 | Each show's Wikipedia page title, then its daily page views | N7 | Wikimedia (in the registry) | Not started |
-| C9 | Opening, first preview and closing dates | N7 | Grosses and Playbill (already approved); closing from cast news (§3.12) | Not started |
-| C11 | NYU academic calendars, June 2024 to May 2027 (~~also Columbia, The New School, FIT, Fordham, Juilliard~~) | N11 | NYU's official published calendars | Not started; about an hour |
-| C10 | Whether rush is sold for both performances on two-show days | N8 | The policy text already scraped (§3.4); official show sites only if it doesn't say | Not started |
+| C7 | Special deals: what, which show, which dates | N10 | Playbill's rush policy article first (already scraped), then Playbill news | 🔶 2026-11-11: the policy list's 4 deals are on the site; dated deals file `registry/special_deals.csv` is empty (Playbill news can't be read by AI) |
+| C8 | Each show's Wikipedia page title, then its daily page views | N7 | Wikimedia (in the registry) | ✅ 2026-11-11: 112 of 121 titles in `registry/show_wiki_titles.csv` (for me to check), daily views cached |
+| C9 | Opening, first preview and closing dates | N7 | Grosses and Playbill (already approved); closing from cast news (§3.12) | 🔶 2026-11-11: first preview and opening weeks from the grosses; closing dates need cast news (C2) |
+| C11 | NYU academic calendars, June 2024 to May 2027 (~~also Columbia, The New School, FIT, Fordham, Juilliard~~) | N11 | NYU's official published calendars | 📝 not started: certificate failure and robots block (question for me) |
+| C10 | Whether rush is sold for both performances on two-show days | N8 | The policy text already scraped (§3.4); official show sites only if it doesn't say | 🔶 2026-11-11: the policy text never says, so 34 of 35 are "unknown" (Hadestown's standing room: separately); official show sites not in the registry yet |
 
 **Decided 2026-11-11: Playbill cast facts are for the site only** (its pages say `ai-train=no`). **The model's star and cast inputs come from other sources**, checked in the registry first:
 - **Wikipedia show articles:** cast lists and "notable replacements" sections, often with dates. Wikipedia text is CC BY-SA, so it's fine to use with credit; read through Wikipedia's official API, the same service as the page views. The best start for star history (C2).
@@ -965,6 +966,14 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
 - **Build order:** 1 Reddit → CSV ✅ · 2 labels + Haiku pilot ✅ · 3 full extraction ✅ · 4 grosses + rush policies + show catalog ✅ · 6 snapshot scrapers (moved up because ticket data has no history; TKTS + Ticketmaster built 2026-10-22, daily job working 2026-11-05) · 5 first model (simple combo) + results table · 7 website · final model (leveled-up combo). Don't skip ahead without asking.
 - **Accuracy page:** yes, now called Nerd stats (§2.6).
 - **Charts (2026-11-06, my picks):** line growth, show-by-day grid, predicted vs. real, what drives the line, chance vs. what happened, cleaning funnel, rush savings, reports per show. Plain ones go on show pages, and everything else goes on Nerd stats (§2.6).
+- **Build queue, scheduled run of 2026-11-11 (Claude's choices while I was away; mine to review, §2.8 and `process.md`):**
+  - **Matinee = a performance starting before 5 PM.** Matinee and Evening sections appear only when a 2-show day is on screen; inside each, the three show groups stay. Matinee / Evening is a day-view filter only.
+  - **Typical price stays in the facts line** only when the tile can't show the crossed-out comparison.
+  - **Dated special deals** go in `registry/special_deals.csv`; standing deals come from the policy list.
+  - **Show Wikipedia titles** live in `registry/show_wiki_titles.csv`, not `shows.csv` (which `catalog build` rewrites).
+  - **Current cast for stars = the first cast list on each cached Playbill page** (the current cast), principals only. Stars' windows: originals use the 12 months ending 3 months before the show's first preview; replacements use the last 12 months, marked provisional until cast news gives their join date. A Wikipedia page that doesn't describe a performer is never counted.
+  - **Times Square foot traffic and the NYU calendar are on hold, not dropped** (terms and site access: questions 29–30).
+  - **Star history test:** one Haiku pass on 50 BroadwayWorld articles cost $0.018; the full run waits for my review of the sheet.
 - **Docs:** `SPEC.md` (this file), `process.md` (what was built and how, kept up to date during coding), `interview-notes.md` (private talking points, **git-ignored**), `claude-notes.md` (Claude's working notes between sessions, **git-ignored**).
 
 ## 9. Open questions
@@ -1001,6 +1010,11 @@ Request counts are from the first snapshots (2026-10-22); times are estimates, t
     - **Downstate** may not need any of this: it's at 1.5 reports a week, and 2 gives it a full prediction.
 27. **Just in Time's days:** §2.2a's example says it doesn't play Monday or Wednesday. Playbill's schedule (Wednesday in all 8 weeks) and Ticketmaster both show it playing Wednesdays, dark Monday only. The site follows the data. Was the example about something else?
 28. **This week view, tie rule (§2.2b):** days with the same arrival time count as tied (placeholder). Times are on a 15-minute grid. On Nov 8–14 this gives 14 of 16 shows a single best day (Sunday); Operation Mincemeat ties Sunday, Tuesday and Thursday, and Wanted ties all 5 days it plays. A wider window (say, within 15 minutes) would name more ties.
+29. **Times Square foot traffic:** the Alliance's terms say personal, noncommercial use and no derivative works. Use the monthly reports anyway, send the drafted request (it asks permission too), or skip it? Nothing downloaded.
+30. **NYU calendar:** nyu.edu blocks Anthropic's crawlers by name and bulletins.nyu.edu failed certificate checks here. Paste the dates, allow one fetch with a facts-only script, or skip it?
+31. **Hamilton's special deal (N10):** no dated Hamilton deal is on the policy list or found by search. What is it?
+32. **Stars (N5):** review the 32 stars and 8 near the line in `registry/stars.csv` (column `override`, with a one-line `reason`), then I switch the site parts on. 11 of the 32 are replacements with provisional numbers. The show titles in `registry/show_wiki_titles.csv` also need a check.
+33. **Star history (C2):** review `data/labels/casting_test_review.csv`, then a go for the full run (about $0.35, one pass).
 - ~~Confirm Ticketmaster Discovery API free-tier limits.~~ Done 2026-10-22: 5,000 calls/day, 5 per second.
 
 ## 10. Extrapolation opportunities (outside this project's scope)

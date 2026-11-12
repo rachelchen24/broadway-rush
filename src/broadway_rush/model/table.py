@@ -31,6 +31,13 @@ LINE_FEATURES = [
 ]
 WEATHER_FEATURES = ["morning_feels_f", "morning_precip_in", "morning_snow_in"]
 CUTOFF_FEATURES = ["weekend", "pct_cap", "log_seats", "is_musical"]
+# Built 2026-11-11 for the final model (SPEC 2.8 N7, N8). Not in LINE_FEATURES or CUTOFF_FEATURES until the N9 tests.
+SCHEDULE_FEATURES = ["two_shows_today", "shows_playing_today", "rush_shows_today"]
+# Show stage from the weekly grosses (SPEC 2.8 N7, C9): week-level, since grosses are weekly. Opening dates are
+# announced months ahead, so they count as known 7 days out. Blank days_since_opening = opened before June 2024.
+STAGE_FEATURES = ["in_previews", "days_since_opening"]
+# Tourist traffic and season (SPEC 2.8 N6), see model/tourism.py
+from broadway_rush.model.tourism import TOURISM_FEATURES, Tourism  # noqa: E402
 FALLBACK_OPENING = {**{d: 10.0 for d in range(6)}, 6: 12.0}
 
 
@@ -207,15 +214,71 @@ def outcomes(r: pd.DataFrame, opening, funnel: dict) -> pd.DataFrame:
     return a[cols].sort_values(["date", "show_id"]).reset_index(drop=True)
 
 
+def load_schedule_days(shows: pd.DataFrame, policies: pd.DataFrame | None = None) -> pd.DataFrame:
+    """Per show-day performance counts from Playbill's archived weekly schedules (SPEC 2.8 N7, N8), mapped to show_id.
+    Weeks with no archived copy are filled from the same show's usual count for that weekday, taken from the
+    nearest captured weeks (within 6 weeks either side). A schedule is announced ahead, so using it 7 days out is fair.
+    Columns: show_id, date, perfs, filled (1 when it's the usual count rather than that week's own page)."""
+    path = RAW / "schedule_playbill.csv"
+    cols = ["show_id", "date", "perfs", "filled"]
+    if not path.exists():
+        return pd.DataFrame(columns=cols)
+    s = pd.read_csv(path, parse_dates=["date"])
+    keys = name_keys(shows)
+    by_id = {x.show_id: x for x in shows.itertuples()}
+    last = shows.last_week.max()
+    ids = {}
+    for name, when in s[["show", "capture_date"]].drop_duplicates().itertuples(index=False):
+        ids[(name, when)] = match(name, when, keys, by_id, last)[0]
+    s["show_id"] = [ids[k] for k in zip(s.show, s.capture_date)]
+    s = s[s.show_id.ne("") & s.show_id.ne("-")]
+    s = s.groupby(["show_id", "date"], as_index=False).perfs.max().assign(filled=0)
+    # Fill weeks with no capture: every date in each show's run that the pages don't cover
+    meta = shows.set_index("show_id")
+    fills = []
+    for sid, g in s.groupby("show_id"):
+        first = max(pd.Timestamp(meta.loc[sid].first_week) - pd.Timedelta(days=6), START)
+        end = pd.Timestamp(meta.loc[sid].last_week)
+        have = set(g.date)
+        missing = [d for d in pd.date_range(first, end) if d not in have]
+        if not missing:
+            continue
+        g = g.assign(wd=g.date.dt.weekday)
+        for d in missing:
+            near = g[(g.wd == d.weekday()) & ((g.date - d).abs() <= pd.Timedelta(weeks=6))]
+            if len(near):
+                fills.append((sid, d, int(near.perfs.median()), 1))
+    if fills:
+        s = pd.concat([s, pd.DataFrame(fills, columns=cols)], ignore_index=True)
+    return s.sort_values(["date", "show_id"]).reset_index(drop=True)[cols]
+
+
+def schedule_day_counts(days: pd.DataFrame, policies: pd.DataFrame | None) -> pd.DataFrame:
+    """date -> shows_playing_today, rush_shows_today (shows playing that day with in-person General Rush listed in
+    Playbill's policy list in force then). Rushers spread across fewer shows on dark days like Monday."""
+    playing = days[days.perfs > 0]
+    out = playing.groupby("date").show_id.nunique().rename("shows_playing_today").to_frame()
+    if policies is not None and len(policies):
+        g = policies[policies.policy_type.str.startswith("General Rush") & policies.show_id.fillna("").ne("")]
+        snaps = sorted(pd.to_datetime(g.snapshot_date.unique()))
+        by_snap = {pd.Timestamp(k): set(v.show_id) for k, v in g.groupby("snapshot_date")}
+        def rush_count(day, ids):
+            known = [x for x in snaps if x <= day] or snaps[:1]
+            return len(ids & by_snap[known[-1]])
+        out["rush_shows_today"] = [rush_count(d, set(v.show_id)) for d, v in playing.groupby("date")]
+    return out.reset_index()
+
+
 class Features:
     """Builds features for any (show_id, date), using only what's known 7 days before that date."""
 
-    def __init__(self, shows: pd.DataFrame, line: pd.DataFrame):
+    def __init__(self, shows: pd.DataFrame, line: pd.DataFrame, policies: pd.DataFrame | None = None):
         self.shows = shows.set_index("show_id")
         self.codes = {sid: i for i, sid in enumerate(sorted(shows.show_id))}
         g = pd.read_csv(RAW / "grosses_playbill.csv", parse_dates=["week_ending"])
         by_prod = shows.drop_duplicates("production_id").set_index("production_id").show_id
         g["show_id"] = g.production_id.map(by_prod)
+        self.stage = self._stage(g)
         self.grosses = (
             g.dropna(subset=["show_id"])[["show_id", "week_ending", "pct_cap", "avg_ticket"]]
             .sort_values("week_ending").reset_index(drop=True)
@@ -238,6 +301,51 @@ class Features:
             .groupby(["show_id", "date"]).agg(level=("level", "mean"), n=("level", "size"), created=("created", "max"))
             .reset_index()
         )
+        # Two-show days and shows playing that day, from Playbill's archived weekly schedules (SPEC 2.8 N7, N8)
+        if policies is None:
+            policies = load_policies(shows)
+        self.sched = load_schedule_days(shows, policies)
+        self.sched_counts = schedule_day_counts(self.sched, policies)
+        self.tourism = Tourism()
+
+    @staticmethod
+    def _stage(g: pd.DataFrame) -> pd.DataFrame:
+        """show_id -> first preview day and opening day, to the week: the Monday of the first week with previews,
+        and the Monday of the first week with regular performances. Blank when the show was already open in June 2024."""
+        g = g.dropna(subset=["show_id"])
+        out = {}
+        for sid, w in g.groupby("show_id"):
+            prev = w[w.previews.fillna(0) > 0].week_ending.min()
+            reg = w[w.perfs.fillna(0) > 0].week_ending.min()
+            began_before = w.week_ending.min() <= START + pd.Timedelta(days=7) and pd.isna(prev)
+            out[sid] = {
+                "first_preview": prev - pd.Timedelta(days=6) if pd.notna(prev) else pd.NaT,
+                "opening": pd.NaT if began_before else (reg - pd.Timedelta(days=6) if pd.notna(reg) else pd.NaT),
+            }
+        return pd.DataFrame.from_dict(out, orient="index")
+
+    def stage_features(self, keys: pd.DataFrame) -> pd.DataFrame:
+        st = self.stage.reindex(keys.show_id)
+        opening = pd.to_datetime(st.opening).to_numpy()
+        first = pd.to_datetime(st.first_preview).to_numpy()
+        d = keys.date.to_numpy()
+        since = (d - opening) / np.timedelta64(1, "D")
+        in_prev = np.where(pd.isna(first), 0.0, ((d >= first) & ((d < opening) | pd.isna(opening))).astype(float))
+        return pd.DataFrame({"in_previews": in_prev, "days_since_opening": since}, index=keys.index)
+
+    def schedule(self, keys: pd.DataFrame, override: pd.DataFrame | None = None) -> pd.DataFrame:
+        """two_shows_today (1/0, blank when unknown), shows_playing_today, rush_shows_today. `override` (show_id,
+        date, perfs) is the live schedule, from Ticketmaster at prediction time, and wins over the archive."""
+        s = self.sched[["show_id", "date", "perfs"]]
+        if override is not None and len(override):
+            s = pd.concat([s, override[["show_id", "date", "perfs"]]]).drop_duplicates(["show_id", "date"], keep="last")
+        k = keys[["show_id", "date"]].merge(s, on=["show_id", "date"], how="left")
+        k = k.merge(self.sched_counts, on="date", how="left")
+        return pd.DataFrame({
+            "two_shows_today": np.where(k.perfs.isna(), np.nan, (k.perfs >= 2).astype(float)),
+            "shows_playing_today": k.shows_playing_today.to_numpy(),
+            "rush_shows_today": k.get("rush_shows_today", pd.Series(np.nan, index=k.index)).to_numpy(),
+        }, index=keys.index)
 
     def recent(self, keys: pd.DataFrame) -> pd.DataFrame:
         by_show = {s: g for s, g in self.near.groupby("show_id")}
@@ -255,10 +363,13 @@ class Features:
             counts.append(int(use.n.sum()))
         return pd.DataFrame({"recent_level": levels, "recent_n": counts}, index=keys.index)
 
-    def build(self, rows: pd.DataFrame) -> pd.DataFrame:
+    def build(self, rows: pd.DataFrame, schedule_override: pd.DataFrame | None = None) -> pd.DataFrame:
         keys = rows[["show_id", "date"]].drop_duplicates().reset_index(drop=True)
         keys = keys.merge(self.calendar, on="date", how="left").merge(self.weather, on="date", how="left")
         keys[["recent_level", "recent_n"]] = self.recent(keys)
+        keys[SCHEDULE_FEATURES] = self.schedule(keys, schedule_override)
+        keys[STAGE_FEATURES] = self.stage_features(keys)
+        keys = keys.merge(self.tourism.build(keys.date), on="date", how="left")
         keys["recent_thin"] = (keys.recent_n < 3).astype(int)
         lagged = keys.assign(asof=keys.date - pd.Timedelta(days=9)).sort_values("asof")
         lagged = pd.merge_asof(
@@ -317,7 +428,7 @@ def build():
     line = line_points(r, opening, funnel)
     cut = cutoff_labels(r, funnel)
     out = outcomes(r, opening, funnel)
-    feats = Features(shows, line)
+    feats = Features(shows, line, policies)
     line = feats.build(line)
     cut = feats.build(cut)
     out = feats.build(out)
