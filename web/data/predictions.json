@@ -697,13 +697,19 @@
      {
       "name": "Corbin Bleu",
       "role": "Nick Carraway",
-      "joined": null,
+      "joined": "2026-03-30",
       "last_performance": null
      },
      {
       "name": "China Anne McClain",
       "role": "Daisy Buchanan",
       "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ryan McCartan",
+      "role": "Jay Gatsby",
+      "joined": "2025-01-21",
       "last_performance": null
      }
     ]
@@ -2029,7 +2035,7 @@
      {
       "name": "Gina Torres",
       "role": "Omara",
-      "joined": null,
+      "joined": "2026-10-13",
       "last_performance": null
      }
     ]
@@ -2367,19 +2373,19 @@
      {
       "name": "Thomas Sadoski",
       "role": "Andy",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      },
      {
       "name": "Liza Col\u00f3n-Zayas",
       "role": "Ivy",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      },
      {
       "name": "Ivy Wolk",
       "role": "Effie",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      }
     ]
@@ -3101,7 +3107,7 @@
      {
       "name": "Billy Crystal",
       "role": "Performer",
-      "joined": null,
+      "joined": "2026-10-01",
       "last_performance": null
      }
     ]
@@ -3794,16 +3800,16 @@
     "lottery_url": null,
     "stars": [
      {
-      "name": "Matthew Morrison",
-      "role": "Bobby Darin",
-      "joined": null,
-      "last_performance": null
-     },
-     {
       "name": "Ariana Madix",
       "role": "Connie Francis",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-12",
+      "last_performance": "2026-11-28"
+     },
+     {
+      "name": "Matthew Morrison",
+      "role": "Bobby Darin",
+      "joined": "2026-04-01",
+      "last_performance": "2026-11-08"
      }
     ]
    },
@@ -4481,8 +4487,8 @@
      {
       "name": "Reece Weaver",
       "role": "Roxie Hart",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-07",
+      "last_performance": "2026-11-15"
      }
     ]
    },
@@ -5492,8 +5498,8 @@
      {
       "name": "Bowen Yang",
       "role": "Mary Todd Lincoln",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-15",
+      "last_performance": "2027-01-17"
      }
     ]
    },
@@ -5835,7 +5841,7 @@
      {
       "name": "Margaret Cho",
       "role": "Narrator",
-      "joined": null,
+      "joined": "2026-11-03",
       "last_performance": null
      }
     ]
@@ -5998,7 +6004,7 @@
      {
       "name": "Jasmin Savoy Brown",
       "role": "Eurydice",
-      "joined": null,
+      "joined": "2026-09-01",
       "last_performance": null
      }
     ]
@@ -6301,13 +6307,13 @@
      {
       "name": "Bradley Whitford",
       "role": "LtCol Nathan R. Jessep",
-      "joined": null,
+      "joined": "2026-10-08",
       "last_performance": null
      },
      {
       "name": "Tom Blyth",
       "role": "LTJG Daniel Kaffee",
-      "joined": null,
+      "joined": "2026-10-08",
       "last_performance": null
      }
     ]
@@ -6372,7 +6378,7 @@
      {
       "name": "Sherri Shepherd",
       "role": "Genie",
-      "joined": null,
+      "joined": "2026-10-16",
       "last_performance": null
      }
     ]
@@ -6437,8 +6443,8 @@
      {
       "name": "Christopher Jackson",
       "role": "George Washington",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-08",
+      "last_performance": "2027-01-03"
      }
     ]
    },
@@ -6503,8 +6509,8 @@
      {
       "name": "Tom Felton",
       "role": "Draco Malfoy",
-      "joined": null,
-      "last_performance": null
+      "joined": "2025-11-11",
+      "last_performance": "2027-01-03"
      }
     ]
    },
@@ -6710,19 +6716,19 @@
      {
       "name": "Tom Hiddleston",
       "role": "Benedick",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      },
      {
       "name": "Hayley Atwell",
       "role": "Beatrice",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      },
      {
       "name": "Mason Alexander Park",
       "role": "Margaret",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      }
     ]
@@ -6804,31 +6810,31 @@
      {
       "name": "Julia Louis-Dreyfus",
       "role": "Polly Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Joe Keery",
       "role": "Trip Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Ed Harris",
       "role": "Lyman Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Allison Janney",
       "role": "Silda Grauman",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Lily Rabe",
       "role": "Brooke Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      }
     ]
@@ -7105,19 +7111,19 @@
      {
       "name": "Bill Irwin",
       "role": "Argan",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      },
      {
       "name": "Dylan Baker",
       "role": "Beralde",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      },
      {
       "name": "Rachel Bloom",
       "role": "Toinette",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      }
     ]
@@ -7847,13 +7853,19 @@
      {
       "name": "Corbin Bleu",
       "role": "Nick Carraway",
-      "joined": null,
+      "joined": "2026-03-30",
       "last_performance": null
      },
      {
       "name": "China Anne McClain",
       "role": "Daisy Buchanan",
       "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ryan McCartan",
+      "role": "Jay Gatsby",
+      "joined": "2025-01-21",
       "last_performance": null
      }
     ]
@@ -8529,7 +8541,7 @@
      {
       "name": "Gina Torres",
       "role": "Omara",
-      "joined": null,
+      "joined": "2026-10-13",
       "last_performance": null
      }
     ]
@@ -9877,19 +9889,19 @@
      {
       "name": "Thomas Sadoski",
       "role": "Andy",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      },
      {
       "name": "Liza Col\u00f3n-Zayas",
       "role": "Ivy",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      },
      {
       "name": "Ivy Wolk",
       "role": "Effie",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      }
     ]
@@ -10943,7 +10955,7 @@
      {
       "name": "Billy Crystal",
       "role": "Performer",
-      "joined": null,
+      "joined": "2026-10-01",
       "last_performance": null
      }
     ]
@@ -11285,8 +11297,8 @@
      {
       "name": "Reece Weaver",
       "role": "Roxie Hart",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-07",
+      "last_performance": "2026-11-15"
      }
     ]
    },
@@ -11617,16 +11629,16 @@
     "lottery_url": null,
     "stars": [
      {
-      "name": "Matthew Morrison",
-      "role": "Bobby Darin",
-      "joined": null,
-      "last_performance": null
-     },
-     {
       "name": "Ariana Madix",
       "role": "Connie Francis",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-12",
+      "last_performance": "2026-11-28"
+     },
+     {
+      "name": "Matthew Morrison",
+      "role": "Bobby Darin",
+      "joined": "2026-04-01",
+      "last_performance": "2026-11-08"
      }
     ]
    },
@@ -12639,8 +12651,8 @@
      {
       "name": "Bowen Yang",
       "role": "Mary Todd Lincoln",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-15",
+      "last_performance": "2027-01-17"
      }
     ]
    },
@@ -12802,7 +12814,7 @@
      {
       "name": "Jasmin Savoy Brown",
       "role": "Eurydice",
-      "joined": null,
+      "joined": "2026-09-01",
       "last_performance": null
      }
     ]
@@ -13105,13 +13117,13 @@
      {
       "name": "Bradley Whitford",
       "role": "LtCol Nathan R. Jessep",
-      "joined": null,
+      "joined": "2026-10-08",
       "last_performance": null
      },
      {
       "name": "Tom Blyth",
       "role": "LTJG Daniel Kaffee",
-      "joined": null,
+      "joined": "2026-10-08",
       "last_performance": null
      }
     ]
@@ -13176,7 +13188,7 @@
      {
       "name": "Sherri Shepherd",
       "role": "Genie",
-      "joined": null,
+      "joined": "2026-10-16",
       "last_performance": null
      }
     ]
@@ -13241,8 +13253,8 @@
      {
       "name": "Christopher Jackson",
       "role": "George Washington",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-08",
+      "last_performance": "2027-01-03"
      }
     ]
    },
@@ -13307,8 +13319,8 @@
      {
       "name": "Tom Felton",
       "role": "Draco Malfoy",
-      "joined": null,
-      "last_performance": null
+      "joined": "2025-11-11",
+      "last_performance": "2027-01-03"
      }
     ]
    },
@@ -13513,19 +13525,19 @@
      {
       "name": "Tom Hiddleston",
       "role": "Benedick",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      },
      {
       "name": "Hayley Atwell",
       "role": "Beatrice",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      },
      {
       "name": "Mason Alexander Park",
       "role": "Margaret",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      }
     ]
@@ -13607,31 +13619,31 @@
      {
       "name": "Julia Louis-Dreyfus",
       "role": "Polly Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Joe Keery",
       "role": "Trip Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Ed Harris",
       "role": "Lyman Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Allison Janney",
       "role": "Silda Grauman",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Lily Rabe",
       "role": "Brooke Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      }
     ]
@@ -13908,19 +13920,19 @@
      {
       "name": "Bill Irwin",
       "role": "Argan",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      },
      {
       "name": "Dylan Baker",
       "role": "Beralde",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      },
      {
       "name": "Rachel Bloom",
       "role": "Toinette",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      }
     ]
@@ -14331,13 +14343,19 @@
      {
       "name": "Corbin Bleu",
       "role": "Nick Carraway",
-      "joined": null,
+      "joined": "2026-03-30",
       "last_performance": null
      },
      {
       "name": "China Anne McClain",
       "role": "Daisy Buchanan",
       "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ryan McCartan",
+      "role": "Jay Gatsby",
+      "joined": "2025-01-21",
       "last_performance": null
      }
     ]
@@ -15333,7 +15351,7 @@
      {
       "name": "Gina Torres",
       "role": "Omara",
-      "joined": null,
+      "joined": "2026-10-13",
       "last_performance": null
      }
     ]
@@ -16328,19 +16346,19 @@
      {
       "name": "Thomas Sadoski",
       "role": "Andy",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      },
      {
       "name": "Liza Col\u00f3n-Zayas",
       "role": "Ivy",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      },
      {
       "name": "Ivy Wolk",
       "role": "Effie",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      }
     ]
@@ -17424,7 +17442,7 @@
      {
       "name": "Billy Crystal",
       "role": "Performer",
-      "joined": null,
+      "joined": "2026-10-01",
       "last_performance": null
      }
     ]
@@ -17767,8 +17785,8 @@
      {
       "name": "Reece Weaver",
       "role": "Roxie Hart",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-07",
+      "last_performance": "2026-11-15"
      }
     ]
    },
@@ -18100,16 +18118,16 @@
     "lottery_url": null,
     "stars": [
      {
-      "name": "Matthew Morrison",
-      "role": "Bobby Darin",
-      "joined": null,
-      "last_performance": null
-     },
-     {
       "name": "Ariana Madix",
       "role": "Connie Francis",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-12",
+      "last_performance": "2026-11-28"
+     },
+     {
+      "name": "Matthew Morrison",
+      "role": "Bobby Darin",
+      "joined": "2026-04-01",
+      "last_performance": "2026-11-08"
      }
     ]
    },
@@ -19461,8 +19479,8 @@
      {
       "name": "Bowen Yang",
       "role": "Mary Todd Lincoln",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-15",
+      "last_performance": "2027-01-17"
      }
     ]
    },
@@ -19804,7 +19822,7 @@
      {
       "name": "Margaret Cho",
       "role": "Narrator",
-      "joined": null,
+      "joined": "2026-11-03",
       "last_performance": null
      }
     ]
@@ -19969,7 +19987,7 @@
      {
       "name": "Jasmin Savoy Brown",
       "role": "Eurydice",
-      "joined": null,
+      "joined": "2026-09-01",
       "last_performance": null
      }
     ]
@@ -20275,13 +20293,13 @@
      {
       "name": "Bradley Whitford",
       "role": "LtCol Nathan R. Jessep",
-      "joined": null,
+      "joined": "2026-10-08",
       "last_performance": null
      },
      {
       "name": "Tom Blyth",
       "role": "LTJG Daniel Kaffee",
-      "joined": null,
+      "joined": "2026-10-08",
       "last_performance": null
      }
     ]
@@ -20347,7 +20365,7 @@
      {
       "name": "Sherri Shepherd",
       "role": "Genie",
-      "joined": null,
+      "joined": "2026-10-16",
       "last_performance": null
      }
     ]
@@ -20413,8 +20431,8 @@
      {
       "name": "Christopher Jackson",
       "role": "George Washington",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-08",
+      "last_performance": "2027-01-03"
      }
     ]
    },
@@ -20480,8 +20498,8 @@
      {
       "name": "Tom Felton",
       "role": "Draco Malfoy",
-      "joined": null,
-      "last_performance": null
+      "joined": "2025-11-11",
+      "last_performance": "2027-01-03"
      }
     ]
    },
@@ -20689,19 +20707,19 @@
      {
       "name": "Tom Hiddleston",
       "role": "Benedick",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      },
      {
       "name": "Hayley Atwell",
       "role": "Beatrice",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      },
      {
       "name": "Mason Alexander Park",
       "role": "Margaret",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      }
     ]
@@ -20784,31 +20802,31 @@
      {
       "name": "Julia Louis-Dreyfus",
       "role": "Polly Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Joe Keery",
       "role": "Trip Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Ed Harris",
       "role": "Lyman Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Allison Janney",
       "role": "Silda Grauman",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Lily Rabe",
       "role": "Brooke Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      }
     ]
@@ -21088,19 +21106,19 @@
      {
       "name": "Bill Irwin",
       "role": "Argan",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      },
      {
       "name": "Dylan Baker",
       "role": "Beralde",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      },
      {
       "name": "Rachel Bloom",
       "role": "Toinette",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      }
     ]
@@ -21511,13 +21529,19 @@
      {
       "name": "Corbin Bleu",
       "role": "Nick Carraway",
-      "joined": null,
+      "joined": "2026-03-30",
       "last_performance": null
      },
      {
       "name": "China Anne McClain",
       "role": "Daisy Buchanan",
       "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ryan McCartan",
+      "role": "Jay Gatsby",
+      "joined": "2025-01-21",
       "last_performance": null
      }
     ]
@@ -22835,7 +22859,7 @@
      {
       "name": "Gina Torres",
       "role": "Omara",
-      "joined": null,
+      "joined": "2026-10-13",
       "last_performance": null
      }
     ]
@@ -24248,7 +24272,7 @@
      {
       "name": "Billy Crystal",
       "role": "Performer",
-      "joined": null,
+      "joined": "2026-10-01",
       "last_performance": null
      }
     ]
@@ -25264,8 +25288,8 @@
      {
       "name": "Reece Weaver",
       "role": "Roxie Hart",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-07",
+      "last_performance": "2026-11-15"
      }
     ]
    },
@@ -25596,16 +25620,16 @@
     "lottery_url": null,
     "stars": [
      {
-      "name": "Matthew Morrison",
-      "role": "Bobby Darin",
-      "joined": null,
-      "last_performance": null
-     },
-     {
       "name": "Ariana Madix",
       "role": "Connie Francis",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-12",
+      "last_performance": "2026-11-28"
+     },
+     {
+      "name": "Matthew Morrison",
+      "role": "Bobby Darin",
+      "joined": "2026-04-01",
+      "last_performance": "2026-11-08"
      }
     ]
    },
@@ -26283,8 +26307,8 @@
      {
       "name": "Bowen Yang",
       "role": "Mary Todd Lincoln",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-15",
+      "last_performance": "2027-01-17"
      }
     ]
    },
@@ -26626,7 +26650,7 @@
      {
       "name": "Margaret Cho",
       "role": "Narrator",
-      "joined": null,
+      "joined": "2026-11-03",
       "last_performance": null
      }
     ]
@@ -26790,7 +26814,7 @@
      {
       "name": "Jasmin Savoy Brown",
       "role": "Eurydice",
-      "joined": null,
+      "joined": "2026-09-01",
       "last_performance": null
      }
     ]
@@ -27096,13 +27120,13 @@
      {
       "name": "Bradley Whitford",
       "role": "LtCol Nathan R. Jessep",
-      "joined": null,
+      "joined": "2026-10-08",
       "last_performance": null
      },
      {
       "name": "Tom Blyth",
       "role": "LTJG Daniel Kaffee",
-      "joined": null,
+      "joined": "2026-10-08",
       "last_performance": null
      }
     ]
@@ -27168,7 +27192,7 @@
      {
       "name": "Sherri Shepherd",
       "role": "Genie",
-      "joined": null,
+      "joined": "2026-10-16",
       "last_performance": null
      }
     ]
@@ -27233,8 +27257,8 @@
      {
       "name": "Christopher Jackson",
       "role": "George Washington",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-08",
+      "last_performance": "2027-01-03"
      }
     ]
    },
@@ -27299,8 +27323,8 @@
      {
       "name": "Tom Felton",
       "role": "Draco Malfoy",
-      "joined": null,
-      "last_performance": null
+      "joined": "2025-11-11",
+      "last_performance": "2027-01-03"
      }
     ]
    },
@@ -27505,19 +27529,19 @@
      {
       "name": "Tom Hiddleston",
       "role": "Benedick",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      },
      {
       "name": "Hayley Atwell",
       "role": "Beatrice",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      },
      {
       "name": "Mason Alexander Park",
       "role": "Margaret",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      }
     ]
@@ -27599,31 +27623,31 @@
      {
       "name": "Julia Louis-Dreyfus",
       "role": "Polly Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Joe Keery",
       "role": "Trip Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Ed Harris",
       "role": "Lyman Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Allison Janney",
       "role": "Silda Grauman",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Lily Rabe",
       "role": "Brooke Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      }
     ]
@@ -27901,19 +27925,19 @@
      {
       "name": "Bill Irwin",
       "role": "Argan",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      },
      {
       "name": "Dylan Baker",
       "role": "Beralde",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      },
      {
       "name": "Rachel Bloom",
       "role": "Toinette",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      }
     ]
@@ -28324,13 +28348,19 @@
      {
       "name": "Corbin Bleu",
       "role": "Nick Carraway",
-      "joined": null,
+      "joined": "2026-03-30",
       "last_performance": null
      },
      {
       "name": "China Anne McClain",
       "role": "Daisy Buchanan",
       "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ryan McCartan",
+      "role": "Jay Gatsby",
+      "joined": "2025-01-21",
       "last_performance": null
      }
     ]
@@ -28667,19 +28697,19 @@
      {
       "name": "Thomas Sadoski",
       "role": "Andy",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      },
      {
       "name": "Liza Col\u00f3n-Zayas",
       "role": "Ivy",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      },
      {
       "name": "Ivy Wolk",
       "role": "Effie",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      }
     ]
@@ -29021,8 +29051,8 @@
      {
       "name": "Reece Weaver",
       "role": "Roxie Hart",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-07",
+      "last_performance": "2026-11-15"
      }
     ]
    },
@@ -30826,7 +30856,7 @@
      {
       "name": "Gina Torres",
       "role": "Omara",
-      "joined": null,
+      "joined": "2026-10-13",
       "last_performance": null
      }
     ]
@@ -31163,19 +31193,19 @@
      {
       "name": "Thomas Sadoski",
       "role": "Andy",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      },
      {
       "name": "Liza Col\u00f3n-Zayas",
       "role": "Ivy",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      },
      {
       "name": "Ivy Wolk",
       "role": "Effie",
-      "joined": null,
+      "joined": "2026-11-15",
       "last_performance": null
      }
     ]
@@ -32256,7 +32286,7 @@
      {
       "name": "Billy Crystal",
       "role": "Performer",
-      "joined": null,
+      "joined": "2026-10-01",
       "last_performance": null
      }
     ]
@@ -33259,16 +33289,16 @@
     "lottery_url": null,
     "stars": [
      {
-      "name": "Matthew Morrison",
-      "role": "Bobby Darin",
-      "joined": null,
-      "last_performance": null
-     },
-     {
       "name": "Ariana Madix",
       "role": "Connie Francis",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-12",
+      "last_performance": "2026-11-28"
+     },
+     {
+      "name": "Matthew Morrison",
+      "role": "Bobby Darin",
+      "joined": "2026-04-01",
+      "last_performance": "2026-11-08"
      }
     ]
    },
@@ -33609,8 +33639,8 @@
      {
       "name": "Reece Weaver",
       "role": "Roxie Hart",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-07",
+      "last_performance": "2026-11-15"
      }
     ]
    },
@@ -34286,8 +34316,8 @@
      {
       "name": "Bowen Yang",
       "role": "Mary Todd Lincoln",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-15",
+      "last_performance": "2027-01-17"
      }
     ]
    },
@@ -34629,7 +34659,7 @@
      {
       "name": "Margaret Cho",
       "role": "Narrator",
-      "joined": null,
+      "joined": "2026-11-03",
       "last_performance": null
      }
     ]
@@ -34792,7 +34822,7 @@
      {
       "name": "Jasmin Savoy Brown",
       "role": "Eurydice",
-      "joined": null,
+      "joined": "2026-09-01",
       "last_performance": null
      }
     ]
@@ -35021,13 +35051,13 @@
      {
       "name": "Bradley Whitford",
       "role": "LtCol Nathan R. Jessep",
-      "joined": null,
+      "joined": "2026-10-08",
       "last_performance": null
      },
      {
       "name": "Tom Blyth",
       "role": "LTJG Daniel Kaffee",
-      "joined": null,
+      "joined": "2026-10-08",
       "last_performance": null
      }
     ]
@@ -35092,7 +35122,7 @@
      {
       "name": "Sherri Shepherd",
       "role": "Genie",
-      "joined": null,
+      "joined": "2026-10-16",
       "last_performance": null
      }
     ]
@@ -35157,8 +35187,8 @@
      {
       "name": "Christopher Jackson",
       "role": "George Washington",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-08",
+      "last_performance": "2027-01-03"
      }
     ]
    },
@@ -35223,8 +35253,8 @@
      {
       "name": "Tom Felton",
       "role": "Draco Malfoy",
-      "joined": null,
-      "last_performance": null
+      "joined": "2025-11-11",
+      "last_performance": "2027-01-03"
      }
     ]
    },
@@ -35346,19 +35376,19 @@
      {
       "name": "Tom Hiddleston",
       "role": "Benedick",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      },
      {
       "name": "Hayley Atwell",
       "role": "Beatrice",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      },
      {
       "name": "Mason Alexander Park",
       "role": "Margaret",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      }
     ]
@@ -35440,31 +35470,31 @@
      {
       "name": "Julia Louis-Dreyfus",
       "role": "Polly Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Joe Keery",
       "role": "Trip Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Ed Harris",
       "role": "Lyman Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Allison Janney",
       "role": "Silda Grauman",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Lily Rabe",
       "role": "Brooke Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      }
     ]
@@ -35611,19 +35641,19 @@
      {
       "name": "Bill Irwin",
       "role": "Argan",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      },
      {
       "name": "Dylan Baker",
       "role": "Beralde",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      },
      {
       "name": "Rachel Bloom",
       "role": "Toinette",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      }
     ]
@@ -36033,13 +36063,19 @@
      {
       "name": "Corbin Bleu",
       "role": "Nick Carraway",
-      "joined": null,
+      "joined": "2026-03-30",
       "last_performance": null
      },
      {
       "name": "China Anne McClain",
       "role": "Daisy Buchanan",
       "joined": null,
+      "last_performance": null
+     },
+     {
+      "name": "Ryan McCartan",
+      "role": "Jay Gatsby",
+      "joined": "2025-01-21",
       "last_performance": null
      }
     ]
@@ -37689,7 +37725,7 @@
      {
       "name": "Gina Torres",
       "role": "Omara",
-      "joined": null,
+      "joined": "2026-10-13",
       "last_performance": null
      }
     ]
@@ -38771,7 +38807,7 @@
      {
       "name": "Billy Crystal",
       "role": "Performer",
-      "joined": null,
+      "joined": "2026-10-01",
       "last_performance": null
      }
     ]
@@ -39103,16 +39139,16 @@
     "lottery_url": null,
     "stars": [
      {
-      "name": "Matthew Morrison",
-      "role": "Bobby Darin",
-      "joined": null,
-      "last_performance": null
-     },
-     {
       "name": "Ariana Madix",
       "role": "Connie Francis",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-12",
+      "last_performance": "2026-11-28"
+     },
+     {
+      "name": "Matthew Morrison",
+      "role": "Bobby Darin",
+      "joined": "2026-04-01",
+      "last_performance": "2026-11-08"
      }
     ]
    },
@@ -40460,8 +40496,8 @@
      {
       "name": "Bowen Yang",
       "role": "Mary Todd Lincoln",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-15",
+      "last_performance": "2027-01-17"
      }
     ]
    },
@@ -40802,7 +40838,7 @@
      {
       "name": "Margaret Cho",
       "role": "Narrator",
-      "joined": null,
+      "joined": "2026-11-03",
       "last_performance": null
      }
     ]
@@ -40966,7 +41002,7 @@
      {
       "name": "Jasmin Savoy Brown",
       "role": "Eurydice",
-      "joined": null,
+      "joined": "2026-09-01",
       "last_performance": null
      }
     ]
@@ -41187,13 +41223,13 @@
      {
       "name": "Bradley Whitford",
       "role": "LtCol Nathan R. Jessep",
-      "joined": null,
+      "joined": "2026-10-08",
       "last_performance": null
      },
      {
       "name": "Tom Blyth",
       "role": "LTJG Daniel Kaffee",
-      "joined": null,
+      "joined": "2026-10-08",
       "last_performance": null
      }
     ]
@@ -41258,7 +41294,7 @@
      {
       "name": "Sherri Shepherd",
       "role": "Genie",
-      "joined": null,
+      "joined": "2026-10-16",
       "last_performance": null
      }
     ]
@@ -41323,8 +41359,8 @@
      {
       "name": "Christopher Jackson",
       "role": "George Washington",
-      "joined": null,
-      "last_performance": null
+      "joined": "2026-09-08",
+      "last_performance": "2027-01-03"
      }
     ]
    },
@@ -41390,8 +41426,8 @@
      {
       "name": "Tom Felton",
       "role": "Draco Malfoy",
-      "joined": null,
-      "last_performance": null
+      "joined": "2025-11-11",
+      "last_performance": "2027-01-03"
      }
     ]
    },
@@ -41598,19 +41634,19 @@
      {
       "name": "Tom Hiddleston",
       "role": "Benedick",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      },
      {
       "name": "Hayley Atwell",
       "role": "Beatrice",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      },
      {
       "name": "Mason Alexander Park",
       "role": "Margaret",
-      "joined": null,
+      "joined": "2026-10-31",
       "last_performance": null
      }
     ]
@@ -41693,31 +41729,31 @@
      {
       "name": "Julia Louis-Dreyfus",
       "role": "Polly Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Joe Keery",
       "role": "Trip Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Ed Harris",
       "role": "Lyman Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Allison Janney",
       "role": "Silda Grauman",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      },
      {
       "name": "Lily Rabe",
       "role": "Brooke Wyeth",
-      "joined": null,
+      "joined": "2026-09-29",
       "last_performance": null
      }
     ]
@@ -41921,19 +41957,19 @@
      {
       "name": "Bill Irwin",
       "role": "Argan",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      },
      {
       "name": "Dylan Baker",
       "role": "Beralde",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      },
      {
       "name": "Rachel Bloom",
       "role": "Toinette",
-      "joined": null,
+      "joined": "2026-09-25",
       "last_performance": null
      }
     ]

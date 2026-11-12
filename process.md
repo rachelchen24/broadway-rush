@@ -1398,8 +1398,46 @@ Same scheduled run. Every source was checked in `registry/sources.csv` first (ro
 Rachel marked Reece Weaver (Chicago) as a star by override (she typed `yes` in `last_performance`; moved to `override`). Anthony Santos (Buena Vista Social Club, "Bodyguard") was counted only because Wikipedia redirects "Anthony Santos" to Romeo Santos, the bachata singer: marked not counted, and redirects to a differently named page are now never counted. Result: 31 stars by the 20,000 rule plus 1 override. Rachel left the other near-line rows to the rule. The site's star parts stay off until she says go.
 
 
-## 2026-11-11 23:30 ET — Stars switched on (N5 step 3)
+## 2026-11-11 22:30 ET — Stars switched on (N5 step 3)
 
 Rachel said the list is good to go. `site_extras.STARS_REVIEWED = True`, then `python -m broadway_rush.model.site_extras` patched `web/data/predictions.json` (no refit; predictions unchanged). **32 stars in 19 shows** reach the site (31 by the 20,000 rule + Reece Weaver by override); `has_stars` is true, so the "Has a high-profile star" filter shows. Offers without a link: 0. The star label, filter, `Star leaving` badge and Key appeals were tested at phone and desktop width earlier today, so no new screenshots.
 
 **Next:** the star-history full run (approved: one pass, $2.50 cap). New `star_history.py full`: fetches the remaining candidate articles from BroadwayWorld (5 s apart, cached ones skipped), then sends every article plus the 112 cached Wikipedia cast sections to the batch service at half price, after checking a cost estimate against the cap. Output `data/interim/casting_extractions.jsonl`, review sheet `data/labels/casting_review.csv`.
+
+
+## 2026-11-11 23:00 ET — NYU calendar input (N11, C11)
+
+Rachel pasted NYU's official academic calendar into `data/raw/nyu/nyu_calendar_paste.txt` (nyu.edu blocks Anthropic's crawlers, so nothing was fetched): **506 events, Mar 2024 to Jan 2028.** New `src/broadway_rush/nyu_calendar.py` reads it into **34 periods** in `registry/college_calendars.csv` (school, term, event, start, end, source, date checked) and gives the input **`nyu_session`: 0 break, 1 classes, 2 finals**, for Jun 1, 2024 to Dec 21, 2027 (570 break days, 673 class days, 56 finals days). Wired into `model/table.py` like the other new inputs (`NYU_FEATURES`), **not in LINE_FEATURES or CUTOFF_FEATURES** until the N9 tests; tables not rebuilt. Covers **100% of the 10,745 reports since June 2024: 5,645 on breaks, 4,557 in classes, 543 in finals.**
+
+**Choices made:**
+1. **Summer is a break** (Rachel: very few students are enrolled in summer), from the day after spring finals to the day before fall classes.
+2. **Finals = reading day through the last exam day.** The few days between the last exam and commencement count as break.
+3. **Winter recess runs to the day before spring classes**, so January counts as break (the official "Winter Recess for Students" ends Jan 1; January term is small).
+4. **Breaks include their weekends:** spring break Sat–Sun (9 days), Thanksgiving Thu–Sun, fall break Sat–Mon (it's one Monday).
+5. **One-day holidays (Labor Day, MLK Day) and "Legislative" days stay in session:** students are still in town, and the model already has holidays.
+
+Spot-checked: Oct 14, 2024 (fall break) = break, Oct 15 = classes, Mar 25, 2025 = spring break, May 12, 2025 = finals, Jul 10, 2025 = break, Nov 27, 2026 = Thanksgiving, Dec 18, 2026 = finals.
+
+**Still running:** the star-history fetch (300 of 939 articles at 22:56).
+
+
+## 2026-11-11 23:10 ET — NYU input: a fourth value, "free and in town"
+
+Rachel: she rushes on one-day holidays, and in the days before a term starts if she's already in NYC. Those days were "classes" or "break", so `nyu_session` gets **3 = free and in town**: one-day holidays (Labor Day, Presidents' Day, MLK Day, the fall-break Monday) and **the 3 days before each fall and spring term's first class** (my pick for "a couple of days"). Fall break is no longer a Sat–Mon break, just a free Monday. Spring break, Thanksgiving, winter and summer stay "break"; "Legislative" days stay classes (another day's schedule). Now **51 periods**; days Jun 2024 to Dec 21, 2027: 537 break, 676 classes, 56 finals, **30 free**. Reports since June 2024: 5,421 break, 4,664 classes, 543 finals, **117 free**.
+
+
+## 2026-11-12 00:05 ET — Star history full run (C2) and star dates (N5 step 4)
+
+Approved by Rachel (one pass, $2.50 cap). New `star_history.py full`: fetched the other **939 BroadwayWorld articles** (5 s apart, 22:30–23:51, 0 failed), then one batch of **1,069 requests** (976 articles + 93 Wikipedia cast sections; estimate $0.20 checked against the cap first). **Cost $0.1813**; project total **$3.16 of $8**; star history $0.20 of its $2.50. All 1,069 came back: 250 with no cast change, 4 unreadable answers, **3,219 changes** (1,984 joins, 369 leaves, 297 opening casts, 167 returns, 106 show extensions…), 538 marked uncertain.
+
+**New `star_history.py stints`:** one run per person per show → `data/interim/star_stints.csv`: **1,387 runs in 113 shows** (1,100 with a join date, 275 with a leave date; 12 changes named a show not in the catalog). Production end dates from extension news → `data/interim/show_end_dates.csv` (42 shows). It fills only blank date columns in `registry/stars.csv`: **479 dates for 245 of 445 principals.** Then `stars --rescore`: replacements now use the 12 months before their casting was announced (else 12 months ending 3 months before their first performance), no longer the provisional last 12 months; originals keep the window Rachel reviewed.
+
+**Result: 33 stars** (32 by the rule + Reece Weaver's override). **One flip: Ryan McCartan** (The Great Gatsby) 18,530 → 20,776, now above the line; kept by the rule, Rachel can override. Others moved but stayed stars (Bowen Yang 44,636 → 64,836, Matthew Morrison 44,464 → 30,173). 7 near the line. Site re-patched (`site_extras`): **29 stars show today**; leaving dates: Reece Weaver Nov 15 (badge), Ariana Madix Nov 28, Tom Felton and Christopher Jackson Jan 3, Bowen Yang Jan 17. Matthew Morrison's final performance was Nov 8, so the site no longer shows him.
+
+**Didn't work, then fixed:**
+1. **Leave and come back.** The first pass merged all of a person's runs, so a later return didn't undo an earlier "leaves" (McCartan: left Nov 9, 2025, returned Mar 8–29, 2026). Now the latest run decides, and a limited return's end date counts as an end.
+2. **Out-of-date leave dates.** McCartan still came out as "left Mar 29", but an Oct 5, 2026 article calls him "currently in the role" and Playbill's Nov 6 cast list has him. Everyone in `stars.csv` was in the current cast on Nov 6, so a leave date before that is now skipped and noted ("earlier run ended …"): McCartan, Eric Anderson, Chilina Kennedy.
+
+**Review sheet:** `data/labels/casting_review.csv`, 3,633 rows, 604 flagged. The 130 rows about current stars are at the top (`is_star_row`); I pre-filled `claude_prefill` on the 24 flagged ones (mostly "no date given, nothing filled"; one "ignore: joined the producers", Bowen Yang). Nothing for Rachel to do unless she wants to check.
+
+**Next:** model work Nov 17–19 (N9: test the new inputs, including star inputs from `star_stints.csv`; ask Rachel before long runs and before the Reddit refresh). Times Square foot traffic is still her question (§9 Q29).

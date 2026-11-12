@@ -1,3 +1,46 @@
 22:30:03 976 candidates, 939 to fetch (about 86 min)
 22:34:24 fetched 50 of 939
 22:38:42 fetched 100 of 939
+22:43:01 fetched 150 of 939
+22:47:18 fetched 200 of 939
+22:51:37 fetched 250 of 939
+22:55:56 fetched 300 of 939
+23:00:12 fetched 350 of 939
+23:04:27 fetched 400 of 939
+23:08:45 fetched 450 of 939
+23:13:05 fetched 500 of 939
+23:17:24 fetched 550 of 939
+23:21:45 fetched 600 of 939
+23:26:05 fetched 650 of 939
+23:30:26 fetched 700 of 939
+23:34:46 fetched 750 of 939
+23:39:06 fetched 800 of 939
+23:43:27 fetched 850 of 939
+23:47:52 fetched 900 of 939
+23:51:20 fetch done: 0 failed
+23:51:36 1069 requests, estimated $0.203; spent 2.9781, stop at 5.46
+23:51:38 HTTP Request: POST https://api.anthropic.com/v1/messages/batches "HTTP/1.1 200 OK"
+23:51:38 submitted batch msgbatch_01FJnWVP8mgSyRGihQy2qSa6
+23:51:38 HTTP Request: GET https://api.anthropic.com/v1/messages/batches/msgbatch_01FJnWVP8mgSyRGihQy2qSa6 "HTTP/1.1 200 OK"
+23:51:38 batch msgbatch_01FJnWVP8mgSyRGihQy2qSa6: MessageBatchRequestCounts(canceled=0, errored=0, expired=0, processing=1069, succeeded=0)
+23:52:38 HTTP Request: GET https://api.anthropic.com/v1/messages/batches/msgbatch_01FJnWVP8mgSyRGihQy2qSa6 "HTTP/1.1 200 OK"
+23:52:38 batch msgbatch_01FJnWVP8mgSyRGihQy2qSa6: MessageBatchRequestCounts(canceled=0, errored=0, expired=0, processing=1069, succeeded=0)
+23:53:38 HTTP Request: GET https://api.anthropic.com/v1/messages/batches/msgbatch_01FJnWVP8mgSyRGihQy2qSa6 "HTTP/1.1 200 OK"
+23:53:38 batch msgbatch_01FJnWVP8mgSyRGihQy2qSa6: MessageBatchRequestCounts(canceled=0, errored=0, expired=0, processing=1069, succeeded=0)
+23:54:39 HTTP Request: GET https://api.anthropic.com/v1/messages/batches/msgbatch_01FJnWVP8mgSyRGihQy2qSa6 "HTTP/1.1 200 OK"
+23:54:39 batch msgbatch_01FJnWVP8mgSyRGihQy2qSa6: MessageBatchRequestCounts(canceled=0, errored=0, expired=0, processing=1069, succeeded=0)
+23:55:39 HTTP Request: GET https://api.anthropic.com/v1/messages/batches/msgbatch_01FJnWVP8mgSyRGihQy2qSa6 "HTTP/1.1 200 OK"
+23:55:39 batch msgbatch_01FJnWVP8mgSyRGihQy2qSa6: MessageBatchRequestCounts(canceled=0, errored=0, expired=0, processing=1069, succeeded=0)
+23:56:39 HTTP Request: GET https://api.anthropic.com/v1/messages/batches/msgbatch_01FJnWVP8mgSyRGihQy2qSa6 "HTTP/1.1 200 OK"
+23:56:39 batch msgbatch_01FJnWVP8mgSyRGihQy2qSa6: MessageBatchRequestCounts(canceled=0, errored=0, expired=0, processing=1069, succeeded=0)
+23:57:40 HTTP Request: GET https://api.anthropic.com/v1/messages/batches/msgbatch_01FJnWVP8mgSyRGihQy2qSa6 "HTTP/1.1 200 OK"
+23:57:40 batch msgbatch_01FJnWVP8mgSyRGihQy2qSa6: MessageBatchRequestCounts(canceled=0, errored=0, expired=0, processing=1069, succeeded=0)
+23:58:40 HTTP Request: GET https://api.anthropic.com/v1/messages/batches/msgbatch_01FJnWVP8mgSyRGihQy2qSa6 "HTTP/1.1 200 OK"
+23:58:40 batch msgbatch_01FJnWVP8mgSyRGihQy2qSa6: MessageBatchRequestCounts(canceled=0, errored=0, expired=0, processing=1069, succeeded=0)
+23:59:40 HTTP Request: GET https://api.anthropic.com/v1/messages/batches/msgbatch_01FJnWVP8mgSyRGihQy2qSa6 "HTTP/1.1 200 OK"
+23:59:40 batch msgbatch_01FJnWVP8mgSyRGihQy2qSa6: MessageBatchRequestCounts(canceled=0, errored=0, expired=0, processing=1069, succeeded=0)
+00:00:41 HTTP Request: GET https://api.anthropic.com/v1/messages/batches/msgbatch_01FJnWVP8mgSyRGihQy2qSa6 "HTTP/1.1 200 OK"
+00:00:41 HTTP Request: GET https://api.anthropic.com/v1/messages/batches/msgbatch_01FJnWVP8mgSyRGihQy2qSa6 "HTTP/1.1 200 OK"
+00:00:41 HTTP Request: GET https://api.anthropic.com/v1/messages/batches/msgbatch_01FJnWVP8mgSyRGihQy2qSa6/results "HTTP/1.1 200 OK"
+00:00:42 full run: 1069 results, 0 failed, $0.1813; project total $3.1594
+00:00:42 wrote casting_review.csv: 3633 rows from 1069 articles, 604 flagged

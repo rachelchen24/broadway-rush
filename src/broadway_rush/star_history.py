@@ -391,6 +391,7 @@ STINTS = ROOT / "data" / "interim" / "star_stints.csv"
 SHOW_ENDS = ROOT / "data" / "interim" / "show_end_dates.csv"
 STARTS = {"joins", "returns", "cast_announced", "limited_run"}
 ENDS = {"leaves", "extends", "limited_run"}
+CAST_LISTED = "2026-11-06"  # the Playbill cast pages behind registry/stars.csv were cached this day
 
 
 def person_key(name: str) -> str:
@@ -432,14 +433,22 @@ def stints(src: Path = FULL_OUT):
     ch = pd.DataFrame(rows)
     out = []
     for (sid, key), g in ch.groupby(["show_id", "key"]):
-        st, en = g[g.change.isin(STARTS)], g[g.change.isin(ENDS) & (g["last"] != "")]
+        st = g[g.change.isin(STARTS)]
+        # A limited return ("returns March 8 through March 29") ends a run too
+        en = g[g.change.isin(ENDS | {"returns"}) & (g["last"] != "")]
         firsts = st[st["first"] != ""]["first"]
         news = st[(st.announced != "")]
+        latest_start = firsts.max() if len(firsts) else ""
         last_row = en.sort_values(["last", "announced"]).iloc[-1] if len(en) else None
+        # Left and came back later with no end date given: the latest run is still open
+        if last_row is not None and latest_start and last_row["last"] < latest_start:
+            last_row = None
         out.append({"show_id": sid, "person": g.person.iloc[0], "key": key,
                     "role": next((r for r in g.role if r), ""),
+                    # The first run's dates set the "famous before joining" window; latest_start is the current run
                     "casting_announced": news.announced.min() if len(news) else "",
                     "first_performance": firsts.min() if len(firsts) else "",
+                    "latest_start": latest_start,
                     "last_performance": last_row["last"] if last_row is not None else "",
                     "last_announced": last_row["announced"] if last_row is not None else "",
                     "is_limited": bool((g.change == "limited_run").any()),
@@ -463,8 +472,16 @@ def stints(src: Path = FULL_OUT):
         m = by.get((r.show_id, person_key(r.person)))
         if m is None:
             continue
+        # Everyone in stars.csv was in Playbill's current cast on CAST_LISTED, so a leave date before that belongs
+        # to an earlier run (Ryan McCartan: left Mar 29, 2026, back in the role by Oct 2026)
+        earlier = isinstance(m.last_performance, str) and m.last_performance and m.last_performance < CAST_LISTED
+        if earlier and "earlier run ended" not in r.review_note:
+            s.loc[i, "review_note"] = (r.review_note + "; " if r.review_note else "") + \
+                f"earlier run ended {m.last_performance}; in the current cast on {CAST_LISTED}"
         for col in ["casting_announced", "first_performance", "last_performance", "last_announced"]:
             v = getattr(m, col)
+            if earlier and col in ("last_performance", "last_announced"):
+                continue
             if not r[col] and isinstance(v, str) and v:
                 s.loc[i, col] = v
                 filled += 1
