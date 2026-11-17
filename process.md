@@ -1454,3 +1454,19 @@ Rachel decided to use the Times Square Alliance's public monthly reports despite
 **Not done:** the weekly operations report only ever shows the latest week, so there's no weekly history. Daily counts still need Rachel's email (draft in Downloads, not sent).
 
 **Next:** model work (N9), Nov 17–19.
+
+
+## 2026-11-17 ET — Light-mode draft (site unchanged)
+
+Rachel's new rule is light mode only; the site is dark purple. She asked for a draft first. New `web/styles-light.css` (loaded after `styles.css`, colors only) and `web/light-preview.html` (a copy of `index.html` that also loads it). Pale lavender page (#f7f3fc), white cards, deep purple text (#2b1a47, the old background), gold kept for fills; gold used as text becomes amber #8a5f00; glows removed; "Stay home" fills deep purple instead of black; chart series darkened (#b07c00, #1f86a6). Checked at 1280 px: the day view and Nerd stats read fine; the faintest heat-map shade is very pale on white. The real site (`index.html`, `styles.css`) is unchanged. If approved: fold the overrides into `styles.css`, bump `?v=`, delete the two preview files, and check phone width and the show pages.
+
+
+## 2026-11-17 ET — Times Square daily counts from the Alliance
+
+Rachel sent the request and the Alliance replied the same day: `data/raw/times-square-daily/` has daily totals (Excel) and daily counts for 23 cameras (three CSVs), **Jun 1, 2024 to Nov 16, 2026, 899 days.**
+
+**Checks:** the daily totals' monthly averages match the published monthly reports exactly in 25 of 28 months and within 1% in the rest. Quietest days fit known events (Jan 25–26 and Feb 22–23, 2026 snowstorms; Jan 20, 2025). Problems found: the two 47th St cameras only start Aug 21, 2024 (81 days with 21 cameras), so the published total steps up that day; the published total differs from the camera sum on 79 days (median 1%, probably their adjustment); Dec 30–31, 2024 totals blank; two camera-days are zero.
+
+**Did:** `scrapers/timessquare.py --daily` → `data/raw/timessquare_daily.csv` (date, alliance_total, core_sum = the 21 cameras that ran throughout, blank unless all 21 counted; 895 of 899 days). New input `ts_peds_daily_vs_last_year` in `model/tourism.py`: the 28 days ending 21 days before the date against a year earlier. The 21-day gap is because this is a one-time file: it still works for live predictions through the Dec 7 presentation, then goes blank (the monthly inputs carry on). Known on 52.8% of report days (needs a year-earlier window, so from mid-2025). Example: for Nov 17, 2026 it says Times Square ran 10.4% busier than a year earlier, where the monthly input (September) says 3.7%.
+
+**Open with Rachel:** what the Alliance said about how the data may be used, and whether they'll send updates.

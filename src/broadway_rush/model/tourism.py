@@ -17,6 +17,10 @@ already published 7 days before the date (predictions run up to 7 days ahead):
   earlier (0.05 = 5% busier). Blank until a year-earlier month exists (reports start Jan 2024).
 - ts_pedestrians_k: that month's average daily pedestrians, in thousands.
 - ts_hotel_occupancy: the latest known month's Times Square hotel occupancy, % (reported one month behind).
+- ts_peds_daily_vs_last_year: from the daily counts the Alliance emailed (Jun 2024 to Nov 16, 2026; 21 cameras that
+  ran the whole time): the 28 days ending 21 days before the date against the same 28 days a year earlier. The 21-day
+  gap keeps it computable for live predictions through early December without new files. Blank before mid-2025
+  (no year-earlier counts) and once the file runs out.
 A month counts as known from the 1st of the month after next, or its real upload date if later. The first eight
 reports (Jan-Aug 2024) were all uploaded on 2024-10-09 when the page launched, so that date is ignored for them.
 """
@@ -34,7 +38,9 @@ LAG_DAYS = 14
 WINDOW = 28
 TOURISM_FEATURES = ["midtown_riders_vs_last_year", "midtown_riders_season", "tourist_season_index",
                     "attendance_season_index"]
-TIMES_SQUARE_FEATURES = ["ts_pedestrians_vs_last_year", "ts_pedestrians_k", "ts_hotel_occupancy"]
+TIMES_SQUARE_FEATURES = ["ts_pedestrians_vs_last_year", "ts_pedestrians_k", "ts_hotel_occupancy",
+                         "ts_peds_daily_vs_last_year"]
+TS_DAILY_LAG = 21
 TS_BULK_UPLOAD = "2024-10-09"
 AS_OF_DAYS = 7
 
@@ -56,7 +62,16 @@ def times_square(dates: pd.Series) -> pd.DataFrame:
     ped_from = ts.apply(lambda r: _known_from(r.month, r.published), axis=1).to_numpy()
     hot = ts.dropna(subset=["hotel_month"])
     hot_from = hot.apply(lambda r: _known_from(r.hotel_month, r.published, 1), axis=1).to_numpy()
+    daily_path = RAW / "timessquare_daily.csv"
+    daily = (pd.read_csv(daily_path, parse_dates=["date"]).set_index("date").core_sum.asfreq("D")
+             if daily_path.exists() else None)
     for i, d in enumerate(pd.to_datetime(pd.Series(dates))):
+        if daily is not None:
+            end = d - pd.Timedelta(days=TS_DAILY_LAG)
+            now = daily.loc[end - pd.Timedelta(days=WINDOW - 1):end]
+            ago = daily.loc[end - pd.Timedelta(days=364 + WINDOW - 1):end - pd.Timedelta(days=364)]
+            if now.notna().sum() >= 20 and ago.notna().sum() >= 20:
+                res.loc[i, "ts_peds_daily_vs_last_year"] = now.mean() / ago.mean() - 1
         asof = d - pd.Timedelta(days=AS_OF_DAYS)
         ok = ts[ped_from <= asof]
         if len(ok):

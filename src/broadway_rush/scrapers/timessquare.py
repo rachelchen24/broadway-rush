@@ -21,6 +21,7 @@ import urllib.parse
 from datetime import datetime, timezone
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import requests
 
@@ -88,10 +89,36 @@ def parse():
           f"{df.hotel_occupancy_pct.notna().sum()} with hotel occupancy; unreadable: {bad or 'none'}")
 
 
+DAILY_DIR = ROOT / "data" / "raw" / "times-square-daily"
+DAILY_OUT = ROOT / "data" / "raw" / "timessquare_daily.csv"
+LATE_CAMERAS = {"East 47th South AI", "West 47th South AI"}  # first count 2024-08-21
+
+
+def daily():
+    tot = pd.read_excel(next(DAILY_DIR.glob("*Daily Pedestrian Counts.xlsx")), header=None,
+                        names=["date", "alliance_total"])
+    tot["date"] = pd.to_datetime(tot.date)
+    cam = pd.concat(pd.read_csv(f) for f in sorted(DAILY_DIR.glob("*by Camera.csv")))
+    cam["date"] = pd.to_datetime(cam.Date, format="%d-%b-%y")
+    core = cam[~cam.LocationName.isin(LATE_CAMERAS) & (cam.Count > 0)]
+    n_core = cam[~cam.LocationName.isin(LATE_CAMERAS)].LocationName.nunique()
+    g = core.groupby("date").agg(core_sum=("Count", "sum"), core_cameras=("LocationName", "nunique"))
+    df = tot.set_index("date").join(g, how="outer")
+    df.loc[df.core_cameras != n_core, "core_sum"] = np.nan
+    df = df.reset_index()
+    df.to_csv(DAILY_OUT, index=False, date_format="%Y-%m-%d")
+    print(f"wrote {DAILY_OUT.name}: {len(df)} days {df.date.min():%Y-%m-%d}..{df.date.max():%Y-%m-%d}; "
+          f"core_sum ({n_core} cameras) on {df.core_sum.notna().sum()}, alliance_total on {df.alliance_total.notna().sum()}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--parse", action="store_true")
+    ap.add_argument("--daily", action="store_true")
     a = ap.parse_args()
+    if a.daily:
+        daily()
+        return
     if not a.parse:
         fetch()
     parse()
