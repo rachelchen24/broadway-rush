@@ -20,6 +20,7 @@ model = [
     "lightgbm>=4.7",
     "numpyro>=0.22",  # brings jax
     "scipy>=1.18",
+    "pypdf>=7.1",  # Times Square Alliance monthly reports (scrapers/timessquare.py)
 ]
 
 [build-system]

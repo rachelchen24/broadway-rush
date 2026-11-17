@@ -9,8 +9,16 @@
 - attendance_season_index: how full Broadway usually is that week of the year: total weekly attendance over the
   year's average week, from earlier years' grosses only (2020-21 shutdown left out).
 
-Week of year is ISO; each index is smoothed over the week and its two neighbours. The Times Square foot-traffic
-inputs (ts_peds_*) wait for Rachel's decision on the Alliance's terms (registry/sources.csv).
+Week of year is ISO; each index is smoothed over the week and its two neighbours.
+
+Times Square Alliance monthly reports (Rachel decided 2026-11-17 to use them; scrapers/timessquare.py), only months
+already published 7 days before the date (predictions run up to 7 days ahead):
+- ts_pedestrians_vs_last_year: the latest known month's average daily pedestrians against the same month a year
+  earlier (0.05 = 5% busier). Blank until a year-earlier month exists (reports start Jan 2024).
+- ts_pedestrians_k: that month's average daily pedestrians, in thousands.
+- ts_hotel_occupancy: the latest known month's Times Square hotel occupancy, % (reported one month behind).
+A month counts as known from the 1st of the month after next, or its real upload date if later. The first eight
+reports (Jan-Aug 2024) were all uploaded on 2024-10-09 when the page launched, so that date is ignored for them.
 """
 
 from pathlib import Path
@@ -26,6 +34,41 @@ LAG_DAYS = 14
 WINDOW = 28
 TOURISM_FEATURES = ["midtown_riders_vs_last_year", "midtown_riders_season", "tourist_season_index",
                     "attendance_season_index"]
+TIMES_SQUARE_FEATURES = ["ts_pedestrians_vs_last_year", "ts_pedestrians_k", "ts_hotel_occupancy"]
+TS_BULK_UPLOAD = "2024-10-09"
+AS_OF_DAYS = 7
+
+
+def _known_from(month: str, published: str, extra_months: int = 0) -> pd.Timestamp:
+    usual = pd.Period(month, freq="M") + 2 + extra_months
+    usual = usual.to_timestamp()
+    pub = pd.Timestamp(published)
+    return usual if published == TS_BULK_UPLOAD else max(usual, pub)
+
+
+def times_square(dates: pd.Series) -> pd.DataFrame:
+    path = RAW / "timessquare_monthly.csv"
+    res = pd.DataFrame({c: np.nan for c in TIMES_SQUARE_FEATURES}, index=range(len(dates)))
+    if not path.exists():
+        return res
+    ts = pd.read_csv(path, dtype={"month": str, "hotel_month": str, "published": str})
+    ped = ts.set_index("month").avg_daily_pedestrians
+    ped_from = ts.apply(lambda r: _known_from(r.month, r.published), axis=1).to_numpy()
+    hot = ts.dropna(subset=["hotel_month"])
+    hot_from = hot.apply(lambda r: _known_from(r.hotel_month, r.published, 1), axis=1).to_numpy()
+    for i, d in enumerate(pd.to_datetime(pd.Series(dates))):
+        asof = d - pd.Timedelta(days=AS_OF_DAYS)
+        ok = ts[ped_from <= asof]
+        if len(ok):
+            m = ok.month.max()
+            res.loc[i, "ts_pedestrians_k"] = ped[m] / 1000
+            ago = str(pd.Period(m, freq="M") - 12)
+            if ago in ped.index:
+                res.loc[i, "ts_pedestrians_vs_last_year"] = ped[m] / ped[ago] - 1
+        okh = hot[hot_from <= asof]
+        if len(okh):
+            res.loc[i, "ts_hotel_occupancy"] = okh.sort_values("hotel_month").hotel_occupancy_pct.iloc[-1]
+    return res
 
 
 def _season_profile(series: pd.Series) -> pd.DataFrame:
@@ -96,4 +139,5 @@ class Tourism:
             for c in TOURISM_FEATURES[:3]:
                 res[c] = np.nan
         res["attendance_season_index"] = _lookup(self.attendance_profile, u)
+        res[TIMES_SQUARE_FEATURES] = times_square(u).to_numpy()
         return res

@@ -1441,3 +1441,16 @@ Approved by Rachel (one pass, $2.50 cap). New `star_history.py full`: fetched th
 **Review sheet:** `data/labels/casting_review.csv`, 3,633 rows, 604 flagged. The 130 rows about current stars are at the top (`is_star_row`); I pre-filled `claude_prefill` on the 24 flagged ones (mostly "no date given, nothing filled"; one "ignore: joined the producers", Bowen Yang). Nothing for Rachel to do unless she wants to check.
 
 **Next:** model work Nov 17–19 (N9: test the new inputs, including star inputs from `star_stints.csv`; ask Rachel before long runs and before the Reddit refresh). Times Square foot traffic is still her question (§9 Q29).
+
+
+## 2026-11-17 ET — Times Square monthly reports (N6, C4)
+
+Rachel decided to use the Times Square Alliance's public monthly reports despite the terms (personal, noncommercial use): the site and presentation show only derived results, credited, never the raw counts. Registry row updated.
+
+**Did:** new `scrapers/timessquare.py` fetched the **33 Monthly Economic Indicator Reports, Jan 2024 to Sep 2026** (3 s apart, 0 failed; PDFs saved under the site's unique file ID because two November reports share a name; the pedestrian maps and the latest weekly report also saved). `pypdf` (7.1) added to the `model` dependency group to read them. Parsed → `data/raw/timessquare_monthly.csv`: average daily pedestrians for all 33 months (lowest Feb 2026, 179,122; highest Mar 2024, 287,206), **Times Square hotel occupancy** for all 33 (one month behind; the spec had said no public monthly hotel data existed, but it's in these reports), the printed year-on-year change where given (11; my computed changes match theirs), and each PDF's upload date from its file ID.
+
+**Inputs** (`model/tourism.py`, `TIMES_SQUARE_FEATURES`, merged with the other tourism inputs, not in the model lists until N9): `ts_pedestrians_vs_last_year`, `ts_pedestrians_k`, `ts_hotel_occupancy`. Only what was published 7 days before the date: month M counts as known from the 1st of M+2 or its upload date if later; hotel one month later. The first eight reports were all uploaded Oct 9, 2024 (page launch), so that date is ignored for them. On the 724 report days since June 2024: pedestrians and hotel occupancy known on 100%, year-on-year 68% (nothing to compare with before 2025).
+
+**Not done:** the weekly operations report only ever shows the latest week, so there's no weekly history. Daily counts still need Rachel's email (draft in Downloads, not sent).
+
+**Next:** model work (N9), Nov 17–19.
