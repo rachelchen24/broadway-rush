@@ -30,3 +30,72 @@
 22:09:42 HTTP 429, waiting 15s
 22:09:57 HTTP 429, waiting 30s
 22:10:57 HTTP 429, waiting 15s
+22:11:42 HTTP 429, waiting 15s
+22:11:57 HTTP 429, waiting 30s
+22:12:57 HTTP 429, waiting 15s
+22:13:36 runs 300/1387 (requests 250, refused 31)
+22:13:42 HTTP 429, waiting 15s
+22:13:57 HTTP 429, waiting 30s
+22:14:57 HTTP 429, waiting 15s
+22:15:42 HTTP 429, waiting 15s
+22:15:57 HTTP 429, waiting 30s
+22:16:57 HTTP 429, waiting 15s
+22:17:42 HTTP 429, waiting 15s
+22:17:57 HTTP 429, waiting 30s
+22:18:27 runs 400/1387 (requests 300, refused 39)
+22:18:57 HTTP 429, waiting 15s
+22:19:42 HTTP 429, waiting 15s
+22:19:57 HTTP 429, waiting 30s
+22:20:57 HTTP 429, waiting 15s
+22:21:42 HTTP 429, waiting 15s
+22:21:57 HTTP 429, waiting 30s
+22:22:37 runs 500/1387 (requests 349, refused 45)
+22:22:57 HTTP 429, waiting 15s
+22:23:42 HTTP 429, waiting 15s
+22:23:58 HTTP 429, waiting 30s
+22:24:58 HTTP 429, waiting 15s
+22:25:25 runs 600/1387 (requests 384, refused 49)
+22:25:43 HTTP 429, waiting 15s
+22:25:58 HTTP 429, waiting 30s
+22:26:58 HTTP 429, waiting 15s
+22:27:43 HTTP 429, waiting 15s
+22:27:58 HTTP 429, waiting 30s
+22:28:55 runs 700/1387 (requests 424, refused 54)
+22:28:58 HTTP 429, waiting 15s
+22:29:43 HTTP 429, waiting 15s
+22:29:58 HTTP 429, waiting 30s
+22:30:58 HTTP 429, waiting 15s
+22:31:22 runs 800/1387 (requests 452, refused 58)
+22:31:43 HTTP 429, waiting 15s
+22:31:58 HTTP 429, waiting 30s
+22:32:58 HTTP 429, waiting 15s
+22:33:43 HTTP 429, waiting 15s
+22:33:58 HTTP 429, waiting 30s
+22:34:34 runs 900/1387 (requests 486, refused 63)
+22:34:58 HTTP 429, waiting 15s
+22:35:43 HTTP 429, waiting 15s
+22:35:58 HTTP 429, waiting 30s
+22:36:58 HTTP 429, waiting 15s
+22:37:13 runs 1000/1387 (requests 518, refused 67)
+22:37:43 HTTP 429, waiting 15s
+22:37:58 HTTP 429, waiting 30s
+22:38:58 HTTP 429, waiting 15s
+22:39:43 HTTP 429, waiting 15s
+22:39:58 HTTP 429, waiting 30s
+22:40:58 HTTP 429, waiting 15s
+22:41:16 runs 1100/1387 (requests 565, refused 73)
+22:41:43 HTTP 429, waiting 15s
+22:41:58 HTTP 429, waiting 30s
+22:42:58 HTTP 429, waiting 15s
+22:43:43 HTTP 429, waiting 15s
+22:43:58 HTTP 429, waiting 30s
+22:44:32 runs 1200/1387 (requests 600, refused 78)
+22:44:58 HTTP 429, waiting 15s
+22:45:43 HTTP 429, waiting 15s
+22:45:58 HTTP 429, waiting 30s
+22:46:59 HTTP 429, waiting 15s
+22:47:17 runs 1300/1387 (requests 634, refused 82)
+22:47:44 HTTP 429, waiting 15s
+22:47:59 HTTP 429, waiting 30s
+22:48:59 HTTP 429, waiting 15s
+22:49:17 wrote star_stints_scored.csv: 1387 runs, 248 by a star (226 people); 657 requests, 85 refused
