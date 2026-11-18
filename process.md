@@ -1572,3 +1572,9 @@ Rachel: "just make the model, train it, test it." Same design (trees for the lin
 - Cut: subway and season (4), show stage (2), holidays and events (6), stars (6), TKTS board (1), Times Square (4).
 - Drop-one evidence (line error, all-inputs reference 4.677): removing weekday +0.134 (worse in 7 of 9 months, t 2.45, the only clear one); recent reports +0.059 (6 of 9, t 1.26); schedule +0.024, grosses +0.021, NYU +0.003 (all within noise). Removing subway/season −0.081, show stage −0.048, holidays −0.044, stars −0.035, TKTS −0.033, Times Square −0.017 (the line got better without them). Show identity −0.076 but only 6 of 9 months and t −1.02: kept, flagged to Rachel.
 - Still open: hybrid vs model for tickets, then one run on the locked months.
+
+## 2026-11-18 morning — 7-input line set tested (measured only)
+- Rachel asked to also drop NYU session, show facts and schedule, leaving 7 line inputs: hours before, show, weekday, capacity %, average ticket, recent level, recent thin. List: `data/interim/lean7_drop.txt`; tag `drop_lean7` (line-only, 34 s).
+- Line error on the same 1,693 points: all 37 inputs 4.677, lean 14 4.614, **7 inputs 4.676**.
+- Adding one group back to the 7: NYU 4.675, show facts 4.750, schedule 4.730. Only all three together give 4.614, and that gap (14 vs 7) is within noise: better in 6 of 9 months, t 1.22. No single group explains it, so it looks like noise rather than a real effect.
+- Not decided; the ticket model's own inputs (weekend, capacity %, seats, musical) are unaffected by `--drop`.
