@@ -7,3 +7,26 @@
 21:56:56 HTTP 429, waiting 15s
 21:57:41 HTTP 429, waiting 15s
 21:57:56 HTTP 429, waiting 30s
+21:58:56 HTTP 429, waiting 15s
+21:59:42 HTTP 429, waiting 15s
+21:59:57 HTTP 429, waiting 30s
+22:00:57 HTTP 429, waiting 15s
+22:01:18 titles: 623 of 1255 people have a performer page
+22:01:21 runs 0/1387 (requests 107, refused 13)
+22:01:42 HTTP 429, waiting 15s
+22:01:57 HTTP 429, waiting 30s
+22:02:57 HTTP 429, waiting 15s
+22:03:42 HTTP 429, waiting 15s
+22:03:57 HTTP 429, waiting 30s
+22:04:57 HTTP 429, waiting 15s
+22:05:42 HTTP 429, waiting 15s
+22:05:57 HTTP 429, waiting 30s
+22:06:30 runs 100/1387 (requests 163, refused 21)
+22:06:57 HTTP 429, waiting 15s
+22:07:42 HTTP 429, waiting 15s
+22:07:57 HTTP 429, waiting 30s
+22:08:57 HTTP 429, waiting 15s
+22:09:27 runs 200/1387 (requests 201, refused 25)
+22:09:42 HTTP 429, waiting 15s
+22:09:57 HTTP 429, waiting 30s
+22:10:57 HTTP 429, waiting 15s

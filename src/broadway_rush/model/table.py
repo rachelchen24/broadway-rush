@@ -37,12 +37,18 @@ SCHEDULE_FEATURES = ["two_shows_today", "shows_playing_today", "rush_shows_today
 # announced months ahead, so they count as known 7 days out. Blank days_since_opening = opened before June 2024.
 STAGE_FEATURES = ["in_previews", "days_since_opening"]
 # Tourist traffic and season (SPEC 2.8 N6), see model/tourism.py
-from broadway_rush.model.tourism import TOURISM_FEATURES, Tourism  # noqa: E402
+from broadway_rush.model.tourism import TIMES_SQUARE_FEATURES, TOURISM_FEATURES, Tourism  # noqa: E402
 # NYU classes / finals / break (SPEC 2.8 N11), see nyu_calendar.py. Same rule: out of the models until N9.
 from broadway_rush.nyu_calendar import NYU_FEATURES, session_by_day  # noqa: E402
 # Star and cast inputs (SPEC 2.8 N5) and the TKTS board (tier 3), see model/cast.py and model/board.py
 from broadway_rush.model.board import BOARD_FEATURES, Board  # noqa: E402
 from broadway_rush.model.cast import STAR_FEATURES, Cast  # noqa: E402
+# The final model's candidate inputs (SPEC 2.8 N9 step 1, "one full model with everything", 2026-11-17). The first
+# model's lists above stay unchanged so its results (tag more1) can be reproduced. Ticket side: the 4 first-model
+# inputs plus 4 with a reason to move ticket counts (SPEC: test only 6-8 on the slow ticket model).
+LINE_FEATURES_V2 = (LINE_FEATURES + SCHEDULE_FEATURES + STAGE_FEATURES + TOURISM_FEATURES + TIMES_SQUARE_FEATURES
+                    + NYU_FEATURES + STAR_FEATURES + BOARD_FEATURES)
+CUTOFF_FEATURES_V2 = CUTOFF_FEATURES + ["two_shows_today", "stars_in_cast", "star_final_2wks", "tkts_board_share_14d"]
 FALLBACK_OPENING = {**{d: 10.0 for d in range(6)}, 6: 12.0}
 
 

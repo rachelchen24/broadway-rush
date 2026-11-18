@@ -8204,3 +8204,9 @@ at,run,model,n_comments,input,cache_write,cache_read,output,usd
 2026-11-17T22:01:11,batch:msgbatch_01UEejbX87okrbo41WCmGqd5,claude-haiku-5-5,10,1301,0,2457,1781,0.000523
 2026-11-17T22:01:11,batch:msgbatch_01UEejbX87okrbo41WCmGqd5,claude-haiku-5-5,10,1364,0,2457,1182,0.000376
 2026-11-17T22:01:11,batch:msgbatch_01UEejbX87okrbo41WCmGqd5,claude-haiku-5-5,10,2358,0,2457,958,0.000370
+2026-11-17T22:08:02,batch_checked:msgbatch_014mk9zSHcQKN66meAavYJn3,claude-haiku-5-5,10,4372,0,1135,800,0.000424
+2026-11-17T22:08:02,batch_checked:msgbatch_014mk9zSHcQKN66meAavYJn3,claude-haiku-5-5,10,4584,0,1135,3636,0.001144
+2026-11-17T22:08:02,batch_checked:msgbatch_014mk9zSHcQKN66meAavYJn3,claude-haiku-5-5,4,2079,0,1135,1922,0.000590
+2026-11-17T22:08:02,batch_checked:msgbatch_014mk9zSHcQKN66meAavYJn3,claude-haiku-5-5,10,4704,1135,0,4125,0.001337
+2026-11-17T22:08:02,batch_checked:msgbatch_014mk9zSHcQKN66meAavYJn3,claude-haiku-5-5,10,4247,0,1135,3768,0.001160
+2026-11-17T22:08:02,batch_checked:msgbatch_014mk9zSHcQKN66meAavYJn3,claude-haiku-5-5,10,3942,0,1135,3280,0.001023

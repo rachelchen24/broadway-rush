@@ -268,8 +268,16 @@ def main():
     ap.add_argument("--drop", nargs="*", default=[], help="line features to leave out")
     ap.add_argument("--phi-prior", nargs=2, type=float, default=[2.0, 0.4], help="Gamma prior on the ticket spread")
     ap.add_argument("--tag", default=None)
+    ap.add_argument("--features", choices=["v1", "v2"], default="v1",
+                    help="v1 = the first model's inputs (tag more1); v2 = every new input (SPEC 2.8 N9 step 1)")
     a = ap.parse_args()
-    features = [f for f in LINE_FEATURES if f not in a.drop] + (WEATHER_FEATURES if a.weather else [])
+    base = LINE_FEATURES
+    if a.features == "v2":
+        from broadway_rush.model import table
+        base = table.LINE_FEATURES_V2
+        # cutoff.py reads table.CUTOFF_FEATURES; swap its contents in place so the ticket model sees the v2 list
+        table.CUTOFF_FEATURES[:] = table.CUTOFF_FEATURES_V2
+    features = [f for f in base if f not in a.drop] + (WEATHER_FEATURES if a.weather else [])
     tag = a.tag or (f"pp{a.per_person}" + ("_weather" if a.weather else "") + ("_lineonly" if a.line_only else ""))
     run(a.per_person, a.line_only, features, DEV, tag, phi_prior=tuple(a.phi_prior))
 
