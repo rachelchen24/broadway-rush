@@ -1523,3 +1523,52 @@ Rachel: "just make the model, train it, test it." Same design (trees for the lin
 **Rachel's decision:** special days are removed from everything: "we don't train on them, we don't report anything on them"; the site only notes a special offer while one is current (`registry/special_deals.csv`, already built). New `registry/special_rush_days.csv` (show-day and post-title rows, each with what and source) and `src/broadway_rush/special_days.py`, applied where reports are read (`table.base_reports`, `table.wider_attempts`, `predict.report_rates`); the data funnel gets `special_events_removed`. Listed: Schmigadoon dress rehearsal, Oh, Mary! $5 day, Chicago added matinee, first previews of Dog Day Afternoon, Mamma Mia and Fear of 13 (the last was filed under The Outsiders). **40 reports removed**; the largest stated count left is 60. Kept: Dead Outlaw "closing night rush" posts (a real rush day; asked Rachel). Tables rebuilt: 6,737 line points, 955 ticket show-days, 161 stated counts.
 
 **Running (Rachel OK'd):** `backtest --features v2 --per-person {1.0,1.4,1.8} --tag v2s_pp{…}`, side by side (~60–80 min). Then `model.compare more1 v2all v2s_pp1.0 v2s_pp1.4 v2s_pp1.8` and the hybrid, for Rachel to choose.
+
+
+## 2026-11-18 ~02:30 ET — Tickets per person, the ticket test's blind spot, drop-one tests (Rachel asleep: measured only, no decisions)
+
+**Tickets per person** (`v2s_pp1.0/1.4/1.8`, special days removed, v2 inputs; all 27 fits converged). Identical test reports: 1,693 line points, 31 stated ticket counts (special days are gone from the shared set).
+
+| | first `more1` | `v2all` | `v2s_pp1.0` | `v2s_pp1.4` | `v2s_pp1.8` | lookup |
+|---|---|---|---|---|---|---|
+| Line error | 4.65 | 4.58 | 4.58 | 4.58 | 4.58 | 5.92 |
+| Ticket error (31 stated counts) | 13.7 | 15.3 | **11.7** | 18.3 | 26.5 | **5.2** |
+| Ticket bias | +10.7 | +12.1 | +8.2 | +16.0 | +25.1 | −2.2 |
+| "At least N" days respected (160) | 96% | 94% | 94% | 97% | 97% | **70%** |
+| "At most" days respected (16) | 56% | 63% | 63% | 38% | 31% | 63% |
+
+- Removing special days cut the model's ticket error from 15.3 to 11.7. More tickets per person only made it worse: **1.0 is best.**
+- **The stated-count test has a blind spot:** people mostly state a count when it's small ("only 6!"; median stated 5), so it favors guessing low. The lookup table predicts 8 on 54% of days (its fallback for shows with no stated counts), and on the 160 days where someone verifiably got a ticket at position #N it predicted fewer than N tickets 30% of the time; the model 6%. So the lookup's win on stated counts partly reflects which days get a stated count. Bounds here use the same physical limits for every run: ≥ 1 ticket per person who got one, ≤ 2 per person before a sellout.
+
+**Drop-one, line side** (`model/dropone.py`, line-only, 14 runs, tags `drop_*`; full v2 line-only = 4.677): removing **weekday** hurts clearly (+0.134, 7 of 9 months, t 2.45); **recent reports** +0.059. Removing these *improves* the line: subway and season −0.081 (2 of 9 months worse), show stage −0.048 (2 of 9), holidays and events −0.044 (1 of 9), stars −0.035, TKTS −0.033, Times Square −0.017. NYU, schedule, grosses, show facts: within noise.
+
+**Lean set** (`drop_lean`: the 6 groups that hurt removed together → 14 inputs: hours_before, show_code, weekday, pct_cap, avg_ticket, weeks_since_first, show_type_code, seats, recent_level, recent_thin, two_shows_today, shows_playing_today, rush_shows_today, nyu_session): **line error 4.61** vs all inputs 4.68 vs first model 4.75 (same reports); better than the first model in 7 of 9 months; 80% range holds 85.3%. Caveat: picked on the same 9 months, so optimistic until the locked months are scored.
+
+**Not started:** extra ticket labels (sold-out times, "X left"): which ticket test to trust is Rachel's call first.
+
+
+## 2026-11-18 ~03:30 ET — Lean set with full tickets: the best candidate so far (measured only)
+
+`lean_t8` and `lean_t4`: the lean 14-input line set with the 8 v2 ticket inputs vs the first model's 4 (new `backtest --cutoff v1|v2`), 1.0 per person, special days removed; all 18 fits converged. Identical test reports (1,693 line points, 41 stated counts, 176 outcomes):
+
+| | first `more1` | `v2s_pp1.0` | `lean_t8` | **`lean_t4`** | lookup |
+|---|---|---|---|---|---|
+| Line error | 4.65 | 4.58 | 4.52 | **4.52** | 5.92 |
+| Line month-to-month spread | 0.74 | 0.71 | 0.65 | 0.65 | 0.55 |
+| Ticket error (41 stated) | 12.7 | 11.8 | 11.8 | **11.1** | 5.2 |
+| Ticket bias | +10.4 | +8.8 | +8.8 | +8.6 | −2.1 |
+| Ticket 80% range holds | 95% | 88% | 88% | **95%** | 73% |
+| "At least N" respected (160) | 96% | 94% | 94% | **96%** | 70% |
+| Chance AUC | 0.615 | 0.593 | 0.602 | 0.588 | 0.668 |
+
+- The 4 new ticket inputs (two-show days, stars in cast, star final 2 weeks, TKTS) don't help tickets: the original 4 do as well or better.
+- **`lean_t4` is the best candidate:** line error −2.8% vs the first model, ticket error −12%, same honest ranges. Still too high on tickets (+8.6) and still behind the lookup table on stated counts, but far better on "at least" days.
+- Chance (got a ticket or not) is no better than the first model and below the lookup table; Rachel said it matters less.
+- Picked on the 9 open months, so it needs the locked months before anyone calls it final.
+
+## 2026-11-18 morning — Rachel keeps the lean input set
+- Rachel's call: keep the lean set (14 line inputs, `data/interim/lean_drop.txt` lists the 23 cut) with the original 4 ticket inputs (`lean_t4`).
+- Kept: hours before opening, show, weekday, grosses (capacity %, average ticket), show facts (type, seats, weeks running), recent reports (level, thin flag), schedule (two shows today, shows playing today, rush shows today), NYU session.
+- Cut: subway and season (4), show stage (2), holidays and events (6), stars (6), TKTS board (1), Times Square (4).
+- Drop-one evidence (line error, all-inputs reference 4.677): removing weekday +0.134 (worse in 7 of 9 months, t 2.45, the only clear one); recent reports +0.059 (6 of 9, t 1.26); schedule +0.024, grosses +0.021, NYU +0.003 (all within noise). Removing subway/season −0.081, show stage −0.048, holidays −0.044, stars −0.035, TKTS −0.033, Times Square −0.017 (the line got better without them). Show identity −0.076 but only 6 of 9 months and t −1.02: kept, flagged to Rachel.
+- Still open: hybrid vs model for tickets, then one run on the locked months.

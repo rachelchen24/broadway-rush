@@ -1,0 +1,355 @@
+{
+ "tag": "drop_show_facts",
+ "per_person": 1.4,
+ "phi_prior": [
+  2.0,
+  0.4
+ ],
+ "features": [
+  "hours_before",
+  "show_code",
+  "weekday",
+  "is_school_break",
+  "is_federal_holiday",
+  "thanksgiving_week",
+  "christmas_new_year",
+  "broadway_week",
+  "tonys_30d",
+  "pct_cap",
+  "avg_ticket",
+  "recent_level",
+  "recent_thin",
+  "two_shows_today",
+  "shows_playing_today",
+  "rush_shows_today",
+  "in_previews",
+  "days_since_opening",
+  "midtown_riders_vs_last_year",
+  "midtown_riders_season",
+  "tourist_season_index",
+  "attendance_season_index",
+  "ts_pedestrians_vs_last_year",
+  "ts_pedestrians_k",
+  "ts_hotel_occupancy",
+  "ts_peds_daily_vs_last_year",
+  "nyu_session",
+  "stars_in_cast",
+  "top_star_views_log",
+  "star_final_2wks",
+  "days_until_star_leaves",
+  "star_limited_run",
+  "cast_change_14d",
+  "tkts_board_share_14d"
+ ],
+ "months": [
+  "2025-11",
+  "2026-01",
+  "2026-02",
+  "2026-03",
+  "2026-05",
+  "2026-06",
+  "2026-07",
+  "2026-09",
+  "2026-10"
+ ],
+ "locked": [
+  "2025-12",
+  "2026-04",
+  "2026-08"
+ ],
+ "windows": [
+  {
+   "month": "2025-11",
+   "line_train_points": 4293,
+   "cutoff_train_days": 642,
+   "line_rounds": 280,
+   "line_phi": 2.680952896772712,
+   "seconds_lookup": 0.020052433013916016,
+   "seconds_line": 2.246126413345337,
+   "line_combo": {
+    "points": 183,
+    "mae": 4.6453389830508485,
+    "mae_near": 4.6079136690647475,
+    "log_mae": 0.6370519069253953,
+    "bias": -1.081497175141243,
+    "coverage80": 0.8055084745762712,
+    "width80": 13.801129943502824,
+    "arrival_error_min": 101.1209079678814
+   },
+   "line_lookup": {
+    "points": 183,
+    "mae": 7.019774011299434,
+    "mae_near": 7.2449640287769785,
+    "log_mae": 0.8180553272650647,
+    "bias": 3.624435028248588,
+    "coverage80": 0.5552259887005649,
+    "width80": 15.916694915254242,
+    "arrival_error_min": 115.08894379246448
+   },
+   "seconds_total": 3.451357126235962
+  },
+  {
+   "month": "2026-01",
+   "line_train_points": 4610,
+   "cutoff_train_days": 695,
+   "line_rounds": 237,
+   "line_phi": 1.8480889959266171,
+   "seconds_lookup": 0.08075118064880371,
+   "seconds_line": 4.0019261837005615,
+   "line_combo": {
+    "points": 149,
+    "mae": 5.187951807228916,
+    "mae_near": 5.802523659305993,
+    "log_mae": 0.6497266514139135,
+    "bias": -0.7502008032128513,
+    "coverage80": 0.8674698795180723,
+    "width80": 20.453815261044173,
+    "arrival_error_min": 90.3211382113821
+   },
+   "line_lookup": {
+    "points": 149,
+    "mae": 6.290160642570282,
+    "mae_near": 7.230283911671925,
+    "log_mae": 0.7097945463244788,
+    "bias": 0.9166666666666667,
+    "coverage80": 0.5698795180722891,
+    "width80": 13.358072289156624,
+    "arrival_error_min": 74.58175248419151
+   },
+   "seconds_total": 4.904012203216553
+  },
+  {
+   "month": "2026-02",
+   "line_train_points": 4763,
+   "cutoff_train_days": 725,
+   "line_rounds": 178,
+   "line_phi": 1.79214084106379,
+   "seconds_lookup": 0.08751726150512695,
+   "seconds_line": 3.0076818466186523,
+   "line_combo": {
+    "points": 123,
+    "mae": 4.797883597883599,
+    "mae_near": 4.532550693703308,
+    "log_mae": 0.6906398283887947,
+    "bias": -1.8365079365079366,
+    "coverage80": 0.7812169312169314,
+    "width80": 14.70846560846561,
+    "arrival_error_min": 108.20417055711174
+   },
+   "line_lookup": {
+    "points": 123,
+    "mae": 6.616931216931218,
+    "mae_near": 6.79615795090715,
+    "log_mae": 0.8433726156044283,
+    "bias": 2.715343915343916,
+    "coverage80": 0.5373015873015874,
+    "width80": 15.437592592592594,
+    "arrival_error_min": 102.76314970432617
+   },
+   "seconds_total": 3.7253713607788086
+  },
+  {
+   "month": "2026-03",
+   "line_train_points": 4887,
+   "cutoff_train_days": 742,
+   "line_rounds": 180,
+   "line_phi": 1.5642684194768466,
+   "seconds_lookup": 0.06787657737731934,
+   "seconds_line": 2.9082584381103516,
+   "line_combo": {
+    "points": 226,
+    "mae": 5.28550358196376,
+    "mae_near": 5.448597005339008,
+    "log_mae": 0.7012169810816731,
+    "bias": -3.1262536873156344,
+    "coverage80": 0.8105983986514961,
+    "width80": 14.709565950273916,
+    "arrival_error_min": 97.13696194403971
+   },
+   "line_lookup": {
+    "points": 226,
+    "mae": 5.824020227560051,
+    "mae_near": 6.076833527357392,
+    "log_mae": 0.7804543532191237,
+    "bias": 0.6872734934681837,
+    "coverage80": 0.699283607248209,
+    "width80": 17.65329119258323,
+    "arrival_error_min": 94.65702714049343
+   },
+   "seconds_total": 4.1168129444122314
+  },
+  {
+   "month": "2026-05",
+   "line_train_points": 5366,
+   "cutoff_train_days": 821,
+   "line_rounds": 180,
+   "line_phi": 1.613866189153895,
+   "seconds_lookup": 0.09444570541381836,
+   "seconds_line": 3.2974510192871094,
+   "line_combo": {
+    "points": 299,
+    "mae": 4.698086473853345,
+    "mae_near": 4.623343776046905,
+    "log_mae": 0.6280246474136115,
+    "bias": -2.7937919953257375,
+    "coverage80": 0.868054338299737,
+    "width80": 14.586050248320184,
+    "arrival_error_min": 103.13412947627029
+   },
+   "line_lookup": {
+    "points": 299,
+    "mae": 5.276811276657902,
+    "mae_near": 6.059451613830365,
+    "log_mae": 0.6883998609036652,
+    "bias": 0.5962240724510663,
+    "coverage80": 0.5999269646508909,
+    "width80": 13.456034180543382,
+    "arrival_error_min": 87.72661601288581
+   },
+   "seconds_total": 5.18419623374939
+  },
+  {
+   "month": "2026-06",
+   "line_train_points": 5665,
+   "cutoff_train_days": 863,
+   "line_rounds": 168,
+   "line_phi": 1.6555298150879734,
+   "seconds_lookup": 0.11536192893981934,
+   "seconds_line": 3.3613855838775635,
+   "line_combo": {
+    "points": 227,
+    "mae": 4.764817115251898,
+    "mae_near": 5.565269334301182,
+    "log_mae": 0.5833101133393246,
+    "bias": -2.361849551414769,
+    "coverage80": 0.900048309178744,
+    "width80": 16.186997929606626,
+    "arrival_error_min": 110.02238611447585
+   },
+   "line_lookup": {
+    "points": 227,
+    "mae": 5.670938578329882,
+    "mae_near": 7.5140186915887845,
+    "log_mae": 0.6790080272918724,
+    "bias": -0.15147688060731546,
+    "coverage80": 0.5818288474810214,
+    "width80": 11.581843340234645,
+    "arrival_error_min": 87.93940416136404
+   },
+   "seconds_total": 4.976565837860107
+  },
+  {
+   "month": "2026-07",
+   "line_train_points": 5892,
+   "cutoff_train_days": 888,
+   "line_rounds": 155,
+   "line_phi": 1.611860889743789,
+   "seconds_lookup": 0.11130452156066895,
+   "seconds_line": 3.025442600250244,
+   "line_combo": {
+    "points": 222,
+    "mae": 5.079221417716993,
+    "mae_near": 5.6794762020722525,
+    "log_mae": 0.6792562663332606,
+    "bias": -2.277732051625857,
+    "coverage80": 0.8507374631268436,
+    "width80": 16.185155503297096,
+    "arrival_error_min": 120.95844119684199
+   },
+   "line_lookup": {
+    "points": 222,
+    "mae": 5.8260075224677,
+    "mae_near": 6.4764141679955385,
+    "log_mae": 0.7794159622125847,
+    "bias": -1.1474922815630781,
+    "coverage80": 0.5065195866080822,
+    "width80": 10.601954122573593,
+    "arrival_error_min": 105.86703046870865
+   },
+   "seconds_total": 4.3210999965667725
+  },
+  {
+   "month": "2026-09",
+   "line_train_points": 6370,
+   "cutoff_train_days": 928,
+   "line_rounds": 152,
+   "line_phi": 1.385700623949625,
+   "seconds_lookup": 0.0919640064239502,
+   "seconds_line": 2.9654386043548584,
+   "line_combo": {
+    "points": 118,
+    "mae": 3.9040540540540554,
+    "mae_near": 3.950570342205322,
+    "log_mae": 0.6061452018331873,
+    "bias": -0.7968468468468473,
+    "coverage80": 0.9752252252252251,
+    "width80": 17.45585585585586,
+    "arrival_error_min": 125.82424242424241
+   },
+   "line_lookup": {
+    "points": 118,
+    "mae": 5.8121621621621635,
+    "mae_near": 6.309885931558936,
+    "log_mae": 0.7451343040762681,
+    "bias": 3.2355855855855857,
+    "coverage80": 0.578828828828829,
+    "width80": 12.719954954954959,
+    "arrival_error_min": 118.15757575757576
+   },
+   "seconds_total": 3.791944742202759
+  },
+  {
+   "month": "2026-10",
+   "line_train_points": 6488,
+   "cutoff_train_days": 940,
+   "line_rounds": 219,
+   "line_phi": 1.3637856292660135,
+   "seconds_lookup": 0.09586143493652344,
+   "seconds_line": 3.9115548133850098,
+   "line_combo": {
+    "points": 160,
+    "mae": 2.9341269841269844,
+    "mae_near": 2.7733812949640284,
+    "log_mae": 0.5445385523014045,
+    "bias": 0.05000000000000003,
+    "coverage80": 0.9857142857142858,
+    "width80": 16.188888888888886,
+    "arrival_error_min": 121.26954921803127
+   },
+   "line_lookup": {
+    "points": 160,
+    "mae": 5.644444444444445,
+    "mae_near": 5.725419664268585,
+    "log_mae": 0.8127462894035892,
+    "bias": 4.063492063492063,
+    "coverage80": 0.615079365079365,
+    "width80": 14.225396825396825,
+    "arrival_error_min": 128.8748850045998
+   },
+   "seconds_total": 5.038800239562988
+  }
+ ],
+ "seconds_total": 39.515016317367554,
+ "pooled": {
+  "line_combo": {
+   "points": 1707,
+   "mae": 4.607134095518467,
+   "mae_near": 4.7268648534119215,
+   "log_mae": 0.6336675783745273,
+   "bias": -1.79192310681223,
+   "coverage80": 0.8708159434136202,
+   "width80": 15.812602404049077,
+   "arrival_error_min": 107.87369122292401
+  },
+  "line_lookup": {
+   "points": 1707,
+   "mae": 5.933243199953864,
+   "mae_near": 6.583545392086263,
+   "log_mae": 0.7556649374276186,
+   "bias": 1.4452938678123473,
+   "coverage80": 0.5861008520987403,
+   "width80": 13.84634629655221,
+   "arrival_error_min": 99.86167112959278
+  }
+ }
+}

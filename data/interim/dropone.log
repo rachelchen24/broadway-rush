@@ -1,0 +1,29 @@
+running drop_none
+running drop_show_identity
+running drop_weekday
+running drop_holidays_and_events
+running drop_grosses
+running drop_show_facts
+running drop_recent_reports
+running drop_schedule
+running drop_show_stage
+running drop_subway_and_season
+running drop_times_square
+running drop_nyu
+running drop_stars
+running drop_tkts
+              group  inputs  line_error  worse_by  months_worse     t
+            weekday       1       4.797     0.134             7  2.45
+     recent_reports       2       4.745     0.059             6  1.26
+           schedule       3       4.698     0.024             5  0.79
+            grosses       2       4.686     0.021             6  0.60
+                nyu       1       4.679     0.003             5  0.11
+               none       0       4.677     0.000             0  0.00
+         show_facts       3       4.675    -0.003             5 -0.09
+       times_square       4       4.654    -0.017             4 -0.68
+               tkts       1       4.647    -0.033             4 -1.12
+              stars       6       4.655    -0.035             4 -1.56
+holidays_and_events       6       4.642    -0.044             1 -2.49
+         show_stage       2       4.637    -0.048             2 -3.36
+      show_identity       1       4.571    -0.076             3 -1.02
+  subway_and_season       4       4.603    -0.081             2 -2.25
