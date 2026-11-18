@@ -463,3 +463,9 @@ fieldset.field { border: 0; margin: 0; padding: 0; }
   .funnel-track { justify-content: flex-start; }
 }
 .no-data { margin-top: 18px; font-size: .84rem; }
+
+/* Nerd stats: What did it cost? */
+.spend { border-collapse: collapse; margin: 6px 0 4px; min-width: min(100%, 420px); }
+.spend td { padding: 5px 10px 5px 0; border-bottom: 1px solid var(--line); }
+.spend td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.spend tr.total td { font-weight: 700; border-bottom: 0; }

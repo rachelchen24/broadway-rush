@@ -1120,6 +1120,19 @@ function heatPanel(ch, entries) {
     h("p", { class: "muted", style: "margin-top:8px" }, `Typical people in line in the last ${ch.near_opening_hours} hours before opening. A dash means it's not playing now or has fewer than ${ch.min_days_per_cell} past days of reports.${left.length ? ` Too few reports to list: ${left.join(", ")}.` : ""}`));
 }
 
+// What the AI reading cost (Rachel 2026-11-17). From data/interim/llm_spend.csv via site_extras.ai_spend(); every
+// call is logged by the code that made it. All other data sources are free.
+function spendPanel(s) {
+  if (!s) return null;
+  const usd = (x) => `$${x.toFixed(2)}`;
+  return nsPanel("What did it cost?",
+    `${usd(s.total_usd)} in all, for ${s.calls.toLocaleString()} AI calls (Claude Haiku), against a ${usd(s.cap_usd)} cap I set at the start. Every other data source is free.`,
+    h("table", { class: "spend" },
+      h("tbody", {}, ...s.items.map((x) => h("tr", {}, h("td", {}, x.label), h("td", { class: "num" }, usd(x.usd)))),
+        h("tr", { class: "total" }, h("td", {}, "Total"), h("td", { class: "num" }, usd(s.total_usd))))),
+    h("p", { class: "muted" }, `Through ${dayName(s.through, { month: "short", day: "numeric", year: "numeric" })}. Most of it went to turning Reddit comments into reports and then checking each one a second time.`));
+}
+
 function funnelPanel(f) {
   const steps = [
     ["Reports pulled out", f.all_observations, null],
@@ -1546,7 +1559,7 @@ function renderNerdStats() {
         h("div", { class: "stat" }, h("b", {}, pct(cc.accuracy_at_50, 1)), h("span", {}, `yes/no right (always saying yes: ${pct(a.always_yes_accuracy, 1)})`)),
         h("div", { class: "stat" }, h("b", {}, `${cc.misses_caught_at_50} of ${cc.misses}`), h("span", {}, "misses caught at 50%"))))),
     nsSection("ns-data", "Where the data comes from", null,
-      funnelPanel(a.funnel), reportsPanel(ch, entries)),
+      funnelPanel(a.funnel), reportsPanel(ch, entries), spendPanel(state.data.ai_spend)),
     nsSection("ns-model", "What the model looks at", null,
       driversPanel(ch), methodPanel(a)),
     nsSection("ns-tests", "How good is it?", `Test months: ${dev.map(monthName).join(", ")}. ${a.locked.map(monthName).join(", ")} are locked and unscored here, so they can give the final model an honest score.`,

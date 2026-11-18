@@ -114,6 +114,29 @@ def link_check(days: dict) -> list[str]:
     return [f"{sid}: {kind} has {what}" for (sid, kind), what in sorted(missing.items())]
 
 
+LEDGER = ROOT / "data" / "interim" / "llm_spend.csv"
+# Ledger run prefix -> what the money was for (Nerd stats, "What it cost")
+SPEND_GROUPS = [("batch_checked", "Double-checking every report"), ("batch", "Reading Reddit comments into reports"),
+                ("pilot", "Small tests before each big run"), ("star_history", "Reading casting news for star runs")]
+
+
+def ai_spend() -> dict | None:
+    """Total AI spend from the ledger, by purpose. Every call is logged by the code that made it."""
+    if not LEDGER.exists():
+        return None
+    led = pd.read_csv(LEDGER)
+    groups = []
+    for prefix, label in SPEND_GROUPS:
+        m = led.run.astype(str).str.startswith(prefix) & ~led.index.isin([i for g in groups for i in g[2]])
+        groups.append((label, float(led.usd[m].sum()), list(led.index[m])))
+    other = float(led.usd.sum()) - sum(g[1] for g in groups)
+    items = [{"label": g[0], "usd": round(g[1], 2)} for g in groups if g[1] > 0]
+    if other > 0.005:
+        items.append({"label": "Other", "usd": round(other, 2)})
+    return {"total_usd": round(float(led.usd.sum()), 2), "calls": int(len(led)), "items": items,
+            "through": str(pd.to_datetime(led["at"].max()).date()), "cap_usd": 8.0}
+
+
 def patch(path=PRED):
     data = json.loads(path.read_text(encoding="utf-8"))
     ex = Extras()
@@ -121,6 +144,7 @@ def patch(path=PRED):
         for e in entries:
             e.update(ex(e["show_id"]))
     data["has_stars"] = bool(ex.stars)
+    data["ai_spend"] = ai_spend()
     path.write_text(json.dumps(data, indent=1), encoding="utf-8")
     return data
 

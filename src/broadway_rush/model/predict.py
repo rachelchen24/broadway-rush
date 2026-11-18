@@ -435,7 +435,8 @@ def build(per_person: float, tag: str):
         "data_through": {"reports": str(reports_through.date()), "policies": latest_policy_date,
                          "grosses_week": gross.week_ending.max(), "schedule": sched.snapshot_utc.iloc[0][:10]},
         "has_show_facts": bool(facts),
-        "has_stars": bool(extras.stars),  # only after Rachel reviews registry/stars.csv (site_extras.STARS_REVIEWED)
+        "has_stars": bool(extras.stars),  # stars reviewed by Rachel (site_extras.STARS_REVIEWED)
+        "ai_spend": site_extras.ai_spend(),  # Nerd stats "What it cost"
         "days": days,
         "accuracy": accuracy_block(tag, funnel, timings),
         "charts": {**site_charts.build(t["line"], lm, tag, {e["show_id"] for es in days.values() for e in es}, shows),

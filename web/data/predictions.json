@@ -62344,5 +62344,29 @@
    "reports_per_week": 2.0
   }
  },
- "has_stars": true
+ "has_stars": true,
+ "ai_spend": {
+  "total_usd": 3.16,
+  "calls": 8176,
+  "items": [
+   {
+    "label": "Double-checking every report",
+    "usd": 1.17
+   },
+   {
+    "label": "Reading Reddit comments into reports",
+    "usd": 1.51
+   },
+   {
+    "label": "Small tests before each big run",
+    "usd": 0.27
+   },
+   {
+    "label": "Reading casting news for star runs",
+    "usd": 0.2
+   }
+  ],
+  "through": "2026-11-12",
+  "cap_usd": 8.0
+ }
 }
