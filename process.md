@@ -1486,3 +1486,29 @@ Ran `sync --no-predict` (24 new TKTS and 12 new Ticketmaster snapshots; no refit
 - **Discount depth:** no pattern (30%, 40%, 50% all ~8–10 people).
 
 **Caveats:** archived board copies are irregular (Wayback), so "previous 2 weeks" often rests on 3–5 copies; a show-level bootstrap, not an out-of-sample test. **Next:** build `tkts_board_share_14d` with the other tier-3 inputs and test it in N9 (Nov 17–19).
+
+
+## 2026-11-17 23:45 ET — First full test of the new model (N9 step 1): all inputs on
+
+Rachel: "just make the model, train it, test it." Same design (trees for the line, Bayesian for tickets), `--per-person 1.0`.
+
+**Prep:** Reddit refreshed to Nov 17 (923 new comments, 289 read by AI + checker, ~$0.01; project total $3.17): 15,044 observations, 6,745 line points, 959 ticket show-days. New star history (`stars --history`, free, 657 Wikimedia requests): every run in the casting news scored with the stars-list rule → `data/interim/star_stints_scored.csv`, **248 star runs, 226 people, 80 shows** (top: Keanu Reeves, Robert Downey Jr., Jake Gyllenhaal, Denzel Washington). To check: "Michelle Williams" (Death Becomes Her) is probably the singer, matched to the actress's page. New input code: `model/cast.py` (6 star/cast inputs), `model/board.py` (TKTS board share, prior 2 weeks), `LINE_FEATURES_V2` (37 inputs, from 16) and `CUTOFF_FEATURES_V2` (8, from 4) in `table.py`; `backtest --features v2`. New `model/compare.py` scores runs on identical test reports.
+
+**Control (`v1new`, 42 min):** the first model's inputs re-run on refreshed data: identical to `more1` on every number. Expected, since each test month trains only on earlier data and the last test month is October, so November's reports can't enter. Confirms the pipeline is reproducible, and that `v2all` vs `more1` isolates the new inputs.
+
+**Result (`v2all`, 47 min, all 9 months converged; same 1,697 line points, 42 stated ticket counts, 180 outcomes):**
+
+| | First model (`more1`) | New, all inputs (`v2all`) | Lookup table |
+|---|---|---|---|
+| Line error (people) | 4.69 | **4.63** | 5.94 |
+| Line 80% range holds | 84.6% | 85.6% | 61.6% |
+| **Ticket error** (mean) | 15.8 | 17.6 | **8.5** |
+| Ticket error (median) | 10.8 | 7.5 | **2.0** |
+| Ticket bias | +6.7 | +7.9 | −5.5 |
+| Chance: ranks hit over miss (AUC) | 0.596 | 0.596 | 0.665 |
+
+- **Line:** better in 7 of 9 months, but only by 0.09 people on average (2%); the month-to-month spread is bigger (t ≈ 1.3), so by the cut rule it isn't a clear win yet.
+- **Tickets:** better on 21 stated counts, worse on 21. The median error improved (10.8 → 7.5), but a few huge overestimates got worse: Schmigadoon Jul 2026 said 6, model 97 (first model 62); Lost Boys May 2026 said 20, model 75; Chess Nov 2025 said 6, model 46. The lookup beats the new model on 32 of 42. Oh, Mary! Mar 2026 (165, the $5 special day) is missed by everything.
+- **Hybrid (new model's lines + lookup tickets):** line 4.63, tickets 8.5: best on both of Rachel's metrics. Chance not scored for it (the chance comes from line vs tickets; needs a re-run).
+
+**Read:** the ticket model, not the inputs, is the problem: it overestimates, worst for newer shows, and "at most" reports are respected only 25% of the time. That matches the planned ticket fixes (learn tickets per person; use sold-out and "X left" reports). No keep/cut decisions made: Rachel's call. Results files: `data/processed/backtest_v1new_*`, `backtest_v2all_*`.
