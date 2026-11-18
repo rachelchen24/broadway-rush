@@ -172,6 +172,11 @@ def history():
     client = wikimedia.Client()
     names = sorted(s.person.unique())
     match = match_titles(client, names)
+    # Hand fixes for wrong-person matches (registry/star_title_fixes.csv), each with a source
+    fixes_path = ROOT / "registry" / "star_title_fixes.csv"
+    if fixes_path.exists():
+        for f in pd.read_csv(fixes_path, dtype=str, keep_default_na=False).itertuples():
+            match[f.person] = (f.wiki_title, "", f"fixed by hand: {f.reason}")
     log.info("titles: %d of %d people have a performer page", sum(bool(m[0]) and "doesn't say performer" not in m[2]
                                                                   for m in match.values()), len(names))
     rows = []

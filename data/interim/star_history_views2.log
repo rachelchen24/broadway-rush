@@ -1,0 +1,28 @@
+00:08:30 HTTP 429, waiting 15s
+00:08:45 HTTP 429, waiting 30s
+00:09:45 HTTP 429, waiting 15s
+00:10:30 HTTP 429, waiting 15s
+00:10:45 HTTP 429, waiting 30s
+00:11:46 HTTP 429, waiting 15s
+00:12:31 HTTP 429, waiting 15s
+00:12:46 HTTP 429, waiting 30s
+00:13:46 HTTP 429, waiting 15s
+00:14:31 HTTP 429, waiting 15s
+00:14:46 HTTP 429, waiting 30s
+00:15:46 HTTP 429, waiting 15s
+00:16:19 titles: 623 of 1255 people have a performer page
+00:16:19 runs 0/1387 (requests 105, refused 12)
+00:16:19 runs 100/1387 (requests 105, refused 12)
+00:16:19 runs 200/1387 (requests 105, refused 12)
+00:16:20 runs 300/1387 (requests 105, refused 12)
+00:16:23 runs 400/1387 (requests 106, refused 12)
+00:16:24 runs 500/1387 (requests 106, refused 12)
+00:16:24 runs 600/1387 (requests 106, refused 12)
+00:16:25 runs 700/1387 (requests 106, refused 12)
+00:16:25 runs 800/1387 (requests 106, refused 12)
+00:16:26 runs 900/1387 (requests 106, refused 12)
+00:16:26 runs 1000/1387 (requests 106, refused 12)
+00:16:27 runs 1100/1387 (requests 106, refused 12)
+00:16:27 runs 1200/1387 (requests 106, refused 12)
+00:16:27 runs 1300/1387 (requests 106, refused 12)
+00:16:28 wrote star_stints_scored.csv: 1387 runs, 248 by a star (226 people); 106 requests, 12 refused
