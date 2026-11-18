@@ -40,6 +40,7 @@ STAGE_FEATURES = ["in_previews", "days_since_opening"]
 from broadway_rush.model.tourism import TIMES_SQUARE_FEATURES, TOURISM_FEATURES, Tourism  # noqa: E402
 # NYU classes / finals / break (SPEC 2.8 N11), see nyu_calendar.py. Same rule: out of the models until N9.
 from broadway_rush.nyu_calendar import NYU_FEATURES, session_by_day  # noqa: E402
+from broadway_rush.special_days import drop_special  # noqa: E402
 # Star and cast inputs (SPEC 2.8 N5) and the TKTS board (tier 3), see model/cast.py and model/board.py
 from broadway_rush.model.board import BOARD_FEATURES, Board  # noqa: E402
 from broadway_rush.model.cast import STAR_FEATURES, Cast  # noqa: E402
@@ -124,6 +125,7 @@ def clock_hours(s: pd.Series) -> pd.Series:
 def base_reports(funnel: dict) -> pd.DataFrame:
     r = pd.read_csv(PROCESSED / "reports.csv", low_memory=False)
     funnel["all_observations"] = len(r)
+    r = drop_special(r, funnel)  # one-off events (registry/special_rush_days.csv), Rachel 2026-11-18
     r = r[r.rush_type == "general"]
     funnel["in_person_general_rush"] = len(r)
     r = r[r.show_id.notna() & (r.show_id != "-")]
@@ -426,7 +428,7 @@ def tickets_bounds(cut: pd.DataFrame, per_person: float) -> pd.DataFrame:
 
 def wider_attempts(funnel: dict):
     """Every in-person attempt with an arrival time and a known result, including reports with no usable date."""
-    r = pd.read_csv(PROCESSED / "reports.csv", low_memory=False)
+    r = drop_special(pd.read_csv(PROCESSED / "reports.csv", low_memory=False))
     a = r[(r.rush_type == "general") & r.show_id.notna() & (r.show_id != "-") & (r.kind == "attempt")
           & r.arrival_time.notna() & r.outcome.isin(FAILED | {"got_rush"})]
     funnel["attempts_wider_count"] = len(a)

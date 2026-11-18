@@ -1,0 +1,5 @@
+2025-11 line 8.6 s cutoff 316.4 s | line MAE combo 4.54 lookup 7.02 {'max_r_hat': 1.011, 'min_ess': 427, 'divergences': 0, 'attempts': 1, 'converged': True}
+2026-01 line 14.2 s cutoff 330.4 s | line MAE combo 5.12 lookup 6.29 {'max_r_hat': 1.003, 'min_ess': 606, 'divergences': 0, 'attempts': 1, 'converged': True}
+2026-02 line 13.3 s cutoff 327.1 s | line MAE combo 4.79 lookup 6.62 {'max_r_hat': 1.004, 'min_ess': 517, 'divergences': 0, 'attempts': 1, 'converged': True}
+2026-03 line 15.8 s cutoff 345.7 s | line MAE combo 5.47 lookup 5.82 {'max_r_hat': 1.007, 'min_ess': 414, 'divergences': 0, 'attempts': 1, 'converged': True}
+2026-05 line 17.3 s cutoff 370.3 s | line MAE combo 4.69 lookup 5.28 {'max_r_hat': 1.011, 'min_ess': 462, 'divergences': 0, 'attempts': 1, 'converged': True}

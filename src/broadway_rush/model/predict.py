@@ -23,6 +23,7 @@ from broadway_rush.model import join
 from broadway_rush.model import line as line_model
 from broadway_rush.model import site_charts
 from broadway_rush.model import site_extras
+from broadway_rush.special_days import drop_special
 from broadway_rush.model.backtest import GO, GRID, LOCKED, MAYBE
 from broadway_rush.model.table import (
     CUTOFF_FEATURES, FALLBACK_OPENING, LINE_FEATURES, PROCESSED, RAW, ROOT, Features, clean_text, load_policies,
@@ -99,7 +100,7 @@ def typical_prices(gross: pd.DataFrame) -> dict:
 
 
 def report_rates(shows: pd.DataFrame) -> tuple[pd.Series, pd.Series, pd.Timestamp]:
-    r = pd.read_csv(PROCESSED / "reports.csv", low_memory=False)
+    r = drop_special(pd.read_csv(PROCESSED / "reports.csv", low_memory=False))
     r = r[(r.rush_type == "general") & r.show_id.notna() & (r.show_id != "-") & (r.confidence != "low")].copy()
     r["date"] = pd.to_datetime(r.perf_date, errors="coerce")
     r = r[r.date.notna() & (r.date >= "2024-06-01")]

@@ -1512,3 +1512,14 @@ Rachel: "just make the model, train it, test it." Same design (trees for the lin
 - **Hybrid (new model's lines + lookup tickets):** line 4.63, tickets 8.5: best on both of Rachel's metrics. Chance not scored for it (the chance comes from line vs tickets; needs a re-run).
 
 **Read:** the ticket model, not the inputs, is the problem: it overestimates, worst for newer shows, and "at most" reports are respected only 25% of the time. That matches the planned ticket fixes (learn tickets per person; use sold-out and "X left" reports). No keep/cut decisions made: Rachel's call. Results files: `data/processed/backtest_v1new_*`, `backtest_v2all_*`.
+
+
+## 2026-11-18 00:40 ET — Special days removed; Michelle Williams fixed; tickets-per-person tests started
+
+**Michelle Williams (Death Becomes Her):** Rachel thought it was the same person; a web search showed the role (Viola Van Horn) is played by the Destiny's Child singer, while the lookup had matched "Michelle Williams (actress)" (the disambiguation page made it try "(actress)" before "(singer)"). New `registry/star_title_fixes.csv` (hand fixes with a source), applied by `stars --history`. Her pre-joining views: 42,125 a month (the actress: 205,011), so still a star. The other 7 stars matched through a qualifier were checked and are right.
+
+**Why the ticket model overshot:** Schmigadoon's training data had one stated count of 200 (Apr 3, 2026) from a post titled "Schmigadoon Dress Rehearsal Lottery": a one-off, not the daily rush. The median stated count is 5. Similar: Oh, Mary!'s $5 day (165), Chicago's $20 added matinee (100), first previews.
+
+**Rachel's decision:** special days are removed from everything: "we don't train on them, we don't report anything on them"; the site only notes a special offer while one is current (`registry/special_deals.csv`, already built). New `registry/special_rush_days.csv` (show-day and post-title rows, each with what and source) and `src/broadway_rush/special_days.py`, applied where reports are read (`table.base_reports`, `table.wider_attempts`, `predict.report_rates`); the data funnel gets `special_events_removed`. Listed: Schmigadoon dress rehearsal, Oh, Mary! $5 day, Chicago added matinee, first previews of Dog Day Afternoon, Mamma Mia and Fear of 13 (the last was filed under The Outsiders). **40 reports removed**; the largest stated count left is 60. Kept: Dead Outlaw "closing night rush" posts (a real rush day; asked Rachel). Tables rebuilt: 6,737 line points, 955 ticket show-days, 161 stated counts.
+
+**Running (Rachel OK'd):** `backtest --features v2 --per-person {1.0,1.4,1.8} --tag v2s_pp{…}`, side by side (~60–80 min). Then `model.compare more1 v2all v2s_pp1.0 v2s_pp1.4 v2s_pp1.8` and the hybrid, for Rachel to choose.
