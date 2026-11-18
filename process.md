@@ -1578,3 +1578,13 @@ Rachel: "just make the model, train it, test it." Same design (trees for the lin
 - Line error on the same 1,693 points: all 37 inputs 4.677, lean 14 4.614, **7 inputs 4.676**.
 - Adding one group back to the 7: NYU 4.675, show facts 4.750, schedule 4.730. Only all three together give 4.614, and that gap (14 vs 7) is within noise: better in 6 of 9 months, t 1.22. No single group explains it, so it looks like noise rather than a real effect.
 - Not decided; the ticket model's own inputs (weekend, capacity %, seats, musical) are unaffected by `--drop`.
+
+## 2026-11-18 morning — every set between 7 and 14 line inputs (measured only)
+- Rachel asked about sets between 7 and 14. 7 inputs plus each combination of NYU / show facts / schedule, line-only, same 1,693 points:
+  - 7 only 4.676 · +NYU 4.675 · +facts 4.750 · +schedule 4.730 · +facts+schedule 4.741
+  - +NYU+facts 4.652 · +NYU+schedule 4.643 · +all three (lean 14) 4.614
+- Pattern: every set with NYU is at or below 4.676; every set without it is 4.73–4.75. Show facts and schedule only help when NYU is also in. All gaps are within noise (|t| < 2; the typical month-to-month spread is 0.6–0.7).
+- Caution: 8 sets tried on the same 9 months, so picking the lowest flatters it a little; the locked months are the check.
+
+## 2026-11-18 morning — Rachel picks the lean 14
+- Final line inputs (Rachel's call): the lean 14 (`data/interim/lean_drop.txt`), with the original 4 ticket inputs: the `lean_t4` setup. The 7- and 10-input sets stay as tested alternatives (tags `drop_lean7`, `lean7_plus_*`).

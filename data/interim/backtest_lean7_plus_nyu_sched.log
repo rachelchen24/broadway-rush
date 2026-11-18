@@ -1,0 +1,32 @@
+2025-11 line 1.3 s cutoff 0 s | line MAE combo 4.61 lookup 7.02 
+2026-01 line 2.9 s cutoff 0 s | line MAE combo 5.25 lookup 6.29 
+2026-02 line 2.1 s cutoff 0 s | line MAE combo 4.74 lookup 6.62 
+2026-03 line 2.0 s cutoff 0 s | line MAE combo 5.11 lookup 5.82 
+2026-05 line 1.7 s cutoff 0 s | line MAE combo 4.57 lookup 5.28 
+2026-06 line 1.3 s cutoff 0 s | line MAE combo 4.7 lookup 5.67 
+2026-07 line 1.3 s cutoff 0 s | line MAE combo 4.99 lookup 5.83 
+2026-09 line 0.7 s cutoff 0 s | line MAE combo 3.95 lookup 5.81 
+2026-10 line 0.9 s cutoff 0 s | line MAE combo 3.05 lookup 5.64 
+{
+ "line_combo": {
+  "points": 1707,
+  "mae": 4.559088277673282,
+  "mae_near": 4.747887348984932,
+  "log_mae": 0.6274465386326451,
+  "bias": -1.6059563691031484,
+  "coverage80": 0.8644348904644574,
+  "width80": 15.849407579397019,
+  "arrival_error_min": 99.95865031856187
+ },
+ "line_lookup": {
+  "points": 1707,
+  "mae": 5.933243199953864,
+  "mae_near": 6.583545392086263,
+  "log_mae": 0.7556649374276186,
+  "bias": 1.4452938678123473,
+  "coverage80": 0.5861008520987403,
+  "width80": 13.84634629655221,
+  "arrival_error_min": 99.86167112959278
+ }
+}
+total seconds 22.1
