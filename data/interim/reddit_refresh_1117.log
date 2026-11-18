@@ -1,0 +1,35 @@
+21:47:40 INFO bot posts: 818 (817 daily threads, 1 other)
+21:47:40 INFO   other bot post: Broadway Rush Ticket Availability List
+21:47:41 INFO r/Broadway: scanning from 2026-11-11T09:44:04-05:00
+21:47:48 INFO r/Broadway: up to 2026-11-17, scanned 401, matched 56 (14 requests total)
+21:47:48 INFO r/musicals: scanning from 2026-11-11T06:02:21-05:00
+21:47:51 INFO r/musicals: up to 2026-11-17, scanned 183, matched 5 (16 requests total)
+21:47:51 INFO r/AskNYC: scanning from 2026-11-11T09:28:59-05:00
+21:47:57 INFO r/AskNYC: up to 2026-11-17, scanned 491, matched 8 (21 requests total)
+21:47:57 INFO r/nyc: scanning from 2026-11-11T10:02:51-05:00
+21:48:00 WARNING retry 1/8 in 61s (Timeout. Maybe slow down a bit)
+21:49:04 INFO r/nyc: up to 2026-11-17, scanned 279, matched 5 (25 requests total)
+21:49:04 INFO r/Hadestown: scanning from 2026-11-11T00:05:19-05:00
+21:49:06 INFO r/Hadestown: up to 2026-11-16, scanned 22, matched 1 (26 requests total)
+21:49:06 INFO r/wicked: scanning from 2026-11-11T06:11:10-05:00
+21:49:09 INFO r/wicked: up to 2026-11-17, scanned 21, matched 1 (27 requests total)
+21:49:09 INFO r/SixTheMusical: scanning from 2026-11-11T08:30:58-05:00
+21:49:11 INFO r/SixTheMusical: up to 2026-11-17, scanned 17, matched 0 (28 requests total)
+21:49:11 INFO r/andjuliet: scanning from 2026-09-10T10:23:39-04:00
+21:49:13 INFO r/andjuliet: up to 2026-09-10, scanned 1, matched 0 (29 requests total)
+21:49:13 INFO r/hamiltonmusical: scanning from 2026-11-11T07:35:13-05:00
+21:49:15 INFO r/hamiltonmusical: up to 2026-11-17, scanned 27, matched 1 (30 requests total)
+21:49:15 INFO r/TheOutsidersMusical: scanning from 2026-09-07T00:38:57-04:00
+21:49:17 INFO r/TheOutsidersMusical: up to 2026-09-07, scanned 1, matched 0 (31 requests total)
+21:49:17 INFO r/BroadwayTickets: scanning from 2026-02-06T23:01:22-05:00
+21:49:19 INFO r/BroadwayTickets: up to 2026-02-06, scanned 1, matched 0 (32 requests total)
+21:49:19 INFO posts.csv: 14046 rows (82 new), 32 requests
+21:49:20 INFO 81 posts to fetch (8349 already done, 941 skipped with 0 comments, 153378 comments on disk)
+21:49:52 INFO 25/81 posts, +175 comments, ~1 min left
+21:50:08 WARNING retry 1/8 in 54s (Timeout. Maybe slow down a bit)
+21:51:09 WARNING retry 1/8 in 53s (Timeout. Maybe slow down a bit)
+21:52:12 INFO 50/81 posts, +390 comments, ~2 min left
+21:52:12 WARNING retry 1/8 in 49s (Timeout. Maybe slow down a bit)
+21:53:32 INFO 75/81 posts, +864 comments, ~0 min left
+21:53:38 INFO 81/81 posts, +923 comments, ~0 min left
+21:53:38 INFO done: +923 comments, 87 requests, 0 posts skipped (rerun to retry them): 

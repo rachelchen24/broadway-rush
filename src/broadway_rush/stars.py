@@ -108,6 +108,35 @@ def window_for(status: str, first_week: str | None, announced: str = "", first_p
     return str(last - 11), LAST_FULL_MONTH, rule
 
 
+def match_titles(client, names: list[str]) -> dict:
+    """name -> (wiki_title, description, note). Same rules as the stars list: the page must describe a performer and
+    must not redirect to a differently named person; "(actor)"-style qualifiers are tried second."""
+    found = wikimedia.resolve(client, names)
+    # Second try for missing, disambiguation or non-performer pages: the usual qualifiers
+    retry = [n for n, f in found.items() if not f["title"] or f["disambiguation"]
+             or not wikimedia.PERFORMER_RE.search(f["description"] or "")]
+    variants = [f"{n} ({q})" for n in retry for q in ("actor", "actress", "singer", "entertainer", "performer")]
+    alt = wikimedia.resolve(client, variants) if variants else {}
+    match = {}
+    for n in names:
+        f = found[n]
+        ok = (f["title"] and not f["disambiguation"] and wikimedia.PERFORMER_RE.search(f["description"] or "")
+              and not wikimedia.NOT_A_PERSON_RE.search(f["description"] or "")
+              and not (f.get("redirected") and f["title"].split(" (")[0].lower() != n.lower()))
+        if ok:
+            match[n] = (f["title"], f["description"], "")
+            continue
+        hit = next((alt[v] for v in [f"{n} ({q})" for q in ("actor", "actress", "singer", "entertainer", "performer")]
+                    if alt.get(v, {}).get("title") and not alt[v]["disambiguation"]), None)
+        if hit:
+            match[n] = (hit["title"], hit["description"], "matched with a qualifier: check it's the right person")
+        elif f["title"] and not f["disambiguation"]:
+            match[n] = (f["title"], f["description"], "page found but its description doesn't say performer: check it")
+        else:
+            match[n] = ("", "", "no Wikipedia page found" if not f["title"] else "only a disambiguation page")
+    return match
+
+
 def rescore():
     """Re-apply the window rule and cutoff to registry/stars.csv from cached views (no requests). Keeps Rachel's
     override and reason columns and every review note."""
@@ -132,7 +161,52 @@ def rescore():
     log.info("rescored %s: %d stars, %d near the line", OUT.name, (df.star == "yes").sum(), (df.near_cutoff == "yes").sum())
 
 
+HISTORY_OUT = ROOT / "data" / "interim" / "star_stints_scored.csv"
+
+
+def history():
+    """Score every run in data/interim/star_stints.csv (closed shows too) with the same rule as the stars list, so the
+    model's star inputs work for past dates: median monthly views over the 12 months before casting was announced,
+    else the 12 months ending 3 months before the first performance of that run. Free; requests 3 s apart, cached."""
+    s = pd.read_csv(ROOT / "data" / "interim" / "star_stints.csv", dtype=str, keep_default_na=False)
+    client = wikimedia.Client()
+    names = sorted(s.person.unique())
+    match = match_titles(client, names)
+    log.info("titles: %d of %d people have a performer page", sum(bool(m[0]) and "doesn't say performer" not in m[2]
+                                                                  for m in match.values()), len(names))
+    rows = []
+    for i, r in enumerate(s.itertuples()):
+        title, desc, note = match.get(r.person, ("", "", ""))
+        counted = bool(title) and "doesn't say performer" not in note
+        anchor = r.casting_announced or ""
+        if anchor:
+            end = pd.Period(anchor[:7], freq="M") - 1
+            rule = "12 months before casting was announced"
+        else:
+            first = r.first_performance or r.latest_start
+            end = pd.Period(first[:7], freq="M") - 3 if first else None
+            rule = "12 months ending 3 months before first performance" if first else "no dates"
+        med = None
+        if counted and end is not None and end - 11 >= pd.Period("2015-07", freq="M"):
+            views = wikimedia.monthly_views(client, title)
+            med, _ = median_views(views, str(end - 11), str(end))
+        rows.append({"show_id": r.show_id, "person": r.person, "key": r.key, "wiki_title": title,
+                     "wiki_description": desc, "match_note": note, "window_rule": rule,
+                     "views_median": "" if med is None else med,
+                     "star": "yes" if med is not None and med >= CUTOFF else "no"})
+        if i % 100 == 0:
+            log.info("runs %d/%d (requests %d, refused %d)", i, len(s), client.n, client.refused)
+    out = pd.DataFrame(rows)
+    out.to_csv(HISTORY_OUT, index=False)
+    log.info("wrote %s: %d runs, %d by a star (%d people); %d requests, %d refused", HISTORY_OUT.name, len(out),
+             (out.star == "yes").sum(), out[out.star == "yes"].key.nunique(), client.n, client.refused)
+
+
 def main():
+    if "--history" in sys.argv:
+        logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s", datefmt="%H:%M:%S")
+        history()
+        return
     if "--rescore" in sys.argv:
         logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s", datefmt="%H:%M:%S")
         rescore()
@@ -164,29 +238,7 @@ def main():
 
     client = wikimedia.Client()
     names = sorted(cast.person.unique())
-    found = wikimedia.resolve(client, names)
-    # Second try for missing, disambiguation or non-performer pages: the usual qualifiers
-    retry = [n for n, f in found.items() if not f["title"] or f["disambiguation"]
-             or not wikimedia.PERFORMER_RE.search(f["description"] or "")]
-    variants = [f"{n} ({q})" for n in retry for q in ("actor", "actress", "singer", "entertainer", "performer")]
-    alt = wikimedia.resolve(client, variants) if variants else {}
-    match = {}
-    for n in names:
-        f = found[n]
-        ok = (f["title"] and not f["disambiguation"] and wikimedia.PERFORMER_RE.search(f["description"] or "")
-              and not wikimedia.NOT_A_PERSON_RE.search(f["description"] or "")
-              and not (f.get("redirected") and f["title"].split(" (")[0].lower() != n.lower()))
-        if ok:
-            match[n] = (f["title"], f["description"], "")
-            continue
-        hit = next((alt[v] for v in [f"{n} ({q})" for q in ("actor", "actress", "singer", "entertainer", "performer")]
-                    if alt.get(v, {}).get("title") and not alt[v]["disambiguation"]), None)
-        if hit:
-            match[n] = (hit["title"], hit["description"], "matched with a qualifier: check it's the right person")
-        elif f["title"] and not f["disambiguation"]:
-            match[n] = (f["title"], f["description"], "page found but its description doesn't say performer: check it")
-        else:
-            match[n] = ("", "", "no Wikipedia page found" if not f["title"] else "only a disambiguation page")
+    match = match_titles(client, names)
     log.info("titles: %d of %d people have a page", sum(bool(m[0]) for m in match.values()), len(names))
 
     views = {}

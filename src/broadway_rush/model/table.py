@@ -40,6 +40,9 @@ STAGE_FEATURES = ["in_previews", "days_since_opening"]
 from broadway_rush.model.tourism import TOURISM_FEATURES, Tourism  # noqa: E402
 # NYU classes / finals / break (SPEC 2.8 N11), see nyu_calendar.py. Same rule: out of the models until N9.
 from broadway_rush.nyu_calendar import NYU_FEATURES, session_by_day  # noqa: E402
+# Star and cast inputs (SPEC 2.8 N5) and the TKTS board (tier 3), see model/cast.py and model/board.py
+from broadway_rush.model.board import BOARD_FEATURES, Board  # noqa: E402
+from broadway_rush.model.cast import STAR_FEATURES, Cast  # noqa: E402
 FALLBACK_OPENING = {**{d: 10.0 for d in range(6)}, 6: 12.0}
 
 
@@ -309,6 +312,8 @@ class Features:
         self.sched = load_schedule_days(shows, policies)
         self.sched_counts = schedule_day_counts(self.sched, policies)
         self.tourism = Tourism()
+        self.cast = Cast()
+        self.board = Board(shows)
 
     @staticmethod
     def _stage(g: pd.DataFrame) -> pd.DataFrame:
@@ -373,6 +378,8 @@ class Features:
         keys[STAGE_FEATURES] = self.stage_features(keys)
         keys = keys.merge(self.tourism.build(keys.date), on="date", how="left")
         keys["nyu_session"] = session_by_day(keys.date)
+        keys[STAR_FEATURES] = self.cast.build(keys)
+        keys[BOARD_FEATURES] = self.board.build(keys)
         keys["recent_thin"] = (keys.recent_n < 3).astype(int)
         lagged = keys.assign(asof=keys.date - pd.Timedelta(days=9)).sort_values("asof")
         lagged = pd.merge_asof(

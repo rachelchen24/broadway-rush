@@ -1816,7 +1816,10 @@ function renderFooter() {
   const d = state.data;
   footer.replaceChildren(
     h("p", {}, `${d.model.name}: ${d.model.line} for the line, ${d.model.cutoff} for the tickets. Made ${d.generated_at}. Reports through ${dayName(d.data_through.reports, { month: "short", day: "numeric" })}, grosses through ${dayName(d.data_through.grosses_week, { month: "short", day: "numeric" })}, schedule from Ticketmaster ${dayName(d.data_through.schedule, { month: "short", day: "numeric" })}.`),
-    h("p", {}, `Placeholder settings, not final: GO at ${pct(d.placeholders.go_at_or_above)} and up, Maybe at ${pct(d.placeholders.maybe_at_or_above)} and up, based on the chance if you arrive at 9:00 AM. The arrival target is ${pct(d.placeholders.target_chance)}.`));
+    h("p", {}, `Placeholder settings, not final: GO at ${pct(d.placeholders.go_at_or_above)} and up, Maybe at ${pct(d.placeholders.maybe_at_or_above)} and up, based on the chance if you arrive at 9:00 AM. The arrival target is ${pct(d.placeholders.target_chance)}.`),
+    // Credits. The Times Square Alliance shared its counts on the condition that they're credited and the raw counts
+    // never appear on the site (2026-11-17); Wikipedia and Open-Meteo ask for credit too.
+    h("p", { class: "credits" }, "Pedestrian counts: Times Square Alliance. Rush reports: r/Broadway on Reddit. Rush policies, casts and schedules: Playbill. Casting news: BroadwayWorld. Performances: Ticketmaster. TKTS board: TDF. Midtown subway riders: MTA (data.ny.gov). Page views: Wikipedia. Weather: Open-Meteo.com."));
 }
 
 fetch("data/predictions.json", { cache: "no-store" })

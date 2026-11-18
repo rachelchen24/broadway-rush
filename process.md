@@ -1470,3 +1470,19 @@ Rachel sent the request and the Alliance replied the same day: `data/raw/times-s
 **Did:** `scrapers/timessquare.py --daily` → `data/raw/timessquare_daily.csv` (date, alliance_total, core_sum = the 21 cameras that ran throughout, blank unless all 21 counted; 895 of 899 days). New input `ts_peds_daily_vs_last_year` in `model/tourism.py`: the 28 days ending 21 days before the date against a year earlier. The 21-day gap is because this is a one-time file: it still works for live predictions through the Dec 7 presentation, then goes blank (the monthly inputs carry on). Known on 52.8% of report days (needs a year-earlier window, so from mid-2025). Example: for Nov 17, 2026 it says Times Square ran 10.4% busier than a year earlier, where the monthly input (September) says 3.7%.
 
 **Open with Rachel:** what the Alliance said about how the data may be used, and whether they'll send updates.
+
+**Update, same day:** the Alliance's reply (Carlo Steinman, Planning and Special Projects) gives permission as long as the data is credited to the Times Square Alliance and the raw counts aren't published; he'd like to see the final project. New Year's Eve is left out of the camera counts on purpose (street closures), which explains the missing Dec 31 days. He also attached hourly counts by camera, not in the folder yet. Registry updated.
+
+**Credit added (Rachel asked):** the footer on every page now has a credits line, first "Pedestrian counts: Times Square Alliance", then the other sources (Reddit r/Broadway, Playbill, BroadwayWorld, Ticketmaster, TDF's TKTS board, MTA via data.ny.gov, Wikipedia page views, Open-Meteo weather). `app.js?v=20261117a`. Checked in headless Chrome: it renders. Local only.
+
+
+## 2026-11-17 ET — Is the new ticket data meaningful? (analysis only, no model change)
+
+Ran `sync --no-predict` (24 new TKTS and 12 new Ticketmaster snapshots; no refit). TKTS: 12,209 rows, Broadway board on 131 dates (117 archived copies Jun 2024 onward + 14 of our own days), 109 of 118 board names matched to shows.
+
+- **Ticketmaster: no demand signal.** 11,586 of 11,636 rows say "onsale", 50 "offsale"; no prices or seat counts in the API. Useful only as the schedule (already used).
+- **TKTS on the board that same day:** same show and weekday, the line is 2.4 people shorter (95% range −4.5 to +0.1; 460 show-days, 145 on the board). Weak, and not usable anyway: the board goes up in the afternoon, after the morning rush.
+- **TKTS in the previous 2 weeks (usable at prediction time): meaningful.** Share of board dates in the 14 days before that the show was on the board; 869 show-days, 62 shows. Same show, same weekday **and same seats sold** (weekly grosses): going from never on the board to always on it means **a line 7.1 people shorter (95% range −11.4 to −2.4)**. Across shows: never on the board, 18.4 people on average; sometimes, 14.2; mostly, 10.7. Within a show, seats sold added nothing once the board share was in (the two correlate −0.25), so the board seems to pick up demand changes the weekly grosses miss.
+- **Discount depth:** no pattern (30%, 40%, 50% all ~8–10 people).
+
+**Caveats:** archived board copies are irregular (Wayback), so "previous 2 weeks" often rests on 3–5 copies; a show-level bootstrap, not an out-of-sample test. **Next:** build `tkts_board_share_14d` with the other tier-3 inputs and test it in N9 (Nov 17–19).
