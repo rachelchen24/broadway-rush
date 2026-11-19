@@ -1588,3 +1588,15 @@ Rachel: "just make the model, train it, test it." Same design (trees for the lin
 
 ## 2026-11-18 morning — Rachel picks the lean 14
 - Final line inputs (Rachel's call): the lean 14 (`data/interim/lean_drop.txt`), with the original 4 ticket inputs: the `lean_t4` setup. The 7- and 10-input sets stay as tested alternatives (tags `drop_lean7`, `lean7_plus_*`).
+
+## 2026-11-19 — Nerd stats accuracy table switched to the lean model (test months)
+- Rachel wants to see where the model and the lookup table each win. `web/data/predictions.json` accuracy block replaced with `accuracy_block("lean_t4", ...)` (old funnel and timings kept; backup of the old file in the session scratchpad). Tiles are still the first model's predictions.
+- Split of ticket accuracy (lean_t4, 9 open months): shows with past counts: stated counts model 8.1 off vs lookup 6.1, "at least" respected 93% vs 77%. Shows with no past counts (lookup falls back to 8): 14.0 vs 4.3, 98% vs 65%. The lookup wins on stated counts in both groups and the model wins on "at least" in both, so no situation split separates them; 41 stated counts is small.
+
+## 2026-11-19 — Dark mode lifted; Nerd stats restyled
+- Rachel dropped light mode ("light mode looks terrible"); both light drafts deleted. The site stays dark, but lighter: `--bg` #2b1a47 → #3b2862, cards and lines lifted to match (`web/styles.css`, `?v=20261119a`).
+- Nerd stats restyled after the Gradient Able free admin template (MIT, CodedThemes; ideas only, no files copied) in a SIX-cover palette: the 4 "short version" stats are now gradient number cards (magenta, teal, gold, pink) with icons and a rhinestone sparkle; section titles in neon gradient text; cards with a colored edge and faint arcs; roomier tables. Content and section order unchanged.
+
+## 2026-11-19 — Rachel's ticket decision: fix the model first, then pick the closest number
+- Rachel: "fix first, then closest number". Step 1: reduce the ticket model's upward bias (+8.6) with more ticket labels. Step 2: compare again on stated counts and use whichever is closer for the site's ticket number (model or lookup table).
+- The labels already exist in `data/processed/reports.csv` (no AI spend needed): 1,099 "X left" counts (`stated_qual=remaining`) and 254 sold-out times (`sold_out_time`). The model uses neither yet.

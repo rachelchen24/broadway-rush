@@ -2,15 +2,15 @@
    SPEC 2.8 N1) for the logo, headings, show names and big numbers; Poppins for everything else. */
 :root {
   color-scheme: dark;
-  --bg: #2b1a47;
-  --bg-2: #352252;
-  --card: #402c60;
-  --card-2: #4c3772;
-  --field: #221439;
-  --line: #6c5592;
+  --bg: #3b2862;       /* lifted 2026-11-19 (Rachel: dark, but not quite as dark); was #2b1a47 */
+  --bg-2: #46316f;
+  --card: #513b7d;
+  --card-2: #5d478b;
+  --field: #2f1f50;
+  --line: #7d67a6;
   --ink: #f7f1ff;
   --ink-2: #d6c9ec;
-  --ink-3: #b8a9d2;
+  --ink-3: #c6b9de;
   --glow: #e9d8ff;
   --warm: #fff6d8;
   --gold: #f4c542;
@@ -33,7 +33,7 @@
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
-  background: radial-gradient(1200px 500px at 50% -120px, #4c2c7c 0%, var(--bg) 70%) no-repeat, var(--bg);
+  background: radial-gradient(1200px 500px at 50% -120px, #5c3a94 0%, var(--bg) 70%) no-repeat, var(--bg);
   color: var(--ink);
   font: 15px/1.55 var(--font-body);
   min-height: 100vh;
@@ -469,3 +469,50 @@ fieldset.field { border: 0; margin: 0; padding: 0; }
 .spend td { padding: 5px 10px 5px 0; border-bottom: 1px solid var(--line); }
 .spend td.num { text-align: right; font-variant-numeric: tabular-nums; }
 .spend tr.total td { font-weight: 700; border-bottom: 0; }
+
+/* ---------- Nerd stats, Gradient Able–style dashboard in a SIX-cover palette (Rachel 2026-11-19) ----------
+   Layout ideas from the MIT-licensed Gradient Able admin template (CodedThemes): gradient number cards, titled cards
+   with soft shadows, decorative arcs. Colors: neon magenta, violet, teal and gold, with a rhinestone sparkle. */
+.ns-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 14px; max-width: 1100px; }
+.kpi {
+  position: relative; overflow: hidden; color: #fff; border-radius: var(--radius); padding: 16px 18px 14px;
+  box-shadow: 0 10px 24px -10px var(--kpi-glow), 0 2px 6px rgba(20, 8, 40, .35);
+  background:
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, .35) 1px, transparent 1.6px) 0 0 / 14px 14px,
+    repeating-radial-gradient(circle at 115% -20%, transparent 0 22px, rgba(255, 255, 255, .13) 23px 24px),
+    linear-gradient(135deg, var(--kpi-a), var(--kpi-b));
+}
+.kpi.k1 { --kpi-a: #ff4fb3; --kpi-b: #a42cf0; --kpi-glow: rgba(255, 79, 179, .7); }
+.kpi.k2 { --kpi-a: #19d3c5; --kpi-b: #3a6ff0; --kpi-glow: rgba(25, 211, 197, .6); }
+.kpi.k3 { --kpi-a: #ffd25a; --kpi-b: #ff8a1f; --kpi-glow: rgba(255, 186, 60, .6); color: #2a1400; }
+.kpi.k4 { --kpi-a: #ff6f91; --kpi-b: #d4145a; --kpi-glow: rgba(255, 80, 120, .6); }
+.kpi-title { margin: 0 0 6px; font-weight: 600; font-size: .92rem; letter-spacing: .02em; }
+.kpi-main { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.kpi-main b { font-family: var(--font-display); font-weight: 900; font-size: 2.1rem; line-height: 1.1; text-shadow: 0 2px 10px rgba(0, 0, 0, .18); }
+.kpi-main svg { opacity: .9; flex: 0 0 auto; }
+.kpi-foot { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-top: 8px; font-size: .8rem; opacity: .92; }
+
+/* Section titles: SIX-style neon gradient text with a short glowing underline */
+.ns-section > h2 {
+  display: inline-block; font-family: var(--font-display); font-weight: 900; text-transform: uppercase; letter-spacing: .02em;
+  background: linear-gradient(90deg, #ff7ac6, #c58bff 55%, #ffd25a); -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: none; filter: drop-shadow(0 0 8px rgba(255, 122, 198, .35));
+}
+.ns-section > h2::after { content: ""; display: block; width: 56px; height: 3px; margin-top: 6px; border-radius: 3px; background: linear-gradient(90deg, #ff4fb3, #a42cf0); }
+
+/* Cards: template-style titled cards with a soft shadow, a neon edge and a faint arc in the corner */
+.ns-section .panel {
+  position: relative; overflow: hidden; border-color: transparent;
+  box-shadow: 0 8px 22px -12px rgba(10, 4, 25, .8), inset 3px 0 0 #ff4fb3;
+  background: repeating-radial-gradient(circle at 104% -30%, transparent 0 30px, rgba(255, 122, 198, .07) 31px 32px) no-repeat, var(--card);
+}
+.ns-section .panel:nth-child(3n+2) { box-shadow: 0 8px 22px -12px rgba(10, 4, 25, .8), inset 3px 0 0 #19d3c5; }
+.ns-section .panel:nth-child(3n+3) { box-shadow: 0 8px 22px -12px rgba(10, 4, 25, .8), inset 3px 0 0 #ffd25a; }
+.ns-section .faq > summary h3 { font-weight: 600; }
+
+/* Tables: roomier, like the template */
+.ns-section table { font-size: .92rem; }
+.ns-section thead th { color: var(--ink-2); font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; padding-bottom: 10px; }
+.ns-section th, .ns-section td { padding: 10px 12px; }
+.ns-section tbody tr:hover td { background: rgba(255, 255, 255, .04); }
+.ns-nav { background: var(--bg); }

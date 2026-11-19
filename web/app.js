@@ -1045,6 +1045,20 @@ const NS_SECTIONS = [
   ["ns-lines", "How lines behave"], ["ns-summary", "Short version"], ["ns-data", "The data"],
   ["ns-model", "The model"], ["ns-tests", "How good is it?"], ["ns-truth", "Model vs. ground truth"],
 ];
+const KPI_ICONS = {
+  people: "M16 19v-1.5a3.5 3.5 0 0 0-3.5-3.5h-5A3.5 3.5 0 0 0 4 17.5V19M10 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6M20 19v-1.5a3.5 3.5 0 0 0-2.6-3.4M15 5.1a3 3 0 0 1 0 5.8",
+  target: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8M12 12h.01",
+  check: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18M8 12.5l2.5 2.5L16 9.5",
+  alert: "M12 3l9.5 17h-19zM12 10v4M12 17h.01",
+};
+function kpi(tone, icon, title, big, unit, foot) {
+  const svg = s("svg", { viewBox: "0 0 24 24", width: "30", height: "30", fill: "none", stroke: "currentColor", "stroke-width": "2", "stroke-linecap": "round", "stroke-linejoin": "round", "aria-hidden": "true" });
+  svg.append(s("path", { d: KPI_ICONS[icon] }));
+  return h("div", { class: `kpi ${tone}` },
+    h("p", { class: "kpi-title" }, title),
+    h("div", { class: "kpi-main" }, svg, h("b", {}, big)),
+    h("div", { class: "kpi-foot" }, h("span", {}, unit), h("span", {}, foot)));
+}
 function nsSection(id, title, intro, ...panels) {
   return h("section", { id, class: "ns-section" }, h("h2", {}, title), intro ? h("p", { class: "lede" }, intro) : null,
     h("div", { class: "accuracy-grid" }, panels));
@@ -1553,11 +1567,12 @@ function renderNerdStats() {
       openPanel(heatPanel(ch, entries)), growthPanel(ch)),
     nsSection("ns-summary", "The short version",
       `Better than the simple lookup table on: ${beats.join(", ") || "none of the main measures"}. Not better on: ${loses.join(", ") || "none of them"}.`,
-      h("section", { class: "panel wide" }, h("div", { class: "stat-row" },
-        h("div", { class: "stat" }, h("b", {}, `${num(lc.mae, 2)} people`), h("span", {}, `average line error (lookup table: ${num(ll.mae, 2)})`)),
-        h("div", { class: "stat" }, h("b", {}, pct(lc.coverage80, 1)), h("span", {}, "of real lines inside the 80% range (goal: 80%)")),
-        h("div", { class: "stat" }, h("b", {}, pct(cc.accuracy_at_50, 1)), h("span", {}, `yes/no right (always saying yes: ${pct(a.always_yes_accuracy, 1)})`)),
-        h("div", { class: "stat" }, h("b", {}, `${cc.misses_caught_at_50} of ${cc.misses}`), h("span", {}, "misses caught at 50%"))))),
+      // Gradient number cards (Rachel 2026-11-19: the Gradient Able template's stat cards, in a SIX-cover palette)
+      h("div", { class: "ns-kpis" },
+        kpi("k1", "people", "Line error", `${num(lc.mae, 2)}`, "people off, on average", `Lookup table: ${num(ll.mae, 2)}`),
+        kpi("k2", "target", "Inside the 80% range", pct(lc.coverage80, 1), "of real lines", "Goal: 80%"),
+        kpi("k3", "check", "Yes/no right", pct(cc.accuracy_at_50, 1), "at 50%", `Always saying yes: ${pct(a.always_yes_accuracy, 1)}`),
+        kpi("k4", "alert", "Misses caught", `${cc.misses_caught_at_50} of ${cc.misses}`, "at 50%", "Times it warned before a loss"))),
     nsSection("ns-data", "Where the data comes from", null,
       funnelPanel(a.funnel), reportsPanel(ch, entries), spendPanel(state.data.ai_spend)),
     nsSection("ns-model", "What the model looks at", null,
