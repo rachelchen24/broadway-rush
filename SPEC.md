@@ -237,6 +237,7 @@ All of this goes in the predictions file, so the site still reads only that file
 | N10 | Special-deal flag on the site (not in the model) | 2026-11-11 | ✅ built 2026-11-11 (local) for the 4 deals on the policy list; dated deals file is empty |
 | N11 | NYU calendar, one model input (~~six schools, four inputs~~) | 2026-11-11 | 🔶 input built 2026-11-11 from the calendar I pasted (`nyu_session`: 0 break, 1 classes, 2 finals, 3 free and in town: one-day holidays and the 3 days before a term, my call 2026-11-11; summer counts as a break); not tested yet (N9, Nov 17–19) |
 | N12 | Nerd stats visual upgrade: 8 charts in the cleaning-funnel slide's marquee style (picked 2026-11-12, list below) | 2026-11-12 | 📝 not built, waiting for my go |
+| N13 | UI feedback round (my review of the live site, 2026-11-23): bigger centered title, calendar-style day strip filling the width, tidier sort/view/filters, "Star in the cast" filter, 3D carousel, Nerd stats as a dashboard, Nerd stats colors on the customer side, cleaner show page with picture | 2026-11-23 | 📝 written down, not built. I'll prompt the build from another chat. Everything in it is revertable: if I hate a piece, it gets undone |
 
 N1–N4 and N10 are website work. **N5–N9 are data and model work**: their model parts belong to the final-model slot (Nov 17–19). N8 also changes the site.
 
@@ -421,6 +422,56 @@ After all the new inputs are in, measure each one's role and remove the ones tha
 - **No-data shows (my decision 2026-11-12):** a show with in-person rush but 0–6 line reports gets no tile on any home view and no bar in "How many reports does each show have?". Each place lists them in one quiet line at the bottom: "No data for: …". Today that's Downstate, It's a Wonderful Life, Wanted and Wicked. Shows with no in-person rush line (lottery-only, like Hamilton) keep their tiles.
 - **Still to decide (me, later):** the bottom half of Nerd stats ("How good is it?" and "Model vs. ground truth") doesn't make sense to me yet: Claude explains each chart better or we cut them.
 - Same rules as the other charts: numbers come only from the predictions file, readable at phone width, text contrast checked, and a plain table or text for screen readers.
+
+**N13. UI feedback round (my review, 2026-11-23; not built)**
+Big picture: the customer side is boring and too much of it hugs the left edge. More color, less text, centered layouts, and dashboards instead of one long scroll. Rule for the whole site: **if a block sits all on the left with empty space on the right, center it or spread it across the width.** Stays dark purple (never black, §2.4). Each piece below is separate, so any one can be reverted without touching the others.
+
+*a. Header / title ("Broadway Rush")*
+- **Much bigger**, and **centered** (I went back and forth; final: centered).
+- **Taller header bar** (more padding top and bottom).
+- **Stars around the title** (sparkle/star shapes on either side or around it, marquee feel). Nav links stay usable at phone width.
+- Use the Nerd stats gradient text on the title (see f).
+
+*b. Home page heading and day strip*
+- **Center** the page question ("Is rush worth it this morning?" / "Which day should you go?" / "What's playing when you can go?") and the day strip under it.
+- **The day strip fills the full width.** Today it covers about half the screen and the rest is empty. We can't predict many more days (TKTS limits how far ahead we go), so fill the width mainly by **making each day box bigger**; adding 1–2 more days is fine if the data allows, but don't invent days we can't predict.
+- **Each day box looks like a calendar date,** like the Apple Calendar app icon: month on top in a colored band (e.g. "NOV"), the date number big underneath, weekday small. Selected day stands out (gradient band or glow).
+
+*c. Sort, View and Filters*
+- **Sort and View sit side by side** on one row.
+- **Filters box:** today the box is very wide but its contents fill only about half of it. Fix by putting filter groups side by side (a grid of groups), so the box is filled, or narrowing the box. No empty half.
+- **Filter chips/buttons use the Nerd stats colors** (magenta, violet, teal, gold gradients) instead of plain ones.
+- ~~New filter: Classic vs. New show~~ dropped (my call 2026-11-23: no clean rule for "classic").
+- **One new filter: "Star in the cast"** (Claude's pick, 2026-11-23; build it so I can see it, revertable). One button: show only shows with a high-profile star performing on the chosen day (same `starsOn` check the tile's star label and Key appeals use, so the 20,000-views rule from N5 decides). In the This week view, a star on any of your days counts. Uses data already on the site; no new collection.
+- Backup ideas if I don't like it (not to build): "Closing soon" (announced closing in the next ~30 days, from `closing_date`), rush price bands (e.g. under $40 / $40+).
+
+*d. Carousel view*
+- Today's carousel (a flat sliding row) is boring. Replace with a **3D carousel**: one tile (or three) shown big in the middle, the neighbors **fold/tilt away to the sides** in perspective, and swiping/arrows rotate to the next one. Like a component I liked on 21st.dev.
+- ✅ **Reference received 2026-11-23:** the 21st.dev "Glassy Coverflow Carousel". Geometry, input rules and what to skip are in [`docs/reference/glassy-coverflow-carousel.md`](docs/reference/glassy-coverflow-carousel.md). It's a React/Tailwind/TypeScript component; **our site is plain JS, so rebuild the effect in `web/app.js` + `web/styles.css`. Don't add React.**
+- How it looks: the center card is full size and flat. Two cards on each side step back, shrink about 8% each, tilt up to 42° away, and get darker. Drag/swipe or ← → to rotate. It wraps around. Under it: the center show's name, plus a pill with `03 / 12` and ‹ › buttons.
+- For us: each card is the show's tile (picture on top). Clicking a side card brings it to the center; clicking the center card opens the show page. One coverflow per group, like today's one row per group. Colors from our dark purple + Nerd stats palette, not its light default. No autoplay, trailers or logo.
+- Keep the current sort order inside the carousel (I like how they're sorted). Keyboard arrows + swipe work; respects reduced motion.
+
+*e. Nerd stats page → dashboard*
+- When I shared the 21st.dev / Gradient Able UI, I meant **its layout**, not mainly its colors. The colors look good; keep them.
+- **Center the jump buttons** (the "what do you want to see" buttons); today they sit on the left and look bad.
+- **Dashboard layout:** panels arranged left / center / right and top / bottom, so you see several charts at once, instead of one column you scroll down that fills about 2/3 of the left half. Use the full width; panels of different sizes in a grid.
+
+*f. Nerd stats colors on the customer side*
+- I really like the **gradient text** on Nerd stats (pink → violet → gold section titles). Bring it to the customer pages: title, page question, section headings on show pages.
+- Bring in more of the Nerd stats colors (magenta #ff4fb3, violet #a42cf0, teal #19d3c5, gold #ffd25a) for filter buttons, accents and panel edges. More color overall.
+
+*g. Show page (clicking a show)*
+- Too little color, too much small text, one long scroll. Make it **a dashboard of panels**, with color from f.
+- **Less text on screen.** This is client-facing; don't overwhelm people. Keep the key numbers big; move the detail to Nerd stats. Bigger text where text stays.
+- **Rush policy:** content is good. Make its panel **span the full width** (centered across the page, not just the left side). Text can go in two columns inside it.
+- **About the show** (category + info rows) → a **streamlined table**, with color.
+- **About and Key appeals side by side.**
+- **Show picture** (the Ticketmaster image we already have) on the **right, above Key appeals**.
+- **Link to Nerd stats from every show page**, clearly visible (a button, not just the small line at the bottom). If possible it opens Nerd stats on that show (the ground-truth table can already look up by show).
+- Keep everything else I asked for on show pages before.
+
+*Done when:* each piece matches the above at desktop and phone width (no sideways scroll, 16px side gutters), text contrast still passes on dark purple, `?v=` bumped on `app.js` and `styles.css`, and nothing from earlier builds is lost.
 
 **Not adding (my decision 2026-11-11):** the deal size (typical ticket minus rush price), subway disruptions, and rush policy changes.
 

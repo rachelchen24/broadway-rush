@@ -1645,3 +1645,8 @@ Rachel: "just make the model, train it, test it." Same design (trees for the lin
 - **Correction:** I first told Rachel "estimate at least N: 100% vs 92%" on the locked months. That was the weaker check (80% range reached N). The estimate itself was ≥ N on 92% vs 75%. Fixed in all notes; Nerd stats labels the range check correctly.
 - **Locked line error is 4.60** (4.6046), not 4.61 as first written; fixed everywhere.
 - README results table now has test months and locked months; charts (`make_visuals.py` uses lean_so2 + final_locked), slides 7/9/11 and poster rebuilt. The poster PDF was open in another program, so the new one is `presentation/broadway-rush-poster-updated.pdf`.
+
+## 2026-11-23 — Darker boxes, smaller corners (Rachel)
+- Rachel: boxes should differ from the background, perhaps darker; home-page corners way too rounded.
+- `styles.css` tokens: `--card` #513b7d → #281a45, `--card-2` #5d478b → #34245a, `--bg-2` #46316f → #2f2050, `--field` #2f1f50 → #1f1438. The page stays #3b2862, so boxes now sit darker than the page (deep purple, not black).
+- Corners: `--radius` 14 → 6 px (tiles, panels); buttons, day picks, filter chips, badges, GO/Maybe tags, notices and inputs → 4 px (were pills or 10–12 px). Dots, the slider and round carousel arrows unchanged. Cache version `?v=20261123b`. Old stylesheet kept in the scratchpad (`styles_before_boxes.css`) in case she wants it back.
