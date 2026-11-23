@@ -14,21 +14,27 @@ Together they give your chance of a ticket at any arrival time. I tested each gr
 
 ---
 
-## Results (9 test months, each predicted using only earlier months)
+## Results
 
-| Measure | Model | Per-show lookup table |
-|---|---|---|
-| Line length, average miss (1,707 reports) | **4.53 people** | 5.93 people |
-| Real lines inside the model's 80% range | 86.4% | 58.6% |
-| Tickets, average miss on days someone stated a count (41 days) | 11.1 | **5.2** |
-| Days someone got a ticket at spot #N: estimate was at least N (160 days) | **96%** | 70% |
+Two scores, both from rolling backtests where each month is predicted using only earlier months. All choices were made on the 9 test months. Three months (Dec 2025, Apr 2026, Aug 2026) were locked away until the end, then scored once on the final model.
 
-- **The line model clearly beats the baseline.**
-- **Tickets are mixed.**
+| Measure | Model, 9 test months | Lookup, 9 test months | **Model, 3 locked months** | **Lookup, 3 locked months** |
+|---|---|---|---|---|
+| Line length, average miss | **4.53 people** | 5.93 | **4.60 people** | 5.67 |
+| Real lines inside the 80% range | 86% | 59% | 87% | 63% |
+| Tickets, average miss on stated counts | 9.9 | **5.2** | 8.9 | **4.1** |
+| "Got one at spot #N": estimate was at least N | **95%** | 70% | **92%** | 75% |
+
+The test months have 1,707 line reports, 41 stated counts and 160 "got one at #N" days. The locked months have 648, 15 and 73.
+
+- **The line model clearly beats the baseline,** in every locked month too. Its error barely moved from the test months to the locked ones, so the choices weren't luck.
+- **Tickets are mixed:**
   - Stated counts skew small, because people mostly post a count when it's low ("only 6!"). That rewards the lookup table's low guesses.
   - On the far more common "got one at #N" days, the model is right far more often.
-  - The model still runs high on tickets. Adding "sold out by …" reports as "at most" clues is the next fix.
-- **Three months (Dec 2025, Apr 2026, Aug 2026) are locked.** They are kept out of every test, so the final model gets one honest score.
+- **What the site shows:**
+  - The ticket number comes from the lookup table, because it's closer on stated counts.
+  - The model's ticket estimates drive the chance of a ticket.
+- **Sold-out clues:** adding "sold out at 10:30, with N people in line shortly before" as "at most N" clues cut the model's ticket error by 11%.
 
 ## How it works
 
@@ -98,8 +104,10 @@ presentation/        poster, slides and visuals for the NYU Project Expo
 python -m venv .venv && .venv/Scripts/pip install -e ".[model]"   # Python 3.12+
 python -m broadway_rush.model.table                    # build the model tables
 python -u -m broadway_rush.model.backtest --per-person 1.0 --features v2 --cutoff v1 \
-    --drop $(cat data/interim/lean_drop.txt) --tag lean_t4        # test on past months (~1 h)
-python -m broadway_rush.model.compare lean_t4 more1    # compare runs on identical reports
+    --drop $(cat data/interim/lean_drop.txt) --soldout --tag lean_so2   # test on past months (~1 h)
+python -m broadway_rush.model.compare lean_so2 more1   # compare runs on identical reports
+# same backtest command plus --final scores the 3 locked months instead (run once)
+python -m broadway_rush.model.predict --per-person 1.0 --backtest lean_so2 --final final_locked
 python -m broadway_rush.sync                           # pull new snapshots and refresh predictions
 python -m http.server 8000 --directory web             # view the site
 ```

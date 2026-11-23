@@ -25,7 +25,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 BG, CARD, INK, INK2, MUTED, GRID = "#3b2862", "#513b7d", "#f7f1ff", "#d6c9ec", "#c6b9de", "#6c5592"
 GOLD, TEAL, PINK = "#f0b829", "#2f9fc0", "#ff4fb3"
 DISPLAY, BODY = "Arial Black", "Segoe UI"
-TAG = "lean_t4"
+TAG, FINAL = "lean_so2", "final_locked"  # the final model: 9 test months, then the 3 locked months scored once
 
 plt.rcParams.update({
     "figure.facecolor": BG, "axes.facecolor": BG, "savefig.facecolor": BG, "font.family": BODY, "font.size": 13,
@@ -71,8 +71,9 @@ def line_growth():
 
 def line_error_by_month():
     res = json.loads((PROC / f"backtest_{TAG}.json").read_text(encoding="utf-8"))
+    fin = json.loads((PROC / f"backtest_{FINAL}.json").read_text(encoding="utf-8"))
     w = pd.DataFrame([{"month": x["month"], "model": x["line_combo"]["mae"], "lookup": x["line_lookup"]["mae"]}
-                      for x in res["windows"]])
+                      for x in res["windows"] + fin["windows"]])
     months = pd.period_range("2025-11", "2026-10", freq="M").astype(str)
     w = w.set_index("month").reindex(months)
     labels = [pd.Period(m).strftime("%b\n%y") for m in months]
@@ -88,12 +89,15 @@ def line_error_by_month():
         if m in res["locked"]:
             ax.axvspan(i - .4, i + .4, color=PINK, alpha=.12, linewidth=0)
             ax.text(i, top * .04, "locked", rotation=90, ha="center", va="bottom", color=PINK, fontsize=10)
+    lk = [i for i, m in enumerate(months) if m in res["locked"]]
+    ax.scatter(lk, w.model.iloc[lk], s=150, facecolor="none", edgecolor=PINK, linewidth=2, zorder=5)
     ax.set_ylabel("Average miss, people in line")
     ax.legend(loc="upper left", ncols=2)
-    p = res["pooled"]
+    p, q = res["pooled"], fin["pooled"]
     title(fig, "Line predictions beat the baseline",
-          f"Each month predicted using only earlier months · overall miss {p['line_combo']['mae']:.2f} vs "
-          f"{p['line_lookup']['mae']:.2f} people · pink months are locked for the final score")
+          f"Each month predicted using only earlier months · test months {p['line_combo']['mae']:.2f} vs "
+          f"{p['line_lookup']['mae']:.2f} people\nPink = locked months, scored once at the end: {q['line_combo']['mae']:.2f} vs "
+          f"{q['line_lookup']['mae']:.2f}")
     save(fig, "2_line_error_by_month.png")
 
 
@@ -145,7 +149,7 @@ def tickets_two_tests():
         for i, v in enumerate(vals):
             ax.text(i, v, fmt.format(v), ha="center", va="bottom", fontsize=15, fontfamily=DISPLAY, color=INK)
         ax.set_ylim(0, max(vals) * 1.25)
-    title(fig, "Two ticket tests, two winners",
+    title(fig, "Two ticket tests, two winners (9 test months)",
           "People post counts mostly when they're small, which rewards guessing low; the far more common\n\"got one at #N\" reports favor the model")
     save(fig, "4_tickets_two_tests.png")
 

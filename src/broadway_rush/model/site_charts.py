@@ -31,6 +31,10 @@ DRIVER_NAMES = {
     "christmas_new_year": "Christmas and New Year's",
     "broadway_week": "Broadway Week",
     "tonys_30d": "Month after the Tonys",
+    "two_shows_today": "Two-show day",
+    "shows_playing_today": "Shows playing that day",
+    "rush_shows_today": "Rush shows playing that day",
+    "nyu_session": "NYU in session",
 }
 
 

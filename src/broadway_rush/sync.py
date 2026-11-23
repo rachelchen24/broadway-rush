@@ -29,7 +29,7 @@ DATA_REPO = ROOT.parent / "broadway-rush-data"
 PREDICTIONS = ROOT / "web" / "data" / "predictions.json"
 SOURCES = [(tkts, "*.html*", tkts.TKTS_CSV), (ticketmaster, "*.json*", ticketmaster.EVENTS_CSV)]
 ET = ZoneInfo("America/New_York")
-PER_PERSON, BACKTEST = 1.0, "more1"  # the settings behind the site's current numbers
+PER_PERSON, BACKTEST, FINAL = 1.0, "lean_so2", "final_locked"  # the final model's tests (Rachel 2026-11-23)
 LATE_HOURS = 30  # the job saves a Ticketmaster snapshot every morning, so older than this means runs were missed
 
 
@@ -102,7 +102,7 @@ def main():
     except ImportError:
         sys.exit('Predictions need the model packages: .venv\\Scripts\\python -m pip install -e ".[model]"')
     print("Updating predictions (about 8 minutes)...", flush=True)
-    build(PER_PERSON, BACKTEST)
+    build(PER_PERSON, BACKTEST, FINAL)
 
 
 if __name__ == "__main__":

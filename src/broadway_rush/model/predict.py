@@ -1,10 +1,12 @@
 """Fixed predictions file (SPEC 5.2a step 5): the only thing the website reads.
 
-    .venv\\Scripts\\python -m broadway_rush.model.predict --per-person 1.4 --backtest pp1.4
+    .venv\\Scripts\\python -m broadway_rush.model.predict --per-person 1.0 --backtest lean_so2 --final final_locked
 
-Trains the combo on every labeled day, then predicts each show-day on the Ticketmaster schedule. Writes
+Trains the final combo (lean 14 line inputs; ticket model with sold-out caps) on every labeled day, then predicts each show-day on the Ticketmaster schedule. Writes
 web/data/predictions.json. The verdict and ranking use the chance if you arrive at 9:00 (SPEC 9, question 16), and
-every threshold here is a placeholder until Rachel picks real ones.
+every threshold here is a placeholder until Rachel picks real ones. The ticket number shown is the per-show lookup table
+(each show's stated counts), because it was closer on stated counts in every test (Rachel 2026-11-23: fix first, then
+whichever is closer); the model's ticket draws still drive the chance of a ticket.
 """
 
 import argparse
@@ -23,11 +25,12 @@ from broadway_rush.model import join
 from broadway_rush.model import line as line_model
 from broadway_rush.model import site_charts
 from broadway_rush.model import site_extras
+from broadway_rush.model.lookup import MIN_CELL
 from broadway_rush.special_days import drop_special
 from broadway_rush.model.backtest import GO, GRID, LOCKED, MAYBE
 from broadway_rush.model.table import (
-    CUTOFF_FEATURES, FALLBACK_OPENING, LINE_FEATURES, PROCESSED, RAW, ROOT, Features, clean_text, load_policies,
-    load_tables, opening_lookup, tickets_bounds,
+    CUTOFF_FEATURES, FALLBACK_OPENING, LINE_FEATURES_FINAL, PROCESSED, RAW, ROOT, Features, clean_text, load_policies,
+    load_tables, opening_lookup, tickets_bounds, with_soldout,
 )
 from broadway_rush.scrapers.ticketmaster import DAYS_AHEAD, venue_key
 
@@ -150,6 +153,15 @@ def line_drivers(contrib: pd.Series, row: pd.Series) -> list[str]:
             text = f"Broadway Week: {word} line (about {pct})"
         elif f == "tonys_30d" and row.tonys_30d == 1:
             text = f"Within a month after the Tonys: {word} line (about {pct})"
+        elif f == "two_shows_today" and pd.notna(row.two_shows_today):
+            text = f"{'Two-show' if row.two_shows_today == 1 else 'One-show'} day: {word} line (about {pct})"
+        elif f == "shows_playing_today" and pd.notna(row.shows_playing_today):
+            text = f"{row.shows_playing_today:.0f} Broadway shows playing that day: {word} line (about {pct})"
+        elif f == "rush_shows_today" and pd.notna(row.rush_shows_today):
+            text = f"{row.rush_shows_today:.0f} shows with rush that day: {word} line (about {pct})"
+        elif f == "nyu_session" and pd.notna(row.nyu_session):
+            nyu = {0: "on break", 1: "in classes", 2: "in finals", 3: "out, students still in town"}.get(int(row.nyu_session), "")
+            text = f"NYU {nyu}: {word} line (about {pct})" if nyu else None
         elif f == "recent_thin" and row.recent_thin == 1:
             text = "Few recent reports, so this leans on older days"
         if text:
@@ -180,6 +192,38 @@ def ticket_drivers(model: cutoff_model.CutoffModel, row: pd.DataFrame) -> list[s
         }[f]
         out.append(text)
     return out
+
+
+def ticket_lookup(cutoff: pd.DataFrame):
+    """The site's ticket number: the lookup table's (lookup.Lookup.tickets), i.e. the show's stated counts when it has
+    at least MIN_CELL of them, else every show's. Returns sid -> (median, {level: [lo, hi]}, days used, own show?)."""
+    stated = cutoff.dropna(subset=["exact"])
+    by_show = {s: g.exact.to_numpy() for s, g in stated.groupby("show_id")}
+    pooled = stated.exact.to_numpy()
+
+    def get(sid):
+        own = len(by_show.get(sid, [])) >= MIN_CELL
+        v = by_show[sid] if own else pooled
+        levels = {}
+        for lv in LEVELS:
+            tail = (100 - lv) / 200
+            levels[str(lv)] = [int(np.floor(np.quantile(v, tail))), int(np.ceil(np.quantile(v, 1 - tail)))]
+        return int(round(float(np.median(v)))), levels, len(v), own
+    return get
+
+
+def final_block(tag: str | None) -> dict | None:
+    """The one score on the locked months (backtest --final). None until it has run."""
+    if not tag or not (PROCESSED / f"backtest_{tag}.json").exists():
+        return None
+    res = json.loads((PROCESSED / f"backtest_{tag}.json").read_text(encoding="utf-8"))
+    p = res["pooled"]
+    keep = ("line_combo", "line_lookup", "tickets_combo", "tickets_lookup", "bounds_combo", "bounds_lookup", "chance_combo",
+            "chance_lookup", "chance_base_rate", "always_yes_accuracy")
+    return {"tag": tag, "months": res["months"], **{k: p[k] for k in keep},
+            "windows": [{"month": w["month"], "line_mae_combo": w["line_combo"]["mae"], "line_mae_lookup": w["line_lookup"]["mae"],
+                         "line_cov_combo": w["line_combo"]["coverage80"], "line_cov_lookup": w["line_lookup"]["coverage80"],
+                         "points": w["line_combo"]["points"], "tickets_days": w["tickets_combo"]["days"]} for w in res["windows"]]}
 
 
 def accuracy_block(tag: str, funnel: dict, timings: dict) -> dict | None:
@@ -214,9 +258,12 @@ def accuracy_block(tag: str, funnel: dict, timings: dict) -> dict | None:
     }
 
 
-def build(per_person: float, tag: str):
+def build(per_person: float, tag: str, final_tag: str | None = None):
     started = time.time()
-    t = load_tables()
+    t = load_tables(raw_cutoff=True)
+    cut_fit = with_soldout(t["cutoff"], True)  # training labels: stated counts, clues, and 2 h sold-out caps
+    t["cutoff"] = with_soldout(t["cutoff"], False)  # the usual labels, for the lookup and the data counts
+    lookup_tickets = ticket_lookup(t["cutoff"])
     shows = t["shows"]
     funnel = json.loads((PROCESSED / "model_funnel.json").read_text(encoding="utf-8"))
     policies = load_policies(shows)
@@ -226,9 +273,9 @@ def build(per_person: float, tag: str):
     feats = Features(shows, t["line"])
 
     t0 = time.time()
-    lm = line_model.fit(t["line"], LINE_FEATURES)
+    lm = line_model.fit(t["line"], LINE_FEATURES_FINAL)
     t1 = time.time()
-    cm = cutoff_model.fit(tickets_bounds(t["cutoff"], per_person), per_person)
+    cm = cutoff_model.fit(tickets_bounds(cut_fit, per_person), per_person)
     if not cm.diagnostics["converged"]:
         raise SystemExit(f"Cutoff fit did not converge, so no predictions were written: {cm.diagnostics}")
     t2 = time.time()
@@ -400,21 +447,21 @@ def build(per_person: float, tag: str):
                 arrival = reached[-1]["time"] if reached else curve[0]["time"]
                 verdict = "GO" if chance9 >= GO else ("Maybe" if chance9 >= MAYBE else "Stay home")
                 low_conf = int(line_points.get(sid, 0)) < THIN_LINE_POINTS or int(cutoff_days.get(sid, 0)) < THIN_CUTOFF_DAYS
-                levels = {}
-                for lv in LEVELS:
-                    tail = (100 - lv) / 200
-                    levels[str(lv)] = [int(np.quantile(tick[i], tail)), int(np.ceil(np.quantile(tick[i], 1 - tail)))]
+                lk_med, levels, lk_days, lk_own = lookup_tickets(sid)
+                lk_why = (f"The ticket number is this show's typical stated count ({lk_days} days where someone said how many)"
+                          if lk_own else f"This show has fewer than {MIN_CELL} stated counts, so the ticket number is the typical count across all shows")
                 contrib = lm.contributions(nine).iloc[0]
                 e.update({
                     "open_time": clock(open_hour),
                     "chance_9am": round(chance9, 3), "verdict": verdict, "arrival": arrival,
                     "arrival_reaches_target": bool(reached), "chance_by_time": curve,
-                    "tickets": {"median": int(np.median(tick[i])), "levels": levels},
+                    "tickets": {"median": lk_med, "levels": levels, "source": "lookup", "stated_days": lk_days, "own_show": lk_own,
+                                "model_median": int(np.median(tick[i]))},
                     "line_at_9am": {
                         "median": float(lm.interval(lm.mean(nine), 0.0)[0][0]),
                         "lo": float(lm.interval(lm.mean(nine))[0][0]), "hi": float(lm.interval(lm.mean(nine))[1][0]),
                     },
-                    "drivers": {"line": line_drivers(contrib, row.iloc[0]), "tickets": ticket_drivers(cm, row)},
+                    "drivers": {"line": line_drivers(contrib, row.iloc[0]), "tickets": [lk_why] + ticket_drivers(cm, row)},
                     "confidence": "low" if low_conf else "normal",
                     "data": {"line_points": int(line_points.get(sid, 0)), "cutoff_days": int(cutoff_days.get(sid, 0))},
                 })
@@ -428,7 +475,9 @@ def build(per_person: float, tag: str):
                "whole_predictions_run_seconds": None}
     out = {
         "generated_at": datetime.now(ZoneInfo("America/New_York")).strftime("%Y-%m-%d %H:%M ET"),
-        "model": {"name": "Simple combo, first version", "line": "LightGBM", "cutoff": "NumPyro negative binomial (faster fit)",
+        "model": {"name": "Final model", "line": "LightGBM (14 inputs)",
+                  "cutoff": "NumPyro negative binomial (faster fit), trained with sold-out clues",
+                  "tickets_shown": "per-show lookup table (closer on stated counts in every test)",
                   "per_person": per_person, "line_spread": round(lm.phi, 3), "cutoff_checks": cm.diagnostics,
                   "fit": "faster fit: 4 chains run together, 300 + 300 steps", "fallback_used": False},
         "placeholders": {"go_at_or_above": GO, "maybe_at_or_above": MAYBE, "target_chance": TARGET_CHANCE,
@@ -440,6 +489,7 @@ def build(per_person: float, tag: str):
         "ai_spend": site_extras.ai_spend(),  # Nerd stats "What it cost"
         "days": days,
         "accuracy": accuracy_block(tag, funnel, timings),
+        "final_score": final_block(final_tag),
         "charts": {**site_charts.build(t["line"], lm, tag, {e["show_id"] for es in days.values() for e in es}, shows),
                    "full_prediction_rule": {"line_reports": MIN_LINE_REPORTS, "reports_per_week": MIN_REPORTS_PER_WEEK}},
     }
@@ -458,8 +508,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--per-person", type=float, required=True)
     ap.add_argument("--backtest", required=True, help="tag of the backtest shown on the accuracy page")
+    ap.add_argument("--final", default=None, help="tag of the locked-month score (backtest --final)")
     a = ap.parse_args()
-    build(a.per_person, a.backtest)
+    build(a.per_person, a.backtest, a.final)
 
 
 if __name__ == "__main__":

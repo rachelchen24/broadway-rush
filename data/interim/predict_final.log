@@ -1,0 +1,10 @@
+final fit: line 1.0 s, cutoff 206.6 s {'max_r_hat': 1.01, 'min_ess': 440, 'divergences': 0, 'attempts': 1, 'converged': True} phi 1.93
+wrote C:\Users\rache\.0Documents\Projects\broadway-rush\web\data\predictions.json days 7 {'2026-11-23': 8, '2026-11-24': 35, '2026-11-25': 35, '2026-11-26': 4, '2026-11-27': 35, '2026-11-28': 35, '2026-11-29': 31} in 231.5 s
+1 The Great Gatsby               GO 0.948 09:45 [2, 25] 40.0 policy []
+1 Downstate                      GO 0.886 09:45 [2, 25] None reports ['Low confidence']
+1 Paranormal Activity            GO 0.84 09:15 [2, 25] 40.0 reports ['Digital rush 9 AM', 'Low confidence']
+1 Chicago                        GO 0.771 08:45 [2, 25] 49.0 policy []
+2 Hadestown                         None 39.0 policy []
+2 SIX: The Musical                  None 49.0 policy []
+3 Hamilton                          None None none []
+3 Stranger Things: The First Sha    None None none []

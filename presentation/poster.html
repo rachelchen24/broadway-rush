@@ -97,7 +97,7 @@
       <ul style="margin-top:0.2in">
         <li><b>Rolling backtest:</b> each month is predicted by a model trained only on earlier months.</li>
         <li><b>Baseline to beat:</b> a per-show lookup table. Every model is scored on the identical reports.</li>
-        <li><b>3 locked months</b> stay untouched for one final, honest score.</li>
+        <li><b>3 locked months</b> stayed untouched, then were scored once at the end: <b>4.60 vs 5.67 people</b>, beating the lookup in every one. No drop from the test months (4.53), so the choices weren't luck.</li>
       </ul>
     </section>
     <section class="p">
@@ -113,7 +113,9 @@
       <img src="visuals/4_tickets_two_tests.png" alt="Two ticket tests: stated counts vs at-least checks">
       <ul style="margin-top:0.2in">
         <li><b>Reporting bias:</b> people post counts mostly when they're small ("only 6!"), so that test rewards guessing low.</li>
-        <li>On the 4× more common "got one at #N" days, the model is right far more often. It still runs high, so next I'm adding "sold out by 10:30" reports as "at most" clues.</li>
+        <li>On the 4× more common "got one at #N" days, the model is right far more often (92% vs 75% on the locked months).</li>
+        <li><b>Sold-out clues:</b> "sold out by 10:30" plus a line count shortly before became an "at most" clue, cutting ticket error 11%.</li>
+        <li><b>The site</b> shows the lookup's ticket number, since it's closer on stated counts, and uses the model for your chance.</li>
       </ul>
     </section>
     <section class="t">
@@ -140,6 +142,6 @@
   </div>
 </div>
 
-<footer>Data: r/Broadway (Reddit), Playbill, Ticketmaster, TDF (TKTS), BroadwayWorld, MTA, Wikimedia, NYC Open Data. Pedestrian counts: Times Square Alliance. Test results are from 9 past months, each predicted using only earlier data.</footer>
+<footer>Data: r/Broadway (Reddit), Playbill, Ticketmaster, TDF (TKTS), BroadwayWorld, MTA, Wikimedia, NYC Open Data. Pedestrian counts: Times Square Alliance. Test results are from 9 past months, each predicted using only earlier data, plus 3 locked months scored once at the end.</footer>
 </body>
 </html>

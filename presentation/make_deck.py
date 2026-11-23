@@ -183,7 +183,8 @@ bullets(s, Inches(9.4), Inches(1.9), Inches(3.6), Inches(5.4), [
     ("Rolling backtest: ", "each test month is predicted by a model trained only on earlier months."),
     ("Baseline: ", "a per-show lookup table. The model has to beat it to earn its complexity."),
     ("Fair comparisons: ", "every model is scored on the identical test reports."),
-    ("Locked months: ", "3 months stay untouched until one final score."),
+    ("Locked months: ", "3 months stayed untouched until the end, then were scored once: 4.60 vs 5.67 people. "
+                        "No drop from the test months (4.53), so the choices weren't luck."),
 ], size=15)
 
 # 8. Feature testing
@@ -204,8 +205,9 @@ title(s, "The honest part: tickets", "Results")
 picture(s, "4_tickets_two_tests.png", Inches(.6), Inches(1.8), w=Inches(8.6))
 bullets(s, Inches(9.4), Inches(1.9), Inches(3.6), Inches(5.4), [
     ("Reporting bias: ", "people post counts mostly when they're small, so that test rewards guessing low."),
-    ("The model still runs high ", "(about +8 tickets on average)."),
-    ("Next fix: ", "\"sold out by 10:30\" plus a line count becomes an \"at most\" clue that pulls guesses down."),
+    ("Sold-out clues: ", "\"sold out by 10:30\" plus a line count shortly before became an \"at most\" clue: "
+                         "ticket error down 11%, better in 7 of 8 months."),
+    ("What the site shows: ", "the lookup's ticket number (closer on stated counts); the model drives your chance."),
 ], size=15)
 
 # 10. Website
@@ -223,7 +225,8 @@ title(s, "What I learned", "Takeaways")
 bullets(s, Inches(.6), Inches(1.9), Inches(12), Inches(5.3), [
     ("Data you need often doesn't exist. ", "Building it (scraping, LLM extraction, validation) was most of the work."),
     ("Measure the LLM like any model: ", "answer key, held-out set, read the errors."),
-    ("A simple baseline keeps you honest. ", "It still wins one ticket test, and I say so."),
+    ("A simple baseline keeps you honest. ", "It still wins one ticket test, so the site uses it there."),
+    ("Lock some data away. ", "One untouched final score shows whether your choices were luck."),
     ("More features ≠ better. ", "Removing six input groups improved the model."),
     ("Know your test's bias. ", "Who posts, and when, shapes what \"accuracy\" means."),
 ], size=20)

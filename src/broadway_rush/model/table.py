@@ -50,6 +50,11 @@ from broadway_rush.model.cast import STAR_FEATURES, Cast  # noqa: E402
 LINE_FEATURES_V2 = (LINE_FEATURES + SCHEDULE_FEATURES + STAGE_FEATURES + TOURISM_FEATURES + TIMES_SQUARE_FEATURES
                     + NYU_FEATURES + STAR_FEATURES + BOARD_FEATURES)
 CUTOFF_FEATURES_V2 = CUTOFF_FEATURES + ["two_shows_today", "stars_in_cast", "star_final_2wks", "tkts_board_share_14d"]
+# The final model (Rachel 2026-11-18 / 11-23): the lean 14 line inputs (LINE_FEATURES_V2 minus data/interim/lean_drop.txt,
+# tags lean_t4 / lean_so2 / final_locked) and the original 4 ticket inputs (CUTOFF_FEATURES), trained with sold-out caps.
+LINE_FEATURES_FINAL = ["hours_before", "show_code", "weekday", "pct_cap", "avg_ticket", "weeks_since_first", "show_type_code",
+                       "seats", "recent_level", "recent_thin", "two_shows_today", "shows_playing_today", "rush_shows_today",
+                       "nyu_session"]
 FALLBACK_OPENING = {**{d: 10.0 for d in range(6)}, 6: 12.0}
 
 
