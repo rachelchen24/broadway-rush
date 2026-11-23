@@ -1,0 +1,33 @@
+line params: {'objective': 'poisson', 'learning_rate': 0.04, 'num_leaves': 31, 'min_data_in_leaf': 25, 'feature_fraction': 0.8, 'bagging_fraction': 0.8, 'bagging_freq': 1, 'lambda_l2': 5.0, 'cat_smooth': 20, 'min_data_per_group': 15, 'max_cat_to_onehot': 4, 'monotone_constraints_method': 'advanced', 'verbose': -1, 'num_threads': 4, 'seed': 7}
+2025-11 line 5.9 s cutoff 0 s | line MAE combo 4.48 lookup 7.02 
+2026-01 line 6.0 s cutoff 0 s | line MAE combo 5.11 lookup 6.29 
+2026-02 line 6.9 s cutoff 0 s | line MAE combo 4.66 lookup 6.62 
+2026-03 line 5.0 s cutoff 0 s | line MAE combo 5.2 lookup 5.82 
+2026-05 line 5.4 s cutoff 0 s | line MAE combo 4.66 lookup 5.28 
+2026-06 line 4.3 s cutoff 0 s | line MAE combo 4.55 lookup 5.67 
+2026-07 line 3.4 s cutoff 0 s | line MAE combo 5.03 lookup 5.83 
+2026-09 line 2.9 s cutoff 0 s | line MAE combo 3.84 lookup 5.81 
+2026-10 line 3.9 s cutoff 0 s | line MAE combo 2.99 lookup 5.64 
+{
+ "line_combo": {
+  "points": 1707,
+  "mae": 4.522127274344803,
+  "mae_near": 4.695335016969041,
+  "log_mae": 0.6210909677133589,
+  "bias": -2.0122077207082487,
+  "coverage80": 0.8625492365196694,
+  "width80": 14.82901521217255,
+  "arrival_error_min": 92.46744511163212
+ },
+ "line_lookup": {
+  "points": 1707,
+  "mae": 5.933243199953864,
+  "mae_near": 6.583545392086263,
+  "log_mae": 0.7556649374276186,
+  "bias": 1.4452938678123473,
+  "coverage80": 0.5861008520987403,
+  "width80": 13.84634629655221,
+  "arrival_error_min": 99.86167112959278
+ }
+}
+total seconds 56.4

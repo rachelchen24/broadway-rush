@@ -192,6 +192,41 @@ def line_points(r: pd.DataFrame, opening, funnel: dict) -> pd.DataFrame:
     return x.sort_values(["date", "show_id", "clock"]).reset_index(drop=True)
 
 
+# "Sold out at T" plus a line count within this many hours before T caps the day's tickets (Rachel 2026-11-23: 2 h).
+SOLD_OUT_WINDOW_H = 2.0
+
+
+def sold_out_caps(r: pd.DataFrame, funnel: dict) -> pd.DataFrame:
+    """An "at most" clue: a show sold out at T and someone counted N people in line within 2 h before T, so the day
+    had at most about N tickets. Stored as upper_pos_soldout = N + 1 (as if the person at N + 1 missed out). Only
+    `backtest --soldout` trains on it; test labels never change, so runs stay comparable on identical reports."""
+    so = r[r.sold_out_time.notna()]
+    so = so.assign(so=clock_hours(so.sold_out_time.astype(str))).dropna(subset=["so"])
+    so = so.groupby(["show_id", "date"]).so.min().reset_index()
+    lc = r[(r.kind == "line_count") & r["count"].notna() & r.time.notna() & ~r.count_qual.isin(["at_least", "at_most"])]
+    lc = lc.assign(t=clock_hours(lc.time.astype(str)))[["show_id", "date", "t", "count"]].dropna()
+    lc = lc[lc["count"] >= 1]
+    m = so.merge(lc, on=["show_id", "date"])
+    m = m[(m.t <= m.so) & (m.so - m.t <= SOLD_OUT_WINDOW_H)]
+    m = m.sort_values("t").groupby(["show_id", "date"]).tail(1)
+    funnel["cutoff_sold_out_days"] = len(so)
+    funnel["cutoff_sold_out_caps"] = len(m)
+    return m.assign(upper_pos_soldout=m["count"] + 1)[["show_id", "date", "upper_pos_soldout"]]
+
+
+def with_soldout(cut: pd.DataFrame, use: bool) -> pd.DataFrame:
+    """Rows with the usual labels; with use=True also the sold-out caps, applied only where there's no stated count
+    and the cap doesn't contradict someone who got a ticket further back."""
+    has = cut.exact.notna() | cut.lower_pos.notna() | cut.upper_pos.notna()
+    if not use or "upper_pos_soldout" not in cut:
+        return cut[has]
+    cap = cut.upper_pos_soldout
+    ok = cap.notna() & cut.exact.isna() & (cut.lower_pos.isna() | (cap > cut.lower_pos))
+    out = cut.copy()
+    out.loc[ok, "upper_pos"] = np.fmin(out.upper_pos[ok], cap[ok])
+    return out[has | ok]
+
+
 def cutoff_labels(r: pd.DataFrame, funnel: dict) -> pd.DataFrame:
     """One row per show-day: stated total, highest position that got a ticket, lowest position that didn't."""
     stated = r[(r.kind == "supply") & (r.stated_qual == "total") & (r.stated_count > 0)]
@@ -200,12 +235,14 @@ def cutoff_labels(r: pd.DataFrame, funnel: dict) -> pd.DataFrame:
     low = at[at.outcome == "got_rush"].groupby(["show_id", "date"]).line_position.max().rename("lower_pos")
     up = at[at.outcome.isin(FAILED)].groupby(["show_id", "date"]).line_position.min().rename("upper_pos")
     x = pd.concat([exact, low, up], axis=1).reset_index()
-    created = r.groupby(["show_id", "date"]).created.min().rename("created")
-    x = x.merge(created, on=["show_id", "date"], how="left")
     bad = x.exact.isna() & x.lower_pos.notna() & x.upper_pos.notna() & (x.lower_pos >= x.upper_pos)
     funnel["cutoff_show_days_contradictory_dropped"] = int(bad.sum())
     x = x[~bad]
     funnel["cutoff_show_days"] = len(x)
+    x = x.merge(sold_out_caps(r, funnel), on=["show_id", "date"], how="outer")
+    funnel["cutoff_sold_out_caps_new_days"] = int((x.exact.isna() & x.lower_pos.isna() & x.upper_pos.isna()).sum())
+    created = r.groupby(["show_id", "date"]).created.min().rename("created")
+    x = x.merge(created, on=["show_id", "date"], how="left")
     funnel["cutoff_stated_count"] = int(x.exact.notna().sum())
     funnel["cutoff_lower_only"] = int((x.exact.isna() & x.lower_pos.notna() & x.upper_pos.isna()).sum())
     funnel["cutoff_upper_only"] = int((x.exact.isna() & x.lower_pos.isna() & x.upper_pos.notna()).sum())
@@ -407,12 +444,14 @@ class Features:
         return rows.merge(keys, on=["show_id", "date"], how="left")
 
 
-def load_tables() -> dict:
+def load_tables(raw_cutoff: bool = False) -> dict:
+    """raw_cutoff keeps the sold-out-only rows (backtest --soldout); everyone else gets the usual labels."""
     p = PROCESSED
     return {
         "shows": pd.read_csv(p / "shows.csv"),
         "line": pd.read_csv(p / "model_line.csv", parse_dates=["date", "created"]),
-        "cutoff": pd.read_csv(p / "model_cutoff.csv", parse_dates=["date", "created"]),
+        "cutoff": (lambda c: c if raw_cutoff else with_soldout(c, False))(
+            pd.read_csv(p / "model_cutoff.csv", parse_dates=["date", "created"])),
         "outcomes": pd.read_csv(p / "model_outcomes.csv", parse_dates=["date", "created"]),
     }
 

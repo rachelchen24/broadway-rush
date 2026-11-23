@@ -16,6 +16,9 @@
   "line_points_after_dropping_duplicates": 6737,
   "cutoff_show_days_contradictory_dropped": 6,
   "cutoff_show_days": 955,
+  "cutoff_sold_out_days": 122,
+  "cutoff_sold_out_caps": 41,
+  "cutoff_sold_out_caps_new_days": 20,
   "cutoff_stated_count": 161,
   "cutoff_lower_only": 694,
   "cutoff_upper_only": 89,
@@ -24,7 +27,7 @@
   "outcomes_share_got_a_ticket": 0.8563,
   "line_show_days": 3499,
   "line_shows": 83,
-  "cutoff_shows": 71,
+  "cutoff_shows": 72,
   "first_date": "2024-06-01",
   "last_date": "2026-11-17"
 }

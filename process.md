@@ -1620,3 +1620,13 @@ Rachel: "just make the model, train it, test it." Same design (trees for the lin
 - **presentation/**: `make_visuals.py` → `visuals/` (cleaning funnel, line growth, line error by month, drop-one inputs, two ticket tests, site screenshots); `make_deck.py` → `broadway-rush-slides.pptx` (12 slides); `poster.html` → `broadway-rush-poster.pdf` (24×36 in). Preliminary; numbers are test-month results, not the locked-month final.
 - Vercel: the deploy failed because it saw `pyproject.toml`. Fix: Root Directory = `web`, Framework = Other.
 - Installed python-pptx and matplotlib in the venv (presentation only).
+
+## 2026-11-23 — Sold-out "at most" labels built; line-model settings tested (measured only)
+- Rachel picked the 2-hour window. `table.sold_out_caps`: "sold out at T" plus the latest line count within 2 h before T means at most that many tickets (stored as `upper_pos_soldout` = count + 1). After the model's usual report filters: 122 sold-out show-days, 41 with a count in the window; 8 skipped (stated count that day), 3 skipped (contradicts someone who got a ticket further back), so 26 days get a tighter "at most" (20 of them new days). Test labels are unchanged, so runs stay comparable on identical reports. Used only with `backtest --soldout`. Rebuilt tables are otherwise identical to before (checked).
+- Line-model LightGBM settings (lean 14, line-only, 9 months, same 1,693 points; current 4.614): num_leaves 7 → 4.594; 31 → 4.613; min_data_in_leaf 50 → 4.585 (6/9 months better, t −1.92); 12 → 4.604; lambda_l2 20 → 4.600; learning_rate 0.02 → 4.615; num_leaves 7 + min_data 50 → 4.606. All within noise; slightly simpler trees do a hair better. New option: `backtest --line-param KEY=VALUE`.
+
+## 2026-11-23 — Sold-out labels: ticket model clearly better, still behind the lookup on stated counts (measured only)
+- `lean_so2` = lean_t4 + `--soldout` (2 h window). All fits converged (max R-hat ≤ 1.01, 0 divergences). Identical test reports (1,693 line points, 41 stated counts, 160 "at least" days):
+  - Ticket error on stated counts: 11.09 → **9.90** (−11%); better in 7 of 8 months with stated counts (t −3.17), so a real gain. Bias +8.6 → +7.5. 80% range still holds 95%. "At least N" respected 95.6% → 95.0% (same). Line unchanged (4.52); chance AUC 0.588 → 0.589.
+  - The lookup table is still closer on stated counts (5.16) and respects "at least" 70% of the time.
+- Under Rachel's rule ("fix first, then closest number"), the lookup gives the site's ticket number. Waiting on her confirmation, then the locked-month run.

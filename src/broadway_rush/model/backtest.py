@@ -139,16 +139,20 @@ def calibration(got, p) -> list:
 
 
 def run(per_person: float, line_only: bool, features: list[str], months: list[str], tag: str, seed: int = 0,
-        phi_prior=(2.0, 0.4)):
+        phi_prior=(2.0, 0.4), soldout: bool = False):
     rng = np.random.default_rng(seed)
-    t = load_tables()
-    cut = tickets_bounds(t["cutoff"], per_person)
+    t = load_tables(raw_cutoff=True)
+    from broadway_rush.model.table import with_soldout
+    cut = tickets_bounds(with_soldout(t["cutoff"], False), per_person)  # test labels: never change
+    # Training labels: with --soldout, also "sold out at T, N in line within 2 h" caps (Rachel 2026-11-23)
+    cut_fit = tickets_bounds(with_soldout(t["cutoff"], soldout), per_person)
     windows, preds_line, preds_ticket, preds_outcome = [], [], [], []
     started = time.time()
     for month in months:
         t0 = time.time()
         line_train, line_test = split(t["line"], month)
         cut_train, cut_test = split(cut, month)
+        cut_fit_train = split(cut_fit, month)[0]
         out_train, out_test = split(t["outcomes"], month)
         lk = Lookup(line_train, cut_train, out_train)
         t1 = time.time()
@@ -181,7 +185,7 @@ def run(per_person: float, line_only: bool, features: list[str], months: list[st
             lookup_hi=lk_line.hi))
 
         if not line_only:
-            cm = cutoff_model.fit(cut_train, per_person, seed=seed, phi_prior=phi_prior)
+            cm = cutoff_model.fit(cut_fit_train, per_person, seed=seed, phi_prior=phi_prior)
             row["seconds_cutoff"] = cm.seconds
             row["cutoff_diagnostics"] = cm.diagnostics
             row["cutoff_posterior"] = {
@@ -268,11 +272,21 @@ def main():
     ap.add_argument("--drop", nargs="*", default=[], help="line features to leave out")
     ap.add_argument("--phi-prior", nargs=2, type=float, default=[2.0, 0.4], help="Gamma prior on the ticket spread")
     ap.add_argument("--tag", default=None)
+    ap.add_argument("--soldout", action="store_true", help="train the ticket model with sold-out caps too")
+    ap.add_argument("--final", action="store_true", help="score the 3 LOCKED months instead of the 9 DEV months: run once, on the chosen setup")
+    ap.add_argument("--line-param", nargs="*", default=[], metavar="KEY=VALUE",
+                    help="override line-model LightGBM settings, e.g. num_leaves=7 min_data_in_leaf=50")
     ap.add_argument("--features", choices=["v1", "v2"], default="v1",
                     help="v1 = the first model's inputs (tag more1); v2 = every new input (SPEC 2.8 N9 step 1)")
     ap.add_argument("--cutoff", choices=["v1", "v2"], default=None,
                     help="ticket-model inputs; defaults to the --features choice (v1 = the first model's 4)")
     a = ap.parse_args()
+    if a.line_param:
+        from broadway_rush.model import line as line_mod
+        for kv in a.line_param:
+            k, v = kv.split("=", 1)
+            line_mod.PARAMS[k] = type(line_mod.PARAMS.get(k, 0.0))(float(v)) if k in line_mod.PARAMS else float(v)
+        print("line params:", line_mod.PARAMS, flush=True)
     base = LINE_FEATURES
     if a.features == "v2":
         from broadway_rush.model import table
@@ -282,7 +296,7 @@ def main():
             table.CUTOFF_FEATURES[:] = table.CUTOFF_FEATURES_V2
     features = [f for f in base if f not in a.drop] + (WEATHER_FEATURES if a.weather else [])
     tag = a.tag or (f"pp{a.per_person}" + ("_weather" if a.weather else "") + ("_lineonly" if a.line_only else ""))
-    run(a.per_person, a.line_only, features, DEV, tag, phi_prior=tuple(a.phi_prior))
+    run(a.per_person, a.line_only, features, sorted(LOCKED) if a.final else DEV, tag, phi_prior=tuple(a.phi_prior), soldout=a.soldout)
 
 
 if __name__ == "__main__":
