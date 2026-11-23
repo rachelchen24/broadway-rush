@@ -1630,3 +1630,10 @@ Rachel: "just make the model, train it, test it." Same design (trees for the lin
   - Ticket error on stated counts: 11.09 → **9.90** (−11%); better in 7 of 8 months with stated counts (t −3.17), so a real gain. Bias +8.6 → +7.5. 80% range still holds 95%. "At least N" respected 95.6% → 95.0% (same). Line unchanged (4.52); chance AUC 0.588 → 0.589.
   - The lookup table is still closer on stated counts (5.16) and respects "at least" 70% of the time.
 - Under Rachel's rule ("fix first, then closest number"), the lookup gives the site's ticket number. Waiting on her confirmation, then the locked-month run.
+
+## 2026-11-23 — Final score on the 3 locked months (run once)
+- Rachel confirmed: lookup gives the site's ticket number; then approved the locked run. Added `--final` to `backtest.py` (scores `sorted(LOCKED)` instead of DEV). Command: `backtest --per-person 1.0 --features v2 --cutoff v1 --drop $(cat data/interim/lean_drop.txt) --soldout --final --tag final_locked` (439 s). All 3 ticket fits converged (max R-hat 1.01, 0 divergences).
+- Line (648 points): model **4.61** vs lookup 5.67; by month Dec 4.55/6.47, Apr 3.69/5.09, Aug 5.63/5.80. 80% range holds 87% (lookup 63%). Dev months were 4.53 vs 5.93, so no drop: the input picks held up.
+- Tickets (15 stated counts): model 8.9 (bias +8.2) vs **lookup 4.1**; "at least N" respected 100% (73 days) vs lookup 92%. Same pattern as dev, so the lookup stays the site's ticket number.
+- Chance of a ticket (89 attempts, 11 misses): AUC model 0.74 vs lookup 0.67; Brier 0.108 vs 0.099. Small sample.
+- Rachel asked whether to get more data first: not needed for this score (each locked month trains only on earlier months). A Reddit refresh would help the live site's final model; needs a new Anthropic key.

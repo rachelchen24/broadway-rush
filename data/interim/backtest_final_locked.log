@@ -1,0 +1,173 @@
+2025-12 line 0.9 s cutoff 77.8 s | line MAE combo 4.55 lookup 6.47 {'max_r_hat': 1.01, 'min_ess': 470, 'divergences': 0, 'attempts': 1, 'converged': True}
+2026-04 line 3.1 s cutoff 220.6 s | line MAE combo 3.69 lookup 5.09 {'max_r_hat': 1.002, 'min_ess': 604, 'divergences': 0, 'attempts': 1, 'converged': True}
+2026-08 line 2.0 s cutoff 131.7 s | line MAE combo 5.63 lookup 5.8 {'max_r_hat': 1.009, 'min_ess': 349, 'divergences': 0, 'attempts': 1, 'converged': True}
+{
+ "line_combo": {
+  "points": 648,
+  "mae": 4.604605020302694,
+  "mae_near": 4.188894037342392,
+  "log_mae": 0.6148601310473304,
+  "bias": -1.7129706533776299,
+  "coverage80": 0.8723168143226283,
+  "width80": 15.855089516426727,
+  "arrival_error_min": 87.8668849753513
+ },
+ "line_lookup": {
+  "points": 648,
+  "mae": 5.6699762366186786,
+  "mae_near": 5.931753279757665,
+  "log_mae": 0.7051734343281206,
+  "bias": 1.366923911037283,
+  "coverage80": 0.6306755260243632,
+  "width80": 13.833040097822076,
+  "arrival_error_min": 99.29346373947513
+ },
+ "tickets_combo": {
+  "days": 15,
+  "mae": 8.9,
+  "bias": 8.233333333333333,
+  "coverage80": 0.9333333333333333,
+  "width80": 47.48000000000002
+ },
+ "tickets_lookup": {
+  "days": 15,
+  "mae": 4.1,
+  "bias": 0.7,
+  "coverage80": 0.6666666666666666,
+  "width80": 12.046666666666665
+ },
+ "bounds_combo": {
+  "lower_days": 73,
+  "lower_agree": 1.0,
+  "upper_days": 6,
+  "upper_agree": 0.8333333333333334
+ },
+ "bounds_lookup": {
+  "lower_days": 73,
+  "lower_agree": 0.9178082191780822,
+  "upper_days": 6,
+  "upper_agree": 0.8333333333333334
+ },
+ "chance_combo": {
+  "attempts": 89,
+  "share_got": 0.8764044943820225,
+  "misses": 11,
+  "brier": 0.10785077178388311,
+  "log_loss": 0.3619351539365762,
+  "auc": 0.7365967365967366,
+  "accuracy_at_50": 0.8876404494382022,
+  "misses_caught_at_50": 2,
+  "wins_wrongly_warned_at_50": 1,
+  "mean_chance": 0.7866844205975616
+ },
+ "chance_lookup": {
+  "attempts": 89,
+  "share_got": 0.8764044943820225,
+  "misses": 11,
+  "brier": 0.09930247932536292,
+  "log_loss": 0.34119195130644747,
+  "auc": 0.6724941724941725,
+  "accuracy_at_50": 0.8764044943820225,
+  "misses_caught_at_50": 0,
+  "wins_wrongly_warned_at_50": 0,
+  "mean_chance": 0.8526846439857692
+ },
+ "chance_base_rate": {
+  "attempts": 89,
+  "share_got": 0.8764044943820225,
+  "misses": 11,
+  "brier": 0.10900606526435556,
+  "log_loss": 0.3768633920120957,
+  "auc": 0.6369463869463869,
+  "accuracy_at_50": 0.8764044943820225,
+  "misses_caught_at_50": 0,
+  "wins_wrongly_warned_at_50": 0,
+  "mean_chance": 0.8458770439474089
+ },
+ "always_yes_accuracy": 0.8764044943820225,
+ "verdict_combo": {
+  "GO": {
+   "attempts": 65,
+   "got": 60,
+   "share_got": 0.9230769230769231
+  },
+  "Maybe": {
+   "attempts": 23,
+   "got": 18,
+   "share_got": 0.782608695652174
+  },
+  "Stay home": {
+   "attempts": 1,
+   "got": 0,
+   "share_got": 0.0
+  }
+ },
+ "calibration_combo": [
+  {
+   "from": 0,
+   "to": 0.5,
+   "attempts": 3,
+   "mean_chance": 0.4414443529184928,
+   "share_got": 0.3333333333333333
+  },
+  {
+   "from": 0.5,
+   "to": 0.7,
+   "attempts": 21,
+   "mean_chance": 0.6096532449351328,
+   "share_got": 0.8095238095238095
+  },
+  {
+   "from": 0.7,
+   "to": 0.85,
+   "attempts": 27,
+   "mean_chance": 0.781776187603258,
+   "share_got": 0.9259259259259259
+  },
+  {
+   "from": 0.85,
+   "to": 0.95,
+   "attempts": 29,
+   "mean_chance": 0.9022003688450004,
+   "share_got": 0.896551724137931
+  },
+  {
+   "from": 0.95,
+   "to": 1.0,
+   "attempts": 9,
+   "mean_chance": 0.9573438298885267,
+   "share_got": 1.0
+  }
+ ],
+ "calibration_lookup": [
+  {
+   "from": 0.5,
+   "to": 0.7,
+   "attempts": 4,
+   "mean_chance": 0.6182497491061698,
+   "share_got": 1.0
+  },
+  {
+   "from": 0.7,
+   "to": 0.85,
+   "attempts": 29,
+   "mean_chance": 0.8154511034419424,
+   "share_got": 0.7931034482758621
+  },
+  {
+   "from": 0.85,
+   "to": 0.95,
+   "attempts": 54,
+   "mean_chance": 0.8864006403066105,
+   "share_got": 0.9074074074074074
+  },
+  {
+   "from": 0.95,
+   "to": 1.0,
+   "attempts": 2,
+   "mean_chance": 0.951108870967742,
+   "share_got": 1.0
+  }
+ ]
+}
+total seconds 439.1
