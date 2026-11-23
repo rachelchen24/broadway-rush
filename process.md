@@ -1600,3 +1600,15 @@ Rachel: "just make the model, train it, test it." Same design (trees for the lin
 ## 2026-11-19 — Rachel's ticket decision: fix the model first, then pick the closest number
 - Rachel: "fix first, then closest number". Step 1: reduce the ticket model's upward bias (+8.6) with more ticket labels. Step 2: compare again on stated counts and use whichever is closer for the site's ticket number (model or lookup table).
 - The labels already exist in `data/processed/reports.csv` (no AI spend needed): 1,099 "X left" counts (`stated_qual=remaining`) and 254 sold-out times (`sold_out_time`). The model uses neither yet.
+
+## 2026-11-19 — Show images, Grid/Carousel view, lighter dark mode exception
+- Global CLAUDE.md: broadway-rush is now an exception to the light-mode-only rule (Rachel's call).
+- Show images: `site_extras.load_images()` takes each show's own event image (wide, 3:2 preferred, ≥600 px, Ticketmaster placeholders skipped) from the newest Ticketmaster Discovery snapshot, matched by venue. 29 shows have one; 6 don't (e.g. & Juliet, A Few Good Men), and their tiles show no picture. Images are linked from Ticketmaster's servers, never copied; footer credit "Performances and show images: Ticketmaster". Terms checked (developer.ticketmaster.com/support/terms-of-use): event content may be shown in the app providing the service; not as a generic image host; not stored longer than needed.
+- Shows page: new "View: Grid | Carousel" row under Sort (remembered per browser). Carousel = one swipeable, snapping row per group with ‹ › arrows on wider screens. Checked at 1200 px and in a 390 px frame (no sideways overflow).
+- Applied with `python -m broadway_rush.model.site_extras` (no refit). `?v=20261119c`.
+
+## 2026-11-19 — New ticket labels: what the data supports (measured only, Rachel decides)
+- The model guesses too high, so only "at most" labels can pull it down; "at least" labels push up.
+- **Sold out + line count (an "at most" label):** if a show sold out at time T and someone counted the line before T, tickets ≤ that line count. 179 sold-out show-days; 78 have a count before sell-out (58 without an existing "at most" label). Checked against stated totals: holds 13 of 15. By how close the count is to sell-out: within 1 h 39 days (29 new, 5/6), within 2 h 54 (41 new, 9/10), any time 78 (58 new, 13/15).
+- **"X left" + own spot ("#12, got one, 3 left" → ~15):** only 38 cases, and all 4 that can be checked disagree with that day's stated total (e.g. 38 implied vs 20 stated). Looks unreliable.
+- **"X left" alone (at least X):** median X is 2, so it says almost nothing, and it pushes up, not down.

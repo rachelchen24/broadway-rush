@@ -144,7 +144,7 @@ def collect(args):
 def reports(args):
     """Flatten extractions.jsonl into one row per observation, joined with comment metadata."""
     c = load_comments().drop_duplicates("comment_id").set_index("comment_id")
-    meta_cols = ["post_id", "source", "subreddit", "thread_title", "thread_date", "created_et", "author", "score"]
+    meta_cols = ["post_id", "source", "subreddit", "thread_title", "thread_date", "created_et", "score"]  # no usernames in published files (2026-11-23)
     rows, n_none = [], 0
     with EXTRACTIONS.open(encoding="utf-8") as f:
         for line in f:

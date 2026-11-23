@@ -382,7 +382,7 @@ def undo_time_fills(e: dict):
 
 def reports(args):
     c = load_comments().drop_duplicates("comment_id").set_index("comment_id")
-    meta_cols = ["post_id", "source", "subreddit", "thread_title", "thread_date", "created_et", "author", "score"]
+    meta_cols = ["post_id", "source", "subreddit", "thread_title", "thread_date", "created_et", "score"]  # no usernames in published files (2026-11-23)
     final = first_pass()
     audit_rows = []
     if CHECKED.exists():

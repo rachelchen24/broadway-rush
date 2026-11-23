@@ -516,3 +516,20 @@ fieldset.field { border: 0; margin: 0; padding: 0; }
 .ns-section th, .ns-section td { padding: 10px 12px; }
 .ns-section tbody tr:hover td { background: rgba(255, 255, 255, .04); }
 .ns-nav { background: var(--bg); }
+
+/* Show images (Rachel 2026-11-19): the show's Ticketmaster picture across the top of the tile */
+.tile-img { display: block; width: calc(100% + 28px); max-width: none; margin: -14px -14px 2px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius) var(--radius) 0 0; background: var(--bg-2); }
+
+/* Carousel view: one swipeable row per group, snapping to each tile, with arrow buttons on wider screens */
+.carousel { position: relative; }
+.tiles.carousel-track { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 2px 12px; scrollbar-width: thin; overscroll-behavior-x: contain; }
+.tiles.carousel-track > .tile { flex: 0 0 min(300px, 84%); scroll-snap-align: start; }
+.tiles.week-tiles.carousel-track > .tile { flex-basis: min(340px, 88%); }
+.carousel-arrow {
+  position: absolute; top: 64px; z-index: 2; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line);
+  background: var(--card-2); color: var(--ink); font-size: 1.6rem; line-height: 1; cursor: pointer; box-shadow: 0 4px 12px rgba(10, 4, 25, .5);
+}
+.carousel-arrow:hover { border-color: var(--gold); color: var(--gold); }
+.carousel-arrow.prev { left: -20px; }
+.carousel-arrow.next { right: -20px; }
+@media (max-width: 699px) { .carousel-arrow { display: none; } }

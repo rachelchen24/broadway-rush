@@ -10,6 +10,10 @@ Sources, all hand-kept and reviewed by Rachel:
 - registry/special_deals.csv: dated deals (N10). Standing deals come from Playbill's policy list (`policy.other`).
 - registry/show_facts.csv: `two_show_rush` (both at opening / separately / unknown) and `two_show_rush_note` (N8),
   `lottery_url` and `lottery_url_source` (N4's last resort, only when the policy list has no address).
+- Show images (Rachel 2026-11-19): the show's own event image from the newest Ticketmaster Discovery API snapshot,
+  linked from Ticketmaster's servers, never copied or stored (API terms: display event content in the app; don't
+  use Ticketmaster as an image host or store content longer than needed). Credited in the site footer. Generic
+  Ticketmaster placeholders (`fallback`) are skipped, so shows without their own image just show no picture.
 """
 
 import argparse
@@ -77,8 +81,34 @@ def load_stars() -> dict:
     return out
 
 
+def load_images() -> dict:
+    """show_id -> image URL from the newest Ticketmaster snapshot. Venue is the key, as in predict.map_schedule."""
+    from broadway_rush.scrapers.playbill import cached_files, read_cached
+    from broadway_rush.scrapers.ticketmaster import CACHE, SHOWS_CSV, venue_key
+    files = cached_files(CACHE, "*.json*")
+    if not files:
+        return {}
+    shows = pd.read_csv(SHOWS_CSV)
+    running = shows[shows.last_week == shows.last_week.max()]
+    by_venue = {venue_key(r.theater): r.show_id for r in running.itertuples() if isinstance(r.theater, str)}
+    out = {}
+    for e in json.loads(read_cached(files[-1])):
+        v = ((e.get("_embedded") or {}).get("venues") or [{}])[0]
+        sid = by_venue.get(venue_key(v.get("name", "")))
+        if not sid or sid in out:
+            continue
+        imgs = [i for i in e.get("images") or [] if not i.get("fallback") and i.get("url")]
+        # A wide picture for the tile: 3:2 or 16:9, the smallest one at least 600 px wide (light on phones)
+        wide = sorted((i for i in imgs if i.get("ratio") in ("3_2", "16_9") and (i.get("width") or 0) >= 600),
+                      key=lambda i: (i.get("ratio") != "3_2", i.get("width") or 0))
+        if wide:
+            out[sid] = wide[0]["url"]
+    return out
+
+
 class Extras:
     def __init__(self):
+        self.images = load_images()
         self.deals = load_deals()
         self.facts = load_facts()
         self.stars = load_stars()
@@ -95,6 +125,7 @@ class Extras:
             "two_show_rush_note": get("two_show_rush_note") or None,
             "lottery_url": get("lottery_url") or None,
             "stars": self.stars.get(show_id, []),
+            "image": self.images.get(show_id),
         }
 
 

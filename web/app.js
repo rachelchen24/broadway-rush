@@ -3,6 +3,7 @@
 
 const state = {
   data: null, picksOnly: false, paint: null, filtersOpen: null,
+  view: (() => { try { return localStorage.getItem("br-view") === "carousel" ? "carousel" : "grid"; } catch { return "grid"; } })(),
   sort: { key: "chance", reversed: false },
   weekSort: { key: "arrival", reversed: false }, // This week view: latest arrival first (SPEC 2.2b)
   filters: { rush: new Set(), type: new Set(), days: new Set(), runtime: new Set(), showtime: new Set() },
@@ -337,12 +338,17 @@ function otherOffers(e) {
   if (p.other && p.other.length) return "No in-person rush. Other deals in the details.";
   return "No in-person rush, lottery or online rush listed.";
 }
+// The show's own picture from Ticketmaster (Rachel 2026-11-19), linked, never stored; hidden if it fails to load.
+function tileImage(e) {
+  if (!e.image) return null;
+  return h("img", { class: "tile-img", src: e.image, alt: "", loading: "lazy", decoding: "async", onerror: (ev) => ev.target.remove() });
+}
 function tileHead(e, href) {
-  return h("div", { class: "tile-top" },
+  return [tileImage(e), h("div", { class: "tile-top" },
     h("div", { class: "tile-name" },
       h("a", { class: "tile-link", href }, e.name),
       theaterLink(e) || h("span", { class: "theater" }, e.theater)),
-    priceBlock(e));
+    priceBlock(e))];
 }
 // showtime: "matinee" or "evening" inside a Matinee or Evening section or filter, so the tile names that performance.
 function tile(day, e, anyMode, from = "", showtime = null) {
@@ -642,6 +648,18 @@ function renderHome(selected) {
       }, x.label);
     }));
 
+  const viewRow = h("div", { class: "control-row", role: "group", "aria-label": "View" },
+    h("span", { class: "control-name" }, "View"),
+    [["grid", "Grid"], ["carousel", "Carousel"]].map(([key, label]) => h("button", {
+      type: "button", class: "chip", "data-view": key, "aria-pressed": String(state.view === key),
+      onclick: () => {
+        state.view = key;
+        try { localStorage.setItem("br-view", key); } catch { /* private window: keep it for this visit only */ }
+        viewRow.querySelectorAll("[data-view]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === key)));
+        state.paint();
+      },
+    }, label)));
+
   const filterRows = [
     chipRow("Rush type", RUSH_OPTIONS, state.filters.rush),
     chipRow("Play or musical", TYPE_OPTIONS, state.filters.type),
@@ -694,7 +712,17 @@ function renderHome(selected) {
       }, "Clear all")] : []));
 
     const tileFor = (e, showtime) => (weekMode ? (e.group === 1 ? weekTile(e, dates, allowed) : weekOtherTile(e)) : tile(day, e, anyMode, "", showtime));
-    const grid = (list, showtime) => h("div", { class: weekMode ? "tiles week-tiles" : "tiles" }, list.map((e) => tileFor(e, showtime)));
+    // Grid or carousel (Rachel 2026-11-19: both views). The carousel is one swipeable row per group, with arrows.
+    const grid = (list, showtime) => {
+      const cls = `tiles${weekMode ? " week-tiles" : ""}${state.view === "carousel" ? " carousel-track" : ""}`;
+      const track = h("div", { class: cls }, list.map((e) => tileFor(e, showtime)));
+      if (state.view !== "carousel") return track;
+      const step = (dir) => () => track.scrollBy({ left: dir * track.clientWidth * 0.9, behavior: "smooth" });
+      return h("div", { class: "carousel" },
+        h("button", { type: "button", class: "carousel-arrow prev", "aria-label": "Previous shows", onclick: step(-1) }, "‹"),
+        track,
+        h("button", { type: "button", class: "carousel-arrow next", "aria-label": "Next shows", onclick: step(1) }, "›"));
+    };
     // The three show groups (SPEC 8), with h2 titles, or h3 inside a Matinee or Evening section (SPEC 2.8 N8)
     const grouped = (list, showtime, tag) => {
       const out = [];
@@ -748,7 +776,7 @@ function renderHome(selected) {
     weekMode ? stripHolder : null,
     openNote(pairs),
     anyMode ? h("p", { class: "notice" }, "Predictions stop 7 days out, so these tiles don't have any. Schedules change and a show could close before your date, so confirm before you go.") : null,
-    h("div", { class: "controls" }, sortRow, filterBox,
+    h("div", { class: "controls" }, sortRow, viewRow, filterBox,
       h("div", { class: "control-row" }, picksToggle), resultLine),
     results);
   state.paint();
@@ -1847,7 +1875,7 @@ function renderFooter() {
     h("p", {}, `Placeholder settings, not final: GO at ${pct(d.placeholders.go_at_or_above)} and up, Maybe at ${pct(d.placeholders.maybe_at_or_above)} and up, based on the chance if you arrive at 9:00 AM. The arrival target is ${pct(d.placeholders.target_chance)}.`),
     // Credits. The Times Square Alliance shared its counts on the condition that they're credited and the raw counts
     // never appear on the site (2026-11-17); Wikipedia and Open-Meteo ask for credit too.
-    h("p", { class: "credits" }, "Pedestrian counts: Times Square Alliance. Rush reports: r/Broadway on Reddit. Rush policies, casts and schedules: Playbill. Casting news: BroadwayWorld. Performances: Ticketmaster. TKTS board: TDF. Midtown subway riders: MTA (data.ny.gov). Page views: Wikipedia. Weather: Open-Meteo.com."));
+    h("p", { class: "credits" }, "Pedestrian counts: Times Square Alliance. Rush reports: r/Broadway on Reddit. Rush policies, casts and schedules: Playbill. Casting news: BroadwayWorld. Performances and show images: Ticketmaster. TKTS board: TDF. Midtown subway riders: MTA (data.ny.gov). Page views: Wikipedia. Weather: Open-Meteo.com."));
 }
 
 fetch("data/predictions.json", { cache: "no-store" })
