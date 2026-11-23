@@ -58,3 +58,21 @@ Fast-forward
  create mode 100644 tkts/20261122210055-live.html.gz
  create mode 100644 tkts/20261122222529-live.html.gz
 tkts: 17 new snapshots
+00:18:24 wrote tkts.csv: 13697 rows from 185 snapshots with rows (207 cached files)
+ticketmaster: 10 new snapshots
+00:18:40 wrote ticketmaster_events.csv: 16252 rows; latest snapshot: 397 Broadway performances at 48 theaters, statuses {'onsale': np.int64(397)}
+Newest tkts snapshot: Nov 22, 05:25 PM ET
+Newest ticketmaster snapshot: Nov 22, 03:38 PM ET
+Updating predictions (about 8 minutes)...
+00:19:17 Unable to initialize backend 'tpu': UNIMPLEMENTED: LoadPjrtPlugin is not implemented on windows yet.
+00:19:17 Unable to initialize backend 'proxy': The 'proxy' backend requires the address of an IFRT Proxy server. Set it via the JAX_BACKEND_TARGET environment variable or the jax_backend_target config option, e.g. JAX_BACKEND_TARGET=grpc://localhost:29000.
+final fit: line 4.0 s, cutoff 177.9 s {'max_r_hat': 1.013, 'min_ess': 363, 'divergences': 0, 'attempts': 1, 'converged': True} phi 1.87
+wrote C:\Users\rache\.0Documents\Projects\broadway-rush\web\data\predictions.json days 7 {'2026-11-23': 8, '2026-11-24': 35, '2026-11-25': 35, '2026-11-26': 4, '2026-11-27': 35, '2026-11-28': 35, '2026-11-29': 31} in 207.9 s
+1 The Great Gatsby               GO 0.959 09:45 [19, 218] 40.0 policy []
+1 Downstate                      GO 0.882 09:45 [2, 43] None reports ['Low confidence']
+1 Paranormal Activity            GO 0.831 09:15 [4, 55] 40.0 reports ['Digital rush 9 AM', 'Low confidence']
+1 Chicago                        GO 0.768 08:45 [3, 42] 49.0 policy []
+2 Hadestown                         None 39.0 policy []
+2 SIX: The Musical                  None 49.0 policy []
+3 Hamilton                          None None none []
+3 Stranger Things: The First Sha    None None none []

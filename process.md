@@ -1612,3 +1612,11 @@ Rachel: "just make the model, train it, test it." Same design (trees for the lin
 - **Sold out + line count (an "at most" label):** if a show sold out at time T and someone counted the line before T, tickets ≤ that line count. 179 sold-out show-days; 78 have a count before sell-out (58 without an existing "at most" label). Checked against stated totals: holds 13 of 15. By how close the count is to sell-out: within 1 h 39 days (29 new, 5/6), within 2 h 54 (41 new, 9/10), any time 78 (58 new, 13/15).
 - **"X left" + own spot ("#12, got one, 3 left" → ~15):** only 38 cases, and all 4 that can be checked disagree with that day's stated total (e.g. 38 implied vs 20 stated). Looks unreliable.
 - **"X left" alone (at least X):** median X is 2, so it says almost nothing, and it pushes up, not down.
+
+## 2026-11-23 — Submission prep: privacy, README, presentation drafts
+- Submission form (NYU CDS Project Expo): Rachel submits Nov 24 (the form says Nov 27; other places say Nov 24). Needs a code link, a 200-word description, a poster (24×36 in, max 10 MB); slides and up to 5 visuals are optional. Presenting Dec 7, 12:30–3:30 pm.
+- **Privacy (repo was already public):** removed the `author` (Reddit username) column from `data/processed/reports.csv` and `reports_v3.csv` (15,044 rows each, otherwise unchanged) and from the extraction code so it isn't re-added (`extraction/batch.py`, `reread.py`). Untracked `data/labels/hand_labels.xlsx` (full comment text) with `git rm --cached`; it stays on disk and `data/labels/` was already in .gitignore. No keys or emails in tracked files. Times Square: no raw counts tracked, only derived inputs. **Earlier commits still contain usernames** (Rachel's call whether to rewrite history).
+- **README.md** written; its first section is the 200-word description for the form.
+- **presentation/**: `make_visuals.py` → `visuals/` (cleaning funnel, line growth, line error by month, drop-one inputs, two ticket tests, site screenshots); `make_deck.py` → `broadway-rush-slides.pptx` (12 slides); `poster.html` → `broadway-rush-poster.pdf` (24×36 in). Preliminary; numbers are test-month results, not the locked-month final.
+- Vercel: the deploy failed because it saw `pyproject.toml`. Fix: Root Directory = `web`, Framework = Other.
+- Installed python-pptx and matplotlib in the venv (presentation only).

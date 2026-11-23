@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Broadway Rush poster</title>
+<!-- Preliminary poster, 24 x 36 in portrait (NYU CDS Project Expo). Export:
+     chrome --headless --print-to-pdf=presentation/broadway-rush-poster.pdf --no-pdf-header-footer presentation/poster.html -->
+<style>
+  @page { size: 24in 36in; margin: 0; }
+  :root { --bg: #3b2862; --card: #513b7d; --ink: #f7f1ff; --ink2: #d6c9ec; --gold: #f0b829; --pink: #ff4fb3; --teal: #2f9fc0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    width: 24in; height: 36in; overflow: hidden; color: var(--ink); font: 0.3in/1.4 "Segoe UI", system-ui, sans-serif;
+    background: radial-gradient(14in 6in at 50% -1in, #5c3a94 0%, var(--bg) 70%) no-repeat, var(--bg);
+    -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 0.9in 0.9in 0.7in;
+  }
+  h1, h2, .big { font-family: "Arial Black", sans-serif; text-transform: uppercase; margin: 0; }
+  header { display: flex; justify-content: space-between; align-items: flex-end; gap: 0.6in; padding-bottom: 0.45in; border-bottom: 0.06in solid var(--gold); }
+  h1 { font-size: 1.55in; line-height: 1; color: var(--gold); text-shadow: 0 0 0.25in rgba(240, 184, 41, .45); }
+  .sub { font-size: 0.48in; line-height: 1.25; margin-top: 0.2in; max-width: 15in; }
+  .byline { text-align: right; font-size: 0.32in; color: var(--ink2); }
+  .byline b { display: block; color: var(--ink); font-size: 0.42in; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5in; margin-top: 0.5in; }
+  .col { display: flex; flex-direction: column; gap: 0.42in; }
+  section { background: var(--card); border-radius: 0.2in; padding: 0.35in 0.4in; box-shadow: inset 0.07in 0 0 var(--edge, var(--gold)); }
+  section.t { --edge: var(--teal); } section.p { --edge: var(--pink); }
+  h2 { font-size: 0.42in; letter-spacing: .02em; margin-bottom: 0.15in;
+       background: linear-gradient(90deg, #ff7ac6, #c58bff 55%, #ffd25a); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  p { margin: 0 0 0.14in; color: var(--ink2); }
+  ul { margin: 0; padding-left: 0.35in; color: var(--ink2); }
+  li { margin-bottom: 0.1in; }
+  li b, p b { color: var(--ink); }
+  img { width: 100%; display: block; border-radius: 0.1in; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 0.2in; margin-top: 0.1in; }
+  .stat { background: linear-gradient(135deg, var(--a), var(--b)); border-radius: 0.15in; padding: 0.18in 0.22in; color: #fff; }
+  .stat .big { font-size: 0.62in; line-height: 1.1; }
+  .stat span { font-size: 0.24in; display: block; opacity: .95; }
+  .k1 { --a: #ff4fb3; --b: #a42cf0; } .k2 { --a: #19d3c5; --b: #3a6ff0; } .k3 { --a: #ffd25a; --b: #ff8a1f; color: #2a1400 !important; } .k4 { --a: #ff6f91; --b: #d4145a; }
+  .models { display: grid; gap: 0.18in; }
+  .model { border-left: 0.06in solid var(--c); padding-left: 0.22in; }
+  .model b { color: var(--c); font-family: "Arial Black", sans-serif; text-transform: uppercase; font-size: 0.28in; }
+  .qr { display: flex; gap: 0.35in; align-items: center; }
+  .qrbox { flex: 0 0 2.6in; height: 2.6in; border: 0.04in dashed var(--ink2); border-radius: 0.15in; display: grid; place-items: center; text-align: center; font-size: 0.24in; color: var(--ink2); background: #fff1; }
+  footer { position: absolute; left: 0.9in; right: 0.9in; bottom: 0.45in; font-size: 0.22in; color: var(--ink2); text-align: center; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Broadway Rush</h1>
+    <div class="sub">Is it worth getting up early for $40 rush tickets, and which box office gives you the best shot? Predicting rush lines from 153,378 Reddit comments.</div>
+  </div>
+  <div class="byline"><b>Rachel Chen</b>NYU Center for Data Science<br>Project Expo 2026</div>
+</header>
+
+<div class="cols">
+  <div class="col">
+    <section>
+      <h2>The problem</h2>
+      <p>Some Broadway shows sell cheap <b>rush</b> seats when the box office opens. First come, first served. Lines can start hours early, and tickets can run out after a handful of people.</p>
+      <p><b>No dataset of rush lines existed,</b> so I built one before building a model.</p>
+      <div class="stats">
+        <div class="stat k1"><div class="big">153K</div><span>Reddit comments scanned</span></div>
+        <div class="stat k2"><div class="big">15,044</div><span>clean rush reports</span></div>
+        <div class="stat k3"><div class="big">108</div><span>shows, Jun 2024 – Nov 2026</span></div>
+        <div class="stat k4"><div class="big">~$3</div><span>total LLM cost</span></div>
+      </div>
+    </section>
+    <section class="t">
+      <h2>From comments to data</h2>
+      <img src="visuals/0_cleaning_funnel.png" alt="Cleaning funnel from Reddit comments to model rows">
+      <ul style="margin-top:0.2in">
+        <li><b>LLM extraction:</b> Claude Haiku (Batch API) turns each comment, read with its parent, into typed observations: line counts, spot in line, outcome, ticket counts.</li>
+        <li><b>Validated like a model:</b> on held-out, human-reviewed comments it called report vs. no report correctly <b>94%</b> of the time (precision 77%, recall 87% per observation). Error analysis found it copying numbers from parent comments; one prompt fix lifted precision from 67% to 80%.</li>
+        <li><b>Joined with:</b> box-office grosses, rush policies and schedules, Ticketmaster performances, TKTS boards, casting news, subway and Times Square traffic. Only information known 7 days ahead, so there's no peeking.</li>
+      </ul>
+    </section>
+    <section class="p">
+      <h2>How lines build</h2>
+      <img src="visuals/1_line_growth.png" alt="Median people in line by hours before opening">
+    </section>
+  </div>
+
+  <div class="col">
+    <section>
+      <h2>Two models, one answer</h2>
+      <div class="models">
+        <div class="model" style="--c: var(--gold)"><b>Line length</b><p>LightGBM gradient-boosted trees predict people in line at each hour before opening, with an 80% range.</p></div>
+        <div class="model" style="--c: var(--teal)"><b>Tickets released</b><p>Hierarchical Bayesian negative-binomial (NumPyro, NUTS). It learns from exact counts plus censored clues: "got one at #N" means at least N; "sold out before me at #N" means fewer than N. Thin shows borrow strength from the rest.</p></div>
+        <div class="model" style="--c: var(--pink)"><b>Your chance</b><p>Simulate the line at your arrival time and the day's ticket supply, then count how often your spot still gets a ticket.</p></div>
+      </div>
+    </section>
+    <section class="t">
+      <h2>How do I know it works?</h2>
+      <img src="visuals/2_line_error_by_month.png" alt="Line error by test month, model vs lookup table">
+      <ul style="margin-top:0.2in">
+        <li><b>Rolling backtest:</b> each month is predicted by a model trained only on earlier months.</li>
+        <li><b>Baseline to beat:</b> a per-show lookup table. Every model is scored on the identical reports.</li>
+        <li><b>3 locked months</b> stay untouched for one final, honest score.</li>
+      </ul>
+    </section>
+    <section class="p">
+      <h2>Testing 37 inputs, keeping 14</h2>
+      <img src="visuals/3_what_mattered.png" alt="Change in error when each input group is removed">
+      <p style="margin-top:0.18in">Star casting, TKTS and Times Square traffic didn't earn their place: with this much data, extra inputs add noise. The lean model: <b>4.65 → 4.52 people</b> average miss.</p>
+    </section>
+  </div>
+
+  <div class="col">
+    <section>
+      <h2>The honest part: tickets</h2>
+      <img src="visuals/4_tickets_two_tests.png" alt="Two ticket tests: stated counts vs at-least checks">
+      <ul style="margin-top:0.2in">
+        <li><b>Reporting bias:</b> people post counts mostly when they're small ("only 6!"), so that test rewards guessing low.</li>
+        <li>On the 4× more common "got one at #N" days, the model is right far more often. It still runs high, so next I'm adding "sold out by 10:30" reports as "at most" clues.</li>
+      </ul>
+    </section>
+    <section class="t">
+      <h2>The product</h2>
+      <img src="visuals/site_shows.png" alt="Website: shows ranked by chance of a ticket">
+      <p style="margin-top:0.18in">Shows ranked by your chance of a ticket for each of the next 7 days, with arrival advice, filters, and a "Nerd stats" page with every test result.</p>
+      <div class="qr">
+        <div class="qrbox">QR code<br>to the live site<br>(add after deploy)</div>
+        <ul>
+          <li><b>Code:</b> github.com/<wbr>rachelchen24/<wbr>broadway-rush</li>
+          <li><b>Live site:</b> [Vercel link]</li>
+        </ul>
+      </div>
+    </section>
+    <section class="p">
+      <h2>What I learned</h2>
+      <ul>
+        <li>The data you need often doesn't exist. Building it was most of the work.</li>
+        <li>Measure an LLM like any model: answer key, held-out set, read the errors.</li>
+        <li>A simple baseline keeps you honest.</li>
+        <li>More features ≠ better.</li>
+      </ul>
+    </section>
+  </div>
+</div>
+
+<footer>Data: r/Broadway (Reddit), Playbill, Ticketmaster, TDF (TKTS), BroadwayWorld, MTA, Wikimedia, NYC Open Data. Pedestrian counts: Times Square Alliance. Test results are from 9 past months, each predicted using only earlier data.</footer>
+</body>
+</html>

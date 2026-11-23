@@ -22,6 +22,10 @@ model = [
     "scipy>=1.18",
     "pypdf>=7.1",  # Times Square Alliance monthly reports (scrapers/timessquare.py)
 ]
+presentation = [  # presentation/make_visuals.py and make_deck.py (Expo poster, slides)
+    "matplotlib>=3.11",
+    "python-pptx>=1.0",
+]
 
 [build-system]
 requires = ["setuptools>=69"]
