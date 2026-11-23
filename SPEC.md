@@ -238,7 +238,7 @@ All of this goes in the predictions file, so the site still reads only that file
 | N11 | NYU calendar, one model input (~~six schools, four inputs~~) | 2026-11-11 | 🔶 input built 2026-11-11 from the calendar I pasted (`nyu_session`: 0 break, 1 classes, 2 finals, 3 free and in town: one-day holidays and the 3 days before a term, my call 2026-11-11; summer counts as a break); not tested yet (N9, Nov 17–19) |
 | N12 | Nerd stats visual upgrade: 8 charts in the cleaning-funnel slide's marquee style (picked 2026-11-12, list below) | 2026-11-12 | 📝 not built, waiting for my go |
 | N13 | UI feedback round (my review of the live site, 2026-11-23): bigger centered title, calendar-style day strip filling the width, tidier sort/view/filters, "Star in the cast" filter, 3D carousel, Nerd stats as a dashboard, Nerd stats colors on the customer side, cleaner show page with picture | 2026-11-23 | ✅ 2026-11-23: all seven pieces built (a title, b calendar strip, c sort/view/filters + "Star in the cast", d 3D coverflow, e Nerd stats dashboard, f gradient text and colors, g show page dashboard). Each piece has a switch in `web/app.js` (`const N13`) and its own commented CSS/JS blocks, so any one can be undone |
-| N14 | UI feedback round 2 (my review after N13, 2026-11-23): gold marquee title, bigger sort/view/filter text, favorites next to sort/view, same-size show images, show page leads with the predictions (no savings), narrower show page, Nerd stats as a real interactive dashboard | 2026-11-23 | 📝 written down, not built. Same revertable-pieces rule as N13 |
+| N14 | UI feedback round 2 (my review after N13, 2026-11-23): gold marquee title, bigger sort/view/filter text, favorites next to sort/view, same-size show images, show page leads with the predictions (no savings), narrower show page, Nerd stats as a real interactive dashboard | 2026-11-23 | ✅ 2026-11-23: all seven pieces built (a marquee title, b bigger controls + favorites row, c same-size images + stage drawing, d predictions-first show page, e Refresh icon + bigger jump buttons, f busiest-grid hover, g Nerd stats dashboard). Switches: `const N14` in `web/app.js` |
 
 N1–N4 and N10 are website work. **N5–N9 are data and model work**: their model parts belong to the final-model slot (Nov 17–19). N8 also changes the site.
 
@@ -474,7 +474,7 @@ Big picture: the customer side is boring and too much of it hugs the left edge. 
 
 *Done when:* each piece matches the above at desktop and phone width (no sideways scroll, 16px side gutters), text contrast still passes on dark purple, `?v=` bumped on `app.js` and `styles.css`, and nothing from earlier builds is lost.
 
-**N14. UI feedback round 2 (my review of N13, 2026-11-23; not built)**
+**N14. UI feedback round 2 (my review of N13, 2026-11-23; ✅ built 2026-11-23, all pieces a–g)**
 N13 looks great overall: the bigger centered title, the filters and the 3D carousel stay. This round fixes what's left. **Same rules as N13:** one lettered piece at a time, each in its own commented CSS/JS block (and an `N14` switch like `N13`'s) so I can revert any piece; dark purple, never black; check at desktop and phone width.
 
 **The feeling I want (applies to everything):** someone who loves Broadway and loves data opens this and thinks "this is everything I ever wanted to know about rush tickets", the way I felt the first time I opened the Garmin app. Beautiful, with personality, Broadway marquee charm. **Not generic, not "AI-looking"** (no Gemini-style sparkles, no default gradients everywhere).

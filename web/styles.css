@@ -761,3 +761,201 @@ body.n13-d .cf-hint { margin: 0; color: var(--ink-3); font-size: .8rem; }
 body.n13-d .cf-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) { body.n13-d .cf-card, body.n13-d .cf-card::after { transition: none; } }
 /* ===== end N13 d ===== */
+
+/* ======================================================================================================
+   N14 (SPEC 2.8, Rachel's UI round 2, 2026-11-23). Same rules as N13: each block only applies under
+   body.n14-<letter>, set from the N14 switches in app.js. Undo a piece: switch it off, or delete its block.
+   ====================================================================================================== */
+
+/* ===== N14 d: show page, predictions first; gold headings; no side stripes; no holes; middle 2/3 ===== */
+@media (min-width: 1100px) { body.n14-d main.n14-narrow { width: min(var(--page-width), 66.6vw); } }
+body.n14-d .n14-page { display: grid; gap: 14px; }
+body.n14-d .n14-head { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: center; margin-bottom: 0; }
+@media (min-width: 700px) { body.n14-d .n14-head { grid-template-columns: minmax(180px, 34%) minmax(0, 1fr) auto; } }
+body.n14-d .n14-head-right { display: grid; justify-items: end; gap: 10px; align-self: start; }
+@media (max-width: 699px) { body.n14-d .n14-head-right { justify-items: start; } }
+body.n14-d .n14-head .price { font-size: 1.8rem; }
+body.n14-d .n14-show-pic { margin: 0; border-radius: var(--radius); overflow: hidden; border: 1px solid rgba(244, 197, 66, .45); box-shadow: 0 10px 26px -14px rgba(10, 4, 25, .9); }
+body.n14-d .n14-show-pic img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+/* Top row: the prediction and the line, side by side, same height */
+body.n14-d .n14-top { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); align-items: stretch; }
+@media (min-width: 760px) { body.n14-d .n14-top:not(.single) { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+body.n14-d .n14-predict .statement { font-size: 1.3rem; line-height: 1.35; margin-top: 4px; }
+body.n14-d .n14-predict .statement b { font-family: var(--font-display); font-weight: 900; font-size: 2.6rem; color: var(--warm); text-shadow: 0 0 14px rgba(244, 197, 66, .45); }
+body.n14-d .n14-predict .statement span { font-size: .92rem !important; }
+@media (max-width: 600px) { body.n14-d .n14-predict .statement { font-size: 1.1rem; } body.n14-d .n14-predict .statement b { font-size: 1.9rem; } }
+body.n14-d .n14-predict .notice { background: rgba(244, 197, 66, .08); color: var(--ink-2); border: 0; box-shadow: inset 2px 0 0 var(--gold); font-size: .84rem; }
+body.n14-d .n14-line > p:first-of-type { font-size: 1.05rem; color: var(--ink); }
+/* Below: two columns that end at the same height (the last panel in each stretches) */
+body.n14-d .n14-cols { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); align-items: stretch; }
+@media (min-width: 760px) { body.n14-d .n14-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+body.n14-d .n14-col { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+body.n14-d .n14-col:empty { display: none; }
+body.n14-d .n14-cols.dealt .n14-col > :last-child { flex-grow: 1; }
+body.n14-d .n14-cols.single, body.n14-d .n14-cols:not(.dealt):not(.measuring) { grid-template-columns: minmax(0, 1fr); }
+body.n14-d .n14-cols.measuring { grid-template-columns: repeat(2, minmax(0, 1fr)); } /* measure panels at their real (half) width */
+/* Gold headings and no colored side lines on this page (the show name keeps its gradient) */
+body.n14-d .n14-page .panel { box-shadow: 0 8px 22px -12px rgba(10, 4, 25, .8); border: 1px solid rgba(244, 197, 66, .16); }
+body.n14-d .n14-page .panel > h2 {
+  display: block; background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--gold);
+  filter: none; text-shadow: 0 0 10px rgba(244, 197, 66, .3);
+}
+body.n14-d .n14-page .panel h3 { color: var(--warm); }
+body.n14-d .n14-page .n13-about-table tr { --c: var(--gold); }
+body.n14-d .n14-page .n13-about-table th { color: var(--ink-2); }
+/* Rush policy across the full width, its offers in two columns */
+body.n14-d .n14-policy { display: grid; grid-template-columns: minmax(0, 1fr); column-gap: 32px; }
+@media (min-width: 700px) {
+  body.n14-d .n14-policy { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body.n14-d .n14-policy > h2, body.n14-d .n14-policy > p { grid-column: 1 / -1; }
+}
+/* ===== end N14 d ===== */
+
+/* ===== N14 a: gold marquee sign around the title, gently chasing bulbs (replaces N13 a's side stars) ===== */
+body.n14-a .site-header { padding-top: 30px; }
+body.n14-a .n14-marquee {
+  position: relative; display: inline-block; max-width: 100%; padding: 34px clamp(30px, 4.5vw, 62px) 32px; border-radius: 18px; text-align: center;
+  background: radial-gradient(120% 150% at 50% 0%, #4b2a7a 0%, #2d1852 58%, #241345 100%);
+  border: 3px solid #e0a92a;
+  box-shadow: inset 0 0 0 1px rgba(255, 230, 160, .35), 0 0 34px rgba(244, 197, 66, .28), 0 16px 34px -14px rgba(10, 4, 25, .95);
+}
+/* A thin pink inner frame inside the bulbs: the little bit of pink */
+body.n14-a .n14-marquee::after {
+  content: ""; position: absolute; inset: 22px; border: 1px solid rgba(255, 122, 198, .55); border-radius: 8px; pointer-events: none;
+  box-shadow: 0 0 12px rgba(255, 79, 179, .18) inset;
+}
+body.n14-a .brand {
+  position: relative; z-index: 1; font-size: clamp(2.1rem, 6.2vw, 5rem); line-height: .98; letter-spacing: .015em;
+  background: linear-gradient(180deg, #fff7d6 0%, #ffe07a 34%, #f4c542 56%, #e9a23a 82%, #d9812c 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: none;
+  filter: drop-shadow(0 0 10px rgba(255, 210, 90, .5)) drop-shadow(0 2px 0 rgba(110, 45, 10, .75));
+}
+body.n14-a .n14-bulbs { position: absolute; inset: 0; pointer-events: none; }
+body.n14-a .n14-bulb {
+  position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%;
+  background: radial-gradient(circle at 38% 35%, #fffdf0 0 22%, #ffe08a 50%, #e9a422 100%);
+  box-shadow: 0 0 7px 2px rgba(255, 214, 110, .7);
+  animation: n14-chase 3.6s ease-in-out infinite;
+}
+body.n14-a .n14-bulb.b1 { animation-delay: 1.2s; }
+body.n14-a .n14-bulb.b2 { animation-delay: 2.4s; }
+@keyframes n14-chase { 0%, 100% { opacity: 1; } 50% { opacity: .62; box-shadow: 0 0 3px 1px rgba(255, 214, 110, .35); } }
+@media (prefers-reduced-motion: reduce) { body.n14-a .n14-bulb { animation: none; } }
+@media (max-width: 500px) {
+  body.n14-a .n14-marquee { padding: 30px 26px 28px; border-radius: 14px; }
+  body.n14-a .n14-marquee::after { inset: 20px; }
+  body.n14-a .n14-bulb { width: 8px; height: 8px; margin: -4px 0 0 -4px; }
+}
+/* ===== end N14 a ===== */
+
+/* ===== N14 b: a bit bigger Sort / View / Filters text; Show favorites on the Sort and View row ===== */
+body.n14-b .n13-sortview, body.n14-b .controls > .control-row { gap: 12px 40px; }
+body.n14-b .n13-sortview .control-name, body.n14-b .controls > .control-row > .control-name { font-size: 1rem; }
+body.n14-b .n13-sortview .chip, body.n14-b .n14-favrow .chip { font-size: .98rem; min-height: 40px; padding: 6px 14px; }
+body.n14-b .filters summary { font-size: 1.08rem; }
+body.n14-b .filters .control-name { font-size: .88rem; }
+body.n14-b .filters .chip { font-size: .94rem; min-height: 38px; padding: 5px 13px; }
+body.n14-b .n14-favrow { gap: 6px; }
+/* ===== end N14 b ===== */
+
+/* ===== N14 c: one image shape everywhere (16:9, cropped to fill) + the stage drawing for shows without a photo ===== */
+body.n14-c .tile-img, body.n14-c .n14-show-pic img, body.n14-c .n13-pic img { aspect-ratio: 16 / 9; object-fit: cover; object-position: center; height: auto; }
+body.n14-c .n14-img.n14-stage { background: #241240; }
+/* ===== end N14 c ===== */
+
+/* ===== N14 f: busiest-shows grid: light-pink hover that keeps the level, pink info line, bigger show names ===== */
+body.n14-f .heat td.heat-0 { --lvl: transparent; }
+body.n14-f .heat td.heat-1 { --lvl: color-mix(in srgb, var(--gold) 10%, var(--card)); }
+body.n14-f .heat td.heat-2 { --lvl: color-mix(in srgb, var(--gold) 24%, var(--card)); }
+body.n14-f .heat td.heat-3 { --lvl: color-mix(in srgb, var(--gold) 40%, var(--card)); }
+body.n14-f .heat td.heat-4 { --lvl: color-mix(in srgb, var(--gold) 66%, var(--card)); }
+body.n14-f .heat td.heat-5 { --lvl: var(--gold); }
+/* Row hover no longer paints over the levels */
+body.n14-f .ns-section .heat tbody tr:hover td, body.n14-f .heat tbody td { background: var(--lvl); }
+body.n14-f .heat tbody td { cursor: default; transition: background .12s ease; }
+body.n14-f .ns-section .heat tbody tr td:hover, body.n14-f .ns-section .heat tbody tr td:focus, body.n14-f .ns-section .heat tbody tr td.n14-hot {
+  background: color-mix(in srgb, #ffc9e6 64%, var(--lvl)); color: #3a0d27; box-shadow: inset 0 0 0 2px #ff7ac6; outline: none;
+}
+body.n14-f .n14-heat-info {
+  margin: 4px 0 10px; padding: 8px 12px; border-radius: 6px; min-height: 2.6em; max-width: none;
+  background: rgba(255, 79, 179, .16); border: 1px solid rgba(255, 122, 198, .6); color: var(--ink); font-size: .92rem;
+}
+body.n14-f .n14-heat-info b { color: #ffb3dc; }
+body.n14-f .heat th:first-child { width: 27%; padding-right: 10px; }
+body.n14-f .heat tbody th { font-size: .95rem; line-height: 1.2; }
+@media (max-width: 600px) { body.n14-f .heat th:first-child { width: 34%; } body.n14-f .heat tbody th { font-size: .8rem; } }
+/* ===== end N14 f ===== */
+
+/* ===== N14 e: Refresh icon top right with a hover label; bigger Nerd stats jump buttons ===== */
+body.n14-e .site-header { position: relative; }
+body.n14-e .n14-refresh {
+  position: absolute; top: 10px; right: 0; width: 40px; height: 40px; min-height: 0; padding: 0; border-radius: 50%;
+  display: grid; place-items: center; color: var(--ink-2); background: rgba(255, 255, 255, .04); border: 1px solid var(--line);
+}
+body.n14-e .n14-refresh:hover, body.n14-e .n14-refresh:focus-visible { color: var(--gold); border-color: var(--gold); }
+body.n14-e .n14-refresh:hover svg { transform: rotate(-40deg); }
+body.n14-e .n14-refresh svg { transition: transform .3s ease; }
+body.n14-e .n14-refresh-label {
+  position: absolute; right: 0; top: calc(100% + 6px); padding: 3px 9px; border-radius: 4px; white-space: nowrap; font-size: .8rem;
+  background: var(--card); color: var(--ink); border: 1px solid var(--line); opacity: 0; pointer-events: none; transition: opacity .15s ease;
+}
+body.n14-e .n14-refresh:hover .n14-refresh-label, body.n14-e .n14-refresh:focus-visible .n14-refresh-label { opacity: 1; }
+@media (max-width: 600px) { body.n14-e .site-header { padding-top: 56px; } body.n14-e .n14-refresh { top: 8px; } }
+@media (prefers-reduced-motion: reduce) { body.n14-e .n14-refresh svg { transition: none; } }
+body.n14-e .ns-nav { gap: 8px; padding: 10px 0; }
+body.n14-e .ns-nav .chip { font-size: 1.02rem; min-height: 44px; padding: 8px 18px; border-color: rgba(244, 197, 66, .55); }
+body.n14-e .ns-nav .chip:hover { border-color: var(--gold); color: var(--warm); }
+/* ===== end N14 e ===== */
+
+/* ===== N14 g: Nerd stats as a real dashboard: paired panels, gold headings, things to click ===== */
+body.n14-g .ns-section .accuracy-grid.n14-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px; max-width: none; align-items: stretch; margin-top: 14px; }
+body.n14-g .ns-section .accuracy-grid.n14-grid > * { grid-column: span var(--span, 6); min-width: 0; }
+@media (max-width: 860px) { body.n14-g .ns-section .accuracy-grid.n14-grid > * { grid-column: 1 / -1; } }
+body.n14-g .ns-section { margin-top: 30px; }
+/* Gold question headings and gold panel edges (no pink or teal stripes) */
+body.n14-g .ns-section .faq > summary h3 { color: var(--gold); font-size: 1.05rem; text-shadow: 0 0 10px rgba(244, 197, 66, .25); }
+body.n14-g .ns-section .panel, body.n14-g .ns-section .panel:nth-child(3n+2), body.n14-g .ns-section .panel:nth-child(3n+3) {
+  box-shadow: 0 8px 22px -12px rgba(10, 4, 25, .8); border: 1px solid rgba(244, 197, 66, .18);
+}
+body.n14-g .faq-body { max-width: none; }
+/* Score tables: bigger text, less air */
+body.n14-g .ns-section table { font-size: .98rem; }
+body.n14-g .ns-section th, body.n14-g .ns-section td { padding: 8px 10px; }
+body.n14-g .ns-section td { white-space: normal; }
+/* A panel you jumped to glows briefly */
+body.n14-g .n14-flash { animation: n14-flash 1.6s ease-out; }
+@keyframes n14-flash { 0% { box-shadow: 0 0 0 3px var(--gold), 0 0 30px rgba(244, 197, 66, .5); } 100% { box-shadow: 0 8px 22px -12px rgba(10, 4, 25, .8); } }
+@media (prefers-reduced-motion: reduce) { body.n14-g .n14-flash { animation: none; } }
+body.n14-g .n14-click { cursor: pointer; }
+body.n14-g .kpi.n14-click { transition: transform .15s ease; }
+body.n14-g .kpi.n14-click:hover, body.n14-g .kpi.n14-click:focus-visible { transform: translateY(-3px); }
+/* Line growth: chart with its toggles on the side */
+body.n14-g .n14-split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(150px, 34%); gap: 16px; align-items: start; margin-bottom: 8px; }
+@media (max-width: 600px) { body.n14-g .n14-split { grid-template-columns: minmax(0, 1fr); } }
+body.n14-g .n14-chartbox { min-width: 0; }
+body.n14-g .n14-side { display: grid; gap: 10px; align-content: start; font-size: .92rem; }
+body.n14-g .n14-side p { margin: 0; }
+body.n14-g .n14-toggles { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+body.n14-g .n14-side-label { flex: 1 0 100%; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); }
+body.n14-g .n14-toggle {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; min-height: 36px; border-radius: 4px; cursor: pointer;
+  background: rgba(255, 255, 255, .04); color: var(--ink); border: 1px solid var(--line); font-size: .9rem;
+}
+body.n14-g .n14-toggle i { width: 18px; height: 0; border-top: 3px solid var(--c); }
+body.n14-g .n14-toggle i.dashed { border-top-style: dashed; }
+body.n14-g .n14-toggle[aria-pressed="false"] { opacity: .5; text-decoration: line-through; }
+body.n14-g .n14-toggle[aria-pressed="true"] { border-color: var(--gold); }
+/* Info lines and the show card */
+body.n14-g .n14-info {
+  margin: 10px 0 0; padding: 8px 12px; border-radius: 6px; max-width: none; font-size: .92rem; min-height: 2.6em;
+  background: rgba(244, 197, 66, .08); border: 1px solid rgba(244, 197, 66, .4); color: var(--ink);
+}
+body.n14-g .n14-info b { color: var(--warm); }
+body.n14-g .n14-card-links { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 6px; }
+body.n14-g .n14-card-links a { color: var(--gold); font-weight: 600; }
+body.n14-g .funnel-row { cursor: default; border-radius: 6px; }
+body.n14-g .funnel-row.n14-hot, body.n14-g .funnel-row:focus-visible { background: rgba(244, 197, 66, .1); outline: none; }
+body.n14-g .bar-row.n14-click:hover, body.n14-g .bar-row.n14-hot, body.n14-g .bar-row.n14-click:focus-visible { background: rgba(244, 197, 66, .1); outline: none; border-radius: 4px; }
+body.n14-g .n14-show-link { color: inherit; text-decoration: none; }
+body.n14-g .n14-show-link:hover, body.n14-g .n14-show-link:focus-visible { color: var(--gold); text-decoration: underline; }
+/* ===== end N14 g ===== */

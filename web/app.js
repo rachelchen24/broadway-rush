@@ -17,6 +17,11 @@ const NOT_AVAILABLE = "Not available yet";
    its CSS only applies under body.n13-<letter> and its JS (the "N13 <letter>" sections near the end) only runs when on. */
 const N13 = { a: true, b: true, c: true, d: true, e: true, f: true, g: true };
 for (const [k, on] of Object.entries(N13)) if (on) document.body.classList.add(`n13-${k}`);
+/* N14 (SPEC 2.8, Rachel's UI round 2, 2026-11-23): same idea. Set a piece to false to undo it; its CSS only applies
+   under body.n14-<letter> and its JS ("N14 <letter>" sections near the end) only runs when on. Where N14 replaces an
+   N13 piece, the N13 code stays in place and N14 takes over through these switches. */
+const N14 = { a: true, b: true, c: true, d: true, e: true, f: true, g: true };
+for (const [k, on] of Object.entries(N14)) if (on) document.body.classList.add(`n14-${k}`);
 
 /* ---------- small helpers ---------- */
 function h(tag, attrs, ...children) {
@@ -344,6 +349,7 @@ function otherOffers(e) {
 }
 // The show's own picture from Ticketmaster (Rachel 2026-11-19), linked, never stored; hidden if it fails to load.
 function tileImage(e) {
+  if (N14.c) return n14Img(e, "tile-img"); // N14 c: same shape everywhere, stage drawing when there's no photo
   if (!e.image) return null;
   return h("img", { class: "tile-img", src: e.image, alt: "", loading: "lazy", decoding: "async", onerror: (ev) => ev.target.remove() });
 }
@@ -685,6 +691,7 @@ function renderHome(selected) {
     type: "button", class: "chip fav-filter", id: "pick-count", "aria-pressed": String(state.picksOnly),
     onclick: (ev) => { state.picksOnly = !state.picksOnly; ev.currentTarget.setAttribute("aria-pressed", String(state.picksOnly)); state.paint(); },
   }, "");
+  const favRow = h("div", { class: "control-row n14-favrow" }, picksToggle);
   const resultLine = h("div", { class: "result-line", role: "status" });
   const results = h("div", {});
   const stripHolder = h("div", { class: "strip-holder" });
@@ -782,8 +789,9 @@ function renderHome(selected) {
     weekMode ? stripHolder : null,
     openNote(pairs),
     anyMode ? h("p", { class: "notice" }, "Predictions stop 7 days out, so these tiles don't have any. Schedules change and a show could close before your date, so confirm before you go.") : null,
-    h("div", { class: "controls" }, N13.c ? h("div", { class: "n13-sortview" }, sortRow, viewRow) : [sortRow, viewRow], filterBox,
-      h("div", { class: "control-row" }, picksToggle), resultLine),
+    // N14 b: Show favorites sits on the Sort and View row instead of under Filters
+    h("div", { class: "controls" }, N13.c ? h("div", { class: "n13-sortview" }, sortRow, viewRow, N14.b ? favRow : null) : [sortRow, viewRow, N14.b ? favRow : null], filterBox,
+      N14.b ? null : favRow, resultLine),
     results);
   state.paint();
 }
@@ -931,6 +939,7 @@ function renderDetails(day, id, fromWeek) {
     priceBlock(e));
   const back = h("a", { class: "back", href: backHref }, "← Back to shows");
 
+  if (N14.d && (anyMode || e.group === 1)) { n14ShowPage(e, day, back, head); return; } // N14 d
   if (N13.g && (anyMode || e.group === 1)) { n13ShowDashboard(e, day, back, head); return; } // N13 g
   if (anyMode) {
     setApp(back, head, h("p", { class: "notice" }, "Check back within 7 days of your date for a prediction. Schedules change, so confirm before you go."),
@@ -962,6 +971,7 @@ function renderDetails(day, id, fromWeek) {
       linkLine(lotteryLink(e), "Enter the lottery"), linkLine(digitalLink(e), "Open"),
       h("p", {}, seatsLine(e), "."),
       h("p", { class: "muted" }, "No line to predict. Few reports here doesn't mean low demand."));
+  if (N14.d) { n14ShowPage(e, day, back, head, note); return; } // N14 d
   if (N13.g) { n13ShowDashboard(e, day, back, head, note); return; } // N13 g
   setApp(back, head, h("div", { class: "detail-grid" },
     h("div", { class: "col" }, note, e.group === 2 ? busiestPanel(e, day) : null, factsPanel(e), policyPanel(e)), h("div", { class: "col" }, keyAppealsPanel(e, day), dealsPanel(e, day), savingsPanel(e), digitalPanel(e))));
@@ -1069,6 +1079,7 @@ function busiestPanel(e, day) {
 }
 
 function savingsPanel(e) {
+  if (N14.d) return null; // N14 d: no "what you'd save" anywhere on the site
   if (!e.price || !e.typical_ticket) return null;
   const save = e.typical_ticket - e.price;
   return h("section", { class: "panel" }, h("h2", {}, "What you'd save"),
@@ -1170,12 +1181,14 @@ function heatPanel(ch, entries) {
       r.cells.map((x) => {
         const has = x.typical !== null && !x.dark;
         const tip = x.dark ? "Not playing" : (has ? `Typically ${people(x.typical)} people, from ${x.days} past days` : `Too few past reports (${x.days} days)`);
-        return withTip(h("td", { class: has ? `heat-${heat(x.typical)}` : "heat-0" }, has ? people(x.typical) : "–"), `${r.e.name}, ${DAY_LONG[x.i]}`, [tip]);
+        const cell = h("td", { class: has ? `heat-${heat(x.typical)}` : "heat-0" }, has ? people(x.typical) : "–");
+        if (N14.f) return n14HeatCell(cell, `${r.e.name}, ${DAY_LONG[x.i]}`, tip, has ? heat(x.typical) : 0); // N14 f
+        return withTip(cell, `${r.e.name}, ${DAY_LONG[x.i]}`, [tip]);
       }))))));
   const key = h("div", { class: "heat-key" }, ["Under 5", "5–9", "10–14", "15–19", "20+"].map((t, i) => h("span", {}, h("i", { class: `heat-${i + 1}` }), t)));
   return nsPanel("Which shows and days are busiest?",
     `Longest: ${hi.name} on ${DAY_LONG[hi.i]}, about ${people(hi.typical)} people. Shortest: ${lo.name} on ${DAY_LONG[lo.i]}, about ${people(lo.typical)}.`,
-    key, table,
+    key, N14.f ? n14HeatInfo(table) : null, table,
     h("p", { class: "muted", style: "margin-top:8px" }, `Typical people in line in the last ${ch.near_opening_hours} hours before opening. A dash means it's not playing now or has fewer than ${ch.min_days_per_cell} past days of reports.${left.length ? ` Too few reports to list: ${left.join(", ")}.` : ""}`));
 }
 
@@ -1887,7 +1900,7 @@ function n13StarCluster(side) {
   });
   return box;
 }
-if (N13.a) {
+if (N13.a && !N14.a) { // N14 a replaces the side stars with the marquee sign
   const brand = document.querySelector(".site-header .brand");
   const wrap = h("div", { class: "n13-title" });
   brand.before(wrap);
@@ -2158,6 +2171,341 @@ function n13Coverflow(cards, list) {
 }
 /* ========== end N13 d ========== */
 
+/* ========== N14 d: show page, the predictions first (SPEC 2.8 N14 d) ==========
+   Top: the ticket estimate with its range and your chance, next to how the line builds (the arrival time to beat).
+   Limited-data shows have no model numbers, so their top is the "probably easy" note next to the busiest-days chart.
+   Below: everything else in two columns that balance themselves and end at the same height (no blank holes).
+   Gold panel headings, no colored side lines, no savings, and the page sits in the middle 2/3 on wide screens. */
+function n14ShowImage(e) {
+  if (N14.c) return n14Picture(e, "n14-show-pic"); // N14 c: one shape everywhere, placeholder when there's no photo
+  if (!e.image) return null;
+  return h("figure", { class: "n14-show-pic" },
+    h("img", { src: e.image, alt: `${e.name} artwork`, decoding: "async", onerror: (ev) => ev.target.closest("figure").remove() }));
+}
+function n14Columns(panels) {
+  const list = panels.filter(Boolean);
+  const a = h("div", { class: "n14-col" }, list);
+  const b = h("div", { class: "n14-col" });
+  const box = h("div", { class: "n14-cols" }, a, b);
+  // After the first paint, measure at half width and try every split that keeps the reading order (2^n, n <= ~8).
+  // Most even split wins; if even the best leaves more than ~100px uneven, keep one full-width column (no holes).
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    if (!box.isConnected || box.clientWidth < 760 || list.length < 2) return;
+    box.classList.add("measuring");
+    const heights = list.map((x) => x.offsetHeight + 14);
+    box.classList.remove("measuring");
+    let best = null;
+    for (let mask = 1; mask < (1 << list.length) - 1; mask++) {
+      let ha = 0, hb = 0;
+      heights.forEach((v, i) => { if (mask & (1 << i)) hb += v; else ha += v; });
+      if (!best || Math.abs(ha - hb) < best.diff) best = { mask, diff: Math.abs(ha - hb) };
+    }
+    if (best.diff > 100) { box.classList.add("single"); return; }
+    list.forEach((x, i) => (best.mask & (1 << i) ? b : a).append(x));
+    box.classList.add("dealt");
+  }));
+  return box;
+}
+function n14ShowPage(e, day, back, head, note = null) {
+  const anyMode = day === "any";
+  head.classList.add("n14-head");
+  const price = head.children.length > 1 ? head.lastElementChild : null;
+  head.prepend(n14ShowImage(e) || "");
+  head.append(h("div", { class: "n14-head-right" }, price, n13NerdButton(e)));
+  const policy = policyPanel(e);
+  policy.classList.add("n14-policy");
+  let top = null;
+  let rest = [];
+  if (anyMode) {
+    top = h("p", { class: "notice" }, "Check back within 7 days of your date for a prediction. Schedules change, so confirm before you go.");
+    rest = [n13AboutTable(e), keyAppealsPanel(e, day), dealsPanel(e, day), digitalPanel(e)];
+  } else if (e.group === 1) {
+    const predict = ticketsPanel(e);
+    predict.classList.add("n14-predict");
+    predict.prepend(h("h2", {}, "Rush tickets and your chance"));
+    const line = linePanel(e);
+    line.classList.add("n14-line");
+    top = h("div", { class: "n14-top" }, predict, line);
+    rest = [chancePanel(e), busiestPanel(e, day), n13Why(e), n13AboutTable(e), keyAppealsPanel(e, day), dealsPanel(e, day), digitalPanel(e)];
+  } else {
+    const busy = e.group === 2 ? busiestPanel(e, day) : null;
+    if (note) note.classList.add("n14-predict");
+    top = h("div", { class: `n14-top${busy ? "" : " single"}` }, note, busy);
+    rest = [n13AboutTable(e), keyAppealsPanel(e, day), dealsPanel(e, day), digitalPanel(e)];
+  }
+  setApp(back, h("div", { class: "n14-page" }, head, top, n14Columns(rest), policy));
+}
+/* ========== end N14 d ========== */
+
+/* ========== N14 a: the title inside a gold Broadway marquee sign (SPEC 2.8 N14 a) ==========
+   Light bulbs all around the frame, placed to fit its size. They chase slowly and softly (three groups taking turns);
+   under reduced motion they stay lit. */
+if (N14.a) {
+  const brand = document.querySelector(".site-header .brand");
+  const sign = h("div", { class: "n14-marquee" });
+  const bulbs = h("span", { class: "n14-bulbs", "aria-hidden": "true" });
+  brand.before(sign);
+  sign.append(bulbs, brand);
+  let last = "";
+  const place = () => {
+    const w = sign.clientWidth, ht = sign.clientHeight;
+    if (!w || `${w}x${ht}` === last) return;
+    last = `${w}x${ht}`;
+    const inset = 11, gap = w < 500 ? 22 : 27;
+    const nx = Math.max(2, Math.round((w - 2 * inset) / gap)), ny = Math.max(2, Math.round((ht - 2 * inset) / gap));
+    const pts = [];
+    // Clockwise from the top-left corner, so neighbors chase in order
+    for (let i = 0; i < nx; i++) pts.push([inset + (i * (w - 2 * inset)) / nx, inset]);
+    for (let j = 0; j < ny; j++) pts.push([w - inset, inset + (j * (ht - 2 * inset)) / ny]);
+    for (let i = nx; i > 0; i--) pts.push([inset + (i * (w - 2 * inset)) / nx, ht - inset]);
+    for (let j = ny; j > 0; j--) pts.push([inset, inset + (j * (ht - 2 * inset)) / ny]);
+    bulbs.replaceChildren(...pts.map(([x, y], k) => h("i", { class: `n14-bulb b${k % 3}`, style: `left:${x.toFixed(1)}px;top:${y.toFixed(1)}px` })));
+  };
+  new ResizeObserver(place).observe(sign);
+  if (document.fonts) document.fonts.ready.then(place);
+}
+/* ========== end N14 a ========== */
+
+/* ========== N14 c: one image shape everywhere + a stage drawing for shows without a photo (SPEC 2.8 N14 c) ==========
+   Tiles, carousel cards and the show page all use 16:9, cropped to fill. web/img/stage.svg is our own drawing
+   (curtains, spotlight, three performers), so it's free to use; it also stands in when a Ticketmaster photo fails. */
+const N14_STAGE = "img/stage.svg";
+function n14Img(e, cls, alt = "") {
+  return h("img", {
+    class: `${cls} n14-img${e.image ? "" : " n14-stage"}`.trim(), src: e.image || N14_STAGE, alt, loading: "lazy", decoding: "async",
+    title: e.image ? null : "No photo for this show yet",
+    onerror: (ev) => { if (!ev.target.src.endsWith(N14_STAGE)) { ev.target.src = N14_STAGE; ev.target.classList.add("n14-stage"); } },
+  });
+}
+function n14Picture(e, cls) {
+  return h("figure", { class: cls }, n14Img(e, "", e.image ? `${e.name} artwork` : "A theater stage: no photo for this show yet"));
+}
+/* ========== end N14 c ========== */
+
+/* ========== N14 f: the busiest-shows grid: pink info line instead of a box over the numbers (SPEC 2.8 N14 f) ==========
+   Hover, tap or tab to a cell: it turns light pink (tinted by its level, so you can still tell how busy it was) and its
+   details show in a pink line above the grid. */
+const N14_LEVELS = ["no data", "under 5", "5–9", "10–14", "15–19", "20+"];
+function n14HeatCell(cell, title, tip, level) {
+  cell.tabIndex = 0;
+  cell.dataset.title = title;
+  cell.dataset.tip = `${tip}${level ? ` · level ${N14_LEVELS[level]}` : ""}`;
+  return cell;
+}
+function n14HeatInfo(table) {
+  const empty = "Hover or tap a day to see how busy it is.";
+  const info = h("p", { class: "n14-heat-info", "aria-live": "polite" }, empty);
+  const show = (ev) => {
+    const td = ev.target.closest("td[data-title]");
+    if (!td) return;
+    table.querySelectorAll(".n14-hot").forEach((x) => x.classList.remove("n14-hot"));
+    td.classList.add("n14-hot");
+    info.replaceChildren(h("b", {}, td.dataset.title), ": ", td.dataset.tip);
+  };
+  table.addEventListener("pointerover", show);
+  table.addEventListener("focusin", show);
+  table.addEventListener("pointerleave", () => {
+    info.textContent = empty;
+    table.querySelectorAll(".n14-hot").forEach((x) => x.classList.remove("n14-hot"));
+  });
+  return info;
+}
+/* ========== end N14 f ========== */
+
+/* ========== N14 e: Refresh as an icon in the top-right corner; bigger Nerd stats jump buttons (SPEC 2.8 N14 e) ==========
+   Only Rachel uses Refresh, so it's a quiet circular-arrow icon that says "Refresh" on hover or focus. Same button, same
+   click handler (openRefresh), just moved and redrawn. */
+if (N14.e) {
+  const btn = document.getElementById("open-refresh");
+  const svg = s("svg", { viewBox: "0 0 24 24", width: "20", height: "20", fill: "none", stroke: "currentColor", "stroke-width": "2.2", "stroke-linecap": "round", "stroke-linejoin": "round", "aria-hidden": "true" });
+  svg.append(s("path", { d: "M20 11a8 8 0 1 0-2.3 5.7" }), s("path", { d: "M20 4v7h-7" }));
+  btn.replaceChildren(svg, h("span", { class: "n14-refresh-label" }, "Refresh"));
+  btn.setAttribute("aria-label", "Refresh");
+  btn.classList.add("n14-refresh");
+  document.querySelector(".site-header").append(btn);
+}
+/* ========== end N14 e ========== */
+
+/* ========== N14 g: Nerd stats as a real, clickable dashboard (SPEC 2.8 N14 g) ==========
+   Sections reordered so the strongest results come first; panels paired side by side (12-column grid, sizes below);
+   gold question headings; and things to click: the headline cards jump to their charts, the line-growth chart has
+   series toggles beside it, funnel steps explain what was dropped and why, a show in "reports per show" opens a card
+   with its page and its test results, and show names in the busiest grid open the show. */
+const N14_ORDER = ["ns-summary", "ns-tests", "ns-lines", "ns-truth", "ns-model", "ns-data"];
+// [title starts with, columns out of 12]. Panels keep this order inside their section.
+const N14_LAYOUT = {
+  "ns-tests": [["The final score", 6], ["Does it beat", 6], ["Line error by test month", 6], ["Did the 80% line range hold?", 6],
+    ["When we predict a line", 6], ["When we say a chance", 6], ["The always-yes problem", 7], ["Real trips", 5]],
+  "ns-lines": [["Which shows and days are busiest?", 6], ["How fast does the line grow?", 6]],
+  "ns-truth": [["The line: every test report", 6], ["The tickets: every stated count", 6], ["Got a ticket or not", 12], ["Look up any test result", 12]],
+  "ns-model": [["What moves the line most?", 6], ["How it's built", 6]],
+  "ns-data": [["From Reddit comments", 5], ["How many reports does each show have?", 4], ["What did it cost?", 3]],
+};
+const N14_KPI_TARGETS = { k1: "Line error by test month", k2: "Did the 80% line range hold?", k3: "When we say a chance", k4: "The always-yes problem" };
+const n14Title = (el) => ((el.querySelector(":scope > summary h3") || {}).textContent || "");
+function n14FindPanel(start) {
+  return [...document.querySelectorAll(".ns-section details.panel")].find((x) => n14Title(x).startsWith(start));
+}
+function n14Jump(start) {
+  const panel = n14FindPanel(start);
+  if (!panel) return;
+  if (!panel.open) openPanel(panel);
+  panel.scrollIntoView({ block: "start", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  panel.classList.remove("n14-flash");
+  requestAnimationFrame(() => panel.classList.add("n14-flash"));
+}
+function n14NerdDashboard() {
+  const main = app;
+  const nav = main.querySelector(".ns-nav");
+  // 1. Sections: strongest results first; the jump buttons follow the same order
+  const sections = N14_ORDER.map((id) => document.getElementById(id)).filter(Boolean);
+  const all = [...main.querySelectorAll(":scope > .ns-section")];
+  const marker = document.createComment("n14 sections");
+  if (all.length) all[all.length - 1].after(marker);
+  sections.forEach((sec) => main.insertBefore(sec, marker));
+  marker.remove();
+  if (nav) {
+    const buttons = [...nav.children];
+    const byId = new Map(NS_SECTIONS.map(([id], i) => [id, buttons[i]]));
+    N14_ORDER.forEach((id) => byId.get(id) && nav.append(byId.get(id)));
+  }
+  // 2. Each section: order and size the panels, open them, fill any short row
+  for (const sec of sections) {
+    const grid = sec.querySelector(".accuracy-grid");
+    if (!grid) continue;
+    const layout = N14_LAYOUT[sec.id] || [];
+    const items = [...grid.children];
+    const rank = (el) => { const i = layout.findIndex(([t]) => n14Title(el).startsWith(t)); return i < 0 ? 99 : i; };
+    items.sort((x, y) => rank(x) - rank(y)).forEach((el) => grid.append(el));
+    const spans = items.map((el) => {
+      if (!el.matches("details.panel")) return 12;
+      const title = n14Title(el);
+      if (!title.startsWith("Look up any test result") && !el.open) openPanel(el);
+      const hit = layout.find(([t]) => title.startsWith(t));
+      return hit ? hit[1] : 6;
+    });
+    let used = 0;
+    spans.forEach((span, i) => {
+      if (used + span > 12) used = 0;
+      const next = spans[i + 1];
+      if (next === undefined || used + span + next > 12) spans[i] = 12 - used;
+      used = (used + spans[i]) % 12;
+    });
+    items.forEach((el, i) => el.style.setProperty("--span", spans[i]));
+    grid.classList.add("n14-grid");
+  }
+  // 3. Things to click
+  document.querySelectorAll(".ns-kpis .kpi").forEach((card) => {
+    const tone = [...card.classList].find((c) => /^k\d$/.test(c));
+    const target = N14_KPI_TARGETS[tone];
+    if (!target) return;
+    card.classList.add("n14-click");
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.title = "Show the chart behind this number";
+    card.addEventListener("click", () => n14Jump(target));
+    card.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); n14Jump(target); } });
+  });
+  n14GrowthToggles();
+  n14FunnelInfo();
+  n14ReportsCard();
+  n14HeatLinks();
+}
+// Line growth: legend becomes on/off toggles beside the chart
+function n14GrowthToggles() {
+  const panel = n14FindPanel("How fast does the line grow?");
+  const entry = panel && charts.find((c) => panel.contains(c.holder));
+  if (!entry) return;
+  const body = panel.querySelector(".faq-body");
+  const all = entry.cfg.series.slice();
+  const on = new Set(all.map((x) => x.name));
+  const legend = body.querySelector(".legend");
+  const toggles = h("div", { class: "n14-toggles", role: "group", "aria-label": "Lines to show" },
+    h("span", { class: "n14-side-label" }, "Show"),
+    all.map((ser) => h("button", {
+      type: "button", class: "n14-toggle", "aria-pressed": "true", style: `--c:${ser.color}`,
+      onclick: (ev) => {
+        if (on.has(ser.name) && on.size === 1) return; // keep at least one line
+        if (on.has(ser.name)) on.delete(ser.name); else on.add(ser.name);
+        ev.currentTarget.setAttribute("aria-pressed", String(on.has(ser.name)));
+        entry.cfg.series = all.filter((x) => on.has(x.name));
+        drawChart(entry.holder, entry.cfg);
+      },
+    }, h("i", { class: ser.dash ? "dashed" : "" }), ser.name)));
+  const takeaway = body.firstElementChild && body.firstElementChild.tagName === "P" ? body.firstElementChild : null;
+  const side = h("div", { class: "n14-side" }, toggles, takeaway);
+  if (legend) legend.remove();
+  const chartBox = h("div", { class: "n14-chartbox" });
+  entry.holder.before(chartBox);
+  chartBox.append(entry.holder);
+  body.prepend(h("div", { class: "n14-split" }, chartBox, side));
+  requestAnimationFrame(() => drawChart(entry.holder, entry.cfg));
+}
+// Cleaning funnel: hover, tap or tab to a step to see what it kept, what it dropped and why
+function n14FunnelInfo() {
+  const rows = [...document.querySelectorAll(".funnel .funnel-row")];
+  if (!rows.length) return;
+  const empty = "Hover or tap a step to see what it dropped and why.";
+  const info = h("p", { class: "n14-info", "aria-live": "polite" }, empty);
+  rows[rows.length - 1].parentElement.after(info);
+  const nums = rows.map((r) => Number((r.querySelector(".funnel-bar span") || {}).textContent.replace(/,/g, "")));
+  rows.forEach((r, i) => {
+    r.tabIndex = 0;
+    const label = r.querySelector(".funnel-label").textContent;
+    const cut = r.querySelector(".funnel-cut").textContent.replace(/^−[\d,]+\s*/, "");
+    const text = i === 0
+      ? `${nums[0].toLocaleString()} reports pulled out ${cut}: the AI read every comment and kept anything about a rush line, ticket count or outcome.`
+      : `${nums[i - 1].toLocaleString()} → ${nums[i].toLocaleString()}: kept ${pct(nums[i] / nums[i - 1])}, dropped ${(nums[i - 1] - nums[i]).toLocaleString()} (${cut}).`;
+    const show = () => {
+      rows.forEach((x) => x.classList.toggle("n14-hot", x === r));
+      info.replaceChildren(h("b", {}, label), ": ", text);
+    };
+    r.addEventListener("pointerenter", show);
+    r.addEventListener("focus", show);
+  });
+  info.parentElement.addEventListener("pointerleave", () => { rows.forEach((x) => x.classList.remove("n14-hot")); info.textContent = empty; });
+}
+// Reports per show: click a show to see its numbers, its page and its test results
+function n14ReportsCard() {
+  const panel = n14FindPanel("How many reports does each show have?");
+  if (!panel) return;
+  const shows = allShows();
+  const dayFor = (id) => Object.keys(state.data.days).sort().find((d) => state.data.days[d].some((x) => x.show_id === id));
+  const card = h("div", { class: "n14-info n14-card", "aria-live": "polite" }, "Click a show to see its numbers.");
+  panel.querySelector(".bars").after(card);
+  panel.querySelectorAll(".bar-row").forEach((row) => {
+    const name = row.querySelector(".bar-label").textContent;
+    const e = shows.find((x) => x.name === name);
+    if (!e) return;
+    row.classList.add("n14-click");
+    row.tabIndex = 0;
+    const open = () => {
+      panel.querySelectorAll(".bar-row.n14-hot").forEach((x) => x.classList.remove("n14-hot"));
+      row.classList.add("n14-hot");
+      const day = dayFor(e.show_id);
+      card.replaceChildren(
+        h("b", {}, e.name), h("br"),
+        `${e.line_reports} line reports · ${e.reports_per_week} reports a week · ${e.group === 1 ? "full prediction" : "not enough reports for a prediction yet"}`,
+        h("span", { class: "n14-card-links" },
+          day ? h("a", { href: `#/show/${day}/${encodeURIComponent(e.show_id)}` }, "Open its show page →") : null,
+          e.group === 1 ? h("a", { href: `#/nerd-stats/${encodeURIComponent(e.show_id)}` }, "See its test results →") : null));
+    };
+    row.addEventListener("click", open);
+    row.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); open(); } });
+  });
+}
+// Busiest grid: show names open the show page
+function n14HeatLinks() {
+  const shows = allShows();
+  const dayFor = (id) => Object.keys(state.data.days).sort().find((d) => state.data.days[d].some((x) => x.show_id === id));
+  document.querySelectorAll(".heat tbody th.show-name").forEach((th) => {
+    const e = shows.find((x) => x.name === th.textContent);
+    const day = e && dayFor(e.show_id);
+    if (day) th.replaceChildren(h("a", { class: "n14-show-link", href: `#/show/${day}/${encodeURIComponent(e.show_id)}` }, e.name));
+  });
+}
+/* ========== end N14 g ========== */
+
 /* ---------- routing ---------- */
 function setNav(which) {
   document.querySelectorAll("[data-nav]").forEach((a) => {
@@ -2169,10 +2517,12 @@ function route() {
   charts.length = 0;
   tooltip.hidden = true;
   const parts = location.hash.replace(/^#\/?/, "").split("/");
+  app.classList.toggle("n14-narrow", N14.d && parts[0] === "show"); // N14 d: show page in the middle 2/3
   if (parts[0] === "nerd-stats" || parts[0] === "accuracy") {
     setNav("nerd-stats");
     renderNerdStats();
-    if (N13.e) n13NerdDashboard(); // N13 e
+    if (N13.e && !N14.g) n13NerdDashboard(); // N13 e (N14 g takes over when on)
+    if (N14.g) n14NerdDashboard(); // N14 g
     if (N13.g && parts[1]) setTimeout(() => n13FocusShow(decodeURIComponent(parts[1])), 60); // N13 g
   } else if (parts[0] === "show" && parts[1] && parts[2]) {
     setNav("home");
