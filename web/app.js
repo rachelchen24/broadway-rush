@@ -6,13 +6,17 @@ const state = {
   view: (() => { try { return localStorage.getItem("br-view") === "carousel" ? "carousel" : "grid"; } catch { return "grid"; } })(),
   sort: { key: "chance", reversed: false },
   weekSort: { key: "arrival", reversed: false }, // This week view: latest arrival first (SPEC 2.2b)
-  filters: { rush: new Set(), type: new Set(), days: new Set(), runtime: new Set(), showtime: new Set() },
+  filters: { rush: new Set(), type: new Set(), days: new Set(), runtime: new Set(), showtime: new Set(), star: new Set() }, // star: N13 c
 };
 const app = document.getElementById("app");
 const footer = document.getElementById("footer");
 const modal = document.getElementById("modal");
 const tooltip = document.getElementById("tooltip");
 const NOT_AVAILABLE = "Not available yet";
+/* N13 (SPEC 2.8, Rachel's UI round 2026-11-23): one switch per lettered piece. To undo a piece, set it to false:
+   its CSS only applies under body.n13-<letter> and its JS (the "N13 <letter>" sections near the end) only runs when on. */
+const N13 = { a: true, b: true, c: true, d: true, e: true, f: true, g: true };
+for (const [k, on] of Object.entries(N13)) if (on) document.body.classList.add(`n13-${k}`);
 
 /* ---------- small helpers ---------- */
 function h(tag, attrs, ...children) {
@@ -618,7 +622,7 @@ function renderHome(selected) {
   // Week view: Days showing means "days I can go", so only those days are compared.
   const allowed = (d) => !state.filters.days.size || state.filters.days.has(DAY_KEYS[dayIndex(d)]);
 
-  const picker = h("div", { class: "day-picker", role: "group", "aria-label": "Pick a day" },
+  const picker = N13.b ? n13CalendarStrip(dates, day, today, weekMode, anyMode) : h("div", { class: "day-picker", role: "group", "aria-label": "Pick a day" },
     dates.map((d) => h("button", {
       type: "button", class: "day-chip", "aria-pressed": d === day ? "true" : "false",
       onclick: () => { location.hash = `#/day/${d}`; },
@@ -671,6 +675,7 @@ function renderHome(selected) {
   // Show time (SPEC 2.8 N8, changed 2026-11-12): no 2-show-day filter; Any day has no performance times, so no row there.
   if (!anyMode) filterRows.push(chipRow("Show time", [{ key: "matinee", label: "Matinee" }, { key: "evening", label: "Evening" }], state.filters.showtime));
   else state.filters.showtime.clear();
+  if (N13.c && data.has_stars) filterRows.push(chipRow("Star in the cast", [{ key: "on", label: "★ Star in the cast" }], state.filters.star));
   if (state.filtersOpen === null) state.filtersOpen = window.matchMedia("(min-width: 700px)").matches;
   const filterSummary = h("summary", {}, "Filters");
   const filterBox = h("details", { class: "filters", open: state.filtersOpen, ontoggle: (ev) => { state.filtersOpen = ev.target.open; } },
@@ -686,7 +691,7 @@ function renderHome(selected) {
 
   state.paint = () => {
     const visible = entries.filter((e) => matchesFilters(e, anyMode, weekMode, allowed) && (!state.picksOnly || picks.has(e.show_id))
-      && (!weekMode || e.weekDays.some((x) => allowed(x.date))));
+      && (!weekMode || e.weekDays.some((x) => allowed(x.date))) && n13StarOk(e, day, weekMode, allowed));
     if (weekMode) for (const e of entries) e.best = e.group === 1 ? weekBest(e, allowed) : null;
     const { spec, reversed } = activeSort(anyMode, weekMode);
     document.getElementById("pick-count").textContent = `★ Show favorites (${picks.size})`;
@@ -717,6 +722,7 @@ function renderHome(selected) {
       const cls = `tiles${weekMode ? " week-tiles" : ""}${state.view === "carousel" ? " carousel-track" : ""}`;
       const track = h("div", { class: cls }, list.map((e) => tileFor(e, showtime)));
       if (state.view !== "carousel") return track;
+      if (N13.d) return n13Coverflow([...track.children], list); // N13 d: 3D coverflow instead of the flat row
       const step = (dir) => () => track.scrollBy({ left: dir * track.clientWidth * 0.9, behavior: "smooth" });
       return h("div", { class: "carousel" },
         h("button", { type: "button", class: "carousel-arrow prev", "aria-label": "Previous shows", onclick: step(-1) }, "‹"),
@@ -765,8 +771,8 @@ function renderHome(selected) {
     ? entries.flatMap((it) => it.weekDays.filter((x) => hasNumber(x.e)).map((x) => [x.date, x.e]))
     : anyMode ? [] : entries.filter(hasNumber).map((e) => [day, e]);
   setApp(
-    h("h1", { class: "sentence" }, anyMode ? "What's playing when you can go?" : weekMode ? "Which day should you go?" : "Is rush worth it this morning?"),
-    h("p", { class: "lede" }, anyMode
+    h("h1", { class: "sentence page-q" }, anyMode ? "What's playing when you can go?" : weekMode ? "Which day should you go?" : "Is rush worth it this morning?"),
+    h("p", { class: "lede page-q" }, anyMode
       ? "Planning further ahead: show facts only, with no chance or arrival time."
       : weekMode
         ? "Each show's best day this week: the latest you can get there and still probably get a ticket. Tap a day to see all its shows."
@@ -776,7 +782,7 @@ function renderHome(selected) {
     weekMode ? stripHolder : null,
     openNote(pairs),
     anyMode ? h("p", { class: "notice" }, "Predictions stop 7 days out, so these tiles don't have any. Schedules change and a show could close before your date, so confirm before you go.") : null,
-    h("div", { class: "controls" }, sortRow, viewRow, filterBox,
+    h("div", { class: "controls" }, N13.c ? h("div", { class: "n13-sortview" }, sortRow, viewRow) : [sortRow, viewRow], filterBox,
       h("div", { class: "control-row" }, picksToggle), resultLine),
     results);
   state.paint();
@@ -925,6 +931,7 @@ function renderDetails(day, id, fromWeek) {
     priceBlock(e));
   const back = h("a", { class: "back", href: backHref }, "← Back to shows");
 
+  if (N13.g && (anyMode || e.group === 1)) { n13ShowDashboard(e, day, back, head); return; } // N13 g
   if (anyMode) {
     setApp(back, head, h("p", { class: "notice" }, "Check back within 7 days of your date for a prediction. Schedules change, so confirm before you go."),
       h("div", { class: "detail-grid", style: "margin-top:12px" },
@@ -955,6 +962,7 @@ function renderDetails(day, id, fromWeek) {
       linkLine(lotteryLink(e), "Enter the lottery"), linkLine(digitalLink(e), "Open"),
       h("p", {}, seatsLine(e), "."),
       h("p", { class: "muted" }, "No line to predict. Few reports here doesn't mean low demand."));
+  if (N13.g) { n13ShowDashboard(e, day, back, head, note); return; } // N13 g
   setApp(back, head, h("div", { class: "detail-grid" },
     h("div", { class: "col" }, note, e.group === 2 ? busiestPanel(e, day) : null, factsPanel(e), policyPanel(e)), h("div", { class: "col" }, keyAppealsPanel(e, day), dealsPanel(e, day), savingsPanel(e), digitalPanel(e))));
 }
@@ -1867,6 +1875,289 @@ function openRefresh() {
 document.getElementById("open-report").addEventListener("click", () => { if (state.data) openReport(); });
 document.getElementById("open-refresh").addEventListener("click", () => { if (state.data) openRefresh(); });
 
+/* ========== N13 a: big centered title with stars around it (SPEC 2.8 N13 a) ========== */
+const N13_SPARKLE = "M12 0C13 8 16 11 24 12C16 13 13 16 12 24C11 16 8 13 0 12C8 11 11 8 12 0Z";
+const N13_STAR = "M12 1.5l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.6l-6.4 3.5L7 14l-5.3-5 7.2-.9z";
+function n13StarCluster(side) {
+  const box = h("span", { class: `n13-stars ${side}`, "aria-hidden": "true" });
+  [["n13-s1", N13_SPARKLE], ["n13-s2", N13_STAR], ["n13-s3", N13_SPARKLE], ["n13-s4", N13_STAR]].forEach(([cls, d]) => {
+    const svg = s("svg", { viewBox: "0 0 24 24", class: cls });
+    svg.append(s("path", { d }));
+    box.append(svg);
+  });
+  return box;
+}
+if (N13.a) {
+  const brand = document.querySelector(".site-header .brand");
+  const wrap = h("div", { class: "n13-title" });
+  brand.before(wrap);
+  wrap.append(n13StarCluster("left"), brand, n13StarCluster("right"));
+}
+/* ========== end N13 a ========== */
+
+/* ========== N13 b: calendar-icon day strip filling the full width (SPEC 2.8 N13 b) ==========
+   Same days and links as the old day picker; each box looks like a calendar date (month band, big number, weekday). */
+function n13CalendarStrip(dates, day, today, weekMode, anyMode) {
+  const box = (pressed, band, big, small, href, label) => h("button", {
+    type: "button", class: "n13-cal-day", "aria-pressed": pressed ? "true" : "false", "aria-label": label,
+    onclick: () => { location.hash = href; },
+  }, h("span", { class: "n13-cal-band" }, band), h("span", { class: "n13-cal-num" }, big), h("span", { class: "n13-cal-wd" }, small));
+  return h("div", { class: "n13-cal", role: "group", "aria-label": "Pick a day" },
+    dates.map((d) => box(d === day, dayName(d, { month: "short" }), String(parseDay(d).getDate()),
+      d === today ? "Today" : dayName(d, { weekday: "short" }), `#/day/${d}`, dayName(d, { weekday: "long", month: "long", day: "numeric" }))),
+    box(weekMode, "Week", "7", "Best day", "#/week", "This week: each show's best day"),
+    box(anyMode, "Any day", "∞", "Plan ahead", "#/any", "Any day: plan ahead"));
+}
+/* ========== end N13 b ========== */
+
+/* ========== N13 c: Sort + View side by side, filter groups in a grid, Nerd stats colors, "Star in the cast" filter ==========
+   The filter keeps shows with a high-profile star performing that day: the same starsOn check as the tile's star label
+   and Key appeals (the 20,000-views rule from N5). In This week, a star on any of your days counts; Any day uses today. */
+function n13StarOk(e, day, weekMode, allowed) {
+  if (!N13.c || !state.filters.star.size) return true;
+  if (weekMode) return e.weekDays.some((x) => allowed(x.date) && starsOn(x.e, x.date).length > 0);
+  return starsOn(e, day).length > 0;
+}
+/* ========== end N13 c ========== */
+
+/* ========== N13 g: the show page as a dashboard (SPEC 2.8 N13 g) ==========
+   Same panels as before, arranged in rows: big number cards, About table beside the picture + Key appeals, charts in
+   pairs, a full-width rush policy, a compact "why", and a Nerd stats button that opens Nerd stats on this show. */
+KPI_ICONS.clock = "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18M12 7v5l3.5 2";
+KPI_ICONS.ticket = "M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4zM14 7v10";
+function n13NerdButton(e) {
+  return h("a", { class: "n13-nerd-btn", href: `#/nerd-stats/${encodeURIComponent(e.show_id)}` },
+    "Nerd stats for this show ", h("span", { "aria-hidden": "true" }, "→"));
+}
+function n13Row(cls, ...items) {
+  const list = items.flat().filter(Boolean);
+  return list.length ? h("div", { class: `n13-row ${cls} n${list.length}` }, list) : null;
+}
+function n13AboutTable(e) {
+  const na = () => h("span", { class: "not-available" }, "not available");
+  const weeks = e.typical_ticket_weeks && e.typical_ticket_weeks < 4 ? ` (only ${e.typical_ticket_weeks} ${e.typical_ticket_weeks === 1 ? "week" : "weeks"} so far)` : "";
+  const rows = [
+    ["Play or musical", e.show_type],
+    state.data.has_show_facts ? ["Runtime", e.runtime_detail || runtimeText(e)] : null,
+    state.data.has_show_facts ? ["Days showing", e.days ? e.days.join(" ") : null] : null,
+    ["Typical ticket", e.typical_ticket !== null && e.typical_ticket !== undefined ? `${money(e.typical_ticket)}${weeks}` : null],
+    ["Seats sold", e.seats_sold_pct !== null && e.seats_sold_pct !== undefined ? seatsLine(e) : null],
+  ].filter(Boolean);
+  return h("section", { class: "panel n13-about" }, h("h2", {}, "About this show"),
+    h("table", { class: "n13-about-table" }, h("tbody", {}, rows.map(([k, v]) => h("tr", {}, h("th", { scope: "row" }, k), h("td", {}, v || na()))))),
+    h("p", { class: "muted n13-small" }, "Typical ticket: the average paid over recent weeks, including rush and discounts."),
+    e.facts_review ? h("p", { class: "notice" }, "We're not sure about the runtime or days for this show. Check before you plan around them.") : null,
+    e.facts_source ? h("p", { class: "muted n13-small" }, `Runtime and days: ${e.facts_source}.`) : null);
+}
+function n13Why(e) {
+  const list = (xs, empty) => (xs.length ? h("ul", { class: "reasons" }, xs.map((t) => h("li", {}, t))) : h("p", { class: "muted" }, empty));
+  return h("section", { class: "panel n13-why" }, h("h2", {}, "Why this prediction"),
+    h("div", { class: "n13-why-cols" },
+      h("div", {}, h("h3", {}, "The line"), list(e.drivers.line, "Nothing stands out from an average day.")),
+      h("div", {}, h("h3", {}, "The tickets"), list(e.drivers.tickets, "Nothing stands out from a typical show."))),
+    h("p", { class: "muted n13-small" }, `Compared with an average day across shows. Built from ${e.data.line_points} line reports and ${e.data.cutoff_days} days with ticket information for this show. One prediction per day: most reports don't say matinee or evening.`),
+    n13NerdButton(e));
+}
+function n13Kpis(e) {
+  const t = e.tickets && e.tickets.levels && e.tickets.levels["80"];
+  const l = e.line_at_9am;
+  return h("div", { class: "ns-kpis n13-kpis" },
+    kpi("k1", "check", "Chance at 9:00 AM", pct(e.chance_9am), e.verdict, `Opens ${time12(e.open_time || NORMAL_OPEN)}`),
+    kpi("k2", "clock", "Get there by", time12(e.arrival), "for the best shot", `${pct(state.data.placeholders.target_chance)} target`),
+    e.tickets ? kpi("k3", "ticket", "Rush tickets", `~${e.tickets.median}`, "about", t ? `80%: ${t[0]} to ${t[1]}` : "") : null,
+    l ? kpi("k4", "people", "Line at 9:00 AM", `~${Math.round(l.median)}`, "people ahead", `Likely ${Math.round(l.lo)} to ${Math.round(l.hi)}`) : null);
+}
+function n13ShowDashboard(e, day, back, head, note = null) {
+  const anyMode = day === "any";
+  // Header: the Nerd stats button sits under the price, top right
+  head.classList.add("n13-head");
+  const price = head.children.length > 1 ? head.lastElementChild : null;
+  head.append(h("div", { class: "n13-head-right" }, price, n13NerdButton(e)));
+  const pic = e.image ? h("figure", { class: "n13-pic" },
+    h("img", { src: e.image, alt: `${e.name} artwork`, loading: "lazy", decoding: "async", onerror: (ev) => ev.target.closest("figure").remove() })) : null;
+  const appeals = keyAppealsPanel(e, day);
+  const side = pic || appeals ? h("div", { class: "n13-stack" }, pic, appeals) : null;
+  const policy = policyPanel(e);
+  policy.classList.add("n13-policy");
+  const rows = anyMode
+    ? [h("p", { class: "notice" }, "Check back within 7 days of your date for a prediction. Schedules change, so confirm before you go."),
+      n13Row("about-side", n13AboutTable(e), side), n13Row("extras", dealsPanel(e, day), savingsPanel(e), digitalPanel(e)), policy]
+    : e.group === 1
+      ? [n13Kpis(e), n13Row("about-side", n13AboutTable(e), side), n13Row("pair", ticketsPanel(e), chancePanel(e)),
+        n13Row("pair", linePanel(e), busiestPanel(e, day)), n13Row("extras", dealsPanel(e, day), savingsPanel(e), digitalPanel(e)), policy, n13Why(e)]
+      : [n13Row("pair", note, e.group === 2 ? busiestPanel(e, day) : null), n13Row("about-side", n13AboutTable(e), side),
+        n13Row("extras", dealsPanel(e, day), savingsPanel(e), digitalPanel(e)), policy];
+  setApp(back, head, h("div", { class: "n13-dash" }, rows));
+}
+// #/nerd-stats/<show_id>: open the "Look up any test result" panel filtered to that show
+function n13FocusShow(id) {
+  const e = allShows().find((x) => x.show_id === id);
+  const sel = document.querySelector(".browse-filters select");
+  if (!e || !sel) return;
+  const panel = sel.closest("details");
+  if (panel) panel.open = true;
+  const opt = [...sel.options].find((o) => o.textContent === e.name);
+  if (opt) { sel.value = opt.value; sel.dispatchEvent(new Event("change")); }
+  (panel || sel).scrollIntoView({ block: "start" });
+}
+/* ========== end N13 g ========== */
+
+/* ========== N13 e: Nerd stats as a dashboard grid (SPEC 2.8 N13 e) ==========
+   Each section becomes a 12-column grid: charts side by side (half width), wide tables across the full width, small
+   panels a third. Panels open so several charts show at once (except the long results browser). A panel left alone at
+   the end of a row stretches to fill it, so there's never an empty half. Under 860px it's one column again. */
+const N13_WIDE = ["Which shows and days are busiest?", "The final score", "Does it beat the simple lookup table", "Look up any test result"];
+const N13_THIRD = ["What did it cost?"];
+const N13_CLOSED = ["Look up any test result"];
+function n13NerdDashboard() {
+  for (const grid of document.querySelectorAll(".ns-section .accuracy-grid")) {
+    const items = [...grid.children];
+    const spans = items.map((el) => {
+      const title = (el.querySelector(":scope > summary h3") || {}).textContent || "";
+      if (!el.matches("details.panel")) return 12; // number cards and other blocks
+      if (!N13_CLOSED.some((t) => title.startsWith(t)) && !el.open) openPanel(el);
+      if (N13_WIDE.some((t) => title.startsWith(t))) return 12;
+      return N13_THIRD.some((t) => title.startsWith(t)) ? 4 : 6;
+    });
+    // Pack into rows of 12; the last item on a short row takes the rest of it
+    let used = 0;
+    spans.forEach((span, i) => {
+      if (used + span > 12) used = 0;
+      const next = spans[i + 1];
+      if (next === undefined || used + span + next > 12) spans[i] = 12 - used;
+      used = (used + spans[i]) % 12;
+    });
+    items.forEach((el, i) => el.style.setProperty("--span", spans[i]));
+  }
+}
+/* ========== end N13 e ========== */
+
+/* ========== N13 d: 3D coverflow carousel (SPEC 2.8 N13 d; docs/reference/glassy-coverflow-carousel.md) ==========
+   Rebuilt in plain JS from the reference's geometry: the center tile full size and flat, two on each side stepping
+   back, shrinking 8% each, tilting up to 42° and darkening. Drag/swipe, ← → (Home/End), or the ‹ › buttons rotate it;
+   it wraps around. Clicking a side tile brings it to the center; clicking the center tile opens the show page.
+   Keeps the page's sort order. No autoplay. Reduced motion keeps the 3D layout without the animation. */
+function n13Coverflow(cards, list) {
+  const n = cards.length;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let index = 0, drag = 0, cardW = 300, step = 234;
+  const lastD = new Array(n).fill(null);
+  // Side tiles are inert (not tabbable, links off); a click on one rotates it to the center (see the stage click below)
+  const slots = cards.map((card) => h("div", { class: "cf-card" }, card));
+  const deck = h("div", { class: "cf-deck" }, slots);
+  const stage = h("div", {
+    class: "cf-stage", tabindex: "0", role: "region", "aria-roledescription": "carousel", "aria-label": "Shows: use the left and right arrow keys",
+  }, h("div", { class: "cf-floor", "aria-hidden": "true" }), deck);
+  const title = h("p", { class: "cf-title" });
+  const sub = h("p", { class: "cf-sub" });
+  const count = h("span", { class: "cf-count" });
+  const live = h("p", { class: "cf-live", "aria-live": "polite" });
+  const btn = (dir, label, text) => h("button", { type: "button", class: "cf-btn", "aria-label": label, onclick: () => go(index + dir) }, text);
+  const dock = h("div", { class: "cf-dock" }, count, h("span", { class: "cf-sep", "aria-hidden": "true" }), btn(-1, "Previous show", "‹"), btn(1, "Next show", "›"));
+  const wrap = h("div", { class: "cf" }, stage,
+    h("div", { class: "cf-info" }, title, sub, dock, h("p", { class: "cf-hint" }, "Drag to explore or ← → to browse")), live);
+
+  // Shortest signed distance from the center, so it wraps around both ways
+  const dist = (i) => {
+    let d = i - index;
+    if (d > n / 2) d -= n;
+    if (d < -n / 2) d += n;
+    return d;
+  };
+  function layout(animate = true) {
+    slots.forEach((slot, i) => {
+      const d = dist(i);
+      const off = d + drag / step;
+      const a = Math.min(Math.abs(off), 3);
+      const hidden = Math.abs(d) > 2;
+      // No animation while dragging, under reduced motion, or when a tile wraps to the other side (it would fly across)
+      const jump = lastD[i] !== null && Math.abs(d - lastD[i]) > 1.5;
+      slot.style.transition = !animate || reduce || jump || drag ? "none" : "";
+      slot.style.width = `${cardW}px`;
+      slot.style.transform = `translate3d(${off * step}px, 0, ${-a * 130}px) rotateY(${-Math.max(-42, Math.min(42, off * 30))}deg) scale(${1 - a * 0.08})`;
+      slot.style.zIndex = String(10 - Math.round(Math.abs(off)));
+      slot.style.opacity = hidden ? "0" : "1";
+      slot.style.setProperty("--dim", String(Math.min(Math.abs(off), 2) * 0.19));
+      slot.classList.toggle("is-center", d === 0);
+      slot.style.pointerEvents = hidden ? "none" : "";
+      cards[i].inert = d !== 0;
+      lastD[i] = d;
+    });
+    const e = list[index];
+    title.textContent = e.name;
+    sub.textContent = [e.theater, e.chance_9am !== undefined && e.chance_9am !== null ? `${pct(e.chance_9am)} chance at 9:00 AM` : null].filter(Boolean).join(" · ");
+    count.textContent = `${String(index + 1).padStart(2, "0")} / ${String(n).padStart(2, "0")}`;
+    live.textContent = `${e.name}. ${index + 1} of ${n}.`;
+  }
+  function go(i) { index = ((i % n) + n) % n; drag = 0; layout(); }
+  function size() {
+    if (!stage.isConnected) return;
+    const w = stage.clientWidth;
+    cardW = Math.min(420, Math.round(w * (w < 500 ? 0.84 : 0.72))); // wider on phones so long names fit
+    step = cardW * 0.78;
+    stage.style.perspective = `${window.innerWidth >= 1600 ? 1250 : window.innerWidth < 600 ? 900 : 1100}px`;
+    layout(false);
+    const tallest = Math.max(...slots.map((x) => x.firstChild.offsetHeight));
+    stage.style.height = `${tallest + 28}px`;
+  }
+  // Drag / swipe: horizontal after 8px sideways, cancelled if mostly vertical (12px) so the page still scrolls
+  let start = null, horizontal = false, suppressUntil = 0;
+  stage.addEventListener("pointerdown", (ev) => {
+    if (ev.button !== 0) return;
+    start = { x: ev.clientX, y: ev.clientY, t: performance.now(), id: ev.pointerId };
+    horizontal = false;
+  });
+  stage.addEventListener("pointermove", (ev) => {
+    if (!start || ev.pointerId !== start.id) return;
+    const dx = ev.clientX - start.x, dy = ev.clientY - start.y;
+    if (!horizontal) {
+      if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx)) { start = null; return; }
+      if (Math.abs(dx) < 8) return;
+      horizontal = true;
+      try { stage.setPointerCapture(ev.pointerId); } catch { /* pointer already gone */ }
+    }
+    drag = dx;
+    layout(false);
+  });
+  const end = (ev) => {
+    if (!start || ev.pointerId !== start.id) return;
+    const dx = ev.clientX - start.x;
+    const speed = Math.abs(dx) / Math.max(1, performance.now() - start.t);
+    if (horizontal) {
+      suppressUntil = performance.now() + 300;
+      const far = Math.abs(dx) > Math.min(55, cardW * 0.18) || (Math.abs(dx) > 14 && speed > 0.35);
+      drag = 0;
+      if (far) go(index + (dx < 0 ? 1 : -1)); else layout();
+    }
+    start = null;
+    horizontal = false;
+  };
+  stage.addEventListener("pointerup", end);
+  stage.addEventListener("pointercancel", end);
+  stage.addEventListener("click", (ev) => { if (performance.now() < suppressUntil) { ev.preventDefault(); ev.stopPropagation(); } }, true);
+  // Inert side tiles let clicks fall through to the deck, so find the visible side tile under the pointer
+  stage.addEventListener("click", (ev) => {
+    if (slots[index].contains(ev.target)) return;
+    const hit = slots.map((slot, i) => ({ i, r: slot.getBoundingClientRect(), z: Number(slot.style.zIndex), on: slot.style.opacity === "1" }))
+      .filter((x) => x.on && x.i !== index && ev.clientX >= x.r.left && ev.clientX <= x.r.right && ev.clientY >= x.r.top && ev.clientY <= x.r.bottom)
+      .sort((x, y) => y.z - x.z)[0];
+    if (hit) go(hit.i);
+  });
+  stage.addEventListener("keydown", (ev) => {
+    const to = { ArrowLeft: index - 1, ArrowRight: index + 1, Home: 0, End: n - 1 }[ev.key];
+    if (to === undefined) return;
+    ev.preventDefault();
+    go(to);
+  });
+  const ro = new ResizeObserver(() => { if (!stage.isConnected) { ro.disconnect(); return; } size(); });
+  ro.observe(stage);
+  requestAnimationFrame(size);
+  // Pictures load after the first layout, so tiles grow: resize once each one lands
+  stage.querySelectorAll("img").forEach((img) => img.addEventListener("load", () => size(), { once: true }));
+  return wrap;
+}
+/* ========== end N13 d ========== */
+
 /* ---------- routing ---------- */
 function setNav(which) {
   document.querySelectorAll("[data-nav]").forEach((a) => {
@@ -1881,6 +2172,8 @@ function route() {
   if (parts[0] === "nerd-stats" || parts[0] === "accuracy") {
     setNav("nerd-stats");
     renderNerdStats();
+    if (N13.e) n13NerdDashboard(); // N13 e
+    if (N13.g && parts[1]) setTimeout(() => n13FocusShow(decodeURIComponent(parts[1])), 60); // N13 g
   } else if (parts[0] === "show" && parts[1] && parts[2]) {
     setNav("home");
     renderDetails(parts[1], decodeURIComponent(parts[2]), parts[3] === "week");

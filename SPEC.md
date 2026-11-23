@@ -237,7 +237,8 @@ All of this goes in the predictions file, so the site still reads only that file
 | N10 | Special-deal flag on the site (not in the model) | 2026-11-11 | ✅ built 2026-11-11 (local) for the 4 deals on the policy list; dated deals file is empty |
 | N11 | NYU calendar, one model input (~~six schools, four inputs~~) | 2026-11-11 | 🔶 input built 2026-11-11 from the calendar I pasted (`nyu_session`: 0 break, 1 classes, 2 finals, 3 free and in town: one-day holidays and the 3 days before a term, my call 2026-11-11; summer counts as a break); not tested yet (N9, Nov 17–19) |
 | N12 | Nerd stats visual upgrade: 8 charts in the cleaning-funnel slide's marquee style (picked 2026-11-12, list below) | 2026-11-12 | 📝 not built, waiting for my go |
-| N13 | UI feedback round (my review of the live site, 2026-11-23): bigger centered title, calendar-style day strip filling the width, tidier sort/view/filters, "Star in the cast" filter, 3D carousel, Nerd stats as a dashboard, Nerd stats colors on the customer side, cleaner show page with picture | 2026-11-23 | 📝 written down, not built. I'll prompt the build from another chat. Everything in it is revertable: if I hate a piece, it gets undone |
+| N13 | UI feedback round (my review of the live site, 2026-11-23): bigger centered title, calendar-style day strip filling the width, tidier sort/view/filters, "Star in the cast" filter, 3D carousel, Nerd stats as a dashboard, Nerd stats colors on the customer side, cleaner show page with picture | 2026-11-23 | ✅ 2026-11-23: all seven pieces built (a title, b calendar strip, c sort/view/filters + "Star in the cast", d 3D coverflow, e Nerd stats dashboard, f gradient text and colors, g show page dashboard). Each piece has a switch in `web/app.js` (`const N13`) and its own commented CSS/JS blocks, so any one can be undone |
+| N14 | UI feedback round 2 (my review after N13, 2026-11-23): gold marquee title, bigger sort/view/filter text, favorites next to sort/view, same-size show images, show page leads with the predictions (no savings), narrower show page, Nerd stats as a real interactive dashboard | 2026-11-23 | 📝 written down, not built. Same revertable-pieces rule as N13 |
 
 N1–N4 and N10 are website work. **N5–N9 are data and model work**: their model parts belong to the final-model slot (Nov 17–19). N8 also changes the site.
 
@@ -423,7 +424,7 @@ After all the new inputs are in, measure each one's role and remove the ones tha
 - **Still to decide (me, later):** the bottom half of Nerd stats ("How good is it?" and "Model vs. ground truth") doesn't make sense to me yet: Claude explains each chart better or we cut them.
 - Same rules as the other charts: numbers come only from the predictions file, readable at phone width, text contrast checked, and a plain table or text for screen readers.
 
-**N13. UI feedback round (my review, 2026-11-23; not built)**
+**N13. UI feedback round (my review, 2026-11-23; ✅ built 2026-11-23, all pieces a–g)**
 Big picture: the customer side is boring and too much of it hugs the left edge. More color, less text, centered layouts, and dashboards instead of one long scroll. Rule for the whole site: **if a block sits all on the left with empty space on the right, center it or spread it across the width.** Stays dark purple (never black, §2.4). Each piece below is separate, so any one can be reverted without touching the others.
 
 *a. Header / title ("Broadway Rush")*
@@ -472,6 +473,56 @@ Big picture: the customer side is boring and too much of it hugs the left edge. 
 - Keep everything else I asked for on show pages before.
 
 *Done when:* each piece matches the above at desktop and phone width (no sideways scroll, 16px side gutters), text contrast still passes on dark purple, `?v=` bumped on `app.js` and `styles.css`, and nothing from earlier builds is lost.
+
+**N14. UI feedback round 2 (my review of N13, 2026-11-23; not built)**
+N13 looks great overall: the bigger centered title, the filters and the 3D carousel stay. This round fixes what's left. **Same rules as N13:** one lettered piece at a time, each in its own commented CSS/JS block (and an `N14` switch like `N13`'s) so I can revert any piece; dark purple, never black; check at desktop and phone width.
+
+**The feeling I want (applies to everything):** someone who loves Broadway and loves data opens this and thinks "this is everything I ever wanted to know about rush tickets", the way I felt the first time I opened the Garmin app. Beautiful, with personality, Broadway marquee charm. **Not generic, not "AI-looking"** (no Gemini-style sparkles, no default gradients everywhere).
+
+*a. Title: a gold marquee sign*
+- Color: **mostly yellow/gold**, with only a little pink and purple (today it's mostly pink and purple).
+- **Replace the moving side stars** (they look like the Gemini logo, very AI). Instead, **put the whole headline inside a Broadway marquee sign**: a frame with light bulbs all around the edge.
+- The bulbs **blink or chase gently**, never distracting (slow, soft). Reduced motion: bulbs stay lit, no blinking.
+
+*b. Sort, View, Filters and Show favorites*
+- Filters: no complaints, keep them.
+- Sort and View get lost next to the big calendar strip: make the **text on Sort, View and Filters a bit bigger** (a little, not a lot).
+- **Show favorites moves next to Sort and View** on the same row. Today it hangs by itself under Filters.
+
+*c. Same-size show images*
+- Every tile, carousel card and show page image is **the same size and shape** (one fixed aspect ratio, cropped to fill).
+- **A show with no picture gets a generic theater image** (stage, curtain, people on stage), the same one for every such show. Any image is fine, but it must be **free to use**: a public-domain / CC0 photo (e.g. Wikimedia Commons or Unsplash, credited if the license asks), or a stage/curtain illustration we draw ourselves in SVG. Don't grab a random picture from a Google search (copyright). Saved in `web/`, not hotlinked.
+
+*d. Show page: the predictions come first*
+- ⚠️ Biggest fix: **today's show page shows only show details and none of the machine learning.** That's the whole point of the app. "Move the detail to Nerd stats" (N13 g) meant the boring stuff, not the predictions.
+- **First thing on the page, at the top:** the **expected number of rush tickets ± range** (with the chance of getting one), and **right next to it, the line length / how the line builds over the morning** (the line-over-time chart, with the arrival time to beat). Big and clear.
+- Then, below: the data confidence ("Limited data", "Probably easy"), About the show, Key appeals, Rush policy, etc.
+- **Remove everything about "how much you'd save"** everywhere on the site: the savings panel, "what you'd save", and the typical ticket price shown as a saving. It looks like a coupon-clipping app; this is a Broadway rush machine-learning app. (~~§2.6 "show pages get … what you'd save"~~ and N3's savings wording are retired. The typical ticket price can stay only as a plain fact in About the show, if at all.)
+- **Colors:** the show name (e.g. "Hadestown") keeps the gradient. **The panel headings ("Limited data", "Probably easy", "About this show", "Key appeals", etc.) go back to the earlier gold.** Too much color right now.
+- **The pink vertical line on the left of every panel:** remove it, or make every one gold. No pink stripes.
+- **No blank holes:** panels side by side must end at the same height, or the layout reflows to fill the space. Example today (Hadestown): name, picture and Key appeals on the right, About the show on the left, and empty space under About the show. Fill it (move a panel up, stretch, or rearrange).
+- **Width: the show page takes up the middle 2/3 of the screen or less** (centered), not the full width. Phone stays full width with gutters. (This page only; the home page stays wide.)
+
+*e. Nerd stats: top of the page*
+- The **jump buttons are too small; make them bigger.**
+- **Refresh button moves to the top-right corner as an icon** (circular-arrow refresh icon). On hover it says "Refresh". Only I use it, so it doesn't need to explain itself to viewers.
+
+*f. Nerd stats: "Which shows and days are busiest?" grid*
+- **Hover today turns the cell dark/black; don't.** On hover the cell changes to a **light pink** and you can still tell how busy it was (the level still shows).
+- **The hover box covers the numbers.** Keep its information (it's useful), but show it **somewhere that doesn't cover the grid** (e.g. a fixed info line or side panel next to the grid).
+- **The hover box color: pink**, not the current brown.
+- **The Show column: bigger text, less blank space.**
+
+*g. Nerd stats: a real dashboard, interactive*
+- **Every question heading is gold.**
+- **N13 e didn't go far enough:** it still reads as one long scroll. I want **left / center / right panels and top / bottom**, several things visible at once.
+- **Small boxes don't get a full row.** Any box with lots of empty space moves to the side and pairs with another. Examples: "What did it cost?" (huge empty middle) → half width or less; "Final score, 3 locked months" sits **side by side with "Does it beat the simple lookup table?"**. Bigger text, less blank space in both.
+- Charts with the right amount of space (the graph panels) stay as they are; that's the good spacing.
+- **"How fast does the line grow?"** takes about half the width, with its legend / options on the side.
+- **Order: most accurate and most impressive results at the top,** less accurate, less important, less impressive ones further down.
+- **Interactive everywhere:** this is a data science project, not just a customer page. Viewers can click and hover to dig in: switch which lines or shows a chart shows, hover the cleaning funnel steps for what was dropped and why, click a bar in "How many reports per show?" to see that show, and so on. Goal: **you can find out literally everything about the project by clicking around.** Some charts get more options than others, but never so many that it gets busy.
+
+*Done when:* all of the above at desktop and phone width, nothing from N13 lost apart from what's replaced here, and the site feels like a Broadway data fan's dream, not an AI template.
 
 **Not adding (my decision 2026-11-11):** the deal size (typical ticket minus rush price), subway disruptions, and rush policy changes.
 
