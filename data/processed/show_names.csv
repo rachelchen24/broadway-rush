@@ -1,430 +1,373 @@
 show,reports,show_id,how
-"Oh, Mary!",740,oh-mary,name
-Maybe Happy Ending,702,maybe-happy-ending,name
-Just in Time,701,just-in-time,name
-Death Becomes Her,641,death-becomes-her,name
-The Outsiders,582,outsiders,name
-The Great Gatsby,436,great-gatsby,name
-Operation Mincemeat,423,operation-mincemeat,name
-Sunset Boulevard,390,sunset-boulevard,name
-Outsiders,362,outsiders,name
-Gypsy,332,gypsy,name
-John Proctor is the Villain,327,john-proctor-is-the-villain,name
-The Rocky Horror Show,306,rocky-horror-show,name
-Chess,303,chess,name
-Buena Vista Social Club,269,buena-vista-social-club,name
-Oh Mary,253,oh-mary,name
-Mincemeat,216,operation-mincemeat,name
+Maybe Happy Ending,733,maybe-happy-ending,name
+Death Becomes Her,681,death-becomes-her,name
+Just in Time,665,just-in-time,name
+The Outsiders,581,outsiders,name
+"Oh, Mary!",579,oh-mary,name
+Outsiders,470,outsiders,name
+The Great Gatsby,446,great-gatsby,name
+Operation Mincemeat,419,operation-mincemeat,name
+John Proctor is the Villain,369,john-proctor-is-the-villain,name
+Sunset Boulevard,355,sunset-boulevard,name
+Gypsy,343,gypsy,name
+Chess,324,chess,name
+Oh Mary,324,oh-mary,name
+The Rocky Horror Show,318,rocky-horror-show,name
+Mincemeat,281,operation-mincemeat,name
+Death of a Salesman,232,death-of-a-salesman,name
+Buena Vista Social Club,232,buena-vista-social-club,name
 The Picture of Dorian Gray,215,picture-of-dorian-gray,name
-Death of a Salesman,213,death-of-a-salesman,name
-Just In Time,194,just-in-time,name
-Stereophonic,189,stereophonic,name
-Schmigadoon,189,schmigadoon,name
-Romeo + Juliet,186,romeo-and-juliet,name
-Stranger Things,175,stranger-things-the-first-shadow,name
+Stereophonic,202,stereophonic,name
+Schmigadoon,190,schmigadoon,name
+Romeo + Juliet,172,romeo-and-juliet,name
 Chicago,172,chicago,name
-Every Brilliant Thing,166,every-brilliant-thing,name
-The Lost Boys,161,lost-boys,name
-Suffs,149,suffs,name
-Hadestown,149,hadestown,name
-Cats,138,cats-the-jellicle-ball,name
-Hell's Kitchen,136,hells-kitchen,name
-Lost Boys,129,lost-boys,name
-Titanique,127,titanique,name
-Giant,125,giant,name
-Dead Outlaw,113,dead-outlaw,name
-Purpose,108,purpose,name
-Smash,103,smash,name
-Mamma Mia!,100,mamma-mia,name
-Schmigadoon!,100,schmigadoon,name
-Art,94,art,name
-The Notebook,85,notebook,name
-Proof,83,proof,name
-Oh Mary!,83,oh-mary,name
-Boop!,82,boop,name
-"Good Night, and Good Luck",73,good-night-and-good-luck,name
-Stranger Things: The First Shadow,69,stranger-things-the-first-shadow,name
-Othello,68,othello,name
+Suffs,170,suffs,name
+Hell's Kitchen,156,hells-kitchen,name
+The Lost Boys,151,lost-boys,name
+Stranger Things,147,stranger-things-the-first-shadow,name
+Every Brilliant Thing,147,every-brilliant-thing,name
+Lost Boys,134,lost-boys,name
+Cats,131,cats-the-jellicle-ball,name
+Smash,128,smash,name
+Titanique,123,titanique,name
+Giant,122,giant,name
+Mamma Mia!,118,mamma-mia,name
+Hadestown,117,hadestown,name
+Just In Time,110,just-in-time,name
+Purpose,103,purpose,name
+The Notebook,103,notebook,name
+Schmigadoon!,103,schmigadoon,name
+Dead Outlaw,99,dead-outlaw,name
+Art,93,art,name
+Boop!,83,boop,name
+"Good Night, and Good Luck",80,good-night-and-good-luck,name
+Stranger Things: The First Shadow,77,stranger-things-the-first-shadow,name
+Oh Mary!,75,oh-mary,name
+Proof,73,proof,name
 Two Strangers (Carry Me Back to Old Virginia),67,two-strangers-carry-a-cake-across-new-york,name
-Glengarry Glen Ross,63,glengarry-glen-ross,name
-Ragtime,63,ragtime,name
-Dorian Gray,57,picture-of-dorian-gray,name
-Our Town,57,our-town,name
-Two Strangers,57,two-strangers-carry-a-cake-across-new-york,name
-Water for Elephants,56,water-for-elephants,name
-Cats: The Jellicle Ball,55,cats-the-jellicle-ball,name
-Real Women Have Curves,47,real-women-have-curves,name
-Redwood,45,redwood,name
-Paranormal Activity,43,paranormal-activity,name
-Sunset Blvd.,42,sunset-boulevard,name
-Six,42,six,name
-Sunset Blvd,41,sunset-boulevard,name
-Harry Potter and the Cursed Child,39,harry-potter-and-the-cursed-child,name
-Hamilton,39,hamilton,name
-Once Upon a Mattress,38,once-upon-a-mattress,name
-Back to the Future,37,back-to-the-future,name
-Boop! The Musical,37,boop,name
-Cabaret,36,cabaret,name
-"Oh, Mary",34,oh-mary,name
-The Last Five Years,33,last-five-years,name
-Beetlejuice,32,beetlejuice,name
-Liberation,31,liberation,name
-Just in Time!,30,just-in-time,name
-Romeo and Juliet,29,romeo-and-juliet,name
-Beaches,28,beaches,name
-Just In Time!,27,just-in-time,name
-Fear of 13,27,fear-of-13,name
-& Juliet,27,and-juliet,name
-Dog Day Afternoon,27,dog-day-afternoon,name
+Water for Elephants,65,water-for-elephants,name
+Othello,58,othello,name
+Our Town,58,our-town,name
+"Oh, Mary",51,oh-mary,name
+Ragtime,48,ragtime,name
+Cats: The Jellicle Ball,48,cats-the-jellicle-ball,name
+Six,46,six,name
+Dorian Gray,43,picture-of-dorian-gray,name
+Back to the Future,42,back-to-the-future,name
+Harry Potter and the Cursed Child,42,harry-potter-and-the-cursed-child,name
+Sunset Blvd.,41,sunset-boulevard,name
+Paranormal Activity,39,paranormal-activity,name
+Beetlejuice,35,beetlejuice,name
+Once Upon a Mattress,33,once-upon-a-mattress,name
+Two Strangers,31,two-strangers-carry-a-cake-across-new-york,name
+Real Women Have Curves,30,real-women-have-curves,name
+Romeo and Juliet,28,romeo-and-juliet,name
+Illinoise,27,illinoise,name
+Wicked,27,wicked,name
 Joe Turner's Come and Gone,26,joe-turners-come-and-gone,name
-Illinoise,26,illinoise,name
-Swept Away,25,swept-away,name
-Twelfth Night,24,-,not_broadway
-Shakespeare in the Park,21,-,not_broadway
-The Phantom of the Opera,20,-,not_broadway
+& Juliet,25,and-juliet,name
+Beaches,24,beaches,name
+Liberation,24,liberation,name
+Fear of 13,23,fear-of-13,name
+Cabaret,21,cabaret,name
+The Last Five Years,21,last-five-years,name
+Swept Away,21,swept-away,name
+Glengarry Glen Ross,20,glengarry-glen-ross,name
 The Roommate,20,roommate,name
-Wicked,19,wicked,name
-The Hills of California,18,hills-of-california,name
-Wanted,16,wanted,name
-Two Strangers (Carry Me Home),16,two-strangers-carry-a-cake-across-new-york,name
-Sexual Misconduct of the Middle Classes,16,-,not_broadway
-The Wiz,15,wiz,name
-Downstate,15,downstate,name
-Rocky,15,rocky-horror-show,name
+The Hills of California,20,hills-of-california,name
+Hamilton,20,hamilton,name
+Two Strangers (Carry Me Home),19,two-strangers-carry-a-cake-across-new-york,name
+Inter Alia,19,,unmatched
+Sexual Misconduct of the Middle Classes,19,-,not_broadway
+Redwood,19,redwood,name
+Dog Day Afternoon,18,dog-day-afternoon,name
+Sunset Blvd,17,sunset-boulevard,name
+The Wiz,17,wiz,name
+Appropriate,16,appropriate,name
+Rocky,16,rocky-horror-show,name
+Galileo,16,,unmatched
+Between the Lines,15,-,not_broadway
+Just In Time!,14,just-in-time,name
+Just in Time!,14,just-in-time,name
+Mary,14,oh-mary,name+date
+Downstate,14,downstate,name
+Wanted,14,wanted,name
 Two Strangers (Carry Me Back to Old Virginny),14,two-strangers-carry-a-cake-across-new-york,name
-Appropriate,14,appropriate,name
-Hills of California,14,hills-of-california,name
-Good Night and Good Luck,13,good-night-and-good-luck,name
-Oedipus,13,oedipus,name
-Tammy Faye,13,tammy-faye,name
-Becky Shaw,13,becky-shaw,name
-An Enemy of the People,12,an-enemy-of-the-people,name
-The Crucible,12,,unmatched
-&Juliet,12,and-juliet,name
-"Good Night, and Good Luck.",12,good-night-and-good-luck,name
-Bug,12,bug,name
-Two Strangers (Carry a Cake Across New York),11,two-strangers-carry-a-cake-across-new-york,name
-Boop,11,boop,name
-Merrily We Roll Along,11,merrily-we-roll-along,name
-English,11,english,name
-Galileo,11,,unmatched
-Gatsby,10,great-gatsby,name
-Inter Alia,10,,unmatched
-Fallen Angels,10,fallen-angels,name
+Peter Pan Goes Wrong,13,-,not_broadway
+English,13,english,name
+"Good Night, and Good Luck.",13,good-night-and-good-luck,name
+An Enemy of the People,13,an-enemy-of-the-people,name
+Tammy Faye,12,tammy-faye,name
+Two Strangers (Carry Me Back),12,two-strangers-carry-a-cake-across-new-york,name
+The Rocky Horror Picture Show,12,rocky-horror-show,name
+Good Night and Good Luck,12,good-night-and-good-luck,name
+Fallen Angels,12,fallen-angels,name
+Every Beautiful Thing,12,every-brilliant-thing,name
+Hills of California,12,hills-of-california,name
+Boop! The Musical,11,boop,name
+2 Strangers,10,two-strangers-carry-a-cake-across-new-york,name
 The 25th Annual Putnam County Spelling Bee,10,-,not_broadway
-Billy Crystal,10,860,name
-Rocky Horror Show,10,rocky-horror-show,name
-Yellow Face,9,yellow-face,name
-Two Strangers (Carry Me Back),9,two-strangers-carry-a-cake-across-new-york,name
-Job,9,job,name
-Heathers,8,-,not_broadway
-2 Strangers,8,two-strangers-carry-a-cake-across-new-york,name
-Moulin Rouge! The Musical,8,moulin-rouge,name
+Becky Shaw,10,becky-shaw,name
+"Hello, Dolly!",10,,unmatched
+Gigi,9,-,not_broadway
+O Mary,9,oh-mary,fuzzy
+Moulin Rouge! The Musical,9,moulin-rouge,name
+Rent,8,-,not_broadway
+Creditors,8,-,not_broadway
+Moulin Rouge!,8,moulin-rouge,name
+&Juliet,8,and-juliet,name
+Job,7,job,name
+Oedipus,7,oedipus,name
+Merrily We Roll Along,7,merrily-we-roll-along,name
+Pirates! The Penzance Musical,7,pirates-the-penzance,name
+Billy Crystal,7,860,name
+Sexual Misconduct,7,-,not_broadway
+Boop,7,boop,name
+The Fear of 13,7,fear-of-13,name
+oh mary,7,oh-mary,name
 Two Strangers (Carry a Torch),7,two-strangers-carry-a-cake-across-new-york,name
-The Book of Mormon,7,book-of-mormon,name
-Peter Pan Goes Wrong,7,-,not_broadway
-Call Me Izzy,7,,outside_run:call-me-izzy
-The Winter's Tale,7,,unmatched
-CATS: The Jellicle Ball,6,cats-the-jellicle-ball,name
-Creditors,6,-,not_broadway
-Old Friends,6,stephen-sondheims-old-friends,name
-Happy Ending,6,maybe-happy-ending,name
-McNeal,6,mcneal,name
-Every Beautiful Thing,6,every-brilliant-thing,name
-Mattress,6,once-upon-a-mattress,name
-Teeth,6,-,not_broadway
-"Hello, Dolly!",6,,unmatched
-"Goodnight, Good Luck",6,good-night-and-good-luck,fuzzy
-The Rocky Horror Picture Show,6,rocky-horror-show,name
-The Queen of Versailles,6,queen-of-versailles,name
-Schimigadoon,5,schmigadoon,fuzzy
-Urinetown,5,-,not_broadway
-Pirates! The Musical,5,pirates-the-penzance,name
-Pirates!,5,pirates-the-penzance,name
-Cult of Love,5,cult-of-love,name
-Goddess,5,,unmatched
-860,5,860,name
-Spelling Bee,5,-,not_broadway
-Now You See Me Live,5,,unmatched
+The Book of Mormon,6,book-of-mormon,name
+Bug,6,bug,name
+Pirates! The Musical,6,pirates-the-penzance,name
+Heathers,6,-,not_broadway
+Yellow Face,6,yellow-face,name
+Bright Victory,6,-,not_broadway
+"oh, Mary!",6,oh-mary,name
+The Phantom of the Opera,6,-,not_broadway
 "Good Night, Good Luck",5,good-night-and-good-luck,fuzzy
-Two Strangers (Carry A Cake Across New York),5,two-strangers-carry-a-cake-across-new-york,name
-John Proctor,5,john-proctor-is-the-villain,name
-Pirates! The Penzance Musical,5,pirates-the-penzance,name
-Bright Victory,5,-,not_broadway
-Enemy of the People,5,an-enemy-of-the-people,fuzzy
+The Music Man,5,-,not_broadway
+Teeth,5,-,not_broadway
+The Queen of Versailles,5,queen-of-versailles,name
+Sweeney Todd: The Demon Barber of Fleet Street,5,-,not_broadway
+Old Friends,5,stephen-sondheims-old-friends,name
 Les Misérables,4,-,not_broadway
-The Fear of 13,4,fear-of-13,name
-Schmigadoom!,4,schmigadoon,fuzzy
-Masquerade,4,-,not_broadway
-oh mary,4,oh-mary,name
-Sexual Misconduct,4,-,not_broadway
-Oh! Mary,4,oh-mary,name
-Out of Town,4,-,not_broadway
-Wonderful World,4,a-wonderful-world-the-louis-armstrong,fuzzy
-"oh, Mary!",4,oh-mary,name
-Two Strangers (Carry a Cake Across NY),4,two-strangers-carry-a-cake-across-new-york,name
-Pirates,4,pirates-the-penzance,name
-Kimberly Akimbo,4,-,not_broadway
-The Unknown,4,,unmatched
-Mamma Mia,4,mamma-mia,name
-Between the Lines,4,-,not_broadway
-Empire Bound Theater? (unverified),4,,unmatched
-A Few Good Men,4,a-few-good-men,name
-The Music Man,4,-,not_broadway
-Romeo & Juliet,4,romeo-and-juliet,name
+Little Bear,4,little-bear-ridge-road,name
+Jellicle Ball,4,cats-the-jellicle-ball,name
+Eureka Day,4,,outside_run:eureka-day
+A Wonderful World,4,a-wonderful-world-the-louis-armstrong,name
+Waitress,4,-,not_broadway
 2 Strangers Carry a Cake Across New York,4,two-strangers-carry-a-cake-across-new-york,fuzzy
-Queen of Versailles,4,queen-of-versailles,name
-EBT,3,every-brilliant-thing,name
-Two Strangers Carry a Cake Across New York,3,two-strangers-carry-a-cake-across-new-york,name
-Sweeney Todd: The Demon Barber of Fleet Street,3,-,not_broadway
-Little Bear,3,little-bear-ridge-road,name
-Stranger Things: First Shadow,3,stranger-things-the-first-shadow,fuzzy
-A Beautiful Noise,3,a-beautiful-noise-the-neil-diamond,name
-The Last 5 Years,3,last-five-years,name
-Jellicle Ball,3,cats-the-jellicle-ball,name
-Gentleman's Guide to Love and Murder,3,,unmatched
-BOOP! The Musical,3,boop,name
-The Imaginary Invalid,3,imaginary-invalid,name
-A Wonderful World,3,a-wonderful-world-the-louis-armstrong,name
-Rocky Horror,3,rocky-horror-show,name
-In The Heights,3,,unmatched
-The Sound of Music,3,,unmatched
-Birthright,3,,unmatched
-Sexual Misconduct of the Middle Class,3,-,not_broadway
-Waiting for Godot,3,waiting-for-godot,name
-"School Girls; Or, The African Mean Girls Play",3,school-girls-or-the-african-mean-girls-play,name
-Joseph and the Amazing Technicolor Dreamcoat,3,,unmatched
-Titaníque,3,,outside_run:titanique
+Schmigadoom!,4,schmigadoon,fuzzy
+Mattress,4,once-upon-a-mattress,name
+Dear Evan Hansen,4,-,not_broadway
+Masquerade,4,-,not_broadway
+Call Me Izzy,4,,name
+Cult of Love,4,cult-of-love,name
+Out of Town,4,-,not_broadway
+Enemy of the People,4,an-enemy-of-the-people,fuzzy
+Two Strangers Carry a Cake Across New York,4,two-strangers-carry-a-cake-across-new-york,name
+Two Strangers (Carry A Cake Across New York),4,two-strangers-carry-a-cake-across-new-york,name
+The Imaginary Invalid,4,imaginary-invalid,name
+Uncle Vanya,4,,outside_run:uncle-vanya
+Shmigadoon,4,schmigadoon,fuzzy
+Bright Star,4,-,not_broadway
+Shakespeare in the Park,4,-,not_broadway
+Twelfth Night,4,-,not_broadway
+Oklahoma!,3,-,not_broadway
+Oh! Mary,3,oh-mary,name
+Pirates!,3,pirates-the-penzance,name
 Mary Poppins,3,-,not_broadway
-Waitress,3,-,not_broadway
-CATS,3,cats-the-jellicle-ball,name
-Project Mincemeat,3,operation-mincemeat,name
+The Spelling Bee,3,-,not_broadway
 The Pirates of Penzance,3,pirates-the-penzance,name
-Rent,3,-,not_broadway
-Other Desert Cities,3,other-desert-cities,name
-Two Strangers Carry a Cake,3,two-strangers-carry-a-cake-across-new-york,name
+BOOP! The Musical,3,boop,name
+Bat Boy: The Musical,3,-,not_broadway
+Lempicka,3,-,not_broadway
 Eastern Bridge Theatre,3,,unmatched
-Winter's Tale,3,,unmatched
-Come and Gone,2,joe-turners-come-and-gone,name
-Shifters,2,,unmatched
-ART,2,art,name
-Prima Facie,2,,unmatched
-SIX,2,six,name
-Real Women,2,real-women-have-curves,name
-30 Under 30,2,outsiders,name
-Billy Crystal 860,2,860,name
-Shmigadoon,2,schmigadoon,fuzzy
-Eureka Day,2,,name
-Salesman,2,death-of-a-salesman,name
-SUFFS,2,suffs,name
-Sterophonic,2,stereophonic,fuzzy
-Shuffle Along,2,,unmatched
-Billy Crystal: 700 Sundays,2,860,name
-Weer,2,,unmatched
-The Dan Savage Spelling Bee,2,,unmatched
-Sunset,2,sunset-boulevard,name
-Stranger Things The First Shadow,2,stranger-things-the-first-shadow,name
-Beauty and the Beast,2,,unmatched
-The Lion King,2,lion-king,name
-Uncle Vanya,2,,outside_run:uncle-vanya
-Gigi,2,-,not_broadway
-The Least Likely Spelling Bee,2,,unmatched
-The Spelling Bee,2,-,not_broadway
-Gatz,2,,unmatched
-Between the Sheets,2,,unmatched
-Floyd Collins,2,,name
-Between the Bridges,2,,unmatched
-Aladdin,2,aladdin,name
-Two Strangers (Carry a Pocketful of Hope),2,two-strangers-carry-a-cake-across-new-york,name
-Two Strangers (Carry Me Down to the Water),2,two-strangers-carry-a-cake-across-new-york,name
-How to Succeed in Business Without Really Trying,2,-,not_broadway
-Hells Kitchen,2,hells-kitchen,name
+How to Succeed in Business Without Really Trying,3,-,not_broadway
+Joseph and the Amazing Technicolor Dreamcoat,3,,unmatched
+A Few Good Men,3,a-few-good-men,name
+"Goodnight, Good Luck",3,good-night-and-good-luck,fuzzy
+every brilliant thing,3,every-brilliant-thing,name
+Project Mincemeat,3,operation-mincemeat,name
+Bueno Vista Social Club,3,buena-vista-social-club,fuzzy
+Stranger Things: First Shadow,3,stranger-things-the-first-shadow,fuzzy
+Spring Awakening,3,-,not_broadway
+Sterophonic,3,stereophonic,fuzzy
+Two Strangers Carry a Cake,3,two-strangers-carry-a-cake-across-new-york,name
+Two Strangers (Carry a Cake Across New York),3,two-strangers-carry-a-cake-across-new-york,name
+The Last 5 Years,3,last-five-years,name
 Heathers the Musical,2,-,not_broadway
-Back to the Future: The Musical,2,back-to-the-future,name
-Heart of Rock and Roll,2,heart-of-rock-and-roll,name
-BVSC,2,buena-vista-social-club,name
-BOOP! THE MUSICAL,2,boop,name
-At Purpose,2,purpose,name
-Angry Alan,2,,unmatched
-every brilliant thing,2,every-brilliant-thing,name
-Two Strangers (Carry a Tune),2,two-strangers-carry-a-cake-across-new-york,name
+Operation: Mincemeat,2,operation-mincemeat,name
+Patriots,2,patriots,name
+Now You See Me Live,2,,unmatched
+Come and Gone,2,joe-turners-come-and-gone,name
+The Curious Case of Benjamin Button,2,,unmatched
 Jesus Christ Superstar,2,-,not_broadway
-Into the Woods,2,-,not_broadway
-In the Heights,2,,unmatched
-Joy,2,,unmatched
-Elf,2,elf,name
-Edward Bear Tonight,2,,unmatched
+Dead of Night,2,,unmatched
 Mary Jane,2,,name
-Mary,2,oh-mary,name+date
-Little Shop of Horrors,2,,unmatched
-Lempicka,2,-,not_broadway
-Left on Tenth,2,left-on-tenth,name
-Moulin Rouge!,2,moulin-rouge,name
+The Lion King,2,lion-king,name
+Billy Crystal: 700 Sundays,2,860,name
+Two Strangers (Carry a Tune),2,two-strangers-carry-a-cake-across-new-york,name
+Urinetown,2,-,not_broadway
+"oh, mary!",2,oh-mary,name
+Two Strangers (Carry Me Down to the Water),2,two-strangers-carry-a-cake-across-new-york,name
+Back to the Future: The Musical,2,back-to-the-future,name
+Two Strangers (Carry a Pocketful of Hope),2,two-strangers-carry-a-cake-across-new-york,name
+SIX,2,six,name
+CATS: The Jellicle Ball,2,cats-the-jellicle-ball,name
+The Least Likely Spelling Bee,2,,unmatched
+Billy Crystal 860,2,860,name
+Queen of Versailles,2,queen-of-versailles,name
+Between the Sheets,2,,unmatched
+Stranger Things The First Shadow,2,stranger-things-the-first-shadow,name
+Boop!The Musical,2,boop,name
+Joy,2,,unmatched
+Gutenberg! The Musical!,2,-,not_broadway
+Into the Woods,2,-,not_broadway
+Gentleman's Guide to Love and Murder,2,,unmatched
+Floyd Collins,2,,name
+MJ,2,mj,name
 Mother Russia,2,,unmatched
-Mexodus,2,,unmatched
-Oklahoma!,2,-,not_broadway
-Dorian,2,picture-of-dorian-gray,name
-Degenerates,2,,unmatched
-Dear Evan Hansen,2,-,not_broadway
-Aida,1,,unmatched
-Against the Run,1,,unmatched
-A Winter's Tale,1,,unmatched
-A Streetcar Named Desire,1,,unmatched
-A Doll's House,1,,unmatched
-2:22 A Ghost Story,1,,unmatched
-25th Annual Putnam County Spelling Bee,1,-,not_broadway
-Eugene O'Neill Theatre,1,,unmatched
-Eternal Beauty Theatre,1,,unmatched
-Escape to Margaritaville,1,,unmatched
-Wholesale,1,,unmatched
-Whitney,1,,unmatched
-Weather Girl,1,,unmatched
-Walden,1,,unmatched
-Very Popular Idea That Was Vetoed,1,,unmatched
-Vanya,1,,unmatched
-V8,1,,unmatched
-Ghosts,1,,unmatched
+Wonderful World,2,a-wonderful-world-the-louis-armstrong,fuzzy
+Kimberly Akimbo,2,-,not_broadway
+"Girl, Interrupted",1,,unmatched
 Gentlemen Prefer Blondes,1,,unmatched
-GIANT,1,giant,name
-Florence Foster Jenkins,1,,unmatched
-Every Brilliant Things,1,every-brilliant-thing,fuzzy
+In the Heights,1,,unmatched
+Just Connect Me,1,,unmatched
 Even Better Than the Real Thing,1,,unmatched
-Hugh Jackman thing (Minetta Lane Theatre),1,,unmatched
-Heated Rivalry,1,,unmatched
+Eragon? Please check,1,,unmatched
+Escape to Margaritaville,1,,unmatched
+Gary: A Good Girl Sings,1,,unmatched
+Funny Girl,1,,unmatched
+Finding Neverland,1,,unmatched
+Every Brilliant Things,1,every-brilliant-thing,fuzzy
+Eternal Beauty Theatre,1,,unmatched
 Heart of Rock N Roll,1,heart-of-rock-and-roll,fuzzy
-Heart of Rock 'n' Roll,1,heart-of-rock-and-roll,fuzzy
-Heart of Rock 'N' Roll,1,heart-of-rock-and-roll,fuzzy
-Guys and Dolls,1,,unmatched
-Gutenberg! The Musical!,1,-,not_broadway
-Gustavo Dudamel/Lin Manuel concert,1,,unmatched
-Out Town,1,,unmatched
-R+J,1,,unmatched
-Queen of the Valley,1,,unmatched
-Prince F****t,1,,unmatched
-Dilaria,1,,unmatched
-Billy C's 860,1,,unmatched
-Billy & Crustal,1,,unmatched
-Shmigadoon!,1,schmigadoon,fuzzy
-Orch,1,,unmatched
-Shit. Meet. Fan,1,,unmatched
-Operation Minecraft,1,operation-mincemeat,name
-Once Upon A Mattress,1,once-upon-a-mattress,name
-Operation Mice,1,operation-mincemeat,name
-Operation Mincemeat 2,1,operation-mincemeat,fuzzy
-Maya,1,,unmatched
-Mean Girls,1,,unmatched
-Salesman in Beijing,1,,unmatched
-Ponyboy,1,,unmatched
-Parade,1,,unmatched
-Stranger Things & Buena Vista Social Club,1,,unmatched
-Paranormal,1,,unmatched
-Spring Awakening,1,-,not_broadway
-Mother Play,1,mother-play,name
+Heart of Rock and Roll,1,heart-of-rock-and-roll,name
+Aida,1,,unmatched
+Waiting for Godot,1,waiting-for-godot,name
+A Doll's House,1,,unmatched
+A Christmas Carol,1,,unmatched
+ART,1,art,name
+A Enemy of the People,1,an-enemy-of-the-people,fuzzy
+A Beautiful Noise,1,a-beautiful-noise-the-neil-diamond,name
+1776,1,,unmatched
+30 Under 30,1,outsiders,name
+Dead Gardens,1,,unmatched
+Copperfield,1,,unmatched
 Cat on a Hot Tin Roof,1,,unmatched
-Shucked,1,,unmatched
-Shrek the Musical,1,,unmatched
-Brigadoon,1,,unmatched
-Boop!The Musical,1,boop,name
-Boop The Musical,1,,outside_run:boop
-Book of Mormon,1,book-of-mormon,name
-Bobby Darin,1,,unmatched
-Mr. Proctor,1,,unmatched
-Billy Crystal: Still Here,1,,unmatched
-Billy Crystal: 860,1,860,name
-Cat,1,,unmatched
-"The Great Acting, er, Mincemeat... ",1,,unmatched
-The Fires,1,,unmatched
-My Notebook,1,,unmatched
-The Dead Outlaw,1,dead-outlaw,name
-Patriots,1,patriots,name
-The Bueno Vista Social Club,1,buena-vista-social-club,fuzzy
-"Natasha, Pierre & the Great Comet of 1812",1,,unmatched
-No Real Women Have Curves,1,real-women-have-curves,fuzzy
-Temptations,1,,unmatched
-Chris Thile's Manhattan Variations,1,,unmatched
-THE LAST FIVE YEARS,1,last-five-years,name
-Leopoldstadt,1,,unmatched
-CHESS,1,chess,name
-Little Bear Ridge Road,1,little-bear-ridge-road,name
+Prima Facie,1,,unmatched
+Pirate Queen,1,,unmatched
+Pippin,1,,unmatched
 Peter and the Starcatcher,1,,unmatched
-Louis Armstrong the Musical,1,,unmatched
-Belasco Theatre,1,,unmatched
-Picture of Dorian Gray,1,picture-of-dorian-gray,name
-Beau the Musical,1,,unmatched
-Bat Boy: The Musical,1,-,not_broadway
-Balusters,1,balusters,name
-Bad Vibes Summer Camp,1,,unmatched
-Bad Vegan: Sitcom Cantata,1,,unmatched
-Back to the Velvet Sky Cafe,1,,unmatched
-Luiza,1,,unmatched
-The Lost Boy,1,lost-boys,fuzzy
-Bueno Vista Social Club,1,buena-vista-social-club,fuzzy
-Buena Vista,1,buena-vista-social-club,name
-The Last Ship,1,,unmatched
-MJ,1,mj,name
+Parade,1,,unmatched
+O'Mary,1,,unmatched
+Elf,1,elf,name
+Encores! Bells Are Ringing,1,,unmatched
+End of the Rainbow,1,,unmatched
+Outside Mullingar,1,,unmatched
+Operation Minecraft,1,operation-mincemeat,name
+Last Bimbo of the Apocalypse,1,,unmatched
+Left on Tenth,1,left-on-tenth,name
+Marjorie Prime,1,,outside_run:marjorie-prime
 MJ the Musical,1,mj,name
-The Gypsy,1,gypsy,name
-Mandy,1,,unmatched
+Marty,1,oh-mary,fuzzy+date
+Mexodus,1,,unmatched
+Mother Play,1,mother-play,name
+Mrs. Doubtfire,1,,unmatched
+My Notebook,1,,unmatched
+Mean Girls,1,,unmatched
+"Natasha, Pierre & the Great Comet of 1812",1,,unmatched
+Dorian Grey,1,picture-of-dorian-gray,name
+Eben Tuesday,1,,unmatched
+Edgar Bass Tonight,1,,unmatched
+"Edgar, Bolton... ",1,,unmatched
+Edward Bear Tonight,1,,unmatched
+Eh... Dear Broadway Theater? Unsure,1,,unmatched
+Electric Baby,1,,unmatched
+Leopoldstadt,1,,unmatched
+Little Bear Ridge Road,1,little-bear-ridge-road,name
+Heart of Rock 'N' Roll,1,heart-of-rock-and-roll,fuzzy
+Harmony,1,,unmatched
+illinoise,1,illinoise,name
+inter Alia,1,,unmatched
+Yellowface,1,yellow-face,fuzzy
+boop,1,boop,name
+Whitney Houston: The Musical,1,,unmatched
+Walden,1,,unmatched
+Wholesale,1,,unmatched
+Wicked for Everyone,1,,unmatched
+"Actually, Real Time",1,,unmatched
+Against the Run,1,,unmatched
+Good Luck and Good Night,1,good-night-and-good-luck,name
+Hells Kitchen,1,hells-kitchen,name
+Jagged Little Pill,1,,unmatched
+It's a Wonderful Life,1,,unmatched
+Goodnight and Good Luck,1,good-night-and-good-luck,fuzzy
+Gravity... no,1,,unmatched
+Seterophonic,1,stereophonic,fuzzy
+Brigadoon,1,,unmatched
+Billy Crystal: Still Here,1,,unmatched
+"School Girls; Or, The African Mean Girls Play",1,school-girls-or-the-african-mean-girls-play,name
+Burn the Floor,1,,unmatched
+Schimigadoon,1,schmigadoon,fuzzy
+Schimmigdoon,1,,unmatched
+Public Forum Duet,1,,unmatched
+Queen of the Valley,1,,unmatched
+Redwoods,1,redwood,fuzzy
+Ring Words Hot Cuts,1,,unmatched
+Death Odyssey,1,,unmatched
+Billy & Crustal,1,,unmatched
+Bells Are Ringing,1,,unmatched
+Ben Platt...,1,,outside_run:ben-platt-live-at-the-palace
+Between Riverside and Crazy,1,,unmatched
+Bat Out of Hell,1,,unmatched
+The Dealing Bee,1,,unmatched
+Balusters,1,balusters,name
+Bat Boy,1,-,not_broadway
+The Color Purple,1,,unmatched
+The Dan Savage Spelling Bee,1,,unmatched
+The Dead Outlaw,1,dead-outlaw,name
+Shucked,1,,unmatched
+Spamalot,1,,unmatched
+Sunset,1,sunset-boulevard,name
+Temptations,1,,unmatched
+The Bueno Vista Social Club,1,buena-vista-social-club,fuzzy
+Spelling Bee,1,-,not_broadway
+Shmigadoon!,1,schmigadoon,fuzzy
+SUFFS,1,suffs,name
+SMASH,1,smash,name
+Ruthless! the Musical,1,,unmatched
+Ruthless! The Musical,1,,unmatched
+Romeo & Juliet,1,romeo-and-juliet,name
+Ring World...,1,,unmatched
+Punch,1,punch,name
+Book of Mormon,1,book-of-mormon,name
+Billy Crystal: 860,1,860,name
+The Piano Lesson,1,,unmatched
+The Pirates! A Musical Adventure,1,pirates-the-penzance,name
+"The Great Acting, er, Mincemeat... ",1,,unmatched
+The Devil Wears Prada,1,,unmatched
+The Fires,1,,unmatched
+Two Strangers (Carry Me Back to Old Tampico),1,two-strangers-carry-a-cake-across-new-york,name
+Two Strangers (Carries a Torch for You),1,two-strangers-carry-a-cake-across-new-york,name
+Twenty Sided Tavern,1,,unmatched
+Tommy,1,whos-tommy,name
+Titus Andronicus,1,,unmatched
+To Kill a Mockingbird,1,,unmatched
+Titanic,1,,unmatched
+Titaníque,1,titanique,name
 The Two Strangers,1,two-strangers-carry-a-cake-across-new-york,name
 The Stranger,1,stranger-things-the-first-shadow,name
-SMASH,1,smash,name
-Marjorie Prime,1,,outside_run:marjorie-prime
-"Edgar, Bolton... ",1,,unmatched
-The Rockettes Christmas Spectacular,1,,unmatched
-The Real Women Have Curves,1,,outside_run:real-women-have-curves
-Electric Baby,1,,unmatched
-The Pirates! A Musical Adventure,1,pirates-the-penzance,name
-Elf: The Musical,1,elf,name
-Punch,1,punch,name
-Encores! Bells Are Ringing,1,,unmatched
-Ruthless! the Musical,1,,unmatched
-Between Ten and Fifteen,1,,unmatched
-Between Riverside and Crazy,1,,unmatched
+The Water for Elephants,1,water-for-elephants,name
+The Unknown,1,,unmatched
+The Ohio State Murders,1,,unmatched
+The Lost Boy,1,lost-boys,fuzzy
 Amorous Gentleman,1,,unmatched
-All Out,1,all-out-comedy-about-ambition,name
-All Nighter,1,,unmatched
-Rope,1,,unmatched
-Two Strangers (Carry Me Back to Old Tampico),1,two-strangers-carry-a-cake-across-new-york,name
-Two Strangers (Carry Me Back to Morningside Heights),1,two-strangers-carry-a-cake-across-new-york,name
-End of the Rainbow,1,,unmatched
-Stranger Things First Shadow,1,stranger-things-the-first-shadow,fuzzy
-Tommy,1,whos-tommy,name
-To Kill a Mockingbird,1,,unmatched
-Titus Andronicus,1,,unmatched
-Eragon? Please check,1,,unmatched
-Titanic,1,,unmatched
-Tiranique,1,titanique,fuzzy
-Last 5 Years,1,last-five-years,name
-The Welkin,1,,unmatched
-Two Strangers (Carry a Torch for Me),1,two-strangers-carry-a-cake-across-new-york,name
-Pirate Queen,1,,unmatched
-Two Strangers (Carry a Pocket Full of Stones),1,two-strangers-carry-a-cake-across-new-york,name
-Last Five Years,1,last-five-years,name
-Rodgers + Hammerstein's Cinderella,1,,unmatched
-Two Strangers (Carry Me Down to the Dark),1,two-strangers-carry-a-cake-across-new-york,name
 Two Strangers (Carry Me Down the Aisle),1,two-strangers-carry-a-cake-across-new-york,name
-Left Behind? L5Y,1,,unmatched
+Two Strangers (Carry Me Down to the Sea),1,two-strangers-carry-a-cake-across-new-york,name
+Two Strangers (Carry Me Down to the Dark),1,two-strangers-carry-a-cake-across-new-york,name
+Bad Vibes: The Sheffield Crossroads,1,,unmatched
+Bad Vibes Summer Camp,1,,unmatched
+Back to the Velvet Sky Cafe,1,,unmatched
+Bad Vegan: Sitcom Cantata,1,,unmatched
 Back to the Vaudeville Sumptuous Carnival,1,,unmatched
-Brownsville,1,,unmatched
-Rocky Horror Picture Show,1,rocky-horror-show,name
-It's a Wonderful Life,1,,unmatched
-Copperfield,1,,unmatched
+B-Vs.-Sexy: Vaudeville... no,1,,unmatched
+Aladdin,1,aladdin,name
 B. Virtual Shakespeare Company,1,,unmatched
-Ring World...,1,,unmatched
-Ring Words Hot Cuts,1,,unmatched
-tl5y,1,last-five-years,name
-"oh, mary!",1,oh-mary,name
-Jagged Little Pill,1,,unmatched
-Jeremy Jordan,1,,unmatched
-illinoise,1,illinoise,name
-Death Of A Salesman,1,death-of-a-salesman,name
-boop,1,boop,name
-Yellowface,1,yellow-face,fuzzy
-Jinkx Monsoon,1,,unmatched
-Dorian Grey,1,picture-of-dorian-gray,name
-Earthquake Bar Tavern? Ghost? Not stated,1,,unmatched
-Wicked for Everyone,1,,unmatched
-Got in line for every brilliant thing,1,,unmatched
+All Out,1,all-out-comedy-about-ambition,name
+"Two Strangers (Carry a Pillow, Hold a Ticket)",1,two-strangers-carry-a-cake-across-new-york,name
 Two Strangers (Come Home to Die),1,two-strangers-carry-a-cake-across-new-york,name
-Redwoods,1,redwood,fuzzy
-Two Strangers (Carries a Torch for You),1,two-strangers-carry-a-cake-across-new-york,name
+Two Strangers (Carry a Pocket Full of Stones),1,two-strangers-carry-a-cake-across-new-york,name
+Very Popular Idea That Was Vetoed,1,,unmatched
+oh Mary!,1,oh-mary,name

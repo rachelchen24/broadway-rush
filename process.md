@@ -1678,3 +1678,10 @@ Rachel: "just make the model, train it, test it." Same design (trees for the lin
   - Clickable: the four headline cards jump to their chart (with a brief gold glow); the line-growth legend became Weekends/Weekdays toggles beside the chart; funnel steps explain what each kept and dropped and why; clicking a show in "reports per show" opens a card with its numbers, its show page and its test results; show names in the busiest grid open the show page.
   - *My call:* section titles keep N13's gradient (only question headings went gold); panel edges went gold to match the show page.
 - Cache version `?v=20261123n14`. Nothing committed.
+
+## 2026-11-25 — Reddit refresh #1 of 3 before the Expo (Rachel OK'd; new Anthropic key in .env)
+- Why: "recent line lengths" (`recent_level`) is a top input and reports ended Nov 17. Model choices unchanged; refit only (same 14 line inputs, same ticket model, same lookup, same locked-month scores shown).
+- `scrapers.reddit posts` (+72 posts) → `comments` (+1,169) → `extraction.batch full/collect/reports` (327 comments, 33 chunks, 0 failed, $0.01) → `extraction.reread full --pilot-tag check_hand` / `collect` / `reports` (44 comments: keep 50, fix 8, drop 4; $0.00) → `reports_v3.csv` 15,102 observations (+58) → `catalog build` (13,359 reports on 110 shows) → `model.table` (3,311 line show-days, last date Nov 25; log `data/interim/table_2026-11-25.log`) → `sync --predict` (Ticketmaster Nov 25 6 pm snapshot; 417.7 s; log `data/interim/sync_2026-11-25.log`).
+- Site: predictions made 2026-11-25 18:10 ET for Nov 26 – Dec 2, reports through Nov 25; Nerd stats accuracy still `final_locked`. Home page checked at 1280 px (no sideways scroll). Thanksgiving Nov 26 has only 4 shows on the Ticketmaster schedule.
+- AI spend: project total $3.18.
+- Still stale: weekly grosses end Nov 1, so `pct_cap` and `avg_ticket` are 3+ weeks old (refresh needs Rachel's OK). Next Reddit refreshes ~Dec 1 and ~Dec 5 (ask first).

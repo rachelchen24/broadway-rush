@@ -1,0 +1,46 @@
+﻿.venv\Scripts\python : From https://github.com/rachelchen24/broadway-rush-data
+At line:1 char:302
++ ... tch {} } }; .venv\Scripts\python -m broadway_rush.sync --predict *> d ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (From https://gi...adway-rush-data:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   69cdb0e..8a32517  main       -> origin/main
+Updating 69cdb0e..8a32517
+Fast-forward
+ ticketmaster/20261123234026.json.gz | Bin 0 -> 470390 bytes
+ ticketmaster/20261124013410.json.gz | Bin 0 -> 483492 bytes
+ ticketmaster/20261124221201.json.gz | Bin 0 -> 493605 bytes
+ ticketmaster/20261124232611.json.gz | Bin 0 -> 493556 bytes
+ ticketmaster/20261125212747.json.gz | Bin 0 -> 464205 bytes
+ ticketmaster/20261125230019.json.gz | Bin 0 -> 463287 bytes
+ tkts/20261124004519-live.html.gz    | Bin 0 -> 50779 bytes
+ tkts/20261124225913-live.html.gz    | Bin 0 -> 54150 bytes
+ tkts/20261124235136-live.html.gz    | Bin 0 -> 53426 bytes
+ tkts/20261125222651-live.html.gz    | Bin 0 -> 52132 bytes
+ 10 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 ticketmaster/20261123234026.json.gz
+ create mode 100644 ticketmaster/20261124013410.json.gz
+ create mode 100644 ticketmaster/20261124221201.json.gz
+ create mode 100644 ticketmaster/20261124232611.json.gz
+ create mode 100644 ticketmaster/20261125212747.json.gz
+ create mode 100644 ticketmaster/20261125230019.json.gz
+ create mode 100644 tkts/20261124004519-live.html.gz
+ create mode 100644 tkts/20261124225913-live.html.gz
+ create mode 100644 tkts/20261124235136-live.html.gz
+ create mode 100644 tkts/20261125222651-live.html.gz
+tkts: 4 new snapshots
+18:01:47 wrote tkts.csv: 13948 rows from 189 snapshots with rows (211 cached files)
+ticketmaster: 6 new snapshots
+18:03:02 wrote ticketmaster_events.csv: 18653 rows; latest snapshot: 376 Broadway performances at 48 theaters, statuses {'onsale': np.int64(368), 'offsale': np.int64(8)}
+Newest tkts snapshot: Nov 25, 05:26 PM ET
+Newest ticketmaster snapshot: Nov 25, 06:00 PM ET
+Updating predictions (about 8 minutes)...
+18:04:08 Unable to initialize backend 'tpu': UNIMPLEMENTED: LoadPjrtPlugin is not implemented on windows yet.
+18:04:08 Unable to initialize backend 'proxy': The 'proxy' backend requires the address of an IFRT Proxy server. Set it via the JAX_BACKEND_TARGET environment variable or the jax_backend_target config option, e.g. JAX_BACKEND_TARGET=grpc://localhost:29000.
+final fit: line 11.5 s, cutoff 343.3 s {'max_r_hat': 1.008, 'min_ess': 563, 'divergences': 0, 'attempts': 1, 'converged': True} phi 1.83
+wrote C:\Users\rache\.0Documents\Projects\broadway-rush\web\data\predictions.json days 7 {'2026-11-26': 4, '2026-11-27': 35, '2026-11-28': 35, '2026-11-29': 31, '2026-11-30': 4, '2026-12-01': 31, '2026-12-02': 32} in 417.7 s
+1 Chicago                        GO 0.818 09:00 [2, 20] 49.0 policy []
+2 The Imaginary Invalid             None 48.0 reports ['Digital rush 9 AM']
+3 A Few Good Men                    None None none []
+3 School Girls; Or, The African     None 49.0 none ['Digital rush 9 AM']
