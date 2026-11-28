@@ -1,5 +1,5 @@
 show_id,name,theater,show_type,first_week,last_week,n_weeks,seats,production_id,bww_slugs
-chicago,Chicago,Ambassador Theatre,Musical,2024-06-02,2026-11-01,127,1080,00000150-aea2-d936-a7fd-eef6db350002,CHICAGO
+chicago,Chicago,Ambassador Theatre,Musical,2024-06-02,2026-11-22,130,1080,00000150-aea2-d936-a7fd-eef6db350002,CHICAGO
 hells-kitchen,Hell's Kitchen,Sam S. Shubert Theatre,Musical,2024-06-02,2026-02-22,91,1457,310ca6f2-dfce-44a8-b07d-274862ffd3d9,HELL-S-KITCHEN
 appropriate,Appropriate,Belasco Theatre,Play,2024-06-02,2024-06-30,5,1013,36a596ef-7f7f-4936-9660-45cadd63e22b,APPROPRIATE
 home,Home,Todd Haimes Theatre,Play,2024-06-02,2024-07-21,8,740,388580f4-d224-44df-a56a-29ab6f7669b6,HOME
@@ -13,28 +13,28 @@ suffs,Suffs,Music Box Theatre,Musical,2024-06-02,2025-01-05,32,973,999bd593-963c
 an-enemy-of-the-people,An Enemy of the People,Circle in the Square Theatre,Play,2024-06-02,2024-06-23,4,828,a2d48cfa-4b59-4fac-a96e-2e3b7baf2dcb,AN-ENEMY-OF-THE-PEOPLE
 a-beautiful-noise-the-neil-diamond,"A Beautiful Noise, The Neil Diamond Musical",Broadhurst Theatre,Musical,2024-06-02,2024-06-30,5,1153,bcd8ca0f-f5cf-4636-abed-6573f9c3f1c8,A-BEAUTIFUL-NOISETHE-NEIL-DIAMOND-MUSICAL
 illinoise,Illinoise,St. James Theatre,Musical,2024-06-02,2024-08-11,11,1337,beff6494-4364-48b6-8466-eb5b24e0ec00,ILLINOISE
-outsiders,The Outsiders,Bernard B. Jacobs Theatre,Musical,2024-06-02,2026-11-01,127,1024,c031358c-8fd0-4b20-a002-f6a4aa8fda0e,THE-OUTSIDERS
+outsiders,The Outsiders,Bernard B. Jacobs Theatre,Musical,2024-06-02,2026-11-22,130,1024,c031358c-8fd0-4b20-a002-f6a4aa8fda0e,THE-OUTSIDERS
 water-for-elephants,Water For Elephants,Imperial Theatre,Musical,2024-06-02,2024-12-08,28,1385,c097d8e0-121a-45f6-8487-555c38bba579,WATER-FOR-ELEPHANTS
-and-juliet,& Juliet,Stephen Sondheim Theatre,Musical,2024-06-02,2026-11-01,127,1026,c3b6dace-a78e-439f-b3f2-bde3381bc6ff,JULIET
+and-juliet,& Juliet,Stephen Sondheim Theatre,Musical,2024-06-02,2026-11-22,130,1026,c3b6dace-a78e-439f-b3f2-bde3381bc6ff,JULIET
 notebook,The Notebook,Gerald Schoenfeld Theatre,Musical,2024-06-02,2024-12-15,29,1017,dd6b202c-9c94-4462-a450-744663b7b96d,THE-NOTEBOOK
 merrily-we-roll-along,Merrily We Roll Along,Hudson Theatre,Musical,2024-06-02,2024-07-07,6,966,e2c22925-97e1-4f0e-ae13-d9e1636144ef,MERRILY-WE-ROLL-ALONG
 heart-of-rock-and-roll,The Heart of Rock and Roll,James Earl Jones Theatre,Musical,2024-06-02,2024-06-23,4,1054,eb84f560-35bd-40ab-a955-e3f1526a6d62,THE-HEART-OF-ROCK-AND-ROLL
 ben-platt-live-at-the-palace,Ben Platt: Live at the Palace,Palace Theatre,Special,2024-06-02,2024-06-16,3,1647,2c25a1d6-e865-41e5-9bbc-b629b1a49bd3,BEN-PLATTLIVE-AT-THE-PALACE
-great-gatsby,The Great Gatsby,Broadway Theatre,Musical,2024-06-02,2026-11-01,127,1485,21520cc4-b90a-4145-b518-fb559ac56f61,THE-GREAT-GATSBY
+great-gatsby,The Great Gatsby,Broadway Theatre,Musical,2024-06-02,2026-11-22,130,1485,21520cc4-b90a-4145-b518-fb559ac56f61,THE-GREAT-GATSBY
 mary-jane,Mary Jane,Samuel J. Friedman Theatre,Play,2024-06-02,2024-06-30,5,643,f8da9311-ec10-4852-b862-2a40cd56a721,MARY-JANE
-harry-potter-and-the-cursed-child,Harry Potter and the Cursed Child,Lyric Theatre,Play,2024-06-02,2026-11-01,127,1622,0000015b-d406-d273-a9fb-de4fdd390000,HARRY-POTTER-AND-THE-CURSED-CHILD
-mj,MJ The Musical,Neil Simon Theatre,Musical,2024-06-02,2026-11-01,127,1387,0000016d-b638-daf0-ad6f-f7bf677a0000,MJ
-aladdin,Aladdin,New Amsterdam Theatre,Musical,2024-06-02,2026-11-01,127,1727,00000150-aea8-d936-a7fd-eefc73620003,ALADDIN
+aladdin,Aladdin,New Amsterdam Theatre,Musical,2024-06-02,2026-11-22,130,1727,00000150-aea8-d936-a7fd-eefc73620003,ALADDIN
+wicked,Wicked,Gershwin Theatre,Musical,2024-06-02,2026-11-22,130,1926,00000150-aea6-d936-a7fd-eef6ecdd0001,WICKED
+mj,MJ The Musical,Neil Simon Theatre,Musical,2024-06-02,2026-11-22,130,1387,0000016d-b638-daf0-ad6f-f7bf677a0000,MJ
 whos-tommy,The Who's Tommy,Nederlander Theatre,Musical,2024-06-02,2024-07-21,8,1175,0000016d-f077-dc32-a36d-f27fe2cf0000,THE-WHO-S-TOMMY
-lion-king,The Lion King,Minskoff Theatre,Musical,2024-06-02,2026-11-01,127,1696,00000150-aea5-d936-a7fd-eef572240001,THE-LION-KING
-stereophonic,Stereophonic,John Golden Theatre,Play,2024-06-02,2025-01-12,33,778,1738e059-f8a5-47da-8607-c896358090fb,STEREOPHONIC
-hamilton,Hamilton,Richard Rodgers Theatre,Musical,2024-06-02,2026-11-01,127,1324,00000150-aea8-d936-a7fd-eefc733e0005,HAMILTON
-book-of-mormon,The Book of Mormon,Eugene O'Neill Theatre,Musical,2024-06-02,2026-11-01,124,1066,00000150-aea8-d936-a7fd-eefc3a440004,THE-BOOK-OF-MORMON
-wicked,Wicked,Gershwin Theatre,Musical,2024-06-02,2026-11-01,127,1926,00000150-aea6-d936-a7fd-eef6ecdd0001,WICKED
+hamilton,Hamilton,Richard Rodgers Theatre,Musical,2024-06-02,2026-11-22,130,1324,00000150-aea8-d936-a7fd-eefc733e0005,HAMILTON
+lion-king,The Lion King,Minskoff Theatre,Musical,2024-06-02,2026-11-22,130,1696,00000150-aea5-d936-a7fd-eef572240001,THE-LION-KING
+harry-potter-and-the-cursed-child,Harry Potter and the Cursed Child,Lyric Theatre,Play,2024-06-02,2026-11-22,130,1622,0000015b-d406-d273-a9fb-de4fdd390000,HARRY-POTTER-AND-THE-CURSED-CHILD
+six,SIX: The Musical,Lena Horne Theatre,Musical,2024-06-02,2026-11-22,130,1031,0000016c-4dc0-dda1-abef-edf4826d0000,SIXTHE-MUSICAL
+book-of-mormon,The Book of Mormon,Eugene O'Neill Theatre,Musical,2024-06-02,2026-11-22,127,1066,00000150-aea8-d936-a7fd-eefc3a440004,THE-BOOK-OF-MORMON
 moulin-rouge,Moulin Rouge! The Musical,Al Hirschfeld Theatre,Musical,2024-06-02,2026-08-30,118,1300,00000167-2c70-d24b-ad67-bdf901c30000,MOULIN-ROUGETHE-MUSICAL
-hadestown,Hadestown,Walter Kerr Theatre,Musical,2024-06-02,2026-11-01,127,918,00000167-5ad2-d052-a567-dfdb48060000,HADESTOWN
-six,SIX: The Musical,Lena Horne Theatre,Musical,2024-06-02,2026-11-01,127,1031,0000016c-4dc0-dda1-abef-edf4826d0000,SIXTHE-MUSICAL
-oh-mary,"Oh, Mary!",Lyceum Theatre,Play,2024-06-30,2026-11-01,123,902,aeffede9-2824-45a1-99e9-a1d4f5865e26,OHMARY-
+hadestown,Hadestown,Walter Kerr Theatre,Musical,2024-06-02,2026-11-22,130,918,00000167-5ad2-d052-a567-dfdb48060000,HADESTOWN
+stereophonic,Stereophonic,John Golden Theatre,Play,2024-06-02,2025-01-12,33,778,1738e059-f8a5-47da-8607-c896358090fb,STEREOPHONIC
+oh-mary,"Oh, Mary!",Lyceum Theatre,Play,2024-06-30,2026-11-22,126,902,aeffede9-2824-45a1-99e9-a1d4f5865e26,OHMARY-
 job,JOB,Helen Hayes Theatre,Play,2024-07-21,2024-10-27,15,581,f3d0a7ff-f077-4adf-a6ab-1383e9aa09bb,JOB
 once-upon-a-mattress,Once Upon a Mattress,Hudson Theatre,Musical,2024-08-04,2024-12-01,18,968,026250c4-6052-4447-aa9d-03717e70dd21,ONCE-UPON-A-MATTRESS
 roommate,The Roommate,Booth Theatre,Play,2024-09-01,2024-12-15,16,772,064baf97-e902-477a-95bf-dd089a254717,THE-ROOMMATE
@@ -43,11 +43,11 @@ hills-of-california,The Hills of California,Broadhurst Theatre,Play,2024-09-15,2
 yellow-face,Yellow Face,Todd Haimes Theatre,Play,2024-09-15,2024-11-24,11,728,6a6de919-1d37-4384-85b3-e2219f64cdd7,YELLOW-FACE
 our-town,Our Town,Ethel Barrymore Theatre,Play,2024-09-22,2025-01-19,18,1060,2dcf1e79-702a-4ae5-a9c9-13322e1f9e69,OUR-TOWN
 romeo-and-juliet,Romeo and Juliet,Circle in the Square Theatre,Play,2024-09-29,2025-02-16,21,794,c6daa716-cb53-47a8-a288-a903f5b6e290,ROMEO-JULIET
-sunset-boulevard,Sunset Boulevard,St. James Theatre,Musical,2024-09-29,2025-07-20,43,1648,206e7b8b-efe5-4542-a937-d15a53105637,SUNSET-BLVD-
 left-on-tenth,Left on Tenth,James Earl Jones Theatre,Play,2024-09-29,2025-02-02,19,1065,a1662dd3-7e1c-470d-92c4-cd478aa6dc1e,LEFT-ON-TENTH
-maybe-happy-ending,Maybe Happy Ending,Belasco Theatre,Musical,2024-10-20,2026-11-01,107,988,2d3fa050-1754-4ed5-871c-c538534076db,MAYBE-HAPPY-ENDING
+sunset-boulevard,Sunset Boulevard,St. James Theatre,Musical,2024-09-29,2025-07-20,43,1648,206e7b8b-efe5-4542-a937-d15a53105637,SUNSET-BLVD-
 tammy-faye,Tammy Faye,Palace Theatre,Musical,2024-10-20,2024-12-08,8,1648,e2dd6bf1-7570-4dce-8ff3-7f085e7e9d56,TAMMY-FAYE
 a-wonderful-world-the-louis-armstrong,A Wonderful World: The Louis Armstrong Musical,Studio 54,Musical,2024-10-20,2025-02-23,19,997,4b156847-10bb-4905-8605-bf767271d2b1,A-WONDERFUL-WORLDTHE-LOUIS-ARMSTRONG-MUSICAL
+maybe-happy-ending,Maybe Happy Ending,Belasco Theatre,Musical,2024-10-20,2026-11-22,110,988,2d3fa050-1754-4ed5-871c-c538534076db,MAYBE-HAPPY-ENDING
 death-becomes-her,Death Becomes Her,Lunt-Fontanne Theatre,Musical,2024-10-27,2026-06-28,88,1491,2b7c5d5e-9b22-43c6-96aa-b4f384fb29fa,DEATH-BECOMES-HER
 swept-away,Swept Away,Longacre Theatre,Musical,2024-11-03,2024-12-29,9,1018,2cb9ba2a-4e22-4332-91b4-c4f9997625f8,SWEPT-AWAY
 elf,Elf,Marquis Theatre,Musical,2024-11-10,2025-01-05,9,1600,0e650811-5660-4330-b107-72c3606c166f,ELF
@@ -57,66 +57,72 @@ eureka-day,Eureka Day,Samuel J. Friedman Theatre,Play,2024-12-01,2025-02-16,12,6
 all-in-comedy-about-love,All In: Comedy About Love,Hudson Theatre,Play,2024-12-15,2025-02-16,10,968,2eab386f-2ea6-4afe-9565-8ee73f9cc07b,ALL-INCOMEDY-ABOUT-LOVE
 english,English,Todd Haimes Theatre,Play,2025-01-05,2025-03-02,9,736,5d718988-0b05-4702-84aa-44bb8ee38717,ENGLISH
 redwood,Redwood,Nederlander Theatre,Musical,2025-01-26,2025-05-18,17,1153,30b88d60-c51b-4092-a1f9-46c4aa10966d,REDWOOD
-operation-mincemeat,Operation Mincemeat,John Golden Theatre,Musical,2025-02-16,2026-11-01,90,790,72725a81-cfdc-4462-90af-215634b2322e,OPERATION-MINCEMEATA-NEW-MUSICAL
-buena-vista-social-club,Buena Vista Social Club,Gerald Schoenfeld Theatre,Musical,2025-02-23,2026-11-01,89,1049,04614cbf-1920-4ab0-a6b0-137e19d95489,BUENA-VISTA-SOCIAL-CLUB
+operation-mincemeat,Operation Mincemeat,John Golden Theatre,Musical,2025-02-16,2026-11-22,93,790,72725a81-cfdc-4462-90af-215634b2322e,OPERATION-MINCEMEATA-NEW-MUSICAL
+buena-vista-social-club,Buena Vista Social Club,Gerald Schoenfeld Theatre,Musical,2025-02-23,2026-11-22,92,1049,04614cbf-1920-4ab0-a6b0-137e19d95489,BUENA-VISTA-SOCIAL-CLUB
 purpose,Purpose,Hayes Theater,Play,2025-03-02,2025-08-31,27,581,1fd23f60-3ee8-4cd4-8258-e980a26effed,PURPOSE
 othello,Othello,Ethel Barrymore Theatre,Play,2025-03-02,2025-06-08,15,1043,1d42e8d5-98af-4dbf-a6f1-219384a07c92,OTHELLO
-smash,Smash,Imperial Theatre,Musical,2025-03-16,2025-06-22,15,1411,26e7b6f6-1560-46ef-b1b8-165123f3b353,SMASH
 boop,BOOP! The Musical,Broadhurst Theatre,Musical,2025-03-16,2025-07-13,18,1137,75c0b7ea-2250-4468-8fcd-d9a8cd3458f6,BOOPTHE-BETTY-BOOP-MUSICAL;BOOPTHE-MUSICAL
+smash,Smash,Imperial Theatre,Musical,2025-03-16,2025-06-22,15,1411,26e7b6f6-1560-46ef-b1b8-165123f3b353,SMASH
+good-night-and-good-luck,"Good Night, and Good Luck",Winter Garden Theatre,Play,2025-03-16,2025-06-08,13,1545,9ab0710a-c42b-4952-9d61-5891eda004e9,GOOD-NIGHTAND-GOOD-LUCK
 glengarry-glen-ross,Glengarry Glen Ross,Palace Theatre,Play,2025-03-16,2025-06-29,16,1306,1c086817-61f7-4095-a257-69e39a22085f,GLENGARRY-GLEN-ROSS
 picture-of-dorian-gray,The Picture of Dorian Gray,Music Box Theatre,Play,2025-03-16,2025-06-29,16,995,ab8724e5-6dc7-4bbd-8a53-73b76ba2fb04,THE-PICTURE-OF-DORIAN-GRAY
-good-night-and-good-luck,"Good Night, and Good Luck",Winter Garden Theatre,Play,2025-03-16,2025-06-08,13,1545,9ab0710a-c42b-4952-9d61-5891eda004e9,GOOD-NIGHTAND-GOOD-LUCK
 john-proctor-is-the-villain,John Proctor is the Villain,Booth Theatre,Play,2025-03-23,2025-09-07,25,772,bc9ab9b3-d220-4e47-a047-cca13e7337c1,JOHN-PROCTOR-IS-THE-VILLAIN
 last-five-years,The Last Five Years,Hudson Theatre,Musical,2025-03-23,2025-06-22,14,968,ded40a21-1600-496b-8dcd-c27d3e18e412,THE-LAST-FIVE-YEARS
 stephen-sondheims-old-friends,Stephen Sondheim's Old Friends,Samuel J. Friedman Theatre,Musical,2025-03-30,2025-06-29,14,643,6f8c0b85-8974-47cf-898f-5a76d46c188c,STEPHEN-SONDHEIM-S-OLD-FRIENDS
 floyd-collins,Floyd Collins,Vivian Beaumont Theater,Musical,2025-03-30,2025-06-22,13,1057,2549fe96-2c2f-4276-9153-4c7fe514b0b8,FLOYD-COLLINS
-stranger-things-the-first-shadow,Stranger Things: The First Shadow,Marquis Theatre,Play,2025-03-30,2026-11-01,83,1594,1d58dc1c-bc9f-4af2-b399-4bf72073b7ff,STRANGER-THINGSTHE-FIRST-SHADOW
-just-in-time,Just in Time,Circle in the Square Theatre,Musical,2025-04-06,2026-11-01,83,690,ee51ee9b-0f5d-4be4-a57f-6ff581a6c72f,JUST-IN-TIME
+stranger-things-the-first-shadow,Stranger Things: The First Shadow,Marquis Theatre,Play,2025-03-30,2026-11-22,86,1594,1d58dc1c-bc9f-4af2-b399-4bf72073b7ff,STRANGER-THINGSTHE-FIRST-SHADOW
 pirates-the-penzance,Pirates! The Penzance Musical,Todd Haimes Theatre,Musical,2025-04-06,2025-07-27,17,727,247e4431-3e04-4347-9e53-c4936deffd48,PIRATESTHE-PENZANCE-MUSICAL
 real-women-have-curves,Real Women Have Curves,James Earl Jones Theatre,Musical,2025-04-06,2025-06-29,13,1055,07067e7b-1358-4179-979e-555ada743943,REAL-WOMEN-HAVE-CURVESTHE-MUSICAL
+just-in-time,Just in Time,Circle in the Square Theatre,Musical,2025-04-06,2026-11-22,86,690,ee51ee9b-0f5d-4be4-a57f-6ff581a6c72f,JUST-IN-TIME
 dead-outlaw,Dead Outlaw,Longacre Theatre,Musical,2025-04-13,2025-06-29,12,1048,b781d9de-9ffb-430e-a392-46ae48ff7cc2,DEAD-OUTLAW
 call-me-izzy,Call Me Izzy,Studio 54,Play,2025-05-25,2025-08-24,14,936,78e6e707-deda-4aaa-b60c-a3863d573d97,CALL-ME-IZZY
 mamma-mia,Mamma Mia!,Winter Garden Theatre,Musical,2025-08-03,2026-02-01,27,1509,ef82dcf3-7871-43e8-959b-ff61de605add,MAMMA-MIA-
 jeff-ross-take-a-banana-for-the-ride,Jeff Ross: Take a Banana For the Ride,Nederlander Theatre,Special,2025-08-10,2025-09-28,8,1185,dbf170ab-c23d-4f17-b821-cfdbb7b0c662,JEFF-ROSSTAKE-A-BANANA-FOR-THE-RIDE
 art,Art,Music Box Theatre,Play,2025-08-31,2025-12-21,17,999,1275dfbd-b79e-417c-b70b-2bfb517e2977,ART
-punch,Punch,Samuel J. Friedman Theatre,Play,2025-09-14,2025-11-02,8,637,b5e56120-386e-43e1-afad-a35a4958177e,PUNCH
 waiting-for-godot,Waiting for Godot,Hudson Theatre,Play,2025-09-14,2026-01-04,17,974,8979e34f-decb-4e9d-9ae3-05905ce5466d,WAITING-FOR-GODOT
+punch,Punch,Samuel J. Friedman Theatre,Play,2025-09-14,2025-11-02,8,637,b5e56120-386e-43e1-afad-a35a4958177e,PUNCH
 ragtime,Ragtime,Vivian Beaumont Theater,Musical,2025-09-28,2026-08-16,47,1053,339c9cca-e95b-4762-bfeb-61d3079929c9,RAGTIME
-beetlejuice,Beetlejuice,Palace Theatre,Musical,2025-10-12,2026-01-04,13,1648,dac19cbc-06c4-4271-bfca-222aa6b93af3,BEETLEJUICE
 queen-of-versailles,The Queen of Versailles,St. James Theatre,Musical,2025-10-12,2025-12-21,11,1554,639beab7-04ac-470f-894d-6de3bf4e6b07,THE-QUEEN-OF-VERSAILLES
+beetlejuice,Beetlejuice,Palace Theatre,Musical,2025-10-12,2026-01-04,13,1648,dac19cbc-06c4-4271-bfca-222aa6b93af3,BEETLEJUICE
 little-bear-ridge-road,Little Bear Ridge Road,Booth Theatre,Play,2025-10-12,2025-12-21,11,770,96e964d3-1ddb-47a5-a496-d353eacaf251,LITTLE-BEAR-RIDGE-ROAD
 liberation,Liberation,James Earl Jones Theatre,Play,2025-10-12,2026-02-01,17,1061,f89ff4a7-1925-4787-9b41-b3064915d12f,LIBERATION
 chess,Chess,Imperial Theatre,Musical,2025-10-19,2026-06-21,36,1446,532822a4-8901-47cf-b403-a99060fbc671,CHESS
-two-strangers-carry-a-cake-across-new-york,Two Strangers (Carry a Cake Across New York),Longacre Theatre,Musical,2025-11-02,2026-11-01,53,1047,ee56675d-e323-4809-8be8-3451f0350eb9,TWO-STRANGERS--CARRY-A-CAKE-ACROSS-NEW-YORK-
-rob-lake-magic-with-special-guests-the-muppets,Rob Lake Magic with Special Guests The Muppets,Broadhurst Theatre,Special,2025-11-02,2025-11-16,3,1186,76c78076-40d5-46a2-9c9f-979080fb4062,ROB-LAKE-MAGIC-WITH-SPECIAL-GUESTS-THE-MUPPETS
 oedipus,Oedipus,Studio 54,Play,2025-11-02,2026-02-08,15,1015,3fa919c5-d8b1-4bfc-a43c-bbe31199eb23,OEDIPUS
+rob-lake-magic-with-special-guests-the-muppets,Rob Lake Magic with Special Guests The Muppets,Broadhurst Theatre,Special,2025-11-02,2025-11-16,3,1186,76c78076-40d5-46a2-9c9f-979080fb4062,ROB-LAKE-MAGIC-WITH-SPECIAL-GUESTS-THE-MUPPETS
+two-strangers-carry-a-cake-across-new-york,Two Strangers (Carry a Cake Across New York),Longacre Theatre,Musical,2025-11-02,2026-11-22,56,1047,ee56675d-e323-4809-8be8-3451f0350eb9,TWO-STRANGERS--CARRY-A-CAKE-ACROSS-NEW-YORK-
 marjorie-prime,Marjorie Prime,Hayes Theater,Play,2025-11-23,2026-02-15,13,581,465c80ef-5e4e-489a-90df-33f5178982da,MARJORIE-PRIME
 all-out-comedy-about-ambition,All Out: Comedy About Ambition,Nederlander Theatre,Play,2025-12-14,2026-03-08,13,1191,50bcb078-29db-4cdc-8cb4-32d6db47eb1b,ALL-OUTCOMEDY-ABOUT-AMBITION
 bug,Bug,Samuel J. Friedman Theatre,Play,2025-12-21,2026-03-08,12,637,0be7e846-33b6-421a-8d75-6aaeff00c974,BUG
 every-brilliant-thing,Every Brilliant Thing,Hudson Theatre,Play,2026-02-22,2026-08-09,25,986,d5c5735e-4b76-46ca-b4b7-dcda75b46475,EVERY-BRILLIANT-THING
 death-of-a-salesman,Death of a Salesman,Winter Garden Theatre,Play,2026-03-08,2026-08-09,23,1471,cdccc11e-adfb-4177-a80b-41438347ed17,DEATH-OF-A-SALESMAN
-dog-day-afternoon,Dog Day Afternoon,August Wilson Theatre,Play,2026-03-15,2026-07-12,18,1260,abdd3395-40c3-465d-8df2-8c20611eea5c,DOG-DAY-AFTERNOON
 giant,Giant,Music Box Theatre,Musical,2026-03-15,2026-06-28,16,999,17cf34f4-22ef-4fe4-8a3e-73015b8dc2a0,GIANT
+dog-day-afternoon,Dog Day Afternoon,August Wilson Theatre,Play,2026-03-15,2026-07-12,18,1260,abdd3395-40c3-465d-8df2-8c20611eea5c,DOG-DAY-AFTERNOON
 fear-of-13,The Fear of 13,James Earl Jones Theatre,Play,2026-03-22,2026-06-28,15,1068,b6a91ea4-ff4f-428d-bfe7-789ff84b4b0e,THE-FEAR-OF-13
-becky-shaw,Becky Shaw,Hayes Theater,Play,2026-03-22,2026-06-14,13,581,ca94ec55-becd-47f8-bc3f-e8fb4ba95e62,BECKY-SHAW
 cats-the-jellicle-ball,Cats: The Jellicle Ball,Broadhurst Theatre,Musical,2026-03-22,2026-08-09,21,1160,1e200514-d8e0-4a06-ba33-81a01842a204,CATSTHE-JELLICLE-BALL
-rocky-horror-show,The Rocky Horror Show,Studio 54,Musical,2026-03-29,2026-11-01,32,990,e7dd97f5-2921-4aed-959a-8808a0151c8f,THE-ROCKY-HORROR-SHOW
+becky-shaw,Becky Shaw,Hayes Theater,Play,2026-03-22,2026-06-14,13,581,ca94ec55-becd-47f8-bc3f-e8fb4ba95e62,BECKY-SHAW
+rocky-horror-show,The Rocky Horror Show,Studio 54,Musical,2026-03-29,2026-11-22,35,990,e7dd97f5-2921-4aed-959a-8808a0151c8f,THE-ROCKY-HORROR-SHOW
+fallen-angels,Fallen Angels,Todd Haimes Theatre,Play,2026-03-29,2026-06-07,11,734,7614e048-d19c-4dcc-819d-f672593fa312,FALLEN-ANGELS
+lost-boys,The Lost Boys,Palace Theatre,Musical,2026-03-29,2026-11-22,35,1648,096a4767-1017-42bd-9fca-42e1c63da9e4,THE-LOST-BOYS
 beaches,"Beaches, A New Musical",Majestic Theatre,Musical,2026-03-29,2026-05-24,9,1617,1b9b7e62-2a60-47c9-bb08-9a021a4537e8,BEACHESA-NEW-MUSICAL
 titanique,Titaníque,St. James Theatre,Musical,2026-03-29,2026-09-20,26,1347,b47fcd69-c6bd-492e-8823-12ffc3a14153,TITAN--QUE
-fallen-angels,Fallen Angels,Todd Haimes Theatre,Play,2026-03-29,2026-06-07,11,734,7614e048-d19c-4dcc-819d-f672593fa312,FALLEN-ANGELS
-lost-boys,The Lost Boys,Palace Theatre,Musical,2026-03-29,2026-11-01,32,1648,096a4767-1017-42bd-9fca-42e1c63da9e4,THE-LOST-BOYS
-balusters,The Balusters,Samuel J. Friedman Theatre,Play,2026-04-05,2026-06-21,12,631,6e3a29e5-23fa-47bd-b1cd-551d00456b56,THE-BALUSTERS
 joe-turners-come-and-gone,Joe Turner's Come and Gone,Ethel Barrymore Theatre,Play,2026-04-05,2026-07-26,17,1049,e720fe88-d450-44fb-9148-135756b129c6,JOE-TURNER-S-COME-AND-GONE
 proof,Proof,Booth Theatre,Play,2026-04-05,2026-07-19,16,772,da001446-ac80-4348-b332-27c7c5f9f3ff,PROOF
-schmigadoon,Schmigadoon!,Nederlander Theatre,Musical,2026-04-05,2026-11-01,31,1161,eb529b4b-a348-40d8-a6b1-7592304cfce2,SCHMIGADOON-
+balusters,The Balusters,Samuel J. Friedman Theatre,Play,2026-04-05,2026-06-21,12,631,6e3a29e5-23fa-47bd-b1cd-551d00456b56,THE-BALUSTERS
+schmigadoon,Schmigadoon!,Nederlander Theatre,Musical,2026-04-05,2026-11-22,34,1161,eb529b4b-a348-40d8-a6b1-7592304cfce2,SCHMIGADOON-
 celebrity-autobiography,Celebrity Autobiography,Sam S. Shubert Theatre,Play,2026-05-17,2026-06-21,6,1128,6fd9f61e-b23f-4658-b994-21bb41fcb892,CELEBRITY-AUTOBIOGRAPHY
-paranormal-activity,Paranormal Activity,August Wilson Theatre,Play,2026-08-16,2026-11-01,12,1187,2d5e97af-b1bb-445f-a92f-18a23a5007e4,PARANORMAL-ACTIVITY
-school-girls-or-the-african-mean-girls-play,"School Girls; Or, The African Mean Girls Play",Samuel J. Friedman Theatre,Play,2026-09-13,2026-11-01,8,643,83ee4d07-641f-4ab1-af89-be47ef06c461,SCHOOL-GIRLSORTHE-AFRICAN-MEAN-GIRLS-PLAY
-imaginary-invalid,The Imaginary Invalid,Todd Haimes Theatre,Play,2026-09-27,2026-11-01,6,734,eff027ef-1dc7-4324-8829-b694c7664659,THE-IMAGINARY-INVALID
-860,860,Imperial Theatre,Play,2026-10-04,2026-11-01,5,1291,7b688ddd-0353-430f-a9d5-642a55901e25,860
-other-desert-cities,Other Desert Cities,Hudson Theatre,Play,2026-10-04,2026-11-01,5,974,0c468279-b1c9-4121-bbe4-af4bc92805b7,OTHER-DESERT-CITIES
-a-few-good-men,A Few Good Men,Vivian Beaumont Theater,Play,2026-10-11,2026-11-01,4,1103,388d0053-4de5-4ea8-b940-0c0067c8fcdb,A-FEW-GOOD-MEN
-wanted,Wanted,James Earl Jones Theatre,Musical,2026-10-18,2026-11-01,3,1049,3f0c4e4f-4264-41e5-a272-16e8cfeda6f6,WANTED
-fantasticks,The Fantasticks,Helen Hayes Theatre,Musical,2026-10-25,2026-11-01,2,581,62a6a9c1-5ad9-4e63-baf3-bd0bfca32fc9,THE-FANTASTICKS
-downstate,Downstate,Booth Theatre,Play,2026-10-25,2026-11-01,2,754,8378984d-c584-4847-af79-03b79261893d,DOWNSTATE
-much-ado-about-nothing,Much Ado About Nothing,Winter Garden Theatre,Play,2026-11-01,2026-11-01,1,1503,ba583c9a-9bad-4995-bdf4-db62782e5f7e,MUCH-ADO-ABOUT-NOTHING
+paranormal-activity,Paranormal Activity,August Wilson Theatre,Play,2026-08-16,2026-11-22,15,1187,2d5e97af-b1bb-445f-a92f-18a23a5007e4,PARANORMAL-ACTIVITY
+school-girls-or-the-african-mean-girls-play,"School Girls; Or, The African Mean Girls Play",Samuel J. Friedman Theatre,Play,2026-09-13,2026-11-15,10,643,83ee4d07-641f-4ab1-af89-be47ef06c461,SCHOOL-GIRLSORTHE-AFRICAN-MEAN-GIRLS-PLAY
+imaginary-invalid,The Imaginary Invalid,Todd Haimes Theatre,Play,2026-09-27,2026-11-22,9,734,eff027ef-1dc7-4324-8829-b694c7664659,THE-IMAGINARY-INVALID
+other-desert-cities,Other Desert Cities,Hudson Theatre,Play,2026-10-04,2026-11-22,8,974,0c468279-b1c9-4121-bbe4-af4bc92805b7,OTHER-DESERT-CITIES
+860,860,Imperial Theatre,Play,2026-10-04,2026-11-22,8,1442,7b688ddd-0353-430f-a9d5-642a55901e25,860
+a-few-good-men,A Few Good Men,Vivian Beaumont Theater,Play,2026-10-11,2026-11-22,7,1103,388d0053-4de5-4ea8-b940-0c0067c8fcdb,A-FEW-GOOD-MEN
+wanted,Wanted,James Earl Jones Theatre,Musical,2026-10-18,2026-11-22,6,1049,3f0c4e4f-4264-41e5-a272-16e8cfeda6f6,WANTED
+fantasticks,The Fantasticks,Helen Hayes Theatre,Musical,2026-10-25,2026-11-22,5,581,62a6a9c1-5ad9-4e63-baf3-bd0bfca32fc9,THE-FANTASTICKS
+downstate,Downstate,Booth Theatre,Play,2026-10-25,2026-11-22,5,754,8378984d-c584-4847-af79-03b79261893d,DOWNSTATE
+much-ado-about-nothing,Much Ado About Nothing,Winter Garden Theatre,Play,2026-11-01,2026-11-22,4,1503,ba583c9a-9bad-4995-bdf4-db62782e5f7e,MUCH-ADO-ABOUT-NOTHING
+its-a-wonderful-life-a-live-radio-play,It's a Wonderful Life: A Live Radio Play,Broadhurst Theatre,Play,2026-11-08,2026-11-22,3,1168,76d695bd-ca1e-4e8b-90ae-1e0de03295d5,IT-S-A-WONDERFUL-LIFEA-LIVE-RADIO-PLAY
+here-there-are-blueberries,Here There Are Blueberries,Ethel Barrymore Theatre,,2026-11-08,2026-11-22,3,1020,490b8326-43fd-45bb-a97a-da792f8a7eb8,HERE-THERE-ARE-BLUEBERRIES
+blue-man-group-a-new-holiday-surprise,"Blue Man Group ""A New Holiday Surprise""",Lunt-Fontanne Theatre,,2026-11-15,2026-11-22,2,1483,e131feb4-4f0c-4e94-ad80-d6d788d6950d,BLUE-MAN-GROUP--A-NEW-HOLIDAY-SURPRISE-
+galileo,Galileo,Sam S. Shubert Theatre,Musical,2026-11-15,2026-11-22,2,1368,0a96653c-486f-4c5a-aa45-bd9cd2807df2,GALILEO
+inter-alia,Inter Alia,Music Box Theatre,Play,2026-11-15,2026-11-22,2,997,8d957838-c066-4b95-a743-3053c5f01bdb,INTER-ALIA
+now-you-see-me-live,Now You See Me Live,Al Hirschfeld Theatre,,2026-11-15,2026-11-22,2,1386,ab9455af-3783-4c6f-8210-847566f81812,NOW-YOU-SEE-ME-LIVE

@@ -1,0 +1,63 @@
+﻿.venv\Scripts\python : From https://github.com/rachelchen24/broadway-rush-data
+At line:1 char:527
++ ... og -Tail 3; .venv\Scripts\python -m broadway_rush.sync --predict *> d ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (From https://gi...adway-rush-data:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+   8a32517..287294e  main       -> origin/main
+Updating 8a32517..287294e
+Fast-forward
+ tkts/20261125233541-live.html.gz | Bin 0 -> 52341 bytes
+ tkts/20261126005648-live.html.gz | Bin 0 -> 51414 bytes
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 tkts/20261125233541-live.html.gz
+ create mode 100644 tkts/20261126005648-live.html.gz
+tkts: 2 new snapshots
+13:19:17 wrote tkts.csv: 13986 rows from 191 snapshots with rows (213 cached files)
+ticketmaster: 0 new snapshots
+Newest tkts snapshot: Nov 25, 07:56 PM ET
+Newest ticketmaster snapshot: Nov 25, 06:00 PM ET
+Updating predictions (about 8 minutes)...
+13:19:46 Unable to initialize backend 'tpu': UNIMPLEMENTED: LoadPjrtPlugin is not implemented on windows yet.
+13:19:46 Unable to initialize backend 'proxy': The 'proxy' backend requires the address of an IFRT Proxy server. Set it via the JAX_BACKEND_TARGET environment variable or the jax_backend_target config option, e.g. JAX_BACKEND_TARGET=grpc://localhost:29000.
+final fit: line 1.6 s, cutoff 84.2 s {'max_r_hat': 1.009, 'min_ess': 521, 'divergences': 0, 'attempts': 1, 'converged': True} phi 1.83
+wrote C:\Users\rache\.0Documents\Projects\broadway-rush\web\data\predictions.json days 6 {'2026-11-27': 38, '2026-11-28': 38, '2026-11-29': 34, '2026-11-30': 6, '2026-12-01': 33, '2026-12-02': 32} in 109.1 s
+1 The Great Gatsby               GO 0.868 09:30 [2, 20] 40.0 policy []
+1 Stranger Things: The First Sha GO 0.839 09:15 [2, 20] 40.0 reports []
+1 Two Strangers (Carry a Cake Ac GO 0.837 09:15 [2, 20] None reports []
+1 Galileo                        GO 0.821 09:00 [2, 20] None reports ['Low confidence']
+1 Wanted                         GO 0.813 09:00 [2, 20] None reports ['Low confidence']
+1 860                            GO 0.81 09:00 [2, 20] 59.0 policy ['Digital rush 11 AM', 'Low confidence']
+1 Downstate                      GO 0.787 08:45 [2, 20] None reports ['Low confidence']
+1 Schmigadoon!                   GO 0.759 08:45 [2, 20] 40.0 policy []
+1 Maybe Happy Ending             GO 0.711 08:30 [2, 6] 49.0 policy ['Digital rush 11 AM']
+1 Buena Vista Social Club        GO 0.703 08:15 [4, 8] 45.0 policy []
+1 Chicago                        GO 0.702 08:15 [2, 20] 49.0 policy []
+1 Inter Alia                     Maybe 0.687 08:00 [2, 20] None reports ['Low confidence']
+1 Just in Time                   Maybe 0.588 07:30 [2, 20] 40.0 policy []
+1 The Outsiders                  Maybe 0.556 07:00 [4, 37] 45.0 policy []
+1 The Lost Boys                  Maybe 0.525 06:45 [16, 34] 45.0 policy []
+1 The Rocky Horror Show          Maybe 0.517 07:00 [4, 11] None reports []
+1 Oh, Mary!                      Maybe 0.51 06:45 [5, 20] 43.0 policy []
+1 Operation Mincemeat            Maybe 0.468 05:30 [2, 11] 49.0 policy []
+2 & Juliet                          None 49.0 policy ['Digital rush 9 AM']
+2 Hadestown                         None 39.0 policy []
+2 It's a Wonderful Life: A Live     None 49.0 policy ['Digital rush 11 AM']
+2 SIX: The Musical                  None 49.0 policy []
+2 The Imaginary Invalid             None 48.0 reports ['Digital rush 9 AM']
+2 Wicked                            None 45.0 policy []
+3 A Few Good Men                    None None none []
+3 Aladdin                           None None none []
+3 Blue Man Group "A New Holiday     None None none []
+3 Hamilton                          None None none []
+3 Harry Potter and the Cursed Ch    None None none []
+3 Here There Are Blueberries        None 49.0 none ['Digital rush 11 AM']
+3 MJ The Musical                    None None none []
+3 Much Ado About Nothing            None None none []
+3 Now You See Me Live               None None none []
+3 Other Desert Cities               None 49.0 none ['Digital rush 9 AM']
+3 Paranormal Activity               None 40.0 none ['Digital rush 9 AM']
+3 The Book of Mormon                None 53.0 none ['Digital rush 9 AM']
+3 The Fantasticks                   None None none []
+3 The Lion King                     None None none []

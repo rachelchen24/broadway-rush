@@ -77,7 +77,7 @@ The Roommate,20,roommate,name
 The Hills of California,20,hills-of-california,name
 Hamilton,20,hamilton,name
 Two Strangers (Carry Me Home),19,two-strangers-carry-a-cake-across-new-york,name
-Inter Alia,19,,unmatched
+Inter Alia,19,inter-alia,name
 Sexual Misconduct of the Middle Classes,19,-,not_broadway
 Redwood,19,redwood,name
 Dog Day Afternoon,18,dog-day-afternoon,name
@@ -85,7 +85,7 @@ Sunset Blvd,17,sunset-boulevard,name
 The Wiz,17,wiz,name
 Appropriate,16,appropriate,name
 Rocky,16,rocky-horror-show,name
-Galileo,16,,unmatched
+Galileo,16,galileo,name
 Between the Lines,15,-,not_broadway
 Just In Time!,14,just-in-time,name
 Just in Time!,14,just-in-time,name
@@ -189,7 +189,7 @@ The Last 5 Years,3,last-five-years,name
 Heathers the Musical,2,-,not_broadway
 Operation: Mincemeat,2,operation-mincemeat,name
 Patriots,2,patriots,name
-Now You See Me Live,2,,unmatched
+Now You See Me Live,2,,outside_run:now-you-see-me-live
 Come and Gone,2,joe-turners-come-and-gone,name
 The Curious Case of Benjamin Button,2,,unmatched
 Jesus Christ Superstar,2,-,not_broadway
@@ -280,7 +280,7 @@ Little Bear Ridge Road,1,little-bear-ridge-road,name
 Heart of Rock 'N' Roll,1,heart-of-rock-and-roll,fuzzy
 Harmony,1,,unmatched
 illinoise,1,illinoise,name
-inter Alia,1,,unmatched
+inter Alia,1,inter-alia,name
 Yellowface,1,yellow-face,fuzzy
 boop,1,boop,name
 Whitney Houston: The Musical,1,,unmatched
@@ -292,7 +292,7 @@ Against the Run,1,,unmatched
 Good Luck and Good Night,1,good-night-and-good-luck,name
 Hells Kitchen,1,hells-kitchen,name
 Jagged Little Pill,1,,unmatched
-It's a Wonderful Life,1,,unmatched
+It's a Wonderful Life,1,its-a-wonderful-life-a-live-radio-play,name
 Goodnight and Good Luck,1,good-night-and-good-luck,fuzzy
 Gravity... no,1,,unmatched
 Seterophonic,1,stereophonic,fuzzy

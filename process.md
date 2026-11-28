@@ -1685,3 +1685,10 @@ Rachel: "just make the model, train it, test it." Same design (trees for the lin
 - Site: predictions made 2026-11-25 18:10 ET for Nov 26 – Dec 2, reports through Nov 25; Nerd stats accuracy still `final_locked`. Home page checked at 1280 px (no sideways scroll). Thanksgiving Nov 26 has only 4 shows on the Ticketmaster schedule.
 - AI spend: project total $3.18.
 - Still stale: weekly grosses end Nov 1, so `pct_cap` and `avg_ticket` are 3+ weeks old (refresh needs Rachel's OK). Next Reddit refreshes ~Dec 1 and ~Dec 5 (ask first).
+
+## 2026-11-26 — Weekly grosses refreshed + refit (Rachel OK'd)
+- `scrapers.playbill grosses` (4 requests; now through week ending Nov 22) and `scrapers.broadwayworld grosses` (3 requests; through Nov 15). Both CSVs 4,201 rows, 130 weeks.
+- `catalog build`: 13,405 reports on 113 shows (was 13,359 on 110); rush policies now match 121/121 shows (Here There Are Blueberries and It's a Wonderful Life: A Live Radio Play were unmatched before because they had no grosses yet).
+- `model.table` (log `data/interim/table_2026-11-26.log`) → `sync --predict` (log `data/interim/sync_2026-11-26.log`). Model choices unchanged; refit only.
+- Site: predictions made 2026-11-26 13:21 ET for Nov 27 – Dec 2 (today's morning has passed, so Nov 26 drops off); 32–38 shows a day (was 31–35); grosses week Nov 22; reports through Nov 25. Home page checked at 375 px: no sideways scroll, 16 px gutters.
+- No AI cost. Next Reddit refreshes ~Dec 1 and ~Dec 5 (ask first); grosses can be refreshed with them.
